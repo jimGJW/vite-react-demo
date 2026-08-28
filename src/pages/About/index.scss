@@ -1,0 +1,12 @@
+/* 关于页：目录结构代码块（玻璃态） */
+.about-structure {
+  background: rgba(15, 23, 42, 0.9);
+  color: #c7d2fe;
+  padding: 1.1rem 1.25rem;
+  border-radius: var(--r-md);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  overflow: auto;
+  font-family: ui-monospace, 'SF Mono', Consolas, Menlo, monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}

@@ -1,0 +1,70 @@
+# ============ Node / 构建产物 ============
+node_modules/
+.pnp
+.pnp.js
+dist/
+dist-local/
+build/
+coverage/
+*.tsbuildinfo
+
+# Vite / HMR 缓存
+.vite/
+.vitepress/
+
+# ============ 包构建产物（但保留独立包 dist/ 供发布使用）============
+# 主项目 build 产物：/dist/ 已在上面忽略
+# packages 下子包的 dist 可以根据需要选择提交/不提交
+# 如果想只在发布时构建、不把 dist 放进 git，去掉下面注释：
+packages/*/*/dist/
+packages/@myorg/*/dist/
+
+# 打包临时文件
+*.tgz
+*.tar.gz
+
+# ============ npm / pnpm / yarn ============
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+yarn.lock
+package-lock.json.bak
+pnpm-debug.log*
+.lighthouseci/
+
+# ============ 测试 ============
+tests/playwright-report/
+tests/test-results/
+.playwright/
+test-artifacts/
+
+# ============ 编辑器 ============
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+AppleDouble
+.LSOverride
+
+# ============ 环境变量 ============
+.env
+.env.local
+.env.*.local
+
+# ============ Python E2E 产生的本地文件 ============
+.Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+server.log
+
+# ============ 临时快照 ============
+tmp/
+temp/

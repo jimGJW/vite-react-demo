@@ -1,0 +1,108 @@
+/* 扫码演示页：玻璃态 + 靛蓝 */
+.scan-demo-desc {
+  color: var(--c-text-2);
+}
+
+.scan-demo-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1.25rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-lg);
+  margin-bottom: 1.5rem;
+  box-shadow: var(--sh-sm);
+}
+
+.scan-demo-custom-btn {
+  padding: 8px 16px;
+  background: var(--grad-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-sm);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.28);
+  transition: transform var(--t-fast), box-shadow var(--t-fast);
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(99, 102, 241, 0.4);
+  }
+}
+
+.scan-demo-result {
+  padding: 1rem 1.25rem;
+  background: var(--c-info-soft);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-left: 4px solid var(--c-primary);
+  border-radius: var(--r-md);
+  margin-bottom: 1.5rem;
+}
+
+.scan-demo-result-label {
+  font-size: 13px;
+  color: var(--c-primary-700);
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.scan-demo-result-link {
+  word-break: break-all;
+}
+
+.scan-demo-result-code {
+  display: block;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.scan-demo-history-empty {
+  color: var(--c-text-3);
+}
+
+.scan-demo-history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.scan-demo-history-item {
+  padding: 0.625rem 0.875rem;
+  border-bottom: 1px solid var(--c-border-soft);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  transition: background var(--t-fast);
+
+  &:hover {
+    background: var(--c-primary-soft);
+  }
+
+  code {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.scan-demo-history-time {
+  font-size: 12px;
+  color: var(--c-text-3);
+}
+
+.scan-demo-tip {
+  margin-top: 2rem;
+  padding: 1rem 1.25rem;
+  background: var(--c-warning-soft);
+  border-left: 4px solid var(--c-warning);
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  color: #92400e;
+}

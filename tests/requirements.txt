@@ -1,0 +1,5 @@
+# 项目全页面逻辑测试依赖
+# 安装: pip install -r tests/requirements.txt
+# 随后: playwright install chromium
+
+playwright>=1.40

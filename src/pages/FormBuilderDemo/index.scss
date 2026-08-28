@@ -1,0 +1,466 @@
+.fb-page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+}
+
+/* ---------- 头部 ---------- */
+.fb-header {
+  margin-bottom: 20px;
+}
+
+.fb-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  h1 {
+    margin: 0;
+    font-size: 1.7rem;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+.fb-title-icon {
+  font-size: 1.8rem;
+}
+
+.fb-subtitle {
+  margin: 8px 0 16px;
+  color: #64748b;
+  font-size: 0.92rem;
+
+  code {
+    padding: 1px 6px;
+    border-radius: 6px;
+    background: #eef2ff;
+    color: #6366f1;
+    font-size: 0.85em;
+  }
+}
+
+.fb-presets {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fb-presets-label {
+  font-size: 0.82rem;
+  color: #94a3b8;
+}
+
+.fb-preset-chip {
+  padding: 5px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  background: #fff;
+  color: #475569;
+  font-size: 0.86rem;
+  cursor: pointer;
+  transition: all 0.18s ease;
+
+  &:hover {
+    border-color: #6366f1;
+    color: #6366f1;
+  }
+
+  &.active {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+  }
+}
+
+/* ---------- 主体两栏 ---------- */
+.fb-body {
+  display: grid;
+  grid-template-columns: minmax(380px, 5fr) minmax(420px, 7fr);
+  gap: 20px;
+  align-items: start;
+
+  @media (max-width: 1000px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.fb-panel {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 4px 12px rgba(99, 102, 241, 0.06);
+}
+
+.fb-panel-title {
+  margin: 0 0 12px;
+  font-size: 1.05rem;
+  color: #1e293b;
+}
+
+/* ---------- JSON 编辑 ---------- */
+.fb-json-textarea {
+  width: 100%;
+  min-height: 340px;
+  padding: 14px;
+  border: 1px solid #1e293b;
+  border-radius: 10px;
+  background: #0f172a;
+  color: #e2e8f0;
+  font-family: 'SF Mono', 'Fira Code', Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  resize: vertical;
+  outline: none;
+
+  &:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+  }
+}
+
+.fb-json-error {
+  margin-top: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  font-size: 0.82rem;
+}
+
+.fb-json-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.fb-json-hint {
+  flex: 1;
+  min-width: 200px;
+  color: #94a3b8;
+  font-size: 0.76rem;
+}
+
+/* ---------- 可视化编辑 ---------- */
+.fb-field-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.fb-field-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+  font-size: 0.82rem;
+}
+
+.fb-field-index {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #eef2ff;
+  color: #6366f1;
+  font-size: 0.72rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fb-field-key {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.fb-field-label {
+  color: #64748b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fb-field-widget {
+  flex-shrink: 0;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #ecfeff;
+  color: #0891b2;
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.74rem;
+}
+
+.fb-field-required {
+  flex-shrink: 0;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: #fff7ed;
+  color: #ea580c;
+  font-size: 0.72rem;
+}
+
+.fb-field-ops {
+  margin-left: auto;
+  flex-shrink: 0;
+  display: flex;
+  gap: 4px;
+
+  button {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    background: #fff;
+    color: #64748b;
+    cursor: pointer;
+    font-size: 0.78rem;
+    line-height: 1;
+    transition: all 0.15s ease;
+
+    &:hover:not(:disabled) {
+      border-color: #6366f1;
+      color: #6366f1;
+    }
+
+    &:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    &.del:hover {
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+  }
+}
+
+.fb-add-field {
+  padding: 14px;
+  border: 1px dashed #c7d2fe;
+  border-radius: 10px;
+  background: #f8faff;
+}
+
+.fb-add-title {
+  margin: 0 0 10px;
+  font-size: 0.88rem;
+  color: #6366f1;
+}
+
+.fb-add-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 10px;
+
+  .ant-select {
+    width: 100%;
+  }
+}
+
+.fb-add-options {
+  grid-column: 1 / -1;
+}
+
+.fb-add-required {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #475569;
+  font-size: 0.84rem;
+  cursor: pointer;
+}
+
+/* ---------- 预览区 ---------- */
+.fb-preview-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 8px;
+
+  .fb-panel-title {
+    margin: 0;
+  }
+}
+
+.fb-preview-switches {
+  display: flex;
+  gap: 16px;
+
+  label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #64748b;
+    font-size: 0.84rem;
+    cursor: pointer;
+  }
+}
+
+.fb-form {
+  padding: 16px 8px 4px;
+}
+
+.fb-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px dashed #e2e8f0;
+}
+
+/* ---------- 结果 ---------- */
+.fb-result {
+  margin-top: 16px;
+}
+
+.fb-result-title {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+  color: #1e293b;
+}
+
+.fb-result pre {
+  margin: 0;
+  padding: 14px;
+  border-radius: 10px;
+  background: #0f172a;
+  color: #6ee7b7;
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  overflow-x: auto;
+}
+
+.fb-result-empty {
+  margin: 0;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px dashed #e2e8f0;
+  background: #f8fafc;
+  color: #94a3b8;
+  font-size: 0.84rem;
+}
+
+/* ---------- widget 速查 ---------- */
+.fb-widgets {
+  margin-top: 20px;
+}
+
+.fb-widget-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fb-widget-tag {
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #4f46e5;
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+}
+
+.fb-widgets-note {
+  margin: 12px 0 0;
+  color: #94a3b8;
+  font-size: 0.8rem;
+
+  code {
+    padding: 1px 6px;
+    border-radius: 6px;
+    background: #eef2ff;
+    color: #6366f1;
+    font-size: 0.92em;
+  }
+}
+
+/* ---------- 暗色模式 ---------- */
+@media (prefers-color-scheme: dark) {
+  .fb-panel {
+    background: #1e293b;
+    border-color: #334155;
+    box-shadow: none;
+  }
+
+  .fb-preset-chip {
+    background: #0f172a;
+    border-color: #334155;
+    color: #cbd5e1;
+
+    &:hover {
+      border-color: #818cf8;
+      color: #a5b4fc;
+    }
+  }
+
+  .fb-panel-title,
+  .fb-result-title {
+    color: #e2e8f0;
+  }
+
+  .fb-subtitle {
+    color: #94a3b8;
+  }
+
+  .fb-field-row {
+    border-color: #334155;
+    background: #0f172a;
+  }
+
+  .fb-field-key {
+    color: #e2e8f0;
+  }
+
+  .fb-field-label {
+    color: #94a3b8;
+  }
+
+  .fb-field-ops button {
+    background: #0f172a;
+    border-color: #334155;
+    color: #94a3b8;
+
+    &:hover:not(:disabled) {
+      border-color: #818cf8;
+      color: #a5b4fc;
+    }
+  }
+
+  .fb-add-field {
+    border-color: #475569;
+    background: #0f172a;
+  }
+
+  .fb-result-empty {
+    border-color: #334155;
+    background: #0f172a;
+  }
+
+  .fb-json-hint,
+  .fb-widgets-note {
+    color: #64748b;
+  }
+}

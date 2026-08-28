@@ -1,0 +1,191 @@
+/* DataTable 演示页 · 复用 .page-card 玻璃容器 */
+
+.dt-demo-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  h1 {
+    margin-bottom: 0.3rem;
+  }
+
+  p {
+    margin: 0;
+    color: var(--c-text-2);
+    font-size: 0.92rem;
+    max-width: 60ch;
+  }
+}
+
+.dt-demo-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+  padding: 0.85rem 1rem;
+  background: var(--c-primary-softer);
+  border: 1px solid var(--c-border-soft);
+  border-radius: var(--r-md);
+}
+
+.dt-demo-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dt-demo-control-label {
+  color: var(--c-text-3);
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.dt-demo-select {
+  padding: 0.35rem 0.55rem;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--c-text-2);
+  background: var(--c-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: var(--c-primary);
+    box-shadow: 0 0 0 3px var(--c-primary-ring);
+  }
+}
+
+.dt-demo-selected {
+  color: var(--c-primary-700);
+  font-size: 1rem;
+  font-weight: 700;
+  min-width: 1.5em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.dt-demo-clear {
+  padding: 0.2rem 0.6rem;
+  font: inherit;
+  font-size: 0.78rem;
+  color: var(--c-danger);
+  background: var(--c-danger-soft);
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast);
+
+  &:hover {
+    background: var(--c-danger);
+    color: #fff;
+  }
+}
+
+.dt-demo-table {
+  margin-top: 1.5rem;
+}
+
+/* —— 状态标签 —— */
+.status-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.18rem 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: var(--r-pill);
+
+  &.is-success {
+    color: var(--c-success);
+    background: var(--c-success-soft);
+  }
+
+  &.is-warning {
+    color: var(--c-warning);
+    background: var(--c-warning-soft);
+  }
+
+  &.is-danger {
+    color: var(--c-danger);
+    background: var(--c-danger-soft);
+  }
+
+  &.is-info {
+    color: var(--c-info);
+    background: var(--c-info-soft);
+  }
+}
+
+/* —— 用法说明 —— */
+.dt-demo-usage {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--c-border-soft);
+
+  h2 {
+    margin: 0 0 0.75rem;
+    font-size: 1.1rem;
+  }
+
+  h3 {
+    margin: 1.25rem 0 0.5rem;
+    font-size: 0.95rem;
+    color: var(--c-text-1);
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    color: var(--c-text-2);
+    font-size: 0.88rem;
+    line-height: 1.8;
+
+    code {
+      font-size: 0.82em;
+    }
+  }
+}
+
+.dt-demo-code {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  background: var(--c-primary-softer);
+  border: 1px solid var(--c-border-soft);
+  border-radius: var(--r-md);
+  color: var(--c-text-1);
+  overflow-x: auto;
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
+.dt-demo-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--c-border-soft);
+
+  code {
+    font-size: 0.78rem;
+  }
+}
+
+.dt-demo-tip {
+  color: var(--c-text-3);
+  font-size: 0.8rem;
+}
+
+@media (max-width: 640px) {
+  .dt-demo-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+}

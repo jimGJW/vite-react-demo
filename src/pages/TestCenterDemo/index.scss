@@ -1,0 +1,39 @@
+.tc-help {
+  margin-top: 2rem;
+  padding: 1.25rem 1.4rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-lg);
+  backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--sh-md);
+
+  h2 {
+    margin-top: 0;
+    font-size: 1.05rem;
+  }
+
+  ol {
+    padding-left: 1.5rem;
+    color: var(--c-text-2);
+
+    li {
+      margin-bottom: 0.5rem;
+      line-height: 1.7;
+    }
+  }
+
+  &-tip {
+    margin-bottom: 0;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.85rem;
+    color: var(--c-text-2);
+    background: var(--c-primary-soft);
+    border-radius: var(--r-md);
+    border-left: 3px solid var(--c-primary);
+
+    code {
+      background: var(--c-card);
+      padding: 1px 6px;
+    }
+  }
+}

@@ -1,0 +1,541 @@
+/* =====================================================================
+   周天星辰大阵（首页）
+   - 五重同心防御环：相邻环反向互锁旋转
+   - 环内星辰流动 + 跨环径向脉动（从内到外/从外到内）
+   - 365 颗真实恒星，扫描光带与游标遍历全盘
+   - 点击任意星变大并弹出详情
+   ===================================================================== */
+
+/* 注册 --ring-r 为可动画的长度类型，使星辰半径能被 keyframes 驱动
+   - inherits: true → star 子元素继承 cell 动画当前帧的 --ring-r
+   - 轨道 .sa-track 仍用 ring-group 的静态 --ring-r，与星辰动态值独立 */
+@property --ring-r {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
+.sa {
+  margin: 2rem 0 1rem;
+}
+
+.sa-head {
+  text-align: center;
+  margin-bottom: 1.5rem;
+
+  h2 {
+    margin: 0 0 0.4rem;
+    font-size: 1.4rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--c-primary-600), var(--c-violet-600));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  p {
+    margin: 0;
+    color: var(--c-text-2);
+    font-size: 0.85rem;
+  }
+}
+
+/* —— 宇宙圆盘舞台 —— */
+.sa-stage {
+  position: relative;
+  width: min(560px, 86vw);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+}
+
+.sa-nebula {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.sa-nebula-1 {
+  width: 90%;
+  height: 90%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.5), transparent 70%);
+  animation: sa-float 22s ease-in-out infinite alternate;
+}
+
+.sa-nebula-2 {
+  width: 70%;
+  height: 70%;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.4), transparent 70%);
+  animation: sa-float 28s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes sa-float {
+  from { transform: scale(1) translate(0, 0); }
+  to   { transform: scale(1.15) translate(14px, 10px); }
+}
+
+/* —— 阵盘：深色宇宙圆盘 —— */
+.sa-array {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #0f172a 55%, #020617 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 24px 60px rgba(15, 23, 42, 0.5),
+    0 0 80px rgba(99, 102, 241, 0.18),
+    inset 0 0 60px rgba(2, 6, 23, 0.7);
+  overflow: hidden;
+  /* 基准最大半径（响应式 px，不能用 % —— translateY 的 % 是相对星点自身）*/
+  --sa-r-max: min(245px, 39vw);
+}
+
+/* —— 旋转扫描光带（防御扫描，覆盖整个圆盘）—— */
+.sa-sweep {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 0;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(99, 102, 241, 0.18) 8deg,
+    rgba(165, 180, 252, 0.08) 16deg,
+    transparent 24deg
+  );
+  animation: sa-sweep 8s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: screen;
+}
+
+@keyframes sa-sweep {
+  to { transform: rotate(360deg); }
+}
+
+/* —— 环组容器：定位于圆盘中心，作为旋转支点 —— */
+.sa-ring-group {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  z-index: 2;
+}
+
+/* 相邻环反向旋转，形成互锁防御 */
+.sa-rot-cw {
+  animation: sa-rotate-cw linear infinite;
+}
+
+.sa-rot-ccw {
+  animation: sa-rotate-ccw linear infinite;
+}
+
+@keyframes sa-rotate-cw {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes sa-rotate-ccw {
+  to { transform: rotate(-360deg); }
+}
+
+/* —— 各环虚线轨道（防御阵法纹路）—— */
+.sa-track {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--ring-r) * 2);
+  height: calc(var(--ring-r) * 2);
+  margin-left: calc(var(--ring-r) * -1);
+  margin-top: calc(var(--ring-r) * -1);
+  border-radius: 50%;
+  border: 1px dashed rgba(165, 180, 252, 0.22);
+  box-shadow:
+    inset 0 0 20px rgba(99, 102, 241, 0.08),
+    0 0 12px rgba(99, 102, 241, 0.06);
+  pointer-events: none;
+}
+
+/* —— 环内流动 + 跨环径向脉动容器 ——
+   三层运动叠加：
+   1) 环组整体旋转（sa-rotate-cw/ccw）
+   2) cell 的 sa-flow：环内角向流动，相位错开 → 不齐步走
+   3) cell 的 sa-radial：径向半径脉动，--ring-r 在最内↔最外间循环
+      相位错开 → 任一时刻各星分布在不同环层级，形成从内到外/从外到内的双向径向流 */
+.sa-star-cell {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  animation:
+    sa-flow var(--flow-dur, 60s) linear infinite,
+    sa-radial var(--radial-dur, 90s) ease-in-out infinite;
+  animation-delay:
+    calc(var(--idx, 0) * -0.4s),
+    calc(var(--idx, 0) * -1.2s);
+}
+
+/* 反向流动：与环整体旋转方向相反，形成互锁复合运动 */
+.sa-flow-rev {
+  animation-direction: reverse, normal;
+}
+
+@keyframes sa-flow {
+  to { transform: rotate(360deg); }
+}
+
+/* 径向脉动：从最内环半径到最外环半径再回，覆盖五环全跨度 */
+@keyframes sa-radial {
+  0%, 100% { --ring-r: calc(var(--sa-r-max) * 0.16); }
+  50%      { --ring-r: calc(var(--sa-r-max) * 0.94); }
+}
+
+/* —— 周天星点（每颗可点击，分布于所属环）—— */
+.sa-star {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2px;
+  height: 2px;
+  margin: -1px 0 0 -1px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  opacity: 0.5;
+  cursor: pointer;
+  /* 关键：使用所属环的 --ring-r 定位半径，而非全局 --sa-r */
+  transform: rotate(var(--angle, 0deg)) translateY(calc(-1 * var(--ring-r))) scale(var(--s, 1));
+  transition: box-shadow 0.25s, background 0.25s, transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: sa-twinkle 3.2s ease-in-out infinite;
+  /* 扩大点击热区 */
+  &::before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: -8px;
+    width: 19px;
+    height: 19px;
+    border-radius: 50%;
+  }
+
+  &:hover {
+    background: #fff;
+    --s: 2;
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 1), 0 0 18px 4px rgba(165, 243, 252, 0.6);
+    z-index: 3;
+  }
+
+  &:focus-visible {
+    outline: none;
+    background: #fff;
+    --s: 2;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.9), 0 0 14px 3px rgba(199, 210, 254, 0.9);
+  }
+}
+
+/* 四象主星（每隔 91 颗一颗，五环各取一位主星） */
+.sa-star.cardinal {
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  background: #fff;
+  box-shadow: 0 0 8px 1.5px rgba(255, 255, 255, 0.9);
+  opacity: 0.95;
+}
+
+/* 游标当前星 */
+.sa-star.active {
+  background: #c7d2fe;
+  box-shadow: 0 0 8px 1.5px rgba(199, 210, 254, 0.9), 0 0 16px 3px rgba(99, 102, 241, 0.55);
+  opacity: 1;
+}
+
+/* 选中星：变大 */
+.sa-star.selected {
+  --s: 3.4;
+  background: #fff;
+  opacity: 1;
+  z-index: 4;
+  box-shadow: 0 0 14px 3px rgba(255, 255, 255, 1), 0 0 30px 8px rgba(99, 102, 241, 0.85);
+  animation: none;
+}
+
+@keyframes sa-twinkle {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 1; }
+}
+
+/* —— 中心核：阵眼 —— */
+.sa-core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0%, #c7d2fe 35%, #6366f1 70%, transparent 100%);
+  box-shadow: 0 0 30px 8px rgba(199, 210, 254, 0.6);
+  z-index: 3;
+  animation: sa-core-pulse 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes sa-core-pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 30px 8px rgba(199, 210, 254, 0.6); }
+  50%      { transform: scale(1.15); box-shadow: 0 0 44px 12px rgba(199, 210, 254, 0.85); }
+}
+
+/* —— HUD —— */
+.sa-hud {
+  max-width: 560px;
+  margin: 1.2rem auto 0;
+  padding: 0.8rem 1rem;
+  border-radius: var(--r-lg);
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--sh-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.sa-current {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--c-text-2);
+  flex-wrap: wrap;
+
+  b {
+    color: var(--c-text-1);
+    font-size: 0.95rem;
+  }
+}
+
+.sa-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px 2px;
+  flex-shrink: 0;
+}
+
+.sa-en {
+  color: var(--c-text-3);
+  font-size: 0.78rem;
+}
+
+.sa-meta {
+  color: var(--c-text-3);
+  font-size: 0.75rem;
+  width: 100%;
+  margin-top: 0.15rem;
+}
+
+.sa-ctrl {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.75rem;
+  color: var(--c-text-3);
+
+  button {
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--glass-border);
+    border-radius: 50%;
+    background: var(--c-primary-soft);
+    color: var(--c-primary-700);
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background var(--t-fast), transform var(--t-fast);
+
+    &:hover {
+      background: var(--c-primary);
+      color: #fff;
+      transform: scale(1.08);
+    }
+  }
+}
+
+/* —— 详情弹窗 —— */
+.sa-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(2, 6, 23, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: sa-fade 0.25s ease;
+}
+
+@keyframes sa-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.sa-card {
+  position: relative;
+  width: min(420px, 100%);
+  padding: 1.6rem 1.6rem 1.4rem;
+  border-radius: var(--r-xl);
+  background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+  border: 1px solid rgba(99, 102, 241, 0.18);
+  box-shadow: 0 24px 64px rgba(15, 23, 42, 0.4);
+  animation: sa-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 24px;
+    right: 24px;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--grad-primary-3);
+  }
+}
+
+@keyframes sa-pop {
+  from { opacity: 0; transform: scale(0.9) translateY(12px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.sa-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--c-primary-700);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--t-fast), transform var(--t-fast);
+
+  &:hover {
+    background: var(--c-primary-soft);
+    transform: rotate(90deg);
+  }
+}
+
+.sa-card-head {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 1.1rem;
+  padding-right: 2rem;
+
+  h3 {
+    margin: 0;
+    font-size: 1.3rem;
+    color: var(--c-text-1);
+  }
+
+  .sa-en {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--c-text-3);
+  }
+}
+
+.sa-big-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  box-shadow: 0 0 12px 3px;
+  flex-shrink: 0;
+}
+
+.sa-badge {
+  margin-left: auto;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--c-primary-700);
+  background: var(--c-primary-soft);
+  padding: 0.25rem 0.6rem;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+
+.sa-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.7rem 1rem;
+  margin: 0 0 1rem;
+
+  > div {
+    background: rgba(99, 102, 241, 0.06);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    border-radius: var(--r-md);
+    padding: 0.5rem 0.7rem;
+  }
+
+  dt {
+    font-size: 0.68rem;
+    color: var(--c-text-3);
+    margin-bottom: 0.15rem;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--c-text-1);
+  }
+}
+
+.sa-note {
+  margin: 0 0 0.6rem;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  color: var(--c-text-2);
+}
+
+.sa-approx {
+  margin: 0;
+  font-size: 0.7rem;
+  color: var(--c-text-3);
+  font-style: italic;
+}
+
+/* —— 响应式 —— */
+@media (max-width: 600px) {
+  .sa-array {
+    --sa-r-max: 32vw;
+  }
+  .sa-hud {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sa-ring-group,
+  .sa-sweep,
+  .sa-star-cell,
+  .sa-star,
+  .sa-core,
+  .sa-nebula {
+    animation: none !important;
+    transition: none !important;
+  }
+}

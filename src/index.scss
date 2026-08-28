@@ -1,0 +1,187 @@
+/* =====================================================================
+   全局设计系统 · Indigo + Glassmorphism
+   所有页面/组件统一消费 :root 中的 token，单点维护
+   ===================================================================== */
+:root {
+  /* —— 字体与排版 —— */
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto,
+    'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color-scheme: light;
+
+  /* —— 主色（靛蓝 Indigo）—— */
+  --c-primary: #6366f1;            /* indigo-500 */
+  --c-primary-600: #4f46e5;        /* indigo-600 */
+  --c-primary-700: #4338ca;        /* indigo-700 */
+  --c-primary-soft: rgba(99, 102, 241, 0.08);
+  --c-primary-softer: rgba(99, 102, 241, 0.04);
+  --c-primary-ring: rgba(99, 102, 241, 0.22);
+  --c-accent: #8b5cf6;            /* violet-500 */
+  --c-accent-2: #06b6d4;          /* cyan-500 */
+  --grad-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  --grad-primary-3: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+
+  /* —— 文本 —— */
+  --c-text-1: #0f172a;
+  --c-text-2: #475569;
+  --c-text-3: #94a3b8;
+  color: var(--c-text-2);
+
+  /* —— 背景 —— */
+  --c-bg: #f6f7fb;
+  --c-bg-soft: #eef1f7;
+  --c-card: #ffffff;
+  --mesh-bg:
+    radial-gradient(900px 600px at 8% -6%, rgba(99, 102, 241, 0.14), transparent 60%),
+    radial-gradient(820px 560px at 96% 4%, rgba(139, 92, 246, 0.12), transparent 58%),
+    radial-gradient(720px 520px at 50% 108%, rgba(6, 182, 212, 0.10), transparent 60%),
+    linear-gradient(180deg, #f7f8fc 0%, #eef1f8 100%);
+
+  /* —— 描边 —— */
+  --c-border: #e2e8f0;
+  --c-border-soft: #eef2f7;
+
+  /* —— 语义色 —— */
+  --c-success: #10b981;
+  --c-success-soft: #ecfdf5;
+  --c-warning: #f59e0b;
+  --c-warning-soft: #fffbeb;
+  --c-danger: #ef4444;
+  --c-danger-soft: #fef2f2;
+  --c-info: #3b82f6;
+  --c-info-soft: #eff6ff;
+
+  /* —— 圆角 —— */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 20px;
+  --r-pill: 999px;
+
+  /* —— 阴影 —— */
+  --sh-sm: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
+  --sh-md: 0 4px 14px rgba(99, 102, 241, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04);
+  --sh-lg: 0 12px 34px rgba(99, 102, 241, 0.14), 0 4px 12px rgba(15, 23, 42, 0.06);
+  --sh-glass: 0 8px 32px rgba(15, 23, 42, 0.08);
+
+  /* —— 玻璃态 —— */
+  --glass-bg: rgba(255, 255, 255, 0.62);
+  --glass-bg-strong: rgba(255, 255, 255, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --glass-blur: 16px;
+
+  /* —— 动效 —— */
+  --t-fast: 0.16s cubic-bezier(0.4, 0, 0.2, 1);
+  --t: 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  background: var(--mesh-bg);
+  background-attachment: fixed;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* —— 标题 —— */
+h1,
+h2,
+h3 {
+  color: var(--c-text-1);
+  font-weight: 700;
+  margin-top: 0;
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-size: 1.875rem;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 1.375rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+a {
+  color: var(--c-primary-600);
+  text-decoration: none;
+  transition: color var(--t-fast);
+
+  &:hover {
+    color: var(--c-primary-700);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+code {
+  font-family: ui-monospace, 'SF Mono', SFMono-Regular, Consolas, Menlo, monospace;
+  padding: 2px 7px;
+  background: var(--c-primary-soft);
+  color: var(--c-primary-700);
+  border-radius: var(--r-sm);
+  font-size: 0.88em;
+}
+
+ul {
+  padding-left: 1.5rem;
+}
+
+pre {
+  font-family: ui-monospace, 'SF Mono', SFMono-Regular, Consolas, Menlo, monospace;
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+::selection {
+  background: rgba(99, 102, 241, 0.22);
+  color: var(--c-text-1);
+}
+
+/* —— 全局细滚动条 —— */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.22);
+  border-radius: var(--r-pill);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.4);
+  background-clip: padding-box;
+}
+
+/* —— 尊重减少动效偏好 —— */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

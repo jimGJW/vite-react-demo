@@ -1,0 +1,194 @@
+/* 图表演示页 · 复用 .page-card 玻璃容器 */
+
+.charts-demo-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  h1 {
+    margin-bottom: 0.3rem;
+  }
+
+  p {
+    margin: 0;
+    color: var(--c-text-2);
+    font-size: 0.92rem;
+    max-width: 52ch;
+  }
+}
+
+.charts-demo-refresh {
+  flex-shrink: 0;
+
+  span {
+    display: inline-block;
+    transition: transform 0.4s ease;
+  }
+
+  &:hover span {
+    transform: rotate(180deg);
+  }
+}
+
+.charts-demo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+  margin-top: 1.75rem;
+}
+
+.charts-demo-card {
+  position: relative;
+  padding: 1.35rem 1.5rem 1.5rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-sm);
+  overflow: hidden;
+  transition: transform var(--t), box-shadow var(--t);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--grad-primary);
+    opacity: 0.7;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sh-md);
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 1.05rem;
+    color: var(--c-text-1);
+  }
+}
+
+.charts-demo-desc {
+  margin: 0.15rem 0 1rem;
+  font-size: 0.8rem;
+  color: var(--c-text-3);
+}
+
+.charts-demo-card-sm {
+  display: flex;
+  flex-direction: column;
+
+  .chart {
+    margin: 0 auto;
+    max-width: 360px;
+  }
+}
+
+.charts-demo-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--c-border-soft);
+
+  code {
+    font-size: 0.78rem;
+  }
+}
+
+.charts-demo-tip {
+  color: var(--c-text-3);
+  font-size: 0.8rem;
+}
+
+/* —— 顶部操作区 —— */
+.charts-demo-actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* —— 网格内 ChartCard 微调 —— */
+.charts-demo-grid .chart-card {
+  overflow: hidden;
+  transition: transform var(--t), box-shadow var(--t);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sh-md);
+  }
+}
+
+/* —— ChartCard 自定义内容示例 —— */
+.charts-demo-stats {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.charts-demo-stat {
+  flex: 1 1 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.9rem 1rem;
+  background: var(--c-primary-softer);
+  border-radius: var(--r-md);
+  border-left: 3px solid var(--c-primary);
+}
+
+.charts-demo-stat-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--c-primary-700);
+  font-variant-numeric: tabular-nums;
+}
+
+.charts-demo-stat-label {
+  font-size: 0.8rem;
+  color: var(--c-text-3);
+}
+
+/* —— 选中提示 —— */
+.charts-demo-picked {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding: 0.65rem 0.9rem;
+  background: var(--c-primary-soft);
+  border-radius: var(--r-md);
+  font-size: 0.88rem;
+  color: var(--c-text-1);
+  border-left: 3px solid var(--c-primary);
+
+  b {
+    color: var(--c-primary-700);
+  }
+}
+
+/* —— 响应式 —— */
+@media (max-width: 860px) {
+  .charts-demo-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .charts-demo-card {
+    padding: 1.1rem 1.1rem 1.25rem;
+  }
+
+  .charts-demo-card-sm .chart {
+    max-width: 100%;
+  }
+}

@@ -1,0 +1,142 @@
+/* 命令面板演示页 · 复用 .page-card 玻璃态容器 */
+
+.command-palette-demo {
+  .demo-lead {
+    font-size: 1rem;
+    color: var(--c-text-2);
+    max-width: 62ch;
+    line-height: 1.7;
+
+    kbd {
+      font-family: ui-monospace, 'SF Mono', SFMono-Regular, Consolas, Menlo, monospace;
+      font-size: 0.82em;
+      padding: 2px 7px;
+      margin: 0 2px;
+      background: var(--c-primary-soft);
+      color: var(--c-primary-700);
+      border: 1px solid var(--c-border-soft);
+      border-radius: var(--r-sm);
+    }
+  }
+}
+
+.demo-hint-box {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin: 0.5rem 0 1.5rem;
+  padding: 0.625rem 1rem;
+  background: var(--c-primary-soft);
+  border: 1px dashed var(--c-primary-ring);
+  border-radius: var(--r-md);
+
+  kbd {
+    font-family: ui-monospace, 'SF Mono', SFMono-Regular, Consolas, Menlo, monospace;
+    font-size: 0.85rem;
+    padding: 2px 8px;
+    background: var(--glass-bg-strong);
+    color: var(--c-primary-700);
+    border: 1px solid var(--c-border-soft);
+    border-radius: var(--r-sm);
+    box-shadow: var(--sh-sm);
+  }
+}
+
+.demo-hint-keys {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.demo-hint-text {
+  font-size: 0.85rem;
+  color: var(--c-text-2);
+}
+
+.demo-state {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.demo-state-card {
+  position: relative;
+  padding: 1.05rem 1.2rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-sm);
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--grad-primary);
+    opacity: 0.85;
+  }
+}
+
+.demo-state-label {
+  font-size: 0.8rem;
+  color: var(--c-text-2);
+  font-weight: 500;
+}
+
+.demo-state-value {
+  margin-top: 0.3rem;
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: var(--grad-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.demo-code {
+  padding: 1rem 1.25rem;
+  background: rgba(15, 23, 42, 0.04);
+  border: 1px solid var(--c-border-soft);
+  border-radius: var(--r-md);
+  overflow-x: auto;
+  color: var(--c-text-1);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.demo-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+
+  th,
+  td {
+    text-align: left;
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--c-border-soft);
+    vertical-align: top;
+  }
+
+  th {
+    color: var(--c-text-3);
+    font-weight: 600;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  td {
+    color: var(--c-text-2);
+  }
+
+  td code {
+    font-size: 0.85em;
+  }
+}

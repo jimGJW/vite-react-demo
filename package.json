@@ -1,0 +1,47 @@
+{
+  "name": "vite-react-demo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "pkg:charts:build": "cd packages/@myorg/react-svg-charts && npm run build",
+    "pkg:charts:pack": "cd packages/@myorg/react-svg-charts && npm pack --pack-destination ../../../dist-local"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^6.3.2",
+    "@ant-design/v5-patch-for-react-19": "^1.0.3",
+    "@huggingface/transformers": "^3.8.1",
+    "@myorg/react-svg-charts": "workspace:*",
+    "antd": "^5.29.3",
+    "antd-form-builder": "^2.1.4",
+    "lodash": "^4.18.1",
+    "onnxruntime-web": "^1.22.0",
+    "prop-types": "^15.8.1",
+    "qr-scanner": "^1.4.2",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-router-dom": "^7.6.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@eslint/js": "^10.0.1",
+    "@rolldown/plugin-babel": "^0.2.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.4",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "eslint": "^10.8.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.3",
+    "globals": "^17.7.0",
+    "sass": "^1.87.0",
+    "vite": "^8.2.0"
+  }
+}

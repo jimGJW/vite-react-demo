@@ -1,0 +1,54 @@
+/* 控制台：玻璃态统计卡片 */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.dashboard-stat {
+  position: relative;
+  padding: 1.15rem 1.25rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-sm);
+  overflow: hidden;
+  transition: transform var(--t), box-shadow var(--t);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--grad-primary);
+    opacity: 0.85;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sh-md);
+  }
+}
+
+.dashboard-stat-label {
+  color: var(--c-text-2);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.dashboard-stat-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--c-text-1);
+  margin-top: 0.3rem;
+  letter-spacing: -0.02em;
+  background: var(--grad-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

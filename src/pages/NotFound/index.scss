@@ -1,0 +1,18 @@
+/* 404 页：靛蓝渐变大数字 + 玻璃卡片 */
+.not-found-card {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.not-found-code {
+  font-size: 5rem;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.04em;
+  background: var(--grad-primary-3);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  line-height: 1.1;
+}

@@ -1,0 +1,75 @@
+/* 主题演示页样式 —— 全部消费 CSS 变量，随主题自适应 */
+
+.theme-demo-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.theme-state {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem;
+  background: var(--c-primary-softer);
+  border: 1px solid var(--c-border-soft);
+  border-radius: var(--r-md);
+  margin-bottom: 1.5rem;
+
+  &-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--c-text-2);
+
+    span {
+      min-width: 5rem;
+    }
+  }
+}
+
+.theme-code {
+  background: rgba(15, 23, 42, 0.9);
+  color: #c7d2fe;
+  padding: 1.1rem 1.25rem;
+  border-radius: var(--r-md);
+  border: 1px solid var(--c-primary-ring);
+  overflow: auto;
+  font-family: ui-monospace, 'SF Mono', Consolas, Menlo, monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.theme-samples {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+
+.theme-sample {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  border-radius: var(--r-md);
+  font-weight: 600;
+  color: #fff;
+  box-shadow: var(--sh-sm);
+
+  &--primary {
+    background: var(--grad-primary);
+  }
+  &--success {
+    background: var(--c-success);
+  }
+  &--warning {
+    background: var(--c-warning);
+    color: #1f2937;
+  }
+  &--danger {
+    background: var(--c-danger);
+  }
+}
