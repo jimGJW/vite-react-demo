@@ -1,0 +1,68 @@
+{
+  "name": "@myorg/react-core-hooks",
+  "version": "1.0.0",
+  "description": "通用 React Context + Hooks：AuthProvider（登录态持久化 + 守卫）、useWhisperRecorder（浏览器录音 Hook，可对接 Whisper）、useWebQrScanner（调用 qr-scanner 扫二维码）。",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./style.css": "./dist/style.css",
+    "./styles": "./dist/style.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": [
+    "*.css",
+    "**/*style*"
+  ],
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build && npm run types",
+    "types": "tsc --project ./tsconfig.build.json --emitDeclarationOnly --declaration --declarationDir ./dist --allowJs --checkJs false || true",
+    "pack:local": "npm pack --pack-destination ../../../dist-local"
+  },
+  "keywords": [
+    "react",
+    "react-hooks",
+    "auth",
+    "auth-context",
+    "whisper",
+    "qr-scanner",
+    "recorder"
+  ],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18",
+    "qr-scanner": "^1.4"
+  },
+  "peerDependenciesMeta": {
+    "qr-scanner": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4",
+    "esbuild": "^0.28.2",
+    "sass": "^1.80",
+    "typescript": "^5.6",
+    "vite": "^5 || ^8 || ^9"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/react-core-hooks.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

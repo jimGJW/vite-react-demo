@@ -1,0 +1,252 @@
+/* 测试中心组件 · Indigo 玻璃态 */
+.tc {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* —— 工具条 —— */
+.tc-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.9rem 1.1rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-lg);
+  backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--sh-md);
+}
+
+.tc-run-all {
+  background: var(--grad-primary);
+  color: #fff;
+  border: none;
+  padding: 0.55rem 1.2rem;
+  border-radius: var(--r-pill);
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--sh-sm);
+  transition: transform var(--t-fast), box-shadow var(--t-fast);
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: var(--sh-md);
+  }
+  &:disabled {
+    opacity: 0.7;
+    cursor: progress;
+  }
+}
+
+.tc-stats {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+}
+
+.tc-stat {
+  padding: 0.22rem 0.7rem;
+  border-radius: var(--r-pill);
+  font-weight: 600;
+  background: var(--c-primary-soft);
+  color: var(--c-primary-700);
+
+  &.tc-stat-pass { background: var(--c-success-soft); color: var(--c-success); }
+  &.tc-stat-fail { background: var(--c-danger-soft); color: var(--c-danger); }
+}
+
+.tc-progress {
+  flex: 1 1 120px;
+  min-width: 120px;
+  height: 8px;
+  background: var(--c-border-soft);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+
+  &-bar {
+    height: 100%;
+    background: var(--grad-primary);
+    border-radius: inherit;
+    transition: width var(--t);
+  }
+}
+
+/* —— 用例分组 —— */
+.tc-group {
+  background: var(--c-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+
+.tc-group-title {
+  margin: 0;
+  padding: 0.7rem 1.1rem;
+  font-size: 0.95rem;
+  color: var(--c-text-1);
+  background: var(--c-primary-softer);
+  border-bottom: 1px solid var(--c-border-soft);
+}
+
+.tc-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.tc-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1.1rem;
+  border-bottom: 1px solid var(--c-border-soft);
+  transition: background var(--t-fast);
+
+  &:last-child { border-bottom: none; }
+  &:hover { background: var(--c-primary-softer); }
+}
+
+.tc-mark {
+  width: 1.4rem;
+  text-align: center;
+  font-weight: 700;
+  color: var(--c-text-3);
+  font-size: 0.95rem;
+}
+
+.tc-idle .tc-mark { color: var(--c-text-3); }
+.tc-running .tc-mark { color: var(--c-primary); animation: tc-spin 0.8s linear infinite; }
+.tc-pass .tc-mark { color: var(--c-success); }
+.tc-fail .tc-mark { color: var(--c-danger); }
+
+@keyframes tc-spin {
+  to { transform: rotate(360deg); }
+}
+
+.tc-name {
+  flex: 0 0 auto;
+  color: var(--c-text-1);
+  font-weight: 500;
+}
+
+.tc-detail {
+  flex: 1;
+  color: var(--c-text-3);
+  font-size: 0.82rem;
+  font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tc-run-one {
+  flex: 0 0 auto;
+  border: 1px solid var(--c-border);
+  background: var(--c-card);
+  color: var(--c-primary-700);
+  padding: 0.28rem 0.8rem;
+  border-radius: var(--r-pill);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all var(--t-fast);
+
+  &:hover:not(:disabled) {
+    border-color: var(--c-primary);
+    background: var(--c-primary-soft);
+  }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+/* —— Python 脚本区 —— */
+.tc-script {
+  background: var(--c-card);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+
+.tc-script-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 1.1rem;
+  background: var(--c-primary-softer);
+  border-bottom: 1px solid var(--c-border-soft);
+}
+
+.tc-script-title {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--c-text-1);
+}
+
+.tc-script-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tc-action {
+  border: 1px solid var(--c-border);
+  background: var(--c-card);
+  color: var(--c-primary-700);
+  padding: 0.28rem 0.8rem;
+  border-radius: var(--r-pill);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all var(--t-fast);
+
+  &:hover {
+    border-color: var(--c-primary);
+    background: var(--c-primary-soft);
+  }
+}
+
+.tc-cmd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.6rem 1.1rem;
+  background: var(--c-bg-soft);
+
+  code {
+    flex: 1;
+    background: transparent;
+    padding: 0;
+    color: var(--c-text-2);
+    font-size: 0.85rem;
+  }
+}
+
+.tc-code {
+  margin: 0;
+  padding: 1rem 1.1rem;
+  max-height: 420px;
+  overflow: auto;
+  background: #0f172a;
+  color: #e2e8f0;
+  font-size: 0.8rem;
+  line-height: 1.55;
+
+  code {
+    background: none;
+    color: inherit;
+    padding: 0;
+    font-family: ui-monospace, 'SF Mono', Consolas, Menlo, monospace;
+  }
+}
+
+.tc-tip {
+  margin: 0;
+  padding: 0.7rem 1.1rem;
+  font-size: 0.82rem;
+  color: var(--c-text-3);
+  background: var(--c-warning-soft);
+  border-top: 1px solid var(--c-border-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tc-running .tc-mark { animation: none; }
+}

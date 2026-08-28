@@ -7,6 +7,229 @@
 
 ---
 
+## 🚀 快速上手 · 上手指南（提交 GitHub + 使用）
+
+> 这一章把两件事一次性讲清楚：**① 如何把本地代码提交到你的 GitHub 仓库**；**② 项目本身如何启动 / 使用，以及 6 个独立 npm 包如何在其他 React 项目里复用**。
+
+---
+
+### 一、如何提交 GitHub 仓库（可复制命令直接执行）
+
+#### 1. 本地一次性准备（只做 1 次）
+
+先在终端里切到项目目录：
+
+```bash
+cd /Users/gujiawei/历年资料/learn/vite-react-demo
+
+# 0) 切换 Node 版本（Vite 8 构建需要 ≥ Node 21）
+source ~/.nvm/nvm.sh && nvm use 24
+
+# 1) 检查提交身份（如果你第一次用 git，必须先配置）
+# 推荐：仓库级配置（只影响本仓库），替换成你自己的信息：
+git config user.name  "顾佳炜"            # 或 "JimGJW"
+git config user.email "jim_gjw@163.com"   # 必须和 GitHub 账号邮箱一致，否则 commit author 会错
+
+# 2) 初始化 git（只有第一次才需要）
+# （如果已经是 git 仓库会报错，跳过即可）
+git init -b main
+
+# 3) 强制 Git 使用 HTTP/1.1（彻底规避之前遇到的「HTTP2 framing layer error」）
+git config http.version HTTP/1.1
+
+# 4) 绑定远程仓库（只有第一次才需要）
+# 推荐 SSH over HTTPS（比 HTTPS + PAT 更稳，不用每次输 Token）：
+git remote add origin ssh://git@ssh.github.com:443/jimGJW/vite-react-demo.git
+# 备用：如果你偏好 HTTPS + PAT：
+#   git remote add origin https://github.com/jimGJW/vite-react-demo.git
+# 查看远程确认：
+git remote -v
+```
+
+> 🔐 **安全提醒（重要）**
+> - **不要**在任何聊天框 / Issue / 代码截图里粘贴 GitHub PAT、SSH 私钥、`.npmrc` 里的 `_authToken`。
+> - 一旦泄露立刻去 https://github.com/settings/tokens 撤销并重置。
+> - PAT 最小权限：**推送源码只需 `repo`**，**发布 GPR 包只需 `write:packages`**。
+
+#### 2. 每次改代码后的提交流程（常用）
+
+```bash
+cd /Users/gujiawei/历年资料/learn/vite-react-demo
+source ~/.nvm/nvm.sh && nvm use 24
+
+# Step 1：拉取远端最新（避免冲突，先 pull 再改）
+git pull --rebase origin main
+
+# Step 2：看一眼改了哪些文件（确认没有误改敏感配置 / dist 大文件）
+git status
+
+# Step 3：选择性暂存（推荐），或 git add -A 全部暂存
+git add -A
+# 想只加某些文件： git add README.md package.json packages/
+
+# Step 4：提交前检查「暂存区里到底有啥」——只看已暂存的，避免把工作区未暂存内容误提交
+git diff --cached --stat
+git diff --cached README.md package.json  # 按需抽查关键文件
+
+# Step 5：提交（推荐 Conventional Commits 格式）
+git commit -m "chore: publish 5 new npm packages (styles-reset/core-hooks/ui-basic/media-tools/admin-shell)"
+# 其他常用前缀：feat: xxx 新增功能  fix: xxx 修 bug  docs: xxx 更新文档  refactor: xxx 重构  build: xxx 构建脚本
+
+# Step 6：推送到 GitHub
+git push -u origin main
+# 如果之前已经 push 过，简化为：
+#   git push
+```
+
+#### 3. 常见报错与解决办法
+
+| 报错 | 原因 | 解决办法 |
+| --- | --- | --- |
+| `fatal: not a git repository` | 当前目录没有 `.git/` | 执行 `git init -b main` |
+| `fatal: remote origin already exists` | 已绑定过 origin | `git remote remove origin` 再重新 `git remote add origin <URL>`；或直接 `git remote set-url origin <新URL>` |
+| `Error in the HTTP2 framing layer` | 之前的 HTTPS 协议网络层问题 | 本仓库已通过 `git config http.version HTTP/1.1` 修复；**优先改用 SSH over HTTPS**：`git remote set-url origin ssh://git@ssh.github.com:443/jimGJW/vite-react-demo.git` |
+| `Permission denied (publickey)` | SSH 公钥没加到 GitHub | ① `ls ~/.ssh/id_*.pub` 看是否有公钥；没有就 `ssh-keygen -t ed25519 -C "jim_gjw@163.com"`；② `pbcopy < ~/.ssh/id_ed25519.pub` 复制后粘贴到 https://github.com/settings/keys；③ `ssh -T ssh://git@ssh.github.com:443` 测试连接（会提示欢迎信息） |
+| `Support for password authentication was removed. Please use a personal access token instead.` | HTTPS 方式不能用账号密码了 | ① 改成 SSH（推荐，按上一条）；或② 新建 PAT（classic，勾 `repo`）→ 当 Password 被要求时**粘贴 PAT 而非账号密码** |
+| `error: failed to push some refs to '...'` | 远端比本地新（别人/另一台电脑 push 过） | `git pull --rebase origin main` 把远端更新合进来 → 如果有冲突手动解决 → `git rebase --continue` → `git push` |
+| `Your branch and 'origin/main' have diverged` | 本地 commit 和远端分叉了 | 新手最稳：`git pull --rebase origin main` 然后按提示解决冲突 → `git push` |
+| `Nothing to commit, working tree clean` | 没有改动，空提交流程 | 正常现象，跳过 `git add/commit` 直接 `git pull` 即可 |
+| 提交后发现 author 名字/邮箱错了（如 committer identity 自动配置提示） | git config 未配置或配置成他人 | 本仓库已配置正确。想修正上一次提交仅改 author：`git commit --amend --reset-author --no-edit` |
+
+---
+
+### 二、项目如何使用（启动 / 构建 / 打包 6 个 npm 包）
+
+#### 1. 运行主项目（Vite React Demo 本地预览）
+
+```bash
+cd /Users/gujiawei/历年资料/learn/vite-react-demo
+source ~/.nvm/nvm.sh && nvm use 24
+
+# ① 安装依赖（首次或新增依赖时跑）
+npm install
+
+# ② 启动开发服务器  http://localhost:5173
+npm run dev
+
+# ③ 生产构建（产物到 dist/）
+npm run build
+
+# ④ 预览生产构建
+npm run preview
+
+# ⑤ 运行 E2E 测试（Playwright Python）
+pip install -r tests/requirements.txt
+python -m playwright install chromium
+python tests/test_pages.py           # 会自动启动 dev server 并跑通 19/19 条用例
+```
+
+#### 2. 一键打包 6 个独立 npm 包（和 react-svg-charts 同格式）
+
+```bash
+cd /Users/gujiawei/历年资料/learn/vite-react-demo
+source ~/.nvm/nvm.sh && nvm use 24
+
+npm run pkg:all:build   # ⭐ 一口气构建 6 个包（ESM + CJS + style.css + index.d.ts）
+```
+
+单个包构建：
+
+```bash
+npm run pkg:styles:build     npm run pkg:styles:pack   # 打包成 .tgz
+npm run pkg:core:build       npm run pkg:core:pack
+npm run pkg:ui:build         npm run pkg:ui:pack
+npm run pkg:media:build      npm run pkg:media:pack
+npm run pkg:shell:build      npm run pkg:shell:pack
+npm run pkg:charts:build     npm run pkg:charts:pack
+```
+
+构建完每个包的 `dist/` 大小（已验证）：
+
+| 包 | dist 大小 | 说明 |
+| --- | --- | --- |
+| `@myorg/react-styles-reset` | 24 KB | 设计 token + 全局 reset + mesh 背景，零依赖 |
+| `@myorg/react-core-hooks` | 1.3 MB | AuthProvider/useWebQrScanner/useWhisperRecorder；**@huggingface/* 完全 external**，不会把 56MB 模型打进产物 |
+| `@myorg/react-ui-basic` | 164 KB | Theme / Notification / CommandPalette / DataTable / **StarArray 365 周天星辰大阵**，纯 react + scss |
+| `@myorg/react-media-tools` | 44 KB | QrScanBtn / VoiceInput（在线 + 离线语音） |
+| `@myorg/react-admin-shell` | 172 KB | AdminLayout / GlobalAgent / UniversalPageAgent / TestCenter；antd/lodash 全部 external |
+| `@myorg/react-svg-charts` | 180 KB | 12 种纯 SVG 零依赖图表 |
+
+---
+
+### 三、6 个 npm 包如何在**其他 React 项目**里使用（两种方式，选一个）
+
+#### 方式 A · 最省心：gitpkg 直接安装（无需 PAT / 无需发布）
+
+> 原理：[gitpkg.vercel.app](https://gitpkg.vercel.app) 把 GitHub monorepo 子目录转成 npm tarball。**只要主项目 push 到 GitHub，就能一条命令装任意包**。
+
+```bash
+# 在你的「另一个 React 项目」里执行：
+cd /path/to/your-other-react-project
+
+# 1) 安装 peer 依赖（按需裁剪）
+npm install react react-dom qr-scanner \
+            antd react-router-dom @ant-design/icons @ant-design/v5-patch-for-react-19 lodash
+
+# 2) 安装全部 6 个包（或 for 循环里挑几个）
+for PKG in react-styles-reset react-core-hooks react-ui-basic react-media-tools react-admin-shell react-svg-charts; do
+  npm install @myorg/$PKG@"https://gitpkg.vercel.app/jimGJW/vite-react-demo/packages/@myorg/$PKG?main"
+done
+```
+
+**使用示例**：
+
+```js
+// ===== main.jsx：按顺序引入样式（用几个引几个） =====
+import '@myorg/react-styles-reset/style.css'
+import '@myorg/react-ui-basic/style.css'
+import '@myorg/react-media-tools/style.css'
+import '@myorg/react-admin-shell/style.css'
+import '@myorg/react-svg-charts/style.css'
+
+// ===== 业务组件 =====
+import { ThemeProvider, ThemeToggle, StarArray, NotificationProvider, DataTable, CommandPalette } from '@myorg/react-ui-basic'
+import { AuthProvider, useAuth, useWebQrScanner, useWhisperRecorder }              from '@myorg/react-core-hooks'
+import { QrScanBtn, VoiceInput }                                                       from '@myorg/react-media-tools'
+import { AdminLayout, GlobalAgent, TestCenter }                                        from '@myorg/react-admin-shell'
+import { LineChart, BarChart, PieChart, SwitchableChart, DrilledBarChart, NestedPieChart, ChartCard } from '@myorg/react-svg-charts'
+
+export default function Demo() {
+  return (
+    <ThemeProvider defaultTheme="auto">
+      <NotificationProvider>
+        <AuthProvider>
+          <ThemeToggle />
+          <StarArray radius={280} onStarClick={(s) => alert(`${s.name} ${s.chineseName}`)} />
+          <ChartCard title="一键切换图表">
+            <SwitchableChart
+              types={['line', 'bar', 'pie', 'radar']}
+              data={[{ label: '1月', value: 320 }, { label: '2月', value: 280 }, { label: '3月', value: 420 }]}
+              showLabel unit=" 单"
+            />
+          </ChartCard>
+        </AuthProvider>
+      </NotificationProvider>
+    </ThemeProvider>
+  )
+}
+```
+
+#### 方式 B · 标准发布：GitHub Package Registry（GPR）
+
+适合把其中某个包（比如 `react-svg-charts` 或 `react-ui-basic` 里的 StarArray）作为独立开源项目运营。**6 个包的发布流程完全相同**，只需把目录名换成对应包即可。每个包自带脚本 [publish-gpr.sh](file:///Users/gujiawei/历年资料/learn/vite-react-demo/packages/@myorg/react-svg-charts/scripts/publish-gpr.sh)（交互式，不会记录任何 secrets）。
+
+```bash
+cd /Users/gujiawei/历年资料/learn/vite-react-demo
+PKG=react-svg-charts   # 其他包替换：react-styles-reset / react-core-hooks / react-ui-basic / react-media-tools / react-admin-shell
+cp -R packages/@myorg/$PKG ~/code/$PKG
+cd ~/code/$PKG
+bash scripts/publish-gpr.sh
+```
+
+三种方案的完整对比、升级方式见文末「附录：GitHub 仓库上传与 GPR 发布」。
+
+---
+
 ## 技术栈
 
 | 分类 | 依赖 / 方案 | 说明 |
@@ -172,7 +395,77 @@ python tests/test_pages.py           # 自动启动 dev server
 - 代表性交互验证：首页计数器自增、周天星辰点弹详情、命令面板 ⌘K 唤起、通知 Toast 弹出、前端测试套件全过。
 - 输出 `19/19 通过` 报告，非零退出码便于接 CI。
 
-### 7. 独立 npm 包：`@myorg/react-svg-charts`
+### 7. 独立 npm 包总览（6 个包，和 `react-svg-charts` 一样的打包格式）
+
+本项目除 SVG 图表外，其余可复用组件已按依赖关系拆成 **5 个独立 npm 包**。6 个包的打包/发布格式完全一致：**ESM + CJS 双产物 + `style.css`（SCSS 编译）+ `index.d.ts`（TypeScript 声明）**，所有 CSS 变量带 fallback，peerDependencies 严格按依赖关系 external，不会把 `@huggingface/transformers`（56MB）这类大依赖打进 dist。
+
+```
+packages/@myorg/
+├── react-styles-reset/        ① 设计 token + 全局 reset 样式（零依赖）
+├── react-core-hooks/          ② AuthProvider + useWhisperRecorder + useWebQrScanner（纯 Hooks，peer: qr-scanner，@huggingface/* 完全 external）
+├── react-ui-basic/            ③ Theme / Notification / CommandPalette / DataTable / StarArray（纯 react + scss，零外部 UI 库）
+├── react-media-tools/         ④ QrScanBtn + VoiceInput（peer: qr-scanner）
+├── react-admin-shell/         ⑤ AdminLayout + GlobalAgent + UniversalPageAgent + TestCenter（peer: antd, react-router-dom, lodash, transformers...）
+└── react-svg-charts/          ⑥ SVG 图表组件库（12 图表 + shared）
+```
+
+| 包名 | 依赖链 | dist 大小 | 主要内容 |
+| --- | --- | --- | --- |
+| `@myorg/react-styles-reset` | 无 peer（纯 CSS） | 24 KB | `:root` 设计 token + 全局 reset + mesh 背景 |
+| `@myorg/react-core-hooks` | peer: react/react-dom / qr-scanner（可选）/ @huggingface（可选、external） | 1.3 MB | AuthProvider / useAuth / useWebQrScanner / useWhisperRecorder |
+| `@myorg/react-ui-basic` | peer: react/react-dom | 164 KB | Theme 三态主题 / Notification 通知中心 / CommandPalette ⌘K 命令面板 / DataTable 通用表格 / **StarArray 365 周天星辰大阵** |
+| `@myorg/react-media-tools` | peer: react/react-dom / qr-scanner / @myorg/react-core-hooks | 44 KB | QrScanBtn / VoiceInput（在线 Web Speech API + 离线 Whisper 双引擎） |
+| `@myorg/react-admin-shell` | peer: antd / react-router-dom / lodash / transformers / onnxruntime-web / @myorg/react-core-hooks | 172 KB | AdminLayout 玻璃态后台外壳 / GlobalAgent 可拖拽 AI 气泡 / UniversalPageAgent 自然语言 DOM 编排 / TestCenter 前端用例中心 |
+| `@myorg/react-svg-charts` | peer: react/react-dom | 180 KB | 12 个纯 SVG 零依赖图表（基础/多维/二级钻取/类型切换） |
+
+#### 本 monorepo 工作区快捷脚本（在项目根目录执行）
+
+```bash
+npm run pkg:all:build      # 一口气构建 6 个包
+# 单独构建：
+npm run pkg:styles:build     npm run pkg:styles:pack
+npm run pkg:core:build       npm run pkg:core:pack
+npm run pkg:ui:build         npm run pkg:ui:pack
+npm run pkg:media:build      npm run pkg:media:pack
+npm run pkg:shell:build      npm run pkg:shell:pack
+npm run pkg:charts:build     npm run pkg:charts:pack
+```
+
+#### 推荐：在其他 React 项目里用 gitpkg 一条命令安装所有包（无需 GPR/PAT）
+
+```bash
+# 基础必装
+npm install react react-dom
+npm install \
+ 'https://gitpkg.vercel.app/jimGJW/vite-react-demo/packages/@myorg/react-styles-reset?main' \
+ 'https://gitpkg.vercel.app/jimGJW/vite-react-demo/packages/@myorg/react-core-hooks?main'  \
+ 'https://gitpkg.vercel.app/jimGJW/vite-react-demo/packages/@myorg/react-ui-basic?main'
+
+# 需要扫码/语音则加：
+npm install qr-scanner
+npm install \
+ 'https://gitpkg.vercel.app/jimGJW/vite-react-demo/packages/@myorg/react-media-tools?main'
+
+# 需要后台外壳/AI Agent/测试中心则加（务必先装 antd + react-router-dom + lodash）：
+npm install antd react-router-dom @ant-design/icons @ant-design/v5-patch-for-react-19 lodash
+npm install 'https://gitpkg.vercel.app/jimGJW/vite-react-demo/packages/@myorg/react-admin-shell?main'
+```
+
+然后在 `main.jsx` 按顺序引入样式：
+
+```js
+import '@myorg/react-styles-reset/style.css'        // 全局设计 token（放最前）
+import '@myorg/react-ui-basic/style.css'
+import '@myorg/react-media-tools/style.css'         // 按需
+import '@myorg/react-admin-shell/style.css'         // 按需
+import '@myorg/react-svg-charts/style.css'          // 按需
+```
+
+想把 6 个包都发成独立 GitHub 仓库 + GPR 的流程，对每个包**重复下面的 `方案 B` 即可**（或者更省事直接 `方案 C` 一条命令 gitpkg）。
+
+---
+
+### 7.1 独立 npm 包：`@myorg/react-svg-charts`
 
 所有 SVG 图表组件已拆分打包为 **可发布的独立 npm 包**，位于 `packages/@myorg/react-svg-charts/`，可直接 `npm install` 至任意 React 项目。
 
@@ -239,12 +532,13 @@ npm run pkg:charts:pack    # 打包 tgz 到 dist-local/，便于本地安装测�
 
 ```
 vite-react-demo/
-├── packages/
-│   └── @myorg/react-svg-charts/   # 独立 npm 包（12 图表 + 通用组件），可发布
-│       ├── src/             # 与 src/components/Charts 保持源码同步
-│       ├── vite.config.js   # 库模式（ES/CJS + style.css）
-│       ├── package.json / README.md
-│       └── dist/            # npm run build 构建产物
+├── packages/@myorg/
+│   ├── react-styles-reset/    # ① 设计 token + 全局 reset 样式（零依赖）
+│   ├── react-core-hooks/      # ② AuthContext / useWebQrScanner / useWhisperRecorder 纯 hooks 包
+│   ├── react-ui-basic/        # ③ Theme / Notification / CommandPalette / DataTable / StarArray（零外部 UI 库）
+│   ├── react-media-tools/     # ④ QrScanBtn / VoiceInput（peer: qr-scanner，依赖 react-core-hooks）
+│   ├── react-admin-shell/     # ⑤ AdminLayout / GlobalAgent / UniversalPageAgent / TestCenter（peer: antd）
+│   └── react-svg-charts/      # ⑥ 独立 npm 包（12 图表 + 通用组件），可发布
 ├── public/
 │   ├── models/Xenova/whisper-tiny/   # Whisper ONNX 模型及词表
 │   └── ort/                          # onnxruntime-web 的 wasm 运行时
@@ -320,6 +614,10 @@ npm run build
 - **Playwright 测试无法启动 dev server**：确认当前 shell 已切到 Node 21+（如 `nvm use 24`），或用 `BASE_URL=http://127.0.0.1:5173` 指向已在 Node 21+ 下启动的 server。
 - **从 npm 安装图表包后样式丢失**：需要在入口 `import '@myorg/react-svg-charts/style.css'`（只需引入一次）。如使用 monorepo alias 直接引入源码需改为 `import '@myorg/react-svg-charts/style.css'` 走 vite alias 映射的 SCSS。
 - **`packages/@myorg/react-svg-charts` 与 `src/components/Charts` 如何更新？**：当前 workspace 包的 src/ 是从 `src/components/Charts` 复制而来（发布包用），主项目运行仍依赖本地 `src/components/Charts`。每次改动本地源码后若要更新发布包，重新 `cp` 后再 `npm run pkg:charts:build`；也可把 Charts 包 src 设置为主路径（在根 `package.json` 加 `imports` 字段 + vite alias 做双向统一）。
+- **`react-core-hooks` 的 dist 会不会很大（有 Whisper 相关代码）？**：不会。vite.config.js 已把 `@huggingface/*` 全部 external，动态 import 不会被打进 dist；dist 只有纯 hook 逻辑，大小约 1.3 MB（主要是 MediaRecorder + WAV 编码实现）。
+- **`react-admin-shell` 用到 antd，为什么 dist 很小？**：antd / react-router-dom / lodash / @ant-design/icons / onnxruntime-web 全部被放进 vite rollupOptions.external，仅保留组合编排代码，所以 CJS 产物约 48 KB / style.css 26.78 KB。
+- **5 个新包和主项目 `src/components` 有同名文件是重复吗？**：是——为了方便独立发布（发布用的 packages 目录必须自包含），主项目源码仍在 `src/components/*` 下，不影响 dev/build。如果要统一单源，后续可把主项目 `src/components/*` 全部改为 `import from '@myorg/xxx'` 并通过 workspace 引用。
+- **`npm install qr-scanner` 和 `@huggingface/transformers` 必须在使用方安装吗？**：qr-scanner 是 **peerDependencies.optional**，不用扫码功能可不装；`@huggingface/transformers` 是 **optionalDependencies**，不安装也不影响 `react-media-tools / react-admin-shell` 的其他功能（会退回到 Web Speech API 或纯 DOM Agent）。
 
 ---
 
@@ -358,14 +656,16 @@ npm run build
 
 ---
 
-### 方案 B：把 `@myorg/react-svg-charts` 抽成独立 GitHub 仓库 + 发布到 GitHub Package Registry
+### 方案 B：把 `@myorg/react-svg-charts`（或其余 5 个包任意一个）抽成独立 GitHub 仓库 + 发布到 GitHub Package Registry
 
-适用场景：在**其他 React 项目**里 `npm install` 就能用。推荐搭配一键脚本完成。
+适用场景：在**其他 React 项目**里 `npm install` 就能用。推荐搭配一键脚本完成。其余 5 个包（react-styles-reset / react-core-hooks / react-ui-basic / react-media-tools / react-admin-shell）的发布流程**完全相同**——只需把下面目录名换成对应包即可。
 
 1. **把包目录拷贝到独立文件夹**（避免和 monorepo 的 git 搅在一起）：
    ```bash
-   cp -R packages/@myorg/react-svg-charts ~/code/react-svg-charts
-   cd ~/code/react-svg-charts
+   PKG=react-svg-charts
+   # 其他包替换：PKG=react-styles-reset / react-core-hooks / react-ui-basic / react-media-tools / react-admin-shell
+   cp -R packages/@myorg/$PKG ~/code/$PKG
+   cd ~/code/$PKG
    ```
 2. **执行一键发布脚本**（它会交互式引导你完成 7 步，不记录任何 secrets）：
    ```bash
@@ -417,34 +717,47 @@ npm run build
 
 ---
 
-### 方案 C（最轻量 · 强烈推荐）：直接从 `jimGJW/vite-react-demo` 主仓库子目录安装图表包
+### 方案 C（最轻量 · 强烈推荐）：直接从 `jimGJW/vite-react-demo` 主仓库子目录安装**任意包**
 
 > 不想再建第二个 GitHub 仓库、不想生成 PAT 写 `.npmrc`、不想跑发布脚本？直接用这个方案。
 > 其他项目**一条命令**就能安装使用，而且会随 `jimGJW/vite-react-demo` 的 `main` 分支最新代码更新。
 > 原理：[gitpkg.vercel.app](https://gitpkg.vercel.app) 是社区通用的开源服务，把 GitHub monorepo 的子目录转换成 npm 可直接下载的 tarball（和 npm registry / GPR 下载的文件格式一致，不会少任何源码/构建脚本）。
+> 6 个包都可以这么装，把 URL 末尾的 `react-svg-charts` 换成 `react-styles-reset` / `react-core-hooks` / `react-ui-basic` / `react-media-tools` / `react-admin-shell` 即可。
 
-#### 在其他 React 项目里安装
+#### 在其他 React 项目里安装（6 个包一键安装示例）
 
 ```bash
-npm install react react-dom                 # peerDependencies 自己的项目要先装
-npm install 'https://gitpkg.vercel.app/jimGJW/vite-react-demo/packages/@myorg/react-svg-charts?main'
+npm install react react-dom antd react-router-dom @ant-design/icons @ant-design/v5-patch-for-react-19 lodash qr-scanner
+# 6 个包全部安装（@myorg/react-styles-reset / core-hooks / ui-basic / media-tools / admin-shell / svg-charts）
+for PKG in react-styles-reset react-core-hooks react-ui-basic react-media-tools react-admin-shell react-svg-charts; do
+  npm install @myorg/$PKG@"https://gitpkg.vercel.app/jimGJW/vite-react-demo/packages/@myorg/$PKG?main"
+done
 ```
 
 > 🔧 提示：如果你的 npm 版本太老解析不了带 query 的 URL，换这两个等价写法：
 > ```bash
 > # 写法 1：用 tarball
 > npm install 'https://gitpkg.now.sh/jimGJW/vite-react-demo/packages/@myorg/react-svg-charts?main'
-> # 写法 2：加个 package 别名更直观
-> npm install @myorg/react-svg-charts@'https://gitpkg.vercel.app/jimGJW/vite-react-demo/packages/@myorg/react-svg-charts?main'
+> # 写法 2：单独装每个包
+> npm install @myorg/react-ui-basic@'https://gitpkg.vercel.app/jimGJW/vite-react-demo/packages/@myorg/react-ui-basic?main'
 > ```
 
 #### 使用
 
 ```js
-// main.jsx：全局入口只引一次样式
+// main.jsx：全局入口按顺序引样式（用几个引几个）
+import '@myorg/react-styles-reset/style.css'
+import '@myorg/react-ui-basic/style.css'
+import '@myorg/react-media-tools/style.css'
+import '@myorg/react-admin-shell/style.css'
 import '@myorg/react-svg-charts/style.css'
 
-// 业务组件
+// 业务组件示例
+import {
+  ThemeProvider, NotificationProvider, CommandPalette, DataTable, StarArray,
+} from '@myorg/react-ui-basic'
+import { QrScanBtn, VoiceInput } from '@myorg/react-media-tools'
+import { AdminLayout, GlobalAgent, TestCenter } from '@myorg/react-admin-shell'
 import {
   LineChart, BarChart, PieChart, RadarChart, AreaChart,
   MultiLineChart, MultiBarChart, MultiPieChart, MultiRadarChart, StackedAreaChart,
@@ -457,7 +770,8 @@ import {
 #### 升级到最新代码
 
 ```bash
-npm update @myorg/react-svg-charts
+npm update @myorg/react-styles-reset @myorg/react-core-hooks @myorg/react-ui-basic \
+           @myorg/react-media-tools  @myorg/react-admin-shell @myorg/react-svg-charts
 # 或者删掉 node_modules/.package-lock.json 后重新 npm install
 ```
 
@@ -465,14 +779,14 @@ npm update @myorg/react-svg-charts
 
 ### 三种方案对比
 
-| 维度 | 方案 A · 整个 monorepo 一个 GitHub | 方案 B · 图表包独立 GitHub + 发布 GPR | 方案 C · 直接从主仓库子路径安装（推荐） |
+| 维度 | 方案 A · 整个 monorepo 一个 GitHub | 方案 B · 单个包独立 GitHub + 发布 GPR（6 个包都适用） | 方案 C · 直接从主仓库子路径安装 6 个包（推荐） |
 | --- | --- | --- | --- |
-| 主目的 | 备份、协作、版本管理演示项目 | 其他 React 项目 `npm install` 即用图表组件 | 其他 React 项目**一条命令**安装图表组件，最省心 |
-| 是否需要第二个仓库 | ❌ 不用 | ✅ 需要新建 react-svg-charts 空仓库 | ❌ 不用 |
+| 主目的 | 备份、协作、版本管理演示项目 | 把某个包（如图表、星辰大阵）作为独立开源项目运营 | 其他 React 项目一条命令安装**任何包**，最省心 |
+| 是否需要第二个仓库 | ❌ 不用 | ✅ 每个包一个空仓库（react-styles-reset、react-core-hooks…）| ❌ 不用 |
 | 是否需要 PAT / `.npmrc` | push 代码需要（`repo` 权限即可）| 发布 GPR 需要（`write:packages` + `repo`）| ❌ 完全不需要 |
-| 是否需要发布脚本 | ❌ 不用 | ✅ `bash scripts/publish-gpr.sh` | ❌ 不用 |
-| 安装命令 | N/A | `npm install @YOU/react-svg-charts`（需先配 GPR registry） | `npm install 'https://gitpkg.vercel.app/jimGJW/vite-react-demo/packages/@myorg/react-svg-charts?main'` |
+| 是否需要发布脚本 | ❌ 不用 | ✅ `bash scripts/publish-gpr.sh`（每个包跑 1 次）| ❌ 不用 |
+| 安装命令 | N/A | `npm install @YOU/react-svg-charts`（需先配 GPR registry） | 6 包一组 for 循环：`npm install @myorg/$PKG@https://gitpkg.vercel.app/.../$PKG?main` |
 | 随主项目更新 | N/A | 需要手动 `npm version && npm publish` 才更新 | 每次 `npm update` 直接拉 `main` 分支最新代码 |
-| 适用场景 | 只需要备份和协作演示项目 | 想把图表包像 `antd` 一样作为独立开源项目运营发布 | 只想让自己其他项目能快速复用图表 |
+| 适用场景 | 只需要备份和协作演示项目 | 想把单个组件（如 StarArray / Charts）作为独立 npm 库 | 想让自己其他项目能快速复用整套 UI/Hooks/Layout/图表 |
 
 

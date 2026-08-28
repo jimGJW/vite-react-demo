@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "workspaces": [
-    "packages/*"
+    "packages/**/*"
   ],
   "scripts": {
     "dev": "vite",
@@ -12,7 +12,13 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "pkg:charts:build": "cd packages/@myorg/react-svg-charts && npm run build",
-    "pkg:charts:pack": "cd packages/@myorg/react-svg-charts && npm pack --pack-destination ../../../dist-local"
+    "pkg:charts:pack": "cd packages/@myorg/react-svg-charts && npm pack --pack-destination ../../../dist-local",
+    "pkg:styles:build": "cd packages/@myorg/react-styles-reset && npm run build",
+    "pkg:core:build": "cd packages/@myorg/react-core-hooks && npm run build",
+    "pkg:ui:build": "cd packages/@myorg/react-ui-basic && npm run build",
+    "pkg:media:build": "cd packages/@myorg/react-media-tools && npm run build",
+    "pkg:shell:build": "cd packages/@myorg/react-admin-shell && npm run build",
+    "pkg:all:build": "npm run pkg:styles:build && npm run pkg:core:build && npm run pkg:ui:build && npm run pkg:media:build && npm run pkg:shell:build && npm run pkg:charts:build"
   },
   "dependencies": {
     "@ant-design/icons": "^6.3.2",
@@ -27,7 +33,12 @@
     "qr-scanner": "^1.4.2",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
-    "react-router-dom": "^7.6.1"
+    "react-router-dom": "^7.6.1",
+    "@myorg/react-styles-reset": "workspace:*",
+    "@myorg/react-core-hooks": "workspace:*",
+    "@myorg/react-ui-basic": "workspace:*",
+    "@myorg/react-media-tools": "workspace:*",
+    "@myorg/react-admin-shell": "workspace:*"
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",

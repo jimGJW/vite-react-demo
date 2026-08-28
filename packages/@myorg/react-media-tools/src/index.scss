@@ -1,0 +1,294 @@
+.voice-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* ===== 引擎切换 ===== */
+.voice-input-engines {
+  display: inline-flex;
+  gap: 0.375rem;
+  padding: 0.25rem;
+  background: var(--c-primary-soft);
+  border-radius: var(--r-sm);
+  align-self: flex-start;
+}
+
+.voice-input-engine {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.375rem 0.875rem;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--c-text-2);
+  background: transparent;
+  border: none;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+
+  &:hover:not(:disabled) {
+    color: var(--c-text-1);
+  }
+
+  &.active {
+    background: var(--glass-bg-strong);
+    color: var(--c-primary-700);
+    box-shadow: var(--sh-sm);
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}
+
+.voice-input-engine-flag {
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: #fef3c7;
+  color: #b45309;
+
+  &.ok {
+    background: #dcfce7;
+    color: #15803d;
+  }
+}
+
+/* ===== 自动降级提示 ===== */
+.voice-input-fallback {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.625rem 0.875rem;
+  background: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #92400e;
+}
+
+.voice-input-link-btn {
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--c-primary-700);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--c-primary);
+  }
+}
+
+.voice-input-unsupported {
+  padding: 0.75rem 1rem;
+  background: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #92400e;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* ===== 模型下载进度 ===== */
+.voice-input-model {
+  padding: 0.625rem 0.875rem;
+  background: var(--c-primary-soft);
+  border: 1px solid var(--c-primary-ring);
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  color: var(--c-primary-700);
+}
+
+.voice-input-model-info {
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.voice-input-model-bar {
+  height: 6px;
+  background: rgba(99, 102, 241, 0.15);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+}
+
+.voice-input-model-fill {
+  height: 100%;
+  background: var(--grad-primary);
+  border-radius: var(--r-pill);
+  transition: width 0.3s;
+}
+
+/* ===== 文本框 ===== */
+.voice-input-box {
+  position: relative;
+}
+
+.voice-input-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.875rem 1rem;
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--c-text-1);
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  resize: vertical;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: var(--c-primary);
+    box-shadow: 0 0 0 3px var(--c-primary-ring);
+  }
+
+  &:disabled {
+    background: var(--c-bg-soft);
+    color: var(--c-text-3);
+    cursor: not-allowed;
+  }
+}
+
+.voice-input-interim {
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: 0.75rem;
+  font-size: 14px;
+  color: #94a3b8;
+  font-style: italic;
+  pointer-events: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.voice-input-error {
+  padding: 0.625rem 0.875rem;
+  background: #fef2f2;
+  border-left: 4px solid #ef4444;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #b91c1c;
+}
+
+/* ===== 工具栏 ===== */
+.voice-input-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+}
+
+.voice-input-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.5rem 1rem;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  &.mic {
+    background: var(--grad-primary);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+
+    &:hover:not(:disabled) {
+      filter: brightness(1.05);
+      box-shadow: 0 8px 18px rgba(99, 102, 241, 0.42);
+    }
+  }
+
+  &.stop {
+    background: #ef4444;
+    color: #fff;
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5);
+    animation: voice-pulse 1.2s infinite;
+
+    &:hover:not(:disabled) {
+      background: #dc2626;
+    }
+  }
+
+  &.ghost {
+    background: var(--glass-bg-strong);
+    color: var(--c-text-2);
+    border: 1px solid var(--c-border);
+
+    &:hover:not(:disabled) {
+      background: var(--c-primary-soft);
+      border-color: var(--c-primary-ring);
+      color: var(--c-primary-700);
+    }
+  }
+
+  &.small {
+    padding: 0.3125rem 0.75rem;
+    font-size: 13px;
+  }
+}
+
+.voice-input-status {
+  font-size: 13px;
+  color: #ef4444;
+  font-weight: 500;
+  animation: voice-fade 1.2s ease-in-out infinite;
+
+  &.recognizing {
+    color: var(--c-primary);
+  }
+}
+
+@keyframes voice-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+@keyframes voice-fade {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}

@@ -1,0 +1,411 @@
+/* =====================================================================
+   通知中心样式 · Indigo + Glassmorphism
+   Toast 堆叠（右上角） + 通知抽屉（右侧滑入）
+   全部消费 :root 设计 token，与全局风格统一
+   ===================================================================== */
+
+/* —— Toast 堆叠容器（portal 挂载到 body）—— */
+.notify-stack {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  width: min(360px, calc(100vw - 32px));
+  /* 容器本身不挡事件，仅每张卡片可交互 */
+  pointer-events: none;
+}
+
+/* —— 单条 Toast —— */
+.notify-toast {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.85rem 0.95rem 0.95rem;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-md);
+  box-shadow: var(--sh-lg);
+  overflow: hidden;
+  pointer-events: auto;
+  animation: notify-in var(--t) cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* 左侧类型色条 */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--notify-accent, var(--c-primary));
+  }
+}
+
+@keyframes notify-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* —— 图标 —— */
+.notify-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  font-size: 1rem;
+  background: var(--notify-accent-soft, var(--c-primary-soft));
+}
+
+/* —— 标题 / 描述 —— */
+.notify-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.notify-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--c-text-1);
+  line-height: 1.35;
+}
+
+.notify-desc {
+  margin-top: 0.15rem;
+  font-size: 0.82rem;
+  color: var(--c-text-2);
+  line-height: 1.45;
+  /* 超长文本折叠 */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* —— 关闭按钮 —— */
+.notify-close {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--c-text-3);
+  font-size: 0.8rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast);
+
+  &:hover {
+    background: var(--c-primary-soft);
+    color: var(--c-primary-700);
+  }
+}
+
+/* —— 进度条（与自动消失时长同步）—— */
+.notify-progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100%;
+  background: var(--notify-accent, var(--c-primary));
+  transform-origin: left center;
+  transform: scaleX(1);
+  animation: notify-progress linear forwards;
+  opacity: 0.85;
+}
+
+@keyframes notify-progress {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
+
+/* —— 抽屉触发按钮 —— */
+.notify-drawer-trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.95rem;
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-pill);
+  color: var(--c-text-1);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: var(--sh-sm);
+  transition: transform var(--t-fast), box-shadow var(--t-fast), background var(--t-fast);
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--sh-md);
+    background: var(--c-primary-soft);
+  }
+}
+
+.notify-drawer-icon {
+  font-size: 1rem;
+}
+
+/* 未读徽标 */
+.notify-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--c-danger);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: var(--r-pill);
+  border: 2px solid var(--c-card);
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.4);
+}
+
+/* —— 抽屉根（portal 挂载到 body）—— */
+.notify-drawer-root {
+  position: fixed;
+  inset: 0;
+  z-index: 2100;
+}
+
+.notify-drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.32);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  animation: notify-fade var(--t-fast) ease;
+}
+
+@keyframes notify-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* —— 抽屉面板 —— */
+.notify-drawer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(380px, 92vw);
+  display: flex;
+  flex-direction: column;
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  border-left: 1px solid var(--glass-border);
+  box-shadow: -16px 0 40px rgba(15, 23, 42, 0.16);
+  animation: notify-drawer-in var(--t) cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes notify-drawer-in {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+
+/* —— 抽屉头部 —— */
+.notify-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid var(--c-border-soft);
+}
+
+.notify-drawer-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--c-text-1);
+}
+
+.notify-drawer-count {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--c-primary-700);
+  background: var(--c-primary-soft);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--r-pill);
+}
+
+.notify-drawer-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.notify-link-btn {
+  border: none;
+  background: transparent;
+  color: var(--c-primary-700);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.3rem 0.5rem;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast);
+
+  &:hover:not(:disabled) {
+    background: var(--c-primary-soft);
+  }
+
+  &:disabled {
+    color: var(--c-text-3);
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+/* —— 抽屉主体 —— */
+.notify-drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+.notify-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* —— 历史条目 —— */
+.notify-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.7rem 0.75rem 0.7rem 0.9rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--c-border-soft);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transition: background var(--t-fast), border-color var(--t-fast);
+
+  &:hover {
+    background: var(--c-primary-softer);
+    border-color: var(--c-primary-ring);
+  }
+
+  &.is-unread {
+    background: var(--c-primary-softer);
+    border-color: var(--c-primary-ring);
+  }
+}
+
+/* 未读红点 */
+.notify-item-dot {
+  position: absolute;
+  top: 0.6rem;
+  left: 0.3rem;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--c-danger);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.18);
+}
+
+.notify-item-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-sm);
+  font-size: 0.95rem;
+}
+
+.notify-item-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.notify-item-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--c-text-1);
+  line-height: 1.35;
+}
+
+.notify-item-desc {
+  margin-top: 0.15rem;
+  font-size: 0.8rem;
+  color: var(--c-text-2);
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.notify-item-meta {
+  margin-top: 0.3rem;
+  font-size: 0.72rem;
+  color: var(--c-text-3);
+}
+
+/* —— 空状态 —— */
+.notify-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 3rem 1rem;
+  color: var(--c-text-3);
+  text-align: center;
+
+  span {
+    font-size: 2rem;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.88rem;
+  }
+}
+
+/* —— 移动端 —— */
+@media (max-width: 480px) {
+  .notify-stack {
+    top: 8px;
+    right: 8px;
+    left: 8px;
+    width: auto;
+  }
+}

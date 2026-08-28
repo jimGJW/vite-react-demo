@@ -1,0 +1,28 @@
+# ============ 依赖 & 构建缓存 ============
+node_modules/
+
+# ============ 构建产物（不提交源码仓库；发布时本地 build 即可）============
+dist/
+dist-local/
+*.tgz
+*.tar.gz
+
+# ============ 日志 ============
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ============ 编辑器 / 系统 ============
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.swp
+*.swo
+
+# ============ 环境变量 ============
+.env
+.env.local
+.env.*.local

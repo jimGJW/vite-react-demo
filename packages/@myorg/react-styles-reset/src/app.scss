@@ -1,0 +1,432 @@
+/* =====================================================================
+   应用外壳 · 玻璃态 Layout
+   头部 / 导航 / 下拉 / page-card / 按钮
+   ===================================================================== */
+
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* —— 顶部：毛玻璃导航条 —— */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: 64px;
+  padding: 0 clamp(1rem, 4vw, 2.25rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--c-text-1);
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.4);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 4px 24px rgba(15, 23, 42, 0.05);
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    background: var(--grad-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    .brand-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: var(--grad-primary);
+      color: #fff;
+      font-size: 1rem;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+      -webkit-text-fill-color: #fff;
+    }
+  }
+
+  /* 只作用于顶层导航行，避免误伤 .dropdown-menu 面板 */
+  nav > ul {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    height: 64px;
+  }
+
+  nav > ul > li {
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+
+  nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--c-text-2);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.45rem 0.85rem;
+    border-radius: var(--r-sm);
+    transition: color var(--t-fast), background var(--t-fast);
+
+    .nav-icon {
+      font-size: 0.95em;
+    }
+
+    &:hover {
+      color: var(--c-primary-600);
+      background: var(--c-primary-soft);
+      text-decoration: none;
+    }
+
+    &.active {
+      color: var(--c-primary-700);
+      background: var(--c-primary-soft);
+    }
+  }
+
+  /* ---- 下拉分组 ---- */
+  .nav-dropdown {
+    position: relative;
+
+    .nav-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      color: var(--c-text-2);
+      background: none;
+      border: none;
+      font: inherit;
+      font-weight: 500;
+      padding: 0.45rem 0.85rem;
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      height: 100%;
+      transition: color var(--t-fast), background var(--t-fast);
+
+      .nav-caret {
+        font-size: 0.7em;
+        transition: transform var(--t-fast);
+        opacity: 0.65;
+      }
+
+      &:hover {
+        color: var(--c-primary-600);
+        background: var(--c-primary-soft);
+      }
+    }
+
+    /* 键盘可达：hover 或 focus-within 展开 */
+    &:hover .dropdown-menu,
+    &:focus-within .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+
+    &:hover .nav-caret,
+    &:focus-within .nav-caret {
+      transform: rotate(180deg);
+      opacity: 1;
+    }
+
+    /* 子路由激活时父级高亮 */
+    &.group-active > .nav-trigger {
+      color: var(--c-primary-700);
+      background: var(--c-primary-soft);
+
+      .nav-caret {
+        opacity: 1;
+      }
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%) translateY(8px);
+      min-width: 240px;
+      display: block;
+      height: auto;
+      align-items: stretch;
+      gap: 0;
+      list-style: none;
+      margin: 0;
+      padding: 6px;
+      background: var(--glass-bg-strong);
+      backdrop-filter: blur(20px) saturate(1.5);
+      -webkit-backdrop-filter: blur(20px) saturate(1.5);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--r-lg);
+      box-shadow: var(--sh-lg);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity var(--t-fast), transform var(--t-fast), visibility var(--t-fast);
+      z-index: 110;
+
+      .dropdown-title {
+        padding: 0.4rem 0.75rem 0.55rem;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--c-text-3);
+      }
+
+      .dropdown-item a {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        padding: 0.55rem 0.7rem;
+        border-radius: var(--r-md);
+        color: var(--c-text-2);
+        transition: color var(--t-fast), background var(--t-fast);
+
+        .item-icon {
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          width: 34px;
+          height: 34px;
+          border-radius: var(--r-md);
+          background: var(--c-primary-soft);
+          font-size: 0.95rem;
+          flex-shrink: 0;
+          transition: background var(--t-fast), transform var(--t-fast);
+        }
+
+        .item-text {
+          display: flex;
+          flex-direction: column;
+          line-height: 1.3;
+
+          .item-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--c-text-1);
+          }
+
+          .item-desc {
+            font-size: 0.72rem;
+            color: var(--c-text-3);
+            transition: color var(--t-fast);
+          }
+        }
+
+        &:hover {
+          background: var(--c-primary-soft);
+
+          .item-icon {
+            background: rgba(99, 102, 241, 0.16);
+            transform: scale(1.06);
+          }
+        }
+
+        &.active {
+          background: var(--c-primary-soft);
+
+          .item-icon {
+            background: var(--grad-primary);
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+
+  /* 顶部直达链接激活时加下划线指示 */
+  nav > ul > li > a.active {
+    position: relative;
+
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0.85rem;
+      right: 0.85rem;
+      bottom: 6px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--grad-primary);
+    }
+  }
+}
+
+/* —— 用户芯片 + 登出 —— */
+.user-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0.4rem 0.3rem 0.5rem;
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-pill);
+  box-shadow: var(--sh-sm);
+  flex-shrink: 0;
+}
+
+.user-chip-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--grad-primary);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+}
+
+.user-chip-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--c-text-1);
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.user-chip-logout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: var(--c-primary-soft);
+  color: var(--c-primary-700);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background var(--t-fast), transform var(--t-fast), color var(--t-fast);
+
+  &:hover {
+    background: var(--c-danger-soft);
+    color: var(--c-danger);
+    transform: rotate(-12deg);
+  }
+}
+
+/* —— 主内容容器 —— */
+.app-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: clamp(1.25rem, 3.5vw, 2.5rem);
+  box-sizing: border-box;
+}
+
+/* —— 页脚：玻璃态低饱和 —— */
+.app-footer {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border-top: 1px solid var(--glass-border);
+  color: var(--c-text-3);
+  text-align: center;
+  padding: 1.1rem;
+  font-size: 0.85rem;
+
+  p {
+    margin: 0;
+  }
+}
+
+/* —— 玻璃卡片（页面通用容器）—— */
+.page-card {
+  position: relative;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.3);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-xl);
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  box-shadow: var(--sh-glass);
+
+  h1 {
+    margin-top: 0;
+    color: var(--c-text-1);
+  }
+}
+
+/* —— 通用按钮 —— */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  background: var(--grad-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-md);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.28);
+  transition: transform var(--t-fast), box-shadow var(--t-fast), filter var(--t-fast);
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(99, 102, 241, 0.4);
+    text-decoration: none;
+    color: #fff;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &.secondary {
+    background: var(--glass-bg-strong);
+    color: var(--c-primary-700);
+    border: 1px solid var(--c-primary-ring);
+    box-shadow: none;
+
+    &:hover {
+      background: var(--c-primary-soft);
+      color: var(--c-primary-700);
+    }
+  }
+}
+
+/* —— 移动端适配 —— */
+@media (max-width: 768px) {
+  .app-header {
+    padding: 0 1rem;
+
+    .app-nav {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+
+      ul {
+        gap: 0;
+      }
+    }
+
+    .nav-dropdown .dropdown-menu {
+      left: 0;
+      transform: translateY(8px);
+    }
+  }
+}
