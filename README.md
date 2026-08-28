@@ -417,12 +417,62 @@ npm run build
 
 ---
 
-### 两种方案对比
+### 方案 C（最轻量 · 强烈推荐）：直接从 `jimGJW/vite-react-demo` 主仓库子目录安装图表包
 
-| 维度 | 方案 A · 整个 monorepo 一个 GitHub | 方案 B · 图表包独立 GitHub + 发布 GPR |
-| --- | --- | --- |
-| 主目的 | 备份、协作、版本管理演示项目 | 其他 React 项目 `npm install` 即用图表组件 |
-| 发布产物 | 不发布 | `@YOU/react-svg-charts` 可在 GPR 安装 |
-| 认证 | PAT 只需 `repo` 权限（push 代码） | PAT 需要 `write:packages`（发布包）+ `repo`（push 代码） |
-| 安全提示 | push 时不要把 PAT 写进 README / commit | `~/.npmrc` 不要提交到 git；若泄露立刻撤销 PAT |
+> 不想再建第二个 GitHub 仓库、不想生成 PAT 写 `.npmrc`、不想跑发布脚本？直接用这个方案。
+> 其他项目**一条命令**就能安装使用，而且会随 `jimGJW/vite-react-demo` 的 `main` 分支最新代码更新。
+> 原理：[gitpkg.vercel.app](https://gitpkg.vercel.app) 是社区通用的开源服务，把 GitHub monorepo 的子目录转换成 npm 可直接下载的 tarball（和 npm registry / GPR 下载的文件格式一致，不会少任何源码/构建脚本）。
+
+#### 在其他 React 项目里安装
+
+```bash
+npm install react react-dom                 # peerDependencies 自己的项目要先装
+npm install 'https://gitpkg.vercel.app/jimGJW/vite-react-demo/packages/@myorg/react-svg-charts?main'
+```
+
+> 🔧 提示：如果你的 npm 版本太老解析不了带 query 的 URL，换这两个等价写法：
+> ```bash
+> # 写法 1：用 tarball
+> npm install 'https://gitpkg.now.sh/jimGJW/vite-react-demo/packages/@myorg/react-svg-charts?main'
+> # 写法 2：加个 package 别名更直观
+> npm install @myorg/react-svg-charts@'https://gitpkg.vercel.app/jimGJW/vite-react-demo/packages/@myorg/react-svg-charts?main'
+> ```
+
+#### 使用
+
+```js
+// main.jsx：全局入口只引一次样式
+import '@myorg/react-svg-charts/style.css'
+
+// 业务组件
+import {
+  LineChart, BarChart, PieChart, RadarChart, AreaChart,
+  MultiLineChart, MultiBarChart, MultiPieChart, MultiRadarChart, StackedAreaChart,
+  DrilledBarChart, NestedPieChart,
+  SwitchableChart, ChartCard, ChartTypeSwitch,
+  chartColors, adaptData
+} from '@myorg/react-svg-charts'
+```
+
+#### 升级到最新代码
+
+```bash
+npm update @myorg/react-svg-charts
+# 或者删掉 node_modules/.package-lock.json 后重新 npm install
+```
+
+---
+
+### 三种方案对比
+
+| 维度 | 方案 A · 整个 monorepo 一个 GitHub | 方案 B · 图表包独立 GitHub + 发布 GPR | 方案 C · 直接从主仓库子路径安装（推荐） |
+| --- | --- | --- | --- |
+| 主目的 | 备份、协作、版本管理演示项目 | 其他 React 项目 `npm install` 即用图表组件 | 其他 React 项目**一条命令**安装图表组件，最省心 |
+| 是否需要第二个仓库 | ❌ 不用 | ✅ 需要新建 react-svg-charts 空仓库 | ❌ 不用 |
+| 是否需要 PAT / `.npmrc` | push 代码需要（`repo` 权限即可）| 发布 GPR 需要（`write:packages` + `repo`）| ❌ 完全不需要 |
+| 是否需要发布脚本 | ❌ 不用 | ✅ `bash scripts/publish-gpr.sh` | ❌ 不用 |
+| 安装命令 | N/A | `npm install @YOU/react-svg-charts`（需先配 GPR registry） | `npm install 'https://gitpkg.vercel.app/jimGJW/vite-react-demo/packages/@myorg/react-svg-charts?main'` |
+| 随主项目更新 | N/A | 需要手动 `npm version && npm publish` 才更新 | 每次 `npm update` 直接拉 `main` 分支最新代码 |
+| 适用场景 | 只需要备份和协作演示项目 | 想把图表包像 `antd` 一样作为独立开源项目运营发布 | 只想让自己其他项目能快速复用图表 |
+
 

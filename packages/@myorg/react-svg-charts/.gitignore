@@ -1,21 +1,28 @@
-# ========= npm 包发布忽略文件 =========
-# 发布 tarball 只包含 dist/ 与 package.json / README.md / index.d.ts
-# （此列表与 package.json 的 files[] 白名单共同作用，实际以 files 白名单为准）
-
-# 源码（已构建到 dist/）
-src/
-tsconfig.build.json
-vite.config.js
+# ============ 依赖 & 构建缓存 ============
 node_modules/
 
-# 构建产物在发布前确认，如有必要可手动打包 tgz 发布（推荐）
+# ============ 构建产物（不提交源码仓库；发布时本地 build 即可）============
+dist/
 dist-local/
 *.tgz
+*.tar.gz
 
-# 开发配置
-.vscode/
-.idea/
-.DS_Store
+# ============ 日志 ============
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+
+# ============ 编辑器 / 系统 ============
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.swp
+*.swo
+
+# ============ 环境变量 ============
+.env
+.env.local
+.env.*.local
