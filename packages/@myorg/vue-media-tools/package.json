@@ -1,0 +1,68 @@
+{
+  "name": "@myorg/vue-media-tools",
+  "version": "1.0.0",
+  "description": "Vue 3 媒体工具组件：QrScanBtn（摄像头扫码按钮）+ VoiceInput（在线/离线双引擎语音输入）。与 @myorg/react-media-tools 功能一一对应。",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./style.css": "./dist/style.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": [
+    "*.css",
+    "*.scss"
+  ],
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build && npm run types",
+    "types": "node -e \"require('node:fs').copyFileSync('src/index.d.ts','dist/index.d.ts')\"",
+    "pack:local": "npm pack --pack-destination ../../../dist-local"
+  },
+  "keywords": [
+    "vue",
+    "vue3",
+    "qr-code",
+    "qr-scanner",
+    "voice-input",
+    "whisper",
+    "media",
+    "microphone",
+    "camera"
+  ],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "@myorg/vue-core-composables": "^1.0.0",
+    "vue": "^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "qr-scanner": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5 || ^6",
+    "esbuild": "^0.28.2",
+    "sass": "^1.80",
+    "typescript": "^5.6",
+    "vite": "^5 || ^8 || ^9"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/vue-media-tools.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

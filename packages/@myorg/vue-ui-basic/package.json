@@ -1,0 +1,60 @@
+{
+  "name": "@myorg/vue-ui-basic",
+  "version": "1.0.0",
+  "description": "Vue 3 基础 UI 组件集：主题（亮/暗/跟随系统）、通知中心、命令面板（Cmd+K）、数据表格、365 星辰大阵。与 @myorg/react-ui-basic 功能一一对应。",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./style.css": "./dist/style.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": [
+    "*.css",
+    "*.scss"
+  ],
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build && npm run types",
+    "types": "node -e \"require('node:fs').copyFileSync('src/index.d.ts','dist/index.d.ts')\"",
+    "pack:local": "npm pack --pack-destination ../../../dist-local"
+  },
+  "keywords": [
+    "vue",
+    "vue3",
+    "theme",
+    "notification",
+    "command-palette",
+    "data-table",
+    "star-array"
+  ],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "vue": "^3.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5 || ^6",
+    "esbuild": "^0.28.2",
+    "sass": "^1.80",
+    "typescript": "^5.6",
+    "vite": "^5 || ^8 || ^9"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/vue-ui-basic.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

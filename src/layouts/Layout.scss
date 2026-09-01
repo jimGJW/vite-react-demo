@@ -1,0 +1,376 @@
+/* =====================================================================
+   Layout.scss · Ant Design 风格布局（antd Menu 驱动侧边栏）
+
+   关键设计：
+   - 纯 flex 布局，唯一滚动容器：.app-main-scroll
+   - sidebar 三态：expanded / collapsed / hidden（antd Menu inlineCollapsed）
+   - header 二态：header-on / header-off
+   - 所有组件使用 antd（Menu/Button/Avatar/Dropdown/Tooltip/Typography）
+   ===================================================================== */
+
+/* ---------- 设计变量 ---------- */
+.app-shell {
+  --sw: clamp(220px, 18vw, 260px);
+  --sw-collapsed: 72px;
+  --sw-hidden: 0px;
+  --lh: 56px;
+  --pad: clamp(1rem, 2.5vw, 1.75rem);
+  --layout-t: 200ms cubic-bezier(.2,.7,.2,1);
+
+  background: var(--mesh-bg, #f5f5f5);
+  color: var(--c-text-1, #000000e0);
+}
+
+/* ---------- 根容器 ---------- */
+.app-shell {
+  width: 100vw;
+  min-height: 100vh;
+  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+.app-shell .app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  height: var(--lh, 56px);
+  padding: 0 var(--pad);
+  flex-shrink: 0;
+  background: var(--c-card, #ffffff);
+  border-bottom: 1px solid var(--c-border-soft, #f0f0f0);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  transition: height var(--layout-t), opacity var(--layout-t), border-color var(--layout-t);
+  overflow: hidden;
+  z-index: 10;
+
+  .header-left, .header-right { display: flex; align-items: center; gap: 0.5rem; }
+  .header-right { margin-left: auto; }
+}
+
+/* header-off */
+.app-shell.header-off .app-header {
+  height: 0;
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+  border-bottom-color: transparent;
+  box-shadow: none;
+}
+
+/* —— Brand —— */
+.app-shell .brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+
+  .brand-logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px; height: 32px;
+    border-radius: var(--r-md, 6px);
+    background: var(--c-primary, #1677ff);
+    color: #fff;
+    font-size: 1.05rem;
+  }
+  .brand-name {
+    font-size: 1rem;
+    white-space: nowrap;
+    color: var(--c-text-1, #000000e0);
+  }
+}
+
+/* —— 用户芯片（包裹 antd Avatar + Dropdown） —— */
+.app-shell .user-chip-antd {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--r-md, 6px);
+  cursor: pointer;
+  transition: background var(--t-fast, 0.1s);
+
+  &:hover {
+    background: var(--c-primary-soft, rgba(22, 119, 255, 0.06));
+  }
+
+  .user-name-text {
+    white-space: nowrap;
+    font-size: 0.875rem;
+  }
+}
+
+/* =========================================================
+   BODY
+   ========================================================= */
+.app-shell .app-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+.app-shell .app-sidebar {
+  width: var(--sw);
+  flex: 0 0 var(--sw);
+  display: flex;
+  flex-direction: column;
+  background: var(--c-card, #ffffff);
+  border-right: 1px solid var(--c-border-soft, #f0f0f0);
+  transition: width var(--layout-t), flex-basis var(--layout-t),
+              opacity var(--layout-t), visibility var(--layout-t);
+  overflow: hidden;
+  z-index: 10;
+}
+
+/* 三态 */
+.app-shell.sidebar-collapsed .app-sidebar { width: var(--sw-collapsed); flex-basis: var(--sw-collapsed); }
+.app-shell.sidebar-hidden    .app-sidebar { width: var(--sw-hidden);    flex-basis: var(--sw-hidden);
+  opacity: 0; visibility: collapse; border-right-color: transparent; }
+
+/* =========================================================
+   antd Menu 覆盖（让 antd Menu 融入我们的主题）
+   ========================================================= */
+.app-shell .sidebar-menu {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-inline-end: none !important;          /* 去掉 antd Menu 默认右边框 */
+  background: transparent !important;
+  padding: 4px 8px;
+
+  /* —— 自定义滚动条：macOS 默认隐藏滚动条，这里强制显示 —— */
+  scrollbar-width: thin;                       /* Firefox */
+  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 3px;
+    &:hover { background: rgba(0, 0, 0, 0.25); }
+  }
+
+
+  /* —— 顶层菜单项 —— */
+  .ant-menu-item, .ant-menu-submenu-title {
+    border-radius: var(--r-md, 6px);
+    margin-block: 2px;                         /* antd v5: 项间距 */
+    font-size: 0.875rem;
+    color: var(--c-text-2, #000000a6);
+    transition: all var(--t-fast, 0.1s);
+
+    &:hover {
+      background: var(--c-primary-soft, rgba(22, 119, 255, 0.06)) !important;
+      color: var(--c-primary, #1677ff) !important;
+    }
+  }
+
+  /* —— 选中态 —— */
+  .ant-menu-item-selected {
+    background: var(--c-primary-soft, rgba(22, 119, 255, 0.06)) !important;
+    color: var(--c-primary, #1677ff) !important;
+    font-weight: 500;
+
+    &::after { display: none; }                 /* 去掉 antd 默认右侧蓝条 */
+  }
+
+  /* —— 展开子菜单标题 —— */
+  .ant-menu-submenu-selected > .ant-menu-submenu-title {
+    color: var(--c-text-1, #000000e0);
+  }
+
+  /* —— 子菜单项缩进减少 —— */
+  .ant-menu-item {
+    padding-inline-start: 0.75rem !important;
+  }
+
+  /* —— inline 折叠态：antd 自动弹出 popover，不需要额外样式 —— */
+  &.ant-menu-inline-collapsed {
+    .ant-menu-item, .ant-menu-submenu-title {
+      padding-inline: 0 !important;
+      justify-content: center;
+    }
+  }
+
+  /* —— 自定义分组分隔标题：替换默认 divider 的空白感 —— */
+  .menu-sep-title.ant-menu-item,
+  .menu-sep-title.ant-menu-item.ant-menu-item-disabled {
+    height: auto !important;
+    line-height: 1 !important;
+    padding: 12px 4px 8px !important;
+    margin: 6px 8px 2px !important;
+    color: inherit !important;
+    background: transparent !important;
+    cursor: default !important;
+    border-radius: 0 !important;
+    border-top: none !important;
+  }
+
+  .sep-title {
+    display: flex !important;
+    width: 100% !important;
+    align-items: center !important;
+    justify-content: stretch !important;
+    gap: 8px !important;
+    color: #8c8c8c;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.8px;
+    padding: 0 !important;
+  }
+  .sep-title__line {
+    flex: 1 1 auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--c-border-soft, #e5e7eb) 40%, var(--c-border-soft, #e5e7eb) 60%, transparent);
+  }
+  .sep-title__text {
+    flex: 0 0 auto;
+    padding: 2px 8px;
+    border: 1px solid var(--c-border-soft, #e5e7eb);
+    border-radius: 999px;
+    background: var(--c-bg-soft, #fafafa);
+    color: #8c8c8c;
+  }
+  /* Vue 模式下强调色 — 移到块外，见下方独立规则 */
+  /* 折叠态：隐藏分组分隔 */
+  &.ant-menu-inline-collapsed .menu-sep-title { display: none !important; }
+}
+
+/* —— Vue 模式（data-ui-mode 在 <html> 上，非 .app-shell）—— */
+[data-ui-mode="vue"] .sidebar-menu,
+[data-ui-mode="vue"] .v-menu-root {
+  scrollbar-color: #c0c4cc transparent;
+  &::-webkit-scrollbar-thumb {
+    background: #c0c4cc;
+    &:hover { background: #909399; }
+  }
+}
+[data-ui-mode="vue"] .app-sidebar {
+  .menu-sep-title.ant-menu-item,
+  .menu-sep-title.ant-menu-item.ant-menu-item-disabled {
+    background: transparent !important;
+  }
+  .sep-title { color: #909399; }
+  .sep-title__text {
+    background: #ecf5ff;
+    border-color: #d9ecff;
+    color: #409eff;
+  }
+  .sep-title__line {
+    background: linear-gradient(90deg, transparent, #d9ecff 40%, #d9ecff 60%, transparent);
+  }
+}
+
+/* —— sidebar foot —— */
+.app-shell .sidebar-foot {
+  flex-shrink: 0;
+  padding: 8px 12px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-top: 1px solid var(--c-border-soft, #f0f0f0);
+  margin: 0 8px 4px;
+  line-height: 1.4;
+}
+
+.app-shell.sidebar-collapsed .sidebar-foot,
+.app-shell.sidebar-hidden    .sidebar-foot { display: none !important; }
+
+/* =========================================================
+   MAIN · 右侧内容（唯一滚动容器！）
+   ========================================================= */
+.app-shell .app-main-wrap {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-shell .app-main-scroll {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: var(--pad);
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  display: flex;
+  flex-direction: column;
+  gap: var(--pad);
+}
+
+.app-shell .app-footer {
+  text-align: center;
+  padding: 1rem;
+  margin-top: auto;
+}
+
+/* =========================================================
+   EMERGENCY FAB · 应急浮动入口（仅在 header 隐藏时出现）
+   ========================================================= */
+.app-shell .emergency-fab {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 9990;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--layout-t);
+
+  &.show-header-btn {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* =========================================================
+   响应式
+   ========================================================= */
+@media (max-width: 1100px) {
+  .app-shell { --sw: 220px; --pad: 1rem; }
+}
+
+@media (max-width: 820px) {
+  .app-shell:not(.sidebar-hidden) .app-sidebar {
+    width: var(--sw-collapsed); flex-basis: var(--sw-collapsed);
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell { --pad: 0.875rem; --lh: 52px; }
+  .app-shell.sidebar-collapsed .app-sidebar,
+  .app-shell.sidebar-expanded .app-sidebar {
+    width: 0; flex-basis: 0; opacity: 0; visibility: collapse; border-right-color: transparent;
+  }
+  .app-shell .brand-name { display: none; }
+  .app-shell .user-name-text { display: none; }
+}

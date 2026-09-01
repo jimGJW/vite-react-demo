@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../contexts/AuthContext.jsx'
+import { useAuth } from '../../contexts/useAuth.js'
+import { useStyleMode } from '../../contexts/StyleModeContext.jsx'
 import './index.scss'
 
 function Login() {
   const { login } = useAuth()
+  const { mode, setMode } = useStyleMode()
   const navigate = useNavigate()
   const location = useLocation()
   const from = location.state?.from?.pathname || '/'
@@ -120,6 +122,31 @@ function Login() {
               <span>保持登录</span>
             </label>
             <a className="login-link" href="#forgot">忘记密钥？</a>
+          </div>
+
+          {/* 样式模式选择器 */}
+          <div className="login-mode-select">
+            <span className="login-label">界面风格</span>
+            <div className="mode-toggle">
+              <button
+                type="button"
+                className={`mode-option ${mode === 'antd' ? 'active' : ''}`}
+                onClick={() => setMode('antd')}
+                disabled={status !== 'idle'}
+              >
+                <span className="mode-badge antd">A</span>
+                Ant Design
+              </button>
+              <button
+                type="button"
+                className={`mode-option ${mode === 'vue' ? 'active' : ''}`}
+                onClick={() => setMode('vue')}
+                disabled={status !== 'idle'}
+              >
+                <span className="mode-badge vue">V</span>
+                Vue 风格
+              </button>
+            </div>
           </div>
 
           <button type="submit" className="login-submit" disabled={status !== 'idle'}>

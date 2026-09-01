@@ -1,5 +1,7 @@
 import { defineConfig } from 'vite'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
+import vue from '@vitejs/plugin-vue'
+import angular from '@analogjs/vite-plugin-angular'
 import babel from '@rolldown/plugin-babel'
 import http from 'http'
 import https from 'https'
@@ -166,12 +168,29 @@ export default defineConfig({
     },
   },
   plugins: [
+    vue(),
+    angular(),
     react(),
-    babel({ presets: [reactCompilerPreset()] }),
+    babel({
+      presets: [reactCompilerPreset()],
+      // 排除 .ts 文件（由 @analogjs/vite-plugin-angular 处理 Angular 装饰器）
+      // 排除预构建依赖和 node_modules（已编译，Babel 处理大文件会超时导致 ERR_EMPTY_RESPONSE）
+      exclude: [/\.ts$/, /node_modules/],
+    }),
     embedHelpers(),
     serveOrtAssets(),
   ],
   server: {
     host: true,
+  },
+  // 预构建 Angular 运行时依赖（被 mountAngularBridge 动态 import 引用）
+  optimizeDeps: {
+    include: [
+      '@angular/compiler',
+      '@angular/platform-browser',
+      '@angular/core',
+      '@angular/common',
+      '@angular/forms',
+    ],
   },
 })

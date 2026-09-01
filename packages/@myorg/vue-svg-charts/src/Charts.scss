@@ -1,0 +1,415 @@
+/* =====================================================================
+   图表组件样式 · Indigo 玻璃态
+   纯 SVG + CSS 动画，零外部依赖
+
+   可移植性：所有 var() 均带 fallback 默认值，
+   其他项目无需定义任何 CSS 变量即可显示 Indigo 风格
+   ===================================================================== */
+
+.chart {
+  position: relative;
+  width: 100%;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    font-family: inherit;
+  }
+}
+
+/* —— 通用容器 ChartCard —— */
+.chart-card {
+  background: var(--glass-bg, rgba(255, 255, 255, 0.7));
+  border: 1px solid var(--glass-border, rgba(99, 102, 241, 0.18));
+  border-radius: var(--r-lg, 14px);
+  backdrop-filter: blur(var(--glass-blur, 12px));
+  -webkit-backdrop-filter: blur(var(--glass-blur, 12px));
+  box-shadow: var(--sh-md, 0 8px 24px rgba(15, 23, 42, 0.08));
+  padding: 1rem 1.1rem;
+}
+
+.chart-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.chart-head-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.chart-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--c-text-1, #1e293b);
+}
+
+.chart-subtitle {
+  margin: 0.1rem 0 0;
+  font-size: 0.82rem;
+  color: var(--c-text-3, #94a3b8);
+}
+
+.chart-desc {
+  margin-top: 0.4rem;
+  font-size: 0.82rem;
+  color: var(--c-text-2, #475569);
+  line-height: 1.5;
+}
+
+.chart-actions {
+  flex-shrink: 0;
+}
+
+.chart-card-body {
+  width: 100%;
+}
+
+/* —— 画布容器（tooltip 锚点基于此，不受标题区高度影响）—— */
+.chart-canvas {
+  position: relative;
+  width: 100%;
+}
+
+/* —— 加载骨架 —— */
+.chart-skeleton {
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--c-primary-softer, rgba(99, 102, 241, 0.05)) 25%,
+    var(--c-primary-soft, rgba(99, 102, 241, 0.12)) 37%,
+    var(--c-primary-softer, rgba(99, 102, 241, 0.05)) 63%
+  );
+  background-size: 200% 100%;
+  animation: chart-shimmer 1.4s ease-in-out infinite;
+  border-radius: var(--r-md, 10px);
+}
+
+@keyframes chart-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* —— 坐标轴 / 网格 —— */
+.chart-grid {
+  stroke: var(--c-border-soft, #e2e8f0);
+  stroke-width: 1;
+}
+
+.chart-axis-label {
+  fill: var(--c-text-3, #94a3b8);
+  font-size: 11px;
+  font-weight: 500;
+  user-select: none;
+}
+
+/* —— 折线图 —— */
+.chart-line-path {
+  fill: none;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chart-area {
+  opacity: 0;
+  transition: opacity 0.9s ease 0.25s;
+
+  &.is-in { opacity: 1; }
+}
+
+/* —— 数据点 —— */
+.chart-dot {
+  transition: r 0.15s ease, filter 0.15s ease;
+  filter: drop-shadow(0 1px 2px rgba(99, 102, 241, 0.25));
+}
+
+/* —— 柱状图 —— */
+.chart-bar {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s ease;
+
+  &.is-hover {
+    filter: brightness(1.08) saturate(1.1);
+  }
+}
+
+/* —— 饼图 —— */
+.chart-pie {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.chart-pie-canvas {
+  position: relative;
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: 320px;
+
+  svg {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.chart-pie-sector {
+  opacity: 0;
+  transform-origin: center;
+  transform-box: view-box;
+  transition: transform 0.22s ease, opacity 0.7s ease;
+  cursor: pointer;
+
+  &.is-in { opacity: 1; }
+  &.is-hover { filter: brightness(1.06) saturate(1.12); }
+}
+
+/* —— 图例 —— */
+.chart-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0.25rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  flex: 1 1 160px;
+  min-width: 0;
+
+  li {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 0.45rem;
+    border-radius: var(--r-sm, 6px);
+    cursor: pointer;
+    transition: background var(--t-fast, 0.15s);
+
+    &.is-hover {
+      background: var(--c-primary-soft, rgba(99, 102, 241, 0.1));
+    }
+  }
+}
+
+.chart-legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 2px var(--glass-bg, rgba(255, 255, 255, 0.7));
+}
+
+.chart-legend-label {
+  color: var(--c-text-2, #475569);
+  font-size: 0.85rem;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chart-legend-value {
+  color: var(--c-text-1, #1e293b);
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.chart-legend-pct {
+  color: var(--c-text-3, #94a3b8);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* —— 进度环 —— */
+.chart-gauge-value {
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chart-gauge-track {
+  opacity: 0.6;
+}
+
+.chart-gauge-pct {
+  fill: var(--c-text-1, #1e293b);
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background: var(--grad-primary, linear-gradient(135deg, #4f46e5, #6366f1));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.chart-gauge-label {
+  fill: var(--c-text-3, #94a3b8);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* —— 雷达图 —— */
+.chart-radar-grid {
+  fill: none;
+  stroke: var(--c-border-soft, #e2e8f0);
+  stroke-width: 1;
+}
+
+.chart-radar-axis {
+  stroke: var(--c-border, #cbd5e1);
+  stroke-width: 1;
+}
+
+.chart-radar-poly {
+  transform-box: view-box;
+  transform: scale(0);
+  transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.is-in { transform: scale(1); }
+}
+
+/* —— Tooltip（玻璃态浮层）—— */
+.chart-tip {
+  position: absolute;
+  transform: translate(-50%, -130%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 0.35rem 0.65rem;
+  background: var(--glass-bg-strong, rgba(255, 255, 255, 0.92));
+  backdrop-filter: blur(14px) saturate(1.5);
+  -webkit-backdrop-filter: blur(14px) saturate(1.5);
+  border: 1px solid var(--glass-border, rgba(99, 102, 241, 0.18));
+  border-radius: var(--r-sm, 6px);
+  box-shadow: var(--sh-md, 0 8px 24px rgba(15, 23, 42, 0.08));
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 5;
+  animation: chart-tip-in 0.14s ease;
+}
+
+.chart-tip-label {
+  color: var(--c-text-3, #94a3b8);
+  font-size: 0.72rem;
+  font-weight: 500;
+}
+
+.chart-tip-value {
+  color: var(--c-text-1, #1e293b);
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+@keyframes chart-tip-in {
+  from { opacity: 0; transform: translate(-50%, -110%); }
+  to { opacity: 1; transform: translate(-50%, -130%); }
+}
+
+/* —— 空状态 —— */
+.chart-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: var(--c-text-3, #94a3b8);
+  font-size: 0.9rem;
+  background: var(--c-primary-softer, rgba(99, 102, 241, 0.05));
+  border-radius: var(--r-md, 10px);
+  border: 1px dashed var(--c-border, #cbd5e1);
+}
+
+/* —— 尊重减少动效 —— */
+@media (prefers-reduced-motion: reduce) {
+  .chart-line-path,
+  .chart-bar,
+  .chart-pie-sector,
+  .chart-gauge-value,
+  .chart-radar-poly,
+  .chart-area,
+  .chart-skeleton {
+    transition-duration: 0.001ms !important;
+    animation: none !important;
+  }
+}
+
+/* =====================================================================
+   图表类型切换 · 图标按钮组
+   SwitchableChart / ChartTypeSwitch 专用
+   ===================================================================== */
+
+.chart-type-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.18rem;
+  background: var(--c-primary-softer, rgba(79, 70, 229, 0.06));
+  border: 1px solid var(--c-border-soft, rgba(148, 163, 184, 0.35));
+  border-radius: var(--r-md, 10px);
+  user-select: none;
+}
+
+.chart-type-switch button {
+  all: unset;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--c-text-3, #64748b);
+  transition: background 0.18s ease, color 0.18s ease, transform 0.12s ease;
+
+  svg {
+    width: 1.05rem;
+    height: 1.05rem;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  &:hover {
+    background: var(--c-primary-soft, rgba(79, 70, 229, 0.12));
+    color: var(--c-primary-700, #4338ca);
+  }
+
+  &.is-active {
+    background: var(--c-primary, #4f46e5);
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(79, 70, 229, 0.35);
+
+    svg { stroke: #fff; }
+  }
+
+  &:active { transform: scale(0.94); }
+}
+
+/* 图标内嵌小标签（tooltip 式） */
+.chart-type-switch button[title]:focus-visible {
+  outline: 2px solid var(--c-primary, #4f46e5);
+  outline-offset: 2px;
+}
+
+/* —— SwitchableChart 容器淡入过渡 —— */
+.chart-switchable {
+  .chart-canvas {
+    animation: chart-fade-in 0.28s ease;
+  }
+}
+
+@keyframes chart-fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}

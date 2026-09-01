@@ -27,7 +27,7 @@ export default function StackedBarChart({
   // hover: { ci, si? } | null；hover.si 为段索引；图例 hover 时 si=-1 高亮整系列
   const [hover, setHover] = useState(null)
   const W = 600, H = height, padL = 44, padR = 18, padT = 16, padB = 30
-  const plotW = W - padL - padR, plotH = H - padT - padB, baseY = padT + plotH
+  const plotW = W - padL - padR, plotH = H - padT - padB
   const header = (
     <ChartHeader title={title} subtitle={subtitle} description={description} actions={actions} showTitle={showTitle} />
   )

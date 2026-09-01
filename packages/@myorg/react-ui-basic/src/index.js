@@ -1,20 +1,19 @@
 // Theme · 主题上下文 + 切换按钮
-export {
-  default as ThemeProvider,
-  ThemeContext,
-  THEMES,
-} from './ThemeProvider.jsx'
+export { default as ThemeProvider } from './ThemeProvider.jsx'
+export { ThemeContext, THEMES } from './ThemeContext.js'
 export { default as ThemeToggle } from './ThemeToggle.jsx'
 export { useTheme } from './useTheme.js'
 
 // Notification · 通知中心 + Toast + 历史抽屉
 export {
   default as NotificationProvider,
+  NotificationDrawer,
+} from './NotificationProvider.jsx'
+export {
   NotificationContext,
   NOTIFY_TYPES,
   DEFAULT_DURATION,
-  NotificationDrawer,
-} from './NotificationProvider.jsx'
+} from './NotificationContext.js'
 export { useNotification } from './useNotification.js'
 
 // CommandPalette · 全局命令面板（Cmd/Ctrl + K）

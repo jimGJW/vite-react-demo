@@ -1,0 +1,71 @@
+{
+  "name": "@myorg/vue-admin-shell",
+  "version": "1.0.0",
+  "description": "Vue 3 后台管理外壳组合件：AdminLayout（侧边/顶部导航，需要 vue-router）、GlobalAgent（可拖拽 AI 气泡 + 快捷键面板 + UniversalPageAgent 指令引擎，内部需要 @myorg/vue-core-composables/@huggingface/transformers/onnxruntime-web）、TestCenter（Python Playwright E2E 测试中心组件）、UniversalPageAgent（自然语言操控页面的 AI 控制台）。与 @myorg/react-admin-shell 功能一一对应。",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./style.css": "./dist/style.css",
+    "./styles": "./dist/style.css",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": [
+    "*.css",
+    "*.scss"
+  ],
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build && npm run types",
+    "types": "node -e \"require('node:fs').copyFileSync('src/index.d.ts','dist/index.d.ts')\"",
+    "pack:local": "npm pack --pack-destination ../../../dist-local"
+  },
+  "keywords": [
+    "vue",
+    "vue3",
+    "admin",
+    "layout",
+    "ai-agent",
+    "test-center",
+    "playwright",
+    "glassmorphism"
+  ],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "@huggingface/transformers": "^3",
+    "@myorg/vue-core-composables": "^1.0.0",
+    "@myorg/vue-styles-reset": "^1.0.0",
+    "onnxruntime-web": "^1",
+    "vue": "^3.0.0",
+    "vue-router": "^4"
+  },
+  "peerDependenciesMeta": {
+    "@huggingface/transformers": { "optional": true },
+    "onnxruntime-web": { "optional": true }
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5 || ^6",
+    "esbuild": "^0.28.2",
+    "sass": "^1.80",
+    "typescript": "^5.6",
+    "vite": "^5 || ^8 || ^9"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/vue-admin-shell.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

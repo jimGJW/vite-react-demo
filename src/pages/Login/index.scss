@@ -698,8 +698,69 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 1.25rem 0 1.5rem;
+  margin: 1.25rem 0 1rem;
   font-size: 0.85rem;
+}
+
+/* —— 样式模式选择器 —— */
+.login-mode-select {
+  margin: 0 0 1.25rem;
+
+  .login-label {
+    display: block;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.mode-toggle {
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.mode-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  padding: 6px 10px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+
+  &:hover:not(.active) {
+    color: #cbd5e1;
+  }
+
+  .mode-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px; height: 18px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+
+    &.antd { background: #1677ff; }
+    &.vue { background: #409eff; }
+  }
 }
 
 .login-remember {

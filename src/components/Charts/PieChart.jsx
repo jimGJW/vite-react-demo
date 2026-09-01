@@ -35,12 +35,12 @@ export default function PieChart({
   const total = data.reduce((s, d) => s + d.value, 0)
   const safeTotal = total > 0 ? total : 1
   const cx = size / 2, cy = size / 2, r = size * 0.4
-  let angle = -90
+  // 起始角 -90°（12 点方向）；用前缀和推算各扇区起止角，避免可变累加器
   const sectors = data.map((d, i) => {
+    const a0 = -90 + data.slice(0, i).reduce((s, p) => s + (p.value / safeTotal) * 360, 0)
     const sweep = (d.value / safeTotal) * 360
-    const a0 = angle, a1 = angle + sweep, mid = a0 + sweep / 2
+    const a1 = a0 + sweep, mid = a0 + sweep / 2
     const path = sweep >= 360 ? null : sectorPath(cx, cy, r, a0, a1)
-    angle = a1
     return { ...d, i, a0, a1, mid, path, pct: d.value / safeTotal, color: d.color || palette[i % palette.length] }
   })
   const single = sectors.length === 1

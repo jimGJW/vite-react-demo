@@ -1,0 +1,27 @@
+.echarts-demo-page {
+  padding: 4px;
+
+  .echarts-tags {
+    margin-bottom: 16px;
+  }
+
+  .echarts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 16px;
+  }
+
+  .echart-box {
+    width: 100%;
+    height: 320px;
+  }
+
+  @media (max-width: 768px) {
+    .echarts-grid {
+      grid-template-columns: 1fr;
+    }
+    .echart-box {
+      height: 260px;
+    }
+  }
+}

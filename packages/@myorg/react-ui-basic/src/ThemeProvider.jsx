@@ -1,11 +1,9 @@
 import './ThemeProvider.scss'
-import { createContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { THEMES, ThemeContext } from './ThemeContext.js'
 
 /** localStorage 存储键 */
 const STORAGE_KEY = 'app-theme'
-
-/** 可用主题：亮色 / 暗色 / 跟随系统 */
-export const THEMES = ['light', 'dark', 'auto']
 
 /** 系统暗色媒体查询 */
 const DARK_MEDIA = '(prefers-color-scheme: dark)'
@@ -18,8 +16,6 @@ const DARK_MEDIA = '(prefers-color-scheme: dark)'
  * @property {(t: ('light'|'dark'|'auto')) => void} setTheme 切换主题
  * @property {('light'|'dark'|'auto')[]} themes    可用主题列表
  */
-
-export const ThemeContext = createContext(null)
 
 /** 读取系统当前主题偏好 */
 function getSystemTheme() {

@@ -1,10 +1,10 @@
 import { useContext } from 'react'
-import { ThemeContext } from './ThemeProvider.jsx'
+import { ThemeContext } from './ThemeContext.js'
 
 /**
  * 读取主题上下文。必须在 `<ThemeProvider>` 内部调用。
  *
- * @returns {import('./ThemeProvider.jsx').ThemeContextValue}
+ * @returns {import('./ThemeContext.js').ThemeContextValue}
  *   `{ theme, resolvedTheme, setTheme, themes }`
  */
 export function useTheme() {

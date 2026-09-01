@@ -137,7 +137,7 @@ export default function SwitchableChart({
   }
 
   // 用 key 保证类型切换时重挂载各图表组件 -> 重放入场动画
-  let inner = null
+  let inner
   switch (safeType) {
     case 'bar':
       inner = (

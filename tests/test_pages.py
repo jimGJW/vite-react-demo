@@ -58,6 +58,17 @@ CASES = [
     {"path": "/command-palette", "name": "命令面板", "texts": ["命令"], "selector": ".page-card"},
     {"path": "/notify", "name": "通知中心", "texts": ["通知"], "selector": ".page-card"},
     {"path": "/data-table", "name": "高级表格", "texts": ["表格"], "selector": "table"},
+    # —— 组件对比中心 ——
+    {"path": "/antd", "name": "Ant Design 组件库", "texts": ["Ant"], "selector": ".page-card"},
+    {"path": "/vue-components", "name": "Vue 组件库 (.vue)", "texts": ["Vue"], "selector": ".vue-bridge-root"},
+    {"path": "/angular-components", "name": "Angular 组件库 (.ts)", "texts": ["Angular 22"], "selector": ".angular-bridge-root"},
+    {"path": "/style-showcase", "name": "样式总对比", "texts": ["样式"], "selector": ".vue-bridge-root"},
+    {"path": "/compare-parent-child", "name": "对比·父子组件传值", "texts": ["父子组件传值"], "selector": ".compare-layout-page"},
+    {"path": "/compare-two-way", "name": "对比·双向绑定", "texts": ["双向绑定"], "selector": ".compare-layout-page"},
+    {"path": "/compare-provide", "name": "对比·跨层传值", "texts": ["跨层传值"], "selector": ".compare-layout-page"},
+    {"path": "/compare-state", "name": "对比·全局状态共享", "texts": ["全局状态"], "selector": ".compare-layout-page"},
+    {"path": "/compare-slot", "name": "对比·插槽分发", "texts": ["插槽"], "selector": ".compare-layout-page"},
+    {"path": "/compare-ref", "name": "对比·Ref/DOM 操作", "texts": ["Ref"], "selector": ".compare-layout-page"},
 ]
 
 
@@ -119,21 +130,30 @@ def login(page, base):
 def run_case(page, base, case):
     """单个页面测试：访问 + 关键文本 + 选择器"""
     url = f"{base}{case['path']}"
-    page.goto(url, wait_until="load")
-    # 等待关键元素出现，确保 React 已渲染
-    page.wait_for_selector(case["selector"], timeout=10000)
-    title = page.title()
-    body = page.inner_text("body")
+    try:
+        page.goto(url, wait_until="load")
+        # 等待关键元素出现，确保 React 已渲染
+        page.wait_for_selector(case["selector"], timeout=15000)
+        title = page.title()
+        body = page.inner_text("body")
 
-    errors = []
-    # 关键文本
-    for t in case.get("texts", []):
-        if t not in body:
-            errors.append(f"缺少文本「{t}」")
-    # 关键元素
-    sel = case.get("selector")
-    if sel and page.locator(sel).count() == 0:
-        errors.append(f"缺少元素 {sel}")
+        errors = []
+        # 关键文本
+        for t in case.get("texts", []):
+            if t not in body:
+                errors.append(f"缺少文本「{t}」")
+        # 关键元素
+        sel = case.get("selector")
+        if sel and page.locator(sel).count() == 0:
+            errors.append(f"缺少元素 {sel}")
+    except Exception as e:
+        return {
+            "path": case["path"],
+            "name": case["name"],
+            "title": "",
+            "pass": False,
+            "errors": [f"页面异常: {e}"],
+        }
 
     return {
         "path": case["path"],

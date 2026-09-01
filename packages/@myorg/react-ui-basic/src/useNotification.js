@@ -1,5 +1,5 @@
 import { useContext } from 'react'
-import { NotificationContext } from './NotificationProvider.jsx'
+import { NotificationContext } from './NotificationContext.js'
 
 /**
  * 读取通知上下文。必须在 `<NotificationProvider>` 内部调用。

@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import useWebQrScanner from '../hooks/useWebQrScanner'
+// 命令式「拉起扫码弹窗」函数（非 React Hook），已更名为 openQrScanner
+import { openQrScanner } from '../hooks/useWebQrScanner'
 
 export default function QrScanBtn({
   onScanSuccess,
@@ -14,7 +15,7 @@ export default function QrScanBtn({
     if (loading) return
     setLoading(true)
 
-    useWebQrScanner({
+    openQrScanner({
       onSuccess: (text) => {
         setLoading(false)
         onScanSuccess?.(text)

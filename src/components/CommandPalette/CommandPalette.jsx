@@ -119,11 +119,17 @@ export default function CommandPalette({
     return () => window.removeEventListener('keydown', handler)
   }, [])
 
-  // 打开时重置状态并聚焦输入框
-  useEffect(() => {
-    if (!open) return
+  // 关闭面板的统一收口：重置查询与选中项，下次打开即全新状态
+  // （避免在 effect 中同步 setState 触发级联渲染；onClose 调用留在事件/effect 中）
+  const closePalette = () => {
+    setOpen(false)
     setQuery('')
     setActiveIndex(0)
+  }
+
+  // 打开时聚焦输入框（状态已在关闭时重置）
+  useEffect(() => {
+    if (!open) return
     const id = requestAnimationFrame(() => inputRef.current?.focus())
     return () => cancelAnimationFrame(id)
   }, [open])
@@ -156,10 +162,8 @@ export default function CommandPalette({
     return groups
   }, [filtered])
 
-  // activeIndex 越界回正
-  useEffect(() => {
-    if (activeIndex >= filtered.length) setActiveIndex(0)
-  }, [filtered.length, activeIndex])
+  // activeIndex 越界时在渲染期钳制（过滤结果变少时保持最近的有效项）
+  const activeIdx = filtered.length ? Math.min(activeIndex, filtered.length - 1) : 0
 
   // 面板内键盘交互：ESC / ↑↓ / Enter（全局监听，焦点无关）
   useEffect(() => {
@@ -167,21 +171,19 @@ export default function CommandPalette({
     const handler = (e) => {
       if (e.key === 'Escape') {
         e.preventDefault()
-        setOpen(false)
+        closePalette()
         onCloseRef.current?.()
       } else if (e.key === 'ArrowDown') {
         e.preventDefault()
-        setActiveIndex((i) => (filtered.length ? (i + 1) % filtered.length : 0))
+        setActiveIndex(filtered.length ? (activeIdx + 1) % filtered.length : 0)
       } else if (e.key === 'ArrowUp') {
         e.preventDefault()
-        setActiveIndex((i) =>
-          filtered.length ? (i - 1 + filtered.length) % filtered.length : 0,
-        )
+        setActiveIndex(filtered.length ? (activeIdx - 1 + filtered.length) % filtered.length : 0)
       } else if (e.key === 'Enter') {
         e.preventDefault()
-        const target = filtered[activeIndex]
+        const target = filtered[activeIdx]
         if (target) {
-          setOpen(false)
+          closePalette()
           onCloseRef.current?.()
           target.action?.(target)
         }
@@ -189,14 +191,14 @@ export default function CommandPalette({
     }
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
-  }, [open, filtered, activeIndex])
+  }, [open, filtered, activeIdx])
 
   // 滚动 active 项到可见区
   useEffect(() => {
     if (!open) return
     const el = listRef.current?.querySelector('[data-active="true"]')
     el?.scrollIntoView({ block: 'nearest' })
-  }, [activeIndex, open, query])
+  }, [activeIdx, open, query])
 
   if (!open) return null
 
@@ -204,7 +206,7 @@ export default function CommandPalette({
     <div
       className="cp-overlay"
       onMouseDown={() => {
-        setOpen(false)
+        closePalette()
         onCloseRef.current?.()
       }}
     >
@@ -248,7 +250,7 @@ export default function CommandPalette({
               <div className="cp-group" key={group.group}>
                 <div className="cp-group-title">{group.group}</div>
                 {group.items.map(({ cmd, i }) => {
-                  const active = i === activeIndex
+                  const active = i === activeIdx
                   return (
                     <button
                       type="button"
@@ -257,7 +259,7 @@ export default function CommandPalette({
                       className={`cp-item${active ? ' active' : ''}`}
                       onMouseEnter={() => setActiveIndex(i)}
                       onClick={() => {
-                        setOpen(false)
+                        closePalette()
                         onCloseRef.current?.()
                         cmd.action?.(cmd)
                       }}

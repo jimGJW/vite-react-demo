@@ -1,0 +1,157 @@
+/* =====================================================================
+   CompareLayout · 双栏对比页通用样式
+   ===================================================================== */
+
+.compare-layout-page {
+  padding: 0 4px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .compare-header {
+    padding: 20px 24px;
+    background: linear-gradient(135deg, #1677ff 0%, #409eff 50%, #722ed1 100%);
+    color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(22, 119, 255, 0.2);
+
+    h2.ant-typography { color: #fff !important; }
+    .ant-typography-secondary { color: rgba(255,255,255,0.92) !important; }
+    .ant-tag { background: rgba(255,255,255,0.2); color: #fff; border: none; }
+  }
+}
+
+/* ========== 双栏演示区 ========== */
+.compare-row { margin: 0; }
+
+.compare-column {
+  display: flex;
+  flex-direction: column;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border: 1px solid #f0f0f0;
+  height: 100%;
+  min-height: 320px;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #fff;
+
+    &.antd { background: linear-gradient(90deg, #1677ff, #4096ff); }
+    &.vue  { background: linear-gradient(90deg, #409eff, #66b1ff); }
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 700;
+    background: rgba(255,255,255,0.25);
+    color: #fff;
+    backdrop-filter: blur(4px);
+  }
+  .col-title { letter-spacing: 0.3px; }
+
+  &__body {
+    padding: 16px;
+    flex: 1;
+    min-height: 260px;
+  }
+}
+
+/* Vue SFC 加载中 */
+.compare-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 220px;
+  color: #909399;
+  font-size: 13px;
+
+  .spinner {
+    width: 22px; height: 22px;
+    border: 3px solid #ebeef5;
+    border-top-color: #409eff;
+    border-radius: 50%;
+    animation: c-spin 0.6s linear infinite;
+  }
+}
+@keyframes c-spin { to { transform: rotate(360deg); } }
+
+/* ========== 对比表格 ========== */
+.compare-diff-table {
+  border: 1px solid #f0f0f0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+
+  .diff-row {
+    display: grid;
+    grid-template-columns: minmax(160px, 1fr) 1.3fr 1.3fr;
+    & + & { border-top: 1px solid #f0f0f0; }
+  }
+  .diff-row--head {
+    background: linear-gradient(90deg, #fafafa, #f5f7fa);
+    font-weight: 600;
+    font-size: 13px;
+    color: #1f1f1f;
+
+    .diff-cell.antd { color: #1677ff; }
+    .diff-cell.vue  { color: #409eff; }
+  }
+
+  .diff-cell {
+    padding: 10px 14px;
+    font-size: 13px;
+    line-height: 1.7;
+    &--title { font-weight: 600; color: #1f1f1f; background: #fafafa; }
+    &.antd { background: rgba(22,119,255,0.03); }
+    &.vue  { background: rgba(64,158,255,0.03); }
+    code {
+      background: #f6f8fa;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #d6336c;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .diff-row { grid-template-columns: 1fr; }
+  }
+}
+
+/* ========== 代码块 ========== */
+.code-block-title {
+  font-weight: 600;
+  font-size: 13px;
+  color: #1677ff;
+  margin-bottom: 6px;
+  &.vue { color: #409eff; }
+}
+.code-block {
+  margin: 0;
+  padding: 14px 16px;
+  background: #1e1f29;
+  color: #abb2bf;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-x: auto;
+  max-height: 320px;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+
+  &.vue { background: #1b2432; }
+  code { font-family: inherit; background: none; color: inherit; padding: 0; }
+}

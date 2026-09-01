@@ -52,7 +52,6 @@ function TestCenter({ cases = [], pythonScript = '', runCommand = '', className 
     setRunning(true)
     // 串行执行，避免用例间状态互相干扰
     for (const tc of cases) {
-      // eslint-disable-next-line no-await-in-loop
       await runOne(tc)
     }
     setRunning(false)

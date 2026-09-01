@@ -133,16 +133,16 @@ export default function NestedPieChart({
 
   const total = currentData.reduce((s, d) => s + d.value, 0)
   const safe = total > 0 ? total : 1
-  let angle = -90
+  // 起始角 -90°（12 点方向）；用前缀和推算各扇区起止角，避免可变累加器
   const sectors = currentData.map((d, i) => {
+    const a0 = -90 + currentData.slice(0, i).reduce((s, p) => s + (p.value / safe) * 360, 0)
     const sweep = (d.value / safe) * 360
-    const a0 = angle, a1 = angle + sweep, mid = a0 + sweep / 2
+    const a1 = a0 + sweep, mid = a0 + sweep / 2
     const path = sweep >= 360
       ? (donut
         ? sectorPath(cx, cy, R, rInner, 0, 359.999)
         : null /* 整饼：用圆兜底 */)
       : sectorPath(cx, cy, R, rInner, a0, a1)
-    angle = a1
     const hasChildren = crumb.length === 0 && Array.isArray(d.children) && d.children.length > 0
     return {
       ...d, i, a0, a1, mid, path,

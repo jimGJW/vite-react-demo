@@ -68,3 +68,9 @@ server.log
 # ============ 临时快照 ============
 tmp/
 temp/
+
+# ============ AI 助手 / 开发工具临时文件 ============
+.workbuddy/
+.trae/
+.trae-cn/
+trae-browser-screenshots/

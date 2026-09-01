@@ -1,6 +1,5 @@
 import './Notification.scss'
 import {
-  createContext,
   useCallback,
   useContext,
   useEffect,
@@ -9,17 +8,12 @@ import {
   useState,
 } from 'react'
 import { createPortal } from 'react-dom'
+import { NOTIFY_TYPES, DEFAULT_DURATION, NotificationContext } from './NotificationContext.js'
 
 /* =====================================================================
  * 通知中心 · 零外部依赖（仅依赖 React）
  * 可整目录拷贝至任意 React 19 项目复用；全部消费 :root 设计 token
  * ===================================================================== */
-
-/** 可用通知类型 */
-export const NOTIFY_TYPES = ['info', 'success', 'warning', 'error', 'primary']
-
-/** 默认自动消失时长（毫秒）；0 表示常驻不自动关闭 */
-export const DEFAULT_DURATION = 4000
 
 /** 类型元数据：图标 + 主色 + 浅底色（全部消费全局 CSS 变量） */
 const TYPE_META = {
@@ -101,8 +95,6 @@ function relativeTime(ts) {
  * @property {(id: string) => void} markRead    标记单条已读
  * @property {() => void} clearHistory          清空全部历史
  */
-
-export const NotificationContext = createContext(null)
 
 /**
  * 通知中心 Provider：管理全局通知状态，并通过 createPortal 将 Toast 堆叠

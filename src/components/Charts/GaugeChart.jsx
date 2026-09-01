@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import {
-  useMounted, polar, ChartEmpty, ChartSkeleton, ChartHeader,
+  useMounted, polar, ChartSkeleton, ChartHeader,
   Tooltip, DEFAULT_FORMAT,
 } from './shared.jsx'
 
@@ -14,7 +14,7 @@ import {
 export default function GaugeChart({
   value = 0, max = 100, size = 240, color = 'var(--c-primary, #4f46e5)', label = '',
   formatValue = DEFAULT_FORMAT, unit = '', className = '',
-  title, subtitle, description, actions, emptyText, loading = false,
+  title, subtitle, description, actions, loading = false,
   showTitle = true,
 }) {
   const mounted = useMounted()
