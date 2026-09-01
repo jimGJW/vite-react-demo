@@ -1,5 +1,7 @@
 # @myorg/react-ui-basic
 
+> 👉 **Vue 3 版本**：[@myorg/vue-ui-basic](../vue-ui-basic/README.md) 功能一一对应，可在纯 Vue 项目直接 `import`。
+
 纯 React + 原生 SCSS 的通用 UI 组件合集。**零外部 UI 库依赖**（不依赖 antd / MUI 等），所有样式消费 `@myorg/react-styles-reset` 的设计 token，使用方不引入 styles 时也会用 fallback 默认值正常显示 Indigo 玻璃态风格。
 
 包含 5 类组件：

@@ -51,7 +51,7 @@
 | 侧边栏菜单      | —          | 手风琴分组      | 分组 + 自定义分隔                | 分组 + 自定义分隔标题 + macOS 滚动条强制可见                          |
 | Vue 页面     | —          | —          | 真 `.vue` SFC              | 真 `.vue` SFC（VueMenu / VueComponents / StyleShowcase） |
 | Angular 页面 | —          | —          | —                         | **真** **`.ts`** **Standalone（AngularComponents）**     |
-| npm 包      | 6 个        | 6 个        | 6 个                       | 6 个（同 v2）                                             |
+| npm 包      | 6 个        | 6 个        | 6 个                       | 12 个（6 React + 6 Vue，一一对应）                        |
 
 ### v3.1.0 变更明细
 
@@ -610,7 +610,7 @@ vite-react-demo/
 
 ## 独立 npm 包
 
-本项目将可复用组件拆成 6 个独立 npm 包，打包格式统一：**ESM + CJS 双产物 +** **`style.css`** **+** **`index.d.ts`**，所有 peerDependencies 严格 external。
+本项目将可复用组件拆成 12 个独立 npm 包（6 React + 6 Vue，一一对应），打包格式统一：**ESM + CJS 双产物 +** **`style.css`** **+** **`index.d.ts`**，所有 peerDependencies 严格 external。
 
 | 包名                          | dist 大小 | 主要内容                                                          |
 | --------------------------- | ------- | ------------------------------------------------------------- |
@@ -785,7 +785,7 @@ A: 主项目运行用 `src/components/Charts`（vite alias 也指向这里）。
 
 ## 版本历史
 
-* **v3.1.0**（2026-08-31）：React + Angular 22 三框架集成，Angular Standalone `.ts` 页面，mountAngularBridge 挂载桥（含 loading/error 状态），侧边栏 macOS 滚动条可见性修复，Vue 模式 `data-ui-mode` CSS 选择器修正
+* **v3.1.0**（2026-08-31）：React + Angular 22 三框架集成，Angular Standalone `.ts` 页面，mountAngularBridge 挂载桥（含 loading/error 状态），侧边栏 macOS 滚动条可见性修复，Vue 模式 `data-ui-mode` CSS 选择器修正；**新增 6 个可发布 Vue 3 npm 包（`@myorg/vue-*` 与 React 包一一对应），支持纯 Vue 项目直接 `import`**
 
 * **v3.0.0**（2026-08-31）：React + Vue 3 双框架集成，6 个对比案例，Vue 文件全部 `.vue` SFC 化，侧边栏分隔优化
 

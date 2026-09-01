@@ -1,5 +1,7 @@
 # @myorg/react-styles-reset
 
+> 👉 **Vue 3 版本**：[@myorg/vue-styles-reset](../vue-styles-reset/README.md) 功能一一对应，可在纯 Vue 项目直接 `import`。
+
 Indigo + Glassmorphism 设计系统的全局样式 Reset。包含：
 - `:root` 设计 token（主色、文本/背景、描边、语义色、圆角、阴影、玻璃态参数、动效）
 - `body` / `#root` 基础重置 + 全网状背景（渐变 + 多层径向光斑 mesh）

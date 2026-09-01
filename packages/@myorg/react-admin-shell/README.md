@@ -1,5 +1,7 @@
 # @myorg/react-admin-shell
 
+> 👉 **Vue 3 版本**：[@myorg/vue-admin-shell](../vue-admin-shell/README.md) 功能一一对应，可在纯 Vue 项目直接 `import`。
+
 后台管理应用「外壳」组合件：带玻璃态导航的 Layout、全局可拖拽 AI Agent 气泡、Playwright E2E 测试中心。
 
 > 这是一组**强依赖**组合包：peerDependencies 包含 antd / react-router-dom / @huggingface/transformers / lodash / antd-form-builder / onnxruntime-web / @myorg/react-core-hooks。如果你的项目不需要这些依赖，直接使用 `@myorg/react-ui-basic`（零外部依赖）即可。
