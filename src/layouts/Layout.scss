@@ -143,33 +143,37 @@
 .app-shell.sidebar-hidden    .app-sidebar { width: var(--sw-hidden);    flex-basis: var(--sw-hidden);
   opacity: 0; visibility: collapse; border-right-color: transparent; }
 
+/* —— 侧边栏滚动容器（菜单本身保持自然高度，由本层负责滚动）——
+   关键：菜单在 .app-sidebar(flex 列) 内被 flex 拉伸到容器高度，自身不会溢出，
+   因此滚动必须放在这一层，否则 antd Menu / el-menu 都无法滚动。 */
+.app-shell .sidebar-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;                       /* Firefox */
+  scrollbar-color: rgba(0, 0, 0, 0.18) transparent;
+
+  &::-webkit-scrollbar { width: 6px; height: 6px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.18);
+    border-radius: 3px;
+    &:hover { background: rgba(0, 0, 0, 0.3); }
+  }
+}
+
 /* =========================================================
    antd Menu 覆盖（让 antd Menu 融入我们的主题）
    ========================================================= */
+/* 滚动容器已移至外层 .sidebar-scroll，菜单本身保持自然高度（不被 flex 拉伸） */
 .app-shell .sidebar-menu {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
   border-inline-end: none !important;          /* 去掉 antd Menu 默认右边框 */
   background: transparent !important;
   padding: 4px 8px;
-
-  /* —— 自定义滚动条：macOS 默认隐藏滚动条，这里强制显示 —— */
-  scrollbar-width: thin;                       /* Firefox */
-  scrollbar-color: rgba(0, 0, 0, 0.15) transparent;
-  &::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  &::-webkit-scrollbar-thumb {
-    background: rgba(0, 0, 0, 0.15);
-    border-radius: 3px;
-    &:hover { background: rgba(0, 0, 0, 0.25); }
-  }
 
 
   /* —— 顶层菜单项 —— */
@@ -258,8 +262,8 @@
 }
 
 /* —— Vue 模式（data-ui-mode 在 <html> 上，非 .app-shell）—— */
-[data-ui-mode="vue"] .sidebar-menu,
-[data-ui-mode="vue"] .v-menu-root {
+[data-ui-mode="vue"] .sidebar-scroll,
+[data-ui-mode="vue"] .vue-menu-sfc {
   scrollbar-color: #c0c4cc transparent;
   &::-webkit-scrollbar-thumb {
     background: #c0c4cc;

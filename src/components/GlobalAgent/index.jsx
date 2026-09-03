@@ -39,14 +39,41 @@ function isTyping(e) {
     return t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)
 }
 
-function GlobalAgent() {
+/**
+ * 全局 AI Agent 浮层。
+ *
+ * 独立使用（默认）：自带可拖动的悬浮气泡 + Ctrl/Cmd+Shift+A 快捷键。
+ * 受控使用（配合 <Assistants />）：传入 open / onOpenChange 由助手中心统一开合，
+ * 同时传 hideBubble 隐藏自身的悬浮气泡，避免与快捷助手键重复。
+ *
+ * props:
+ * - open            受控开关（传了即进入受控模式）
+ * - onOpenChange(next) 受控模式下的开合变化回调
+ * - hideBubble      隐藏自带的悬浮气泡与提示条
+ * - pendingTask     需要回填到 Agent 输入框的文本（消费后由 onPendingTaskConsumed 清空）
+ * - onPendingTaskConsumed()
+ */
+function GlobalAgent({
+    open: controlledOpen,
+    onOpenChange,
+    hideBubble = false,
+    pendingTask,
+    onPendingTaskConsumed,
+}) {
     const routerNavigate = useReactRouterNavigate()
-    const [open, setOpen] = useState(false)
+    const [innerOpen, setInnerOpen] = useState(false)
+    const isControlled = controlledOpen !== undefined
+    const open = isControlled ? controlledOpen : innerOpen
     const [collapsed, setCollapsed] = useState(false)
     const [pos, setPos] = useState(() => loadPosition())
     const [dragging, setDragging] = useState(false)
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
     const panelRef = useRef(null)
+
+    const setOpenState = useCallback((next) => {
+        if (isControlled) onOpenChange?.(next)
+        else setInnerOpen(next)
+    }, [isControlled, onOpenChange])
 
     const defaultPos = () => ({
         x: window.innerWidth - 300,
@@ -56,14 +83,14 @@ function GlobalAgent() {
     const currentPos = pos || defaultPos()
 
     const toggle = useCallback(() => {
-        setOpen((o) => !o)
+        setOpenState(!open)
         setCollapsed(false)
-    }, [])
+    }, [open, setOpenState])
 
     const close = useCallback(() => {
-        setOpen(false)
+        setOpenState(false)
         setCollapsed(false)
-    }, [])
+    }, [setOpenState])
 
     useEffect(() => {
         const onKey = (e) => {
@@ -183,13 +210,20 @@ function GlobalAgent() {
                         </div>
                         {!collapsed && (
                             <div className="ga-panel-body">
-                                <UniversalPageAgent mode="direct" className="ga-agent" router={{ navigate: routerNavigate }} />
+                                <UniversalPageAgent
+                                    mode="direct"
+                                    className="ga-agent"
+                                    router={{ navigate: routerNavigate }}
+                                    pendingTask={pendingTask}
+                                    onPendingTaskConsumed={onPendingTaskConsumed}
+                                />
                             </div>
                         )}
                     </div>
                 </div>
             )}
 
+            {!hideBubble && (
             <div
                 className={`ga-bubble ${open ? 'hidden' : ''}`}
                 style={{ left: currentPos.x, top: currentPos.y }}
@@ -207,8 +241,9 @@ function GlobalAgent() {
                 </div>
                 <div className="ga-bubble-tooltip">AI Agent</div>
             </div>
+            )}
 
-            {!open && (
+            {!hideBubble && !open && (
                 <div className="ga-hint" onClick={toggle}>
                     <span>🤖 Ctrl+Shift+A 呼出 Agent · Ctrl+↑↓ 滚动 · Ctrl+⌥+←→ 前进后退</span>
                 </div>
