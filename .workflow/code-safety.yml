@@ -1,0 +1,168 @@
+# ==============================================================================
+# Code Safety Check for Gitee Go
+# PR / push 到主分支时自动跑全量安全检查，失败阻塞合并；合并请求中自动评论报告。
+#
+# 前置（在 Gitee 管理页一次性配置）:
+#   1) 私人令牌：https://gitee.com/profile/personal_access_tokens
+#      权限: projects、pull_requests、notes、user_info
+#   2) 仓库管理 → 流水线 → 流水线变量: GITEE_TOKEN=<上一步令牌>
+#   3) 仓库设置 → 合并请求设置 → 勾选「合并请求必须通过流水线才能合并」
+# ==============================================================================
+
+name: Code Safety Check
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+env:
+  # 国内网络优先用 Gitee 镜像（jim_gjw 账号下的 code-safety-checker）
+  CHECKER_REPO: https://gitee.com/jim_gjw/code-safety-checker.git
+  CHECKER_REF: main
+  STRICT: "false"
+  ONLY: ""
+  SKIP: ""
+
+stages:
+  - build
+
+jobs:
+  safety-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: false
+
+      - name: 安装依赖（gitleaks + jq + curl）
+        run: |
+          echo "→ 系统基础工具"
+          sudo apt-get update -y
+          sudo apt-get install -y curl jq tar ca-certificates
+
+          echo "→ 安装 gitleaks（优先从 Gitee 镜像下载兜底版本）"
+          set +e
+          VER=$(curl -fsSL --max-time 10 https://api.github.com/repos/gitleaks/gitleaks/releases/latest \
+            | jq -r '.tag_name' 2>/dev/null)
+          set -e
+          if [[ -z "$VER" ]]; then VER="v8.18.4"; fi
+          if ! curl -fsSL --max-time 60 \
+              "https://github.com/gitleaks/gitleaks/releases/download/${VER}/gitleaks_${VER#v}_linux_x64.tar.gz" \
+              -o /tmp/gitleaks.tgz 2>/dev/null; then
+            echo "→ GitHub 下载失败，使用 Gitee 镜像版"
+            curl -fsSL --max-time 120 \
+              "https://gitee.com/mirrors/gitleaks/attach_files/1539854/download/gitleaks_8.18.4_linux_x64.tar.gz" \
+              -o /tmp/gitleaks.tgz \
+              || curl -fsSL --max-time 120 \
+                   "https://ghproxy.com/https://github.com/gitleaks/gitleaks/releases/download/v8.18.4/gitleaks_8.18.4_linux_x64.tar.gz" \
+                   -o /tmp/gitleaks.tgz
+          fi
+          sudo tar -xzf /tmp/gitleaks.tgz -C /usr/local/bin gitleaks
+          gitleaks version || true
+
+      - name: 拉取 code-safety-checker
+        run: |
+          echo "→ clone ${CHECKER_REPO}@${CHECKER_REF}"
+          set +e
+          git clone --depth 1 --branch "${CHECKER_REF}" "${CHECKER_REPO}" .code-safety-checker 2>/dev/null
+          rc=$?
+          set -e
+          if [[ $rc -ne 0 ]]; then
+            echo "→ 首选地址失败，回退 GitHub"
+            git clone --depth 1 --branch "${CHECKER_REF}" \
+              "https://github.com/jimGJW/code-safety-checker.git" .code-safety-checker
+          fi
+          chmod +x .code-safety-checker/scripts/*.sh
+          ls .code-safety-checker/scripts/
+
+      - name: 标记 PR pending 状态
+        if: ${{ always() }}
+        run: |
+          PR_NUM="${GITEE_PRS_NUMBER:-${GITEE_PR_NUMBER:-}}"
+          if [[ -z "$PR_NUM" ]]; then exit 0; fi
+          SHA="${GITEE_PRS_HEAD_SHA:-${GITEE_PUSH_AFTER:-$(git rev-parse HEAD)}}"
+          REPORT_DIR="$PWD/.code-safety-checker/reports" \
+          GITEE_TOKEN="${GITEE_TOKEN}" \
+            bash .code-safety-checker/scripts/gitee-comment.sh commit-state "$SHA" pending "🔒 代码安全检查运行中..." || true
+        continue-on-error: true
+
+      - name: 执行代码安全检查
+        id: check
+        run: |
+          CHECKER="$PWD/.code-safety-checker"
+          export REPORT_DIR="${CHECKER}/reports"
+          mkdir -p "$REPORT_DIR"
+
+          args=(--dir .)
+          [[ "${STRICT}" == "true" ]] && args+=(--strict)
+          [[ -n "${ONLY}" ]] && args+=(--only "${ONLY}")
+          [[ -n "${SKIP}" ]] && args+=(--skip "${SKIP}")
+
+          echo "→ bash ${CHECKER}/scripts/run-checks.sh ${args[*]}"
+          set +e
+          bash "${CHECKER}/scripts/run-checks.sh" "${args[@]}" 2>&1 | tee "${REPORT_DIR}/run-output.log"
+          rc=${PIPESTATUS[0]}
+          set -e
+          echo "→ rc=$rc"
+          exit $rc
+
+      - name: 评论检查报告到 PR
+        if: ${{ always() }}
+        run: |
+          PR_NUM="${GITEE_PRS_NUMBER:-${GITEE_PR_NUMBER:-}}"
+          if [[ -z "$PR_NUM" ]]; then echo "非 PR 事件，跳过评论"; exit 0; fi
+
+          SUMMARY=".code-safety-checker/reports/ci-summary.md"
+          LOG=".code-safety-checker/reports/run-output.log"
+          TMP_BODY="/tmp/gitee-comment.md"
+
+          {
+            echo "## 🔒 代码安全与可靠性检查"
+            echo
+            if [[ -f "$SUMMARY" ]]; then cat "$SUMMARY"; else echo "⚠️ 未生成 ci-summary.md，请查看流水线日志/Artifacts。"; fi
+            echo
+            echo "<details><summary>点击展开运行日志（最近 120 行）</summary>"
+            echo
+            echo '```'
+            [[ -f "$LOG" ]] && sed -E 's/\x1b\[[0-9;]*m//g' "$LOG" | tail -120
+            echo '```'
+            echo
+            echo "</details>"
+            echo
+            echo "> 完整日志与各检查项原始产物可在流水线 Artifacts 中下载。"
+          } > "$TMP_BODY"
+
+          GITEE_TOKEN="${GITEE_TOKEN}" \
+            bash .code-safety-checker/scripts/gitee-comment.sh comment-pr "$PR_NUM" "$TMP_BODY" \
+            || echo "⚠️ 评论失败（请确认 GITEE_TOKEN 变量已配置且含 pull_requests/notes 权限）"
+        continue-on-error: true
+
+      - name: 标记 PR 最终状态
+        if: ${{ always() }}
+        run: |
+          PR_NUM="${GITEE_PRS_NUMBER:-${GITEE_PR_NUMBER:-}}"
+          if [[ -z "$PR_NUM" ]]; then exit 0; fi
+          SHA="${GITEE_PRS_HEAD_SHA:-${GITEE_PUSH_AFTER:-$(git rev-parse HEAD)}}"
+          if [[ "${GITEE_JOB_STATUS:-success}" == "success" ]]; then
+            ST=success; MSG="✅ 代码安全检查通过"
+          else
+            ST=failure; MSG="❌ 代码安全检查未通过"
+          fi
+          REPORT_DIR="$PWD/.code-safety-checker/reports" \
+          GITEE_TOKEN="${GITEE_TOKEN}" \
+            bash .code-safety-checker/scripts/gitee-comment.sh commit-state "$SHA" "$ST" "$MSG" || true
+        continue-on-error: true
+
+      - name: 上传检查报告
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: code-safety-reports
+          path: |
+            .code-safety-checker/reports/**
+          if-no-files-found: ignore
+          retention-days: 14
