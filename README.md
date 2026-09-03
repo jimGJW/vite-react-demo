@@ -793,3 +793,27 @@ A: 主项目运行用 `src/components/Charts`（vite alias 也指向这里）。
 
 * **v1.0.0**（2026-08-28）：初始版本，16 路由页面，6 个可发布 npm 包，Playwright E2E
 
+
+
+<!-- 安全检查门禁集成测试：提交此 PR 用于验证 code-safety-checker workflow 自动触发 -->
+## 安全门禁说明
+
+本仓库已接入 [code-safety-checker](https://github.com/jimGJW/code-safety-checker)：
+
+- PR 打开/更新时自动执行全量安全检查
+- 检查报告以机器人评论方式展示在 PR 中
+- 未通过的 PR 无法合并（分支保护已启用 status check 阻塞）
+
+### 覆盖维度
+
+| 维度 | 说明 |
+|------|------|
+| 🔑 敏感信息 | gitleaks 全历史 commit 扫描 + 内置正则兜底 |
+| 📦 依赖漏洞 | npm audit |
+| 🎨 前端安全 | XSS / eval / dangerouslySetInnerHTML 等 |
+| 📜 许可证合规 | npm 依赖许可证白名单校验 |
+
+### 跳过方式
+
+给 PR 打标签 **skip-safety-check** 即可临时跳过（仅跑 diff 快速扫描）。
+
