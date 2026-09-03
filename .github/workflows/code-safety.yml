@@ -1,0 +1,49 @@
+# ==============================================================================
+# Code Safety Check —— vite-react-demo 的 PR 安全门禁
+#
+# 工作原理：
+#   引用 jimGJW/code-safety-checker 仓库的 reusable workflow。
+#   PR 打开/更新时自动触发：拉取全量历史 → 安装 gitleaks → 跑全量安全检查
+#   （含 gitleaks 全历史敏感信息扫描）→ 把检查报告评论到 PR → 上传 Artifacts。
+#
+# 检查维度（由 run-checks.sh 自动按项目类型选择，vite-react-demo 会跑）：
+#   - 🔑 敏感信息泄露（gitleaks 扫描全部历史 commit + 内置正则）
+#   - 📦 依赖漏洞（npm audit）
+#   - 🎨 前端安全（XSS / eval / dangerouslySetInnerHTML 等）
+#   - 📜 许可证合规
+#
+# 调整方式：
+#   - strict: true  → medium 及以上问题也阻塞 PR 合并
+#   - strict: false → 仅 high/critical 阻塞（默认）
+#   - only:  "secret,dep,frontend"  → 只跑指定检查
+#   - skip:  "license"              → 跳过指定检查
+#
+# 临时跳过某次检查：给 PR 打上 `skip-safety-check` 标签即可。
+# ==============================================================================
+
+name: Code Safety Check
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+concurrency:
+  group: code-safety-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  safety:
+    uses: jimGJW/code-safety-checker/.github/workflows/code-safety-check.yml@main
+    with:
+      # 严格模式：false=仅 high/critical 阻塞；true=medium 及以上都阻塞
+      strict: false
+      # 留空则由检查器按项目类型自动选择；如需限定可填: "secret,dep,frontend,license"
+      only: ""
+      skip: ""
+    secrets: inherit
