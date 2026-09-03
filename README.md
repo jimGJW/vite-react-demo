@@ -632,7 +632,16 @@ vite-react-demo/
 | `@myorg/vue-admin-shell`      | AdminLayout / GlobalAgent / TestCenter / UniversalPageAgent         |
 | `@myorg/vue-svg-charts`       | 12 个纯 SVG 零依赖图表（Vue 版）                                        |
 
-### 在其他 React 项目中使用（gitpkg 一键安装）
+### 在其他 React 项目中使用
+
+本仓库同时托管在 **GitHub** 与 **Gitee**，请按需选择：
+
+| 平台 | 仓库地址 | 安装方式 |
+| ---- | ---- | ---- |
+| GitHub | `https://github.com/jimGJW/vite-react-demo` | `gitpkg` 一键安装（推荐，可直达子目录） |
+| Gitee  | `https://gitee.com/jim_gjw/vite-react-demo` | 先 clone 主项目，再用 `npm pack` / `npm i file:` 本地安装 |
+
+#### 方案 A：GitHub（gitpkg 一键安装）
 
 ```bash
 npm install react react-dom
@@ -652,15 +661,49 @@ import { ThemeProvider, StarArray, DataTable } from '@myorg/react-ui-basic'
 import { LineChart, BarChart, SwitchableChart } from '@myorg/react-svg-charts'
 ```
 
+#### 方案 B：Gitee（本地构建 tarball 安装）
+
+```bash
+# 1) 从 Gitee 克隆主项目
+git clone https://gitee.com/jim_gjw/vite-react-demo.git
+cd vite-react-demo
+nvm use 24   # 必须 Node ≥21
+npm install
+
+# 2) 构建全部 React 包（产物输出到各 packages/@myorg/react-*/dist）
+npm run pkg:all:build-react
+
+# 3) 打包成 .tgz（可选：直接用 file: 路径跳过此步）
+npm run pkg:all:pack
+# 产物在 dist-local/ 目录下，可直接 copy 到目标项目：
+#   npm install ./dist-local/myorg-react-styles-reset-1.0.0.tgz
+# 或直接从克隆目录用 file: 路径：
+#   npm install /path/to/vite-react-demo/packages/@myorg/react-styles-reset
+```
+
+---
+
 ### 在其他 Vue 3 项目中使用
 
 每个 React 包都有一一对应的 Vue 3 包，API 语义对齐、实现换成 `<script setup>` SFC + composables。核心能力（Auth / 离线语音 / 扫码 / AI Agent）均可在 Vue 项目中直接引入。
+
+#### 方案 A：GitHub（gitpkg 一键安装）
 
 ```bash
 npm install vue vue-router
 for PKG in vue-styles-reset vue-core-composables vue-ui-basic vue-media-tools vue-admin-shell vue-svg-charts; do
   npm install @myorg/$PKG@"https://gitpkg.vercel.app/jimGJW/vite-react-demo/packages/@myorg/$PKG?main"
 done
+```
+
+#### 方案 B：Gitee（本地构建 tarball 安装）
+
+```bash
+git clone https://gitee.com/jim_gjw/vite-react-demo.git
+cd vite-react-demo
+nvm use 24 && npm install
+npm run pkg:all:build-vue     # 构建全部 6 个 Vue 包
+# 再 npm install file:/path/to/packages/@myorg/vue-* 即可
 ```
 
 ```js

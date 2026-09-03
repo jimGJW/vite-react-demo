@@ -58,7 +58,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-org/react-ui-basic.git"
+    "url": "https://github.com/jimGJW/vite-react-demo.git",
+    "directory": "packages/@myorg/react-ui-basic",
+    "homepage": "https://gitee.com/jim_gjw/vite-react-demo"
   },
   "publishConfig": {
     "access": "public"
