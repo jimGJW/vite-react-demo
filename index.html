@@ -1,13 +1,60 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="React 19 + Vue 3 + Angular 22 多框架组件演示：图表、数据表格、命令面板、语音与扫码、AI Agent 控制台。" />
+    <!-- 明暗主题色：地址栏 / 原生控件跟随应用主题，避免暗色模式下白底闪烁 -->
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#6366f1" />
     <title>vite-react-demo</title>
+    <style>
+      /* 首屏骨架：入口 chunk 加载前避免白屏；React 挂载时会替换 #root 内容 */
+      #boot-skeleton {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        font: 14px/1.5 system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+        color: #6366f1;
+        background: #f7f7fb;
+      }
+      #boot-skeleton .spinner {
+        width: 32px;
+        height: 32px;
+        border: 3px solid rgba(99, 102, 241, 0.25);
+        border-top-color: #6366f1;
+        border-radius: 50%;
+        animation: boot-spin 0.6s linear infinite;
+      }
+      @keyframes boot-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @media (prefers-color-scheme: dark) {
+        #boot-skeleton {
+          background: #0b1020;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="boot-skeleton">
+        <div class="spinner"></div>
+        <div>正在加载应用…</div>
+      </div>
+    </div>
+    <noscript>
+      <div style="padding: 24px; font: 14px/1.6 system-ui, sans-serif">
+        本应用需要启用 JavaScript 才能运行，请在浏览器设置中开启后刷新页面。
+      </div>
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

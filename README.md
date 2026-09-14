@@ -351,6 +351,12 @@ optimizeDeps: {
 | `/embed`           | iframe 嵌套预览  | [Embed](src/pages/Embed)                                       | 探测目标站点是否允许内嵌             |
 | `/agent`           | AI Agent 控制台 | [Agent](src/pages/Agent)                                       | 自然语言驱动 DOM 操作            |
 | `/voice`           | 语音助手         | [VoiceAssistant](src/pages/VoiceAssistant)                     | Web Speech + Whisper 双引擎 |
+| `/chatbot`         | 对话助手         | [ChatBotDemo](src/pages/ChatBotDemo)                           | 流式对话 + 卡片渲染 + 历史会话        |
+| `/share`           | 对话分享落地页     | [ChatBotShare](src/pages/ChatBotShare)                         | 只读分享 + 续写回流 + 可注入请求      |
+| `/kit`             | 组件工具箱        | [KitDemo](src/pages/KitDemo)                                   | 18 组件 + 4 Hook：移动交互/展示/表单     |
+| `/studio`          | 组件工坊        | [StudioDemo](src/pages/StudioDemo)                             | 24 组件按 10 类分组：大屏/规则/图像/表单/报告/导航/表格/布局/可视化/工具 |
+| `/templates`       | 开源模板库      | [TemplatesDemo](src/pages/TemplatesDemo)                       | 19 个纯上游开源模板的元信息卡片库（可过滤/溯源） |
+| `/utils`           | 小功能集        | [UtilsDemo](src/pages/UtilsDemo)                               | 50+ 纯函数 + 20 Hook：防抖/格式化/脱敏/树/水印等 |
 | `/form-builder`    | 配置表单         | [FormBuilderDemo](src/pages/FormBuilderDemo)                   | JSON 驱动动态表单              |
 | `/theme`           | 主题切换         | [ThemeDemo](src/pages/ThemeDemo)                               | CSS 变量多主题实时预览            |
 | `/charts`          | SVG 图表组件库    | [ChartsDemo](src/pages/ChartsDemo)                             | 12 种纯 SVG 零依赖图表          |
@@ -507,6 +513,114 @@ optimizeDeps: {
 
 * **JSON 驱动表单**：`antd-form-builder` 配置化表单
 
+### 6. 对话助手 ChatBot（`/chatbot`）
+
+一套可独立复用的 AI 流式对话能力，位于 [src/components/ChatBot](src/components/ChatBot)：
+
+* **流式渲染**：逐行 JSON 协议（兼容标准 SSE），状态帧驱动进度条，`stop` 帧作为权威正文收口
+* **四类卡片**：列表 / 数据表 / 任务表 / 折线图，按 `contentType` 自动分发；表格可切图表并导出 CSV
+* **历史会话**：分页列表、点击回读、删除、清空；另含赞踩、复制、重新生成、停止生成
+* **可注入后端**：`createHttpApi`（真实接口）与 `createMockApi`（离线演示）同签名，可无缝替换
+* **性能**：上下文按变化频率拆分 + 全链路 `React.memo`，流式期间只重绘正在生成的那一条气泡
+
+> 📖 完整文档（协议 / 卡片格式 / 全部 API / 常见问题）：[ChatBot/README.md](src/components/ChatBot/README.md)
+
+### 7. 对话分享 QASharing（`/share`）
+
+把「一段 AI 对话」变成可随手转发的只读落地页，位于 [src/components/ChatBot/sharing](src/components/ChatBot/sharing)：
+
+* **只读落地页**：`SharedConversationView` 只做「取数据 → 只读渲染 → 给一个续写入口」，无 SSE / 输入框 / 赞踩
+* **可注入请求**：`request` / `api` / `flag` / `transform` 全部外置，另有零依赖 fetch 兜底；`userId` 可选，**匿名可访问**
+* **卡片可插拔**：`renderers` 注入富卡片，未注册的 `contentType` 退化成 Markdown（不会崩）；可选 `createSharedRenderers()` 预设复用本项目四类只读卡片
+* **续写回流**：点击「继续追问」触发 `onContinue(userShareId, { sessionId })`，主聊天页据此 `setContinuedId` 接上下文
+* **可组合**：只要逻辑可用 `useShareConversation`，要自定义布局可用 `ConversationList / ConversationItem / MessageBubble`
+
+> 📖 完整文档（全部 props / 数据结构 / 接口契约 / 迁移清单 / 6 个已修缺陷）：[sharing/README.md](src/components/ChatBot/sharing/README.md)
+
+### 8. 组件工具箱 Kit（`/kit`）
+
+从两个本地存量项目（旧移动端：Dva + antd-mobile；旧平板端：Ant Design Pro 血统）里**筛选**出的通用能力，去掉业务耦合后重写为 React 19 + antd 5 组件，位于 [src/components/Kit](src/components/Kit)：
+
+* **18 个组件 + 4 个 Hook + 1 组纯函数工具**，分三组：
+  * 移动交互 —— 电子签名（Canvas 手写）、下拉刷新、触底加载、可拖拽悬浮球、拖拽排序、超宽跑马灯
+  * 数据展示 —— 多行文本省略、指标卡（涨红跌绿）、倒计时、通知面板、迷你图表 5 件套（面积/柱状/进度条/水波纹/时间趋势）
+  * 表单控件 —— 标签输入、异步选择器、时段录入（含重叠校验）
+* **顺带修掉的原实现缺陷**：图表容器按数据有无渲染导致「永远画不出来」、倒计时自减在后台标签页累积漂移、导出签名透明底变黑、`useEffect` 缺依赖数组导致重复测量、拖拽库（`react-sortable-hoc`）与 React 19 不兼容
+* **选型台账**：什么值得搬、什么该由 antd 5 内置能力替代（Watermark / Descriptions / Result / Collapse 等）、什么是纯业务不该搬，逐条记录理由
+* **图表用 ECharts 6 重写**：原项目图表基于 AntV G2 2.x + `g2-plugin-slider` + `g-cloud`，迁移后外部依赖更少
+* **可整目录复用**：零业务耦合（无接口 / redux / i18n），样式全部走 `--c-*` 且带 fallback
+
+> 📖 完整文档（调研清单 / 选型台账 / 全部组件 API / 迁移基线 / 去敏说明）：[Kit/README.md](src/components/Kit/README.md)
+
+### 9. 组件工坊 Studio（`/studio`）
+
+从本地 `Front-End` 目录下 **80+ 存量项目**里普查筛选、去业务化、零依赖重写的可复用组件集合，位于 [src/components/Studio](src/components/Studio)，演示页按**左侧 Menu 分类 + 右侧 Tabs 组件**组织：
+
+* **24 个组件，10 个能力分组**：
+  * 可视化大屏 —— 扫描式空态、无缝滚动榜单、可编排看板（碰撞检测）、断轴柱状图（框选折叠区间）、数据驱动区域图（分层打点）、大屏自适应表格（拖拽列宽/行高 + 跑马灯）
+  * 规则与编排 —— 可视化条件编排（AND/OR 递归树）、结构化对象 diff（非文本 diff）
+  * 图像与标注 —— 图像标注与缩放平移（归一化锚点，缩放后不漂移）
+  * 表单与树 —— schema 驱动动态表单、层级组织树（可检索）
+  * 报告与溯源 —— 安全扫描报告卡片（严重度分布 + 明细）
+  * 导航与多标签 —— 锚点滚动导航（rAF 平滑滚动）、多标签页工作区（可关闭/新建）
+  * 表格增强 —— 关键词高亮、树表（祖先保留搜索）、行内编辑表格
+  * 自由拖拽布局 —— 卡片百分比定位、拖拽移动 + 拖角缩放（轻量低代码仪表盘基座）
+  * 可视化交互 —— Canvas 仪表盘（零依赖缓动）、3D 卡片轮播（手势方向判定）、帧序列播放器
+  * 工具 —— 右键菜单、错误边界、全屏容器（useFullscreen Hook）
+* **选型台账**：纯上游开源模板（ant-design-pro / vue-element-admin / react-admin 等约 19 个）不再「不移植」，已单独收入口令「开源模板库」模块展示（见 §10）；Vue / 原生壳 / 后端项目判「借鉴思路重写」；仅重写真正通用的能力
+* **React 19 兼容重写**：ref 不混进 hook 返回对象、不在 effect 里同步 setState、老拖拽/图表库全部零依赖替换
+* **全链路去敏**：组件不认识任何业务字段，演示数据全为中性虚构占位，无接口 / token / 品牌 / 组织名
+
+> 📖 完整文档（调研台账 / 分组清单 / 迁移基线 / 去敏说明）：[Studio/README.md](src/components/Studio/README.md)
+
+***
+
+### 10. 开源模板库 Templates（`/templates`）
+
+从本地 `Front-End` 归档中识别出的 **纯上游开源模板**（此前在 Studio 普查中判为 D 类、未做移植），统一收入本模块作为可浏览的**元信息卡片库**，位于 [src/components/Templates](src/components/Templates)，演示页 `[TemplatesDemo]`：
+
+* **19 个模板，按技术栈分 5 组**（顶部 Segmented 可切换过滤）：
+  * **React（7）** —— Ant Design Pro、antd-admin、react (duxianwei520)、react-admin (yezihaohao)、react-admin-master (z-9527)、react-xs-admin、react-boilerplate
+  * **Vue（9）** —— vue-element-admin、vue-typescript-admin-template、vue-cli-pc（基座）、cemao-pc / erp-cm-admin / erp-supervise / web-carpool / webpool（同基座衍生）、asunrabbit（Vite Vue-TS）
+  * **移动端（1）** —— MobVue
+  * **组件库 · 工具（2）** —— Element Plus、PDF.js
+* **每张卡片**含：框架标签、分类、简介、能力点、技术标签、上游仓库链接（公开项目可一键溯源；本地派生/无独立仓库的标注「开源模板（本地）」或「同基座衍生（本地）」）
+* **全链路去敏**：仅收录名称 / 技术栈 / 能力点等公开元信息，不含任何内部代码、接口或敏感数据；模板本身均为公开上游开源项目
+
+***
+
+### 11. 小功能集 Utils（`/utils`）
+
+从存量项目里按**出现频次**筛出的高频小工具（此前两轮普查都漏掉的「小功能」），位于 [src/components/Utils](src/components/Utils)，全部零依赖、去业务化：
+
+* **`utils.js` —— 50+ 纯函数**（不依赖 React / DOM，可直接 node 跑断言）
+  * 时间 —— `formatDate` / `formatRelativeTime` / `diffDays` / `toDate`（兼容秒级与毫秒级时间戳）
+  * 频率控制 —— `debounce` / `throttle`（带 cancel/flush）、`sleep`、`retry`（异步重试）
+  * 格式化脱敏 —— `formatThousands` / `formatFileSize` / `formatPercent` / `mask`（手机号打码）
+  * 数组对象 —— `arrayToObject` / `groupBy` / `unique` / `sortBy` / `flatten` / `deepClone` / `deepMerge` / `isEmpty` / `pick` / `omit` / `safeJsonParse`
+  * 树结构 —— `treeToArray` / `arrayToTree` / `findTreeNode`
+  * URL / 存储 / 环境 —— `parseQuery` / `stringifyQuery`、带过期时间的 `setStorage`、UA 判断
+  * 导出 —— `exportCsv`（带 BOM，Excel 中文不乱码）/ `downloadBlob` / `copyText`
+* **`hooks.js` —— 20 个 Hook**：`useDebounce` / `useThrottle` / `useDebouncedCallback` / `useLocalStorage` / `useSessionStorage` / `useCopy` / `useWatermark` / `useTitle` / `useOnline` / `useMediaQuery` / `useClickOutside` / `useKeyPress` / `useInterval` / `useTimeout` / `useSize` / `useHover` / `useScrollPosition` / `useUnmount` / `useToggle` / `useCounter`
+* **水印取材于存量项目**（`useWatermark` 在 4 个存量项目中出现）：canvas 平铺生成 + **MutationObserver 防删除**，节点被删或样式被改会自动恢复
+* **遵循本项目 React 19 约束**：ref 由调用方创建后传入 hook、不在 effect 里同步 setState、定时器统一清理
+
+***
+
+### 12. 测试与质量保障
+
+三层验证，成本从低到高，覆盖不同层面：
+
+| 层 | 命令 | 覆盖 |
+| --- | --- | --- |
+| ① 单元测试 | `npm test` | **86 个断言 / 470ms**，零依赖 node runner（`scripts/run-tests.mjs` + `tests/unit/*.test.mjs`），覆盖 Utils 纯函数、Kit 工具、ChatBot 流式协议、分享协议、高亮拆分、模板数据 |
+| ② 应用内测试中心 | 访问 `/test-center` | 浏览器侧断言：模块导出完整性、`exportCsv` / storage / debounce 计时、路由注册等 node 覆盖不到的部分 |
+| ③ E2E | `npm run test:e2e` | Python + Playwright 真实浏览器逐页访问 |
+
+* **不引入 vitest / jest**：纯函数模块本就零依赖，直接用 node 断言更快（470ms）且零安装成本
+* 单测文件约定：`tests/unit/<模块>.test.mjs`，`default` 导出 `[用例名, async fn][]`；断言用 `tests/unit/harness.mjs`
+* 只跑某个模块：`node scripts/run-tests.mjs utils`
+
 ***
 
 ## 项目结构
@@ -540,6 +654,25 @@ vite-react-demo/
 │   │   ├── StarArray/                # 365 周天星辰大阵
 │   │   ├── GlobalAgent/              # 全局浮动 Agent
 │   │   ├── VoiceInput/               # 语音输入（在线/离线双引擎）
+│   │   ├── ChatBot/                  # ★ 流式对话助手（协议/卡片/历史/赞踩，含 README.md）
+│   │   │   └── sharing/              # ★ 对话分享只读落地页（QASharing，含 README.md）
+│   │   ├── Assistants/               # AI Agent + 语音助手弹窗 + 可拖动快捷键
+│   │   ├── Kit/                      # ★ 组件工具箱（移动交互/展示/表单，含 README.md）
+│   │   │   ├── interaction/          # 签名板 / 下拉刷新 / 触底加载 / 悬浮球 / 拖拽排序 / 跑马灯
+│   │   │   ├── display/              # 省略 / 指标卡 / 倒计时 / 通知面板
+│   │   │   │   └── charts/           # 迷你面积 / 柱状 / 进度条 / 水波纹 / 时间趋势
+│   │   │   └── form/                 # 标签输入 / 异步选择器 / 时段录入
+│   │   ├── Studio/                   # ★ 组件工坊（10 分组 24 组件，含 README.md）
+│   │   │   ├── screen/               # 空态 / 滚动榜 / 看板 / 断轴图 / 区域图 / 自适应表格
+│   │   │   ├── builder/              # 可视化条件编排 / 结构化对象 diff
+│   │   │   ├── media/                # 图像标注与缩放平移
+│   │   │   ├── form/                 # schema 动态表单 / 层级组织树
+│   │   │   ├── report/               # 安全扫描报告卡片
+│   │   │   ├── nav/  table/  layout/  viz/  util/   # 进阶交互/表格/布局/可视化/工具
+│   │   ├── Templates/                # ★ 开源模板库（19 个上游开源模板元信息，纯数据模块）
+│   │   ├── Utils/                    # ★ 小功能集（30+ 纯函数 + 18 Hook，零依赖）
+│   │   │   ├── utils.js              # 纯函数（node 可直跑断言）
+│   │   │   └── hooks.js              # React Hooks（ref 由调用方传入）
 │   │   └── ...                       # CommandPalette / DataTable / Notification 等
 │   ├── contexts/
 │   │   ├── AuthContext.jsx           # 登录状态 + 路由守卫

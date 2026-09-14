@@ -1,0 +1,162 @@
+/* ============ 小功能集 Utils 演示页 ============ */
+.utils-demo {
+  padding: 20px 24px 32px;
+  max-width: 1320px;
+  margin: 0 auto;
+
+  &__header {
+    margin-bottom: 16px;
+  }
+
+  &__layout {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  &__menu {
+    flex: 0 0 168px;
+    border-radius: var(--r-lg, 8px);
+    border: 1px solid var(--c-border-soft, #f0f0f0);
+    background: var(--c-card, #fff);
+  }
+
+  &__content {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  &__seg {
+    margin-bottom: 14px;
+    overflow-x: auto;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 14px;
+    align-items: start;
+  }
+
+  &__card {
+    border-radius: var(--r-lg, 8px);
+    border: 1px solid var(--c-border-soft, #f0f0f0);
+  }
+
+  &__title {
+    display: block;
+    font-size: 0.92rem;
+    margin-bottom: 4px;
+  }
+
+  &__desc {
+    font-size: 0.78rem;
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+
+  &__stage {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+
+  &__out {
+    font-size: 0.78rem;
+    color: var(--c-text-2, #000000a6);
+    background: var(--c-bg-soft, #fafafa);
+    border: 1px solid var(--c-border-soft, #f0f0f0);
+    border-radius: var(--r-sm, 4px);
+    padding: 4px 8px;
+    width: 100%;
+    word-break: break-all;
+  }
+
+  &__code {
+    margin: 0;
+    font-size: 0.72rem;
+    color: var(--c-text-3, #00000073);
+    background: var(--c-bg-soft, #fafafa);
+    border-left: 2px solid var(--c-primary, #1677ff);
+    padding: 6px 8px;
+    border-radius: 0 var(--r-sm, 4px) var(--r-sm, 4px) 0;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  &__json {
+    margin: 0;
+    font-size: 0.72rem;
+    color: var(--c-text-2, #000000a6);
+    background: var(--c-bg-soft, #fafafa);
+    border: 1px solid var(--c-border-soft, #f0f0f0);
+    border-radius: var(--r-sm, 4px);
+    padding: 8px;
+    max-height: 180px;
+    overflow: auto;
+  }
+
+  /* 水印演示区 */
+  &__watermark {
+    position: relative;
+    width: 100%;
+    min-height: 92px;
+    border: 1px dashed var(--c-border, #d9d9d9);
+    border-radius: var(--r-md, 6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    text-align: center;
+    font-size: 0.82rem;
+  }
+
+  &__pop {
+    margin-top: 8px;
+    padding: 10px 12px;
+    background: var(--c-card, #fff);
+    border: 1px solid var(--c-border-soft, #f0f0f0);
+    border-radius: var(--r-md, 6px);
+    box-shadow: var(--sh-sm, 0 1px 2px rgba(0, 0, 0, 0.03));
+    font-size: 0.8rem;
+    color: var(--c-text-2, #000000a6);
+  }
+
+  &__hoverbox {
+    padding: 14px 22px;
+    border: 1px solid var(--c-border, #d9d9d9);
+    border-radius: var(--r-md, 6px);
+    font-size: 0.82rem;
+    transition: all var(--t, 0.2s);
+
+    &.is-hover {
+      border-color: var(--c-primary, #1677ff);
+      background: var(--c-primary-soft, rgba(22, 119, 255, 0.06));
+      color: var(--c-primary, #1677ff);
+    }
+  }
+
+  &__sizebox {
+    width: 100%;
+    padding: 12px;
+    border: 1px dashed var(--c-border, #d9d9d9);
+    border-radius: var(--r-md, 6px);
+    font-size: 0.8rem;
+    color: var(--c-text-2, #000000a6);
+  }
+}
+
+/* 窄屏：左侧菜单收起为横向 Segmented */
+@media (max-width: 900px) {
+  .utils-demo {
+    &__layout {
+      flex-direction: column;
+    }
+    &__menu {
+      display: none;
+    }
+  }
+}

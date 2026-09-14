@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/useAuth.js'
 import { useStyleMode } from '../../contexts/StyleModeContext.jsx'
@@ -15,19 +15,31 @@ function Login() {
   // idle | loading(核验中) | warping(跃迁中)
   const [status, setStatus] = useState('idle')
 
+  const timersRef = useRef([])
+  // 用 ref 做同步判重：status 是异步 state，同一 tick 内连点两次会各自排一对定时器
+  const submittingRef = useRef(false)
+
+  // 卸载时清理未完成的定时器：否则核验/跃迁途中离开页面，仍会在 1.1s/2.2s 后
+  // 对已卸载组件 setStatus 并强制 navigate 走，把用户从当前页面拽回目标页
+  useEffect(() => () => {
+    timersRef.current.forEach(clearTimeout)
+    timersRef.current = []
+  }, [])
+
   const onSubmit = (e) => {
     e.preventDefault()
-    if (!form.username || !form.password || status !== 'idle') return
+    if (!form.username || !form.password || submittingRef.current) return
+    submittingRef.current = true
     setStatus('loading')
     // 1.1s 身份核验 → 写入会话并启动跃迁
-    setTimeout(() => {
+    timersRef.current.push(setTimeout(() => {
       login(form.username)
       setStatus('warping')
-    }, 1100)
+    }, 1100))
     // 跃迁动画收尾后进入目标页
-    setTimeout(() => {
+    timersRef.current.push(setTimeout(() => {
       navigate(from, { replace: true })
-    }, 2200)
+    }, 2200))
   }
 
   return (

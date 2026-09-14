@@ -138,7 +138,12 @@ export const NLP_RULES = [
   { pattern: /(?:刷新|重载|重新加载|reload|refresh)/i, type: 'reload' },
 
   // —— 等待 ——
-  { pattern: /(?:等待|等|wait)\s*(\d+)\s*(?:毫秒|ms|秒|s)?/i, type: 'wait', extract: (m) => ({ ms: parseInt(m[1]) * (m[0].includes('秒') || m[0].includes('s') ? 1000 : 1) }) },
+  { pattern: /(?:等待|等|wait)\s*(\d+)\s*(毫秒|ms|秒|s)?/i, type: 'wait', extract: (m) => {
+    // 单位必须显式捕获：用 m[0].includes('s') 判断会把 'ms' 也算成「秒」，
+    // 而「毫秒」又包含「秒」，两种情况都会把等待时长错误放大 1000 倍。
+    const unit = (m[2] || '').toLowerCase()
+    return { ms: parseInt(m[1], 10) * (unit === '秒' || unit === 's' ? 1000 : 1) }
+  } },
 ]
 
 export function parseNaturalLanguage(text) {

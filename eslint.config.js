@@ -39,6 +39,7 @@ export default defineConfig([
     files: [
       'src/utils/mountVueBridge.jsx',
       'src/contexts/StyleModeContext.jsx',
+      'src/components/ChatBot/ChatContext.jsx',
     ],
     rules: { 'react-refresh/only-export-components': 'off' },
   },

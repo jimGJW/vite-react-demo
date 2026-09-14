@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useRef, useState, lazy } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState, lazy } from 'react'
 import { Button, Space, Input, Tag, Card, Divider, Typography, Progress } from 'antd'
 import {
   ThunderboltOutlined, AimOutlined, ClearOutlined, SyncOutlined,
@@ -20,25 +20,45 @@ const VideoPlayer = forwardRef(function VideoPlayer({ title = '影片「React vs
   const [playing, setPlaying] = useState(false)
   const [time, setTime] = useState(0)   // 0..duration
   const timerRef = useRef(null)
+  // 与 time 同步的 ref：定时器回调需要同步读取当前进度来决定是否到达片尾
+  const timeRef = useRef(0)
+
+  // 卸载时必须清理计时器：否则播放中离开页面后，interval 会持续 setState（对应 Vue 版的 onBeforeUnmount）
+  useEffect(() => () => clearInterval(timerRef.current), [])
 
   useImperativeHandle(ref, () => ({
     play() {
       if (playing) return
       setPlaying(true)
+      clearInterval(timerRef.current)
       timerRef.current = setInterval(() => {
-        setTime(t => t >= duration ? (clearInterval(timerRef.current), setPlaying(false), duration) : t + 1)
+        // 进度推进与片尾自停都放在定时器回调里（普通事件回调），
+        // 不写进 setState 的 updater —— updater 必须是纯函数，StrictMode 下可能被调用两次
+        const next = Math.min(timeRef.current + 1, duration)
+        timeRef.current = next
+        setTime(next)
+        if (next >= duration) {
+          clearInterval(timerRef.current)
+          timerRef.current = null
+          setPlaying(false)
+        }
       }, 200)
     },
     pause() {
       clearInterval(timerRef.current)
+      timerRef.current = null
       setPlaying(false)
     },
     seek(sec) {
-      setTime(Math.max(0, Math.min(duration, sec)))
+      const v = Math.max(0, Math.min(duration, sec))
+      timeRef.current = v
+      setTime(v)
     },
     reset() {
       clearInterval(timerRef.current)
+      timerRef.current = null
       setPlaying(false)
+      timeRef.current = 0
       setTime(0)
     },
     getState() { return { playing, time, duration } },

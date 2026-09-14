@@ -5,7 +5,7 @@ import {
   HomeOutlined, RobotOutlined, AudioOutlined, AimOutlined,
   ToolOutlined, ScanOutlined, DesktopOutlined, FormOutlined,
   BgColorsOutlined, BarChartOutlined, DashboardOutlined, AppstoreOutlined,
-  CodeOutlined, BellOutlined, TableOutlined, LockOutlined,
+  CodeOutlined, BellOutlined, TableOutlined, LockOutlined, CodepenOutlined,
   ExperimentOutlined, InfoCircleOutlined, SwapOutlined,
   MenuFoldOutlined, MenuUnfoldOutlined,
   EyeInvisibleOutlined, EyeOutlined,
@@ -15,6 +15,7 @@ import {
   TeamOutlined, PartitionOutlined, AimOutlined as AimO2,
   FundProjectionScreenOutlined,
   DeploymentUnitOutlined,
+  MessageOutlined,
 } from '@ant-design/icons'
 import { useAuth } from '../contexts/useAuth.js'
 import { useStyleMode } from '../contexts/StyleModeContext.jsx'
@@ -30,6 +31,8 @@ const navItems = [
   {
     key: 'group-ai', icon: <RobotOutlined />, label: 'AI 助手',
     children: [
+      { key: '/chatbot', icon: <MessageOutlined />, label: '对话助手 ChatBot' },
+      { key: '/share', icon: <ShareAltOutlined />, label: '对话分享 QASharing' },
       { key: '/voice', icon: <AudioOutlined />, label: '语音助手' },
       { key: '/agent', icon: <AimOutlined />, label: 'AI Agent 控制台' },
     ],
@@ -38,6 +41,10 @@ const navItems = [
     key: 'group-toolbox', icon: <ToolOutlined />, label: '工具箱',
     children: [
       { key: '/scan', icon: <ScanOutlined />, label: '扫码' },
+      { key: '/kit', icon: <ThunderboltOutlined />, label: '组件工具箱 Kit' },
+      { key: '/studio', icon: <CodepenOutlined />, label: '组件工坊 Studio' },
+  { key: '/templates', icon: <AppstoreOutlined />, label: '开源模板库' },
+  { key: '/utils', icon: <ToolOutlined />, label: '小功能集 Utils' },
       { key: '/embed', icon: <DesktopOutlined />, label: '嵌套预览' },
       { key: '/form-builder', icon: <FormOutlined />, label: '配置表单' },
       { key: '/theme', icon: <BgColorsOutlined />, label: '主题切换' },

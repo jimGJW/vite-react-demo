@@ -12,18 +12,13 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
-    "./style.css": "./dist/style.css",
-    "./styles": "./dist/style.css",
     "./package.json": "./package.json"
   },
   "files": [
     "dist",
     "README.md"
   ],
-  "sideEffects": [
-    "*.css",
-    "**/*style*"
-  ],
+  "sideEffects": false,
   "scripts": {
     "dev": "vite build --watch",
     "build": "vite build && npm run types",
@@ -42,11 +37,15 @@
   "author": "",
   "license": "MIT",
   "peerDependencies": {
+    "@huggingface/transformers": "^3",
     "react": ">=18",
     "react-dom": ">=18",
     "qr-scanner": "^1.4"
   },
   "peerDependenciesMeta": {
+    "@huggingface/transformers": {
+      "optional": true
+    },
     "qr-scanner": {
       "optional": true
     }

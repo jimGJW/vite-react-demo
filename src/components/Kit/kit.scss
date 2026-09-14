@@ -1,0 +1,772 @@
+/* =====================================================================
+ * Kit · 样式总表
+ * ---------------------------------------------------------------------
+ * 约定：
+ *   1. 所有类名以 `kit-` 前缀，避免与业务样式冲突
+ *   2. 颜色一律走主题变量 `--c-*` 并**带 fallback**，
+ *      这样把组件复制到别的项目（未定义变量）也能正常显示
+ *   3. 布局尺寸用 px 固定，字号跟随根字号，适配大屏/平板
+ * ===================================================================== */
+
+/* ---------------------------------------------------------------- 通用 */
+
+.kit-panel {
+  background: var(--c-card, #ffffff);
+  border: 1px solid var(--c-border-soft, #f0f0f0);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.kit-hint {
+  color: var(--c-text-3, #8c8c8c);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.kit-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ------------------------------------------------- 1. 电子签名 SignaturePad */
+
+.kit-sign {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.kit-sign__canvas-wrap {
+  position: relative;
+  border-radius: 10px;
+  border: 1px dashed var(--c-border, #d9d9d9);
+  background: #ffffff; /* 签名区固定浅底：既像纸张，导出 PNG 也不会透明变黑 */
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.kit-sign__canvas-wrap:hover {
+  border-color: var(--c-primary, #4f46e5);
+}
+
+.kit-sign--disabled .kit-sign__canvas-wrap {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.kit-sign__canvas {
+  display: block;
+  width: 100%;
+  cursor: crosshair;
+  touch-action: none; /* 关键：否则移动端手写会被页面滚动抢走 */
+}
+
+.kit-sign__placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  color: #bfbfbf;
+  font-size: 13px;
+  letter-spacing: 2px;
+  user-select: none;
+}
+
+.kit-sign__baseline {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: 22%;
+  border-bottom: 1px solid #ebedf0;
+  pointer-events: none;
+}
+
+.kit-sign__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.kit-sign__colors {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.kit-sign__swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  outline: none;
+  transition: transform 0.15s, border-color 0.15s;
+}
+
+.kit-sign__swatch:hover {
+  transform: scale(1.12);
+}
+
+.kit-sign__swatch.is-active {
+  border-color: var(--c-primary, #4f46e5);
+}
+
+/* ------------------------------------------------- 2. 下拉刷新 PullToRefresh */
+
+.kit-ptr {
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--c-bg-soft, #fafafa);
+  border: 1px solid var(--c-border-soft, #f0f0f0);
+}
+
+.kit-ptr__indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--c-text-3, #8c8c8c);
+  font-size: 12px;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.kit-ptr__arrow {
+  display: inline-block;
+  transition: transform 0.2s;
+  font-size: 14px;
+}
+
+.kit-ptr__arrow.is-flip {
+  transform: rotate(180deg);
+}
+
+.kit-ptr__spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--c-primary-soft, rgba(79, 70, 229, 0.2));
+  border-top-color: var(--c-primary, #4f46e5);
+  animation: kit-spin 0.7s linear infinite;
+}
+
+.kit-ptr__content {
+  position: relative;
+  height: 100%;
+  overflow-y: auto;
+  background: var(--c-card, #ffffff);
+  /* 关键：内层滚到顶时不再把滚动链传给外层页面，
+     这样下拉手势不需要 preventDefault（也就避开了 passive 监听限制） */
+  overscroll-behavior: contain;
+  /* 跟手位移由 JS 通过 transform 控制 */
+  will-change: transform;
+}
+
+@keyframes kit-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ------------------------------------------------- 3. 触底加载 InfiniteScroll */
+
+.kit-inf__sentinel {
+  height: 1px;
+}
+
+.kit-inf__state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 0;
+  color: var(--c-text-3, #8c8c8c);
+  font-size: 12px;
+}
+
+.kit-inf__state::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--c-primary-soft, rgba(79, 70, 229, 0.2));
+  border-top-color: var(--c-primary, #4f46e5);
+  animation: kit-spin 0.7s linear infinite;
+}
+
+.kit-inf__state--end::before {
+  display: none;
+}
+
+/* ------------------------------------------------- 4. 悬浮球 FloatingBall */
+
+.kit-ball {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--grad-primary, linear-gradient(135deg, #6366f1, #a78bfa));
+  color: #ffffff;
+  box-shadow: var(--sh-md, 0 4px 14px rgba(0, 0, 0, 0.18));
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  z-index: 900;
+}
+
+.kit-ball:hover {
+  transform: scale(1.06);
+}
+
+.kit-ball--dragging {
+  cursor: grabbing;
+  transition: none;
+  box-shadow: var(--sh-lg, 0 12px 34px rgba(0, 0, 0, 0.28));
+}
+
+.kit-ball__inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------- 5. 拖拽排序 SortableList */
+
+.kit-sort {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.kit-sort__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--c-card, #ffffff);
+  border: 1px solid var(--c-border-soft, #f0f0f0);
+  transition: box-shadow 0.18s, border-color 0.18s, opacity 0.18s;
+}
+
+.kit-sort__item.is-dragging {
+  opacity: 0.9;
+  border-color: var(--c-primary, #4f46e5);
+  box-shadow: var(--sh-md, 0 4px 14px rgba(0, 0, 0, 0.18));
+  position: relative;
+  z-index: 2;
+}
+
+.kit-sort__item.is-over {
+  border-color: var(--c-primary, #4f46e5);
+  background: var(--c-primary-softer, rgba(79, 70, 229, 0.06));
+}
+
+.kit-sort__handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  color: var(--c-text-3, #bfbfbf);
+  cursor: grab;
+  touch-action: none;
+  font-size: 14px;
+}
+
+.kit-sort__item.is-dragging .kit-sort__handle {
+  cursor: grabbing;
+  color: var(--c-primary, #4f46e5);
+}
+
+.kit-sort__body {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ------------------------------------------------- 6. 跑马灯 AutoScrollText */
+
+.kit-marquee {
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.kit-marquee__inner {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.kit-marquee__inner.is-running {
+  animation-name: kit-marquee;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+@keyframes kit-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-1 * var(--kit-marquee-shift, 100%)));
+  }
+}
+
+/* ------------------------------------------------- 7. 文本省略 Ellipsis */
+
+.kit-ellipsis {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kit-ellipsis__text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.kit-ellipsis__text.is-clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+}
+
+.kit-ellipsis__more {
+  align-self: flex-start;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--c-primary, #4f46e5);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.kit-ellipsis__more:hover {
+  text-decoration: underline;
+}
+
+/* ------------------------------------------------- 8. 指标卡 StatCard */
+
+.kit-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: var(--c-card, #ffffff);
+  border: 1px solid var(--c-border-soft, #f0f0f0);
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+
+.kit-stat:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sh-md, 0 4px 14px rgba(0, 0, 0, 0.12));
+}
+
+.kit-stat__title {
+  color: var(--c-text-3, #8c8c8c);
+  font-size: 13px;
+}
+
+.kit-stat__value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.kit-stat__value {
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--c-text-1, #1f1f1f);
+  font-variant-numeric: tabular-nums;
+}
+
+.kit-stat__prefix,
+.kit-stat__suffix {
+  font-size: 14px;
+  color: var(--c-text-2, #595959);
+}
+
+.kit-stat__trend {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* 中文习惯：涨红跌绿（与欧美相反）。colorMode='us' 时翻转 */
+.kit-stat__trend.is-up {
+  color: #e5484d;
+}
+
+.kit-stat__trend.is-down {
+  color: #12a150;
+}
+
+.kit-stat--us .kit-stat__trend.is-up {
+  color: #12a150;
+}
+
+.kit-stat--us .kit-stat__trend.is-down {
+  color: #e5484d;
+}
+
+.kit-stat__sub {
+  font-size: 12px;
+  color: var(--c-text-3, #8c8c8c);
+}
+
+.kit-stat__chart {
+  margin-top: 4px;
+}
+
+.kit-stat__footer {
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px solid var(--c-border-soft, #f0f0f0);
+  font-size: 12px;
+  color: var(--c-text-3, #8c8c8c);
+}
+
+/* ------------------------------------------------- 9. 倒计时 Countdown */
+
+.kit-countdown {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.kit-countdown__cell {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 6px;
+  border-radius: 6px;
+  background: var(--c-primary-soft, rgba(79, 70, 229, 0.1));
+  color: var(--c-primary, #4f46e5);
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.kit-countdown__unit {
+  font-size: 11px;
+  color: var(--c-text-3, #8c8c8c);
+  margin-right: 4px;
+}
+
+.kit-countdown.is-plain {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--c-text-1, #1f1f1f);
+}
+
+.kit-countdown__sep {
+  color: var(--c-text-3, #bfbfbf);
+}
+
+/* ------------------------------------------------- 10. 通知面板 NoticePanel */
+
+.kit-notice__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--c-text-2, #595959);
+  cursor: pointer;
+  font-size: 17px;
+  transition: background 0.18s, color 0.18s;
+}
+
+.kit-notice__trigger:hover {
+  background: var(--c-primary-softer, rgba(79, 70, 229, 0.08));
+  color: var(--c-primary, #4f46e5);
+}
+
+.kit-notice__panel {
+  width: 320px;
+}
+
+.kit-notice__item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.kit-notice__item:hover {
+  background: var(--c-primary-softer, rgba(79, 70, 229, 0.06));
+}
+
+.kit-notice__dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  margin-top: 6px;
+  border-radius: 50%;
+  background: var(--c-primary, #4f46e5);
+}
+
+.kit-notice__dot.is-read {
+  background: var(--c-text-3, #d9d9d9);
+}
+
+.kit-notice__main {
+  flex: 1;
+  min-width: 0;
+}
+
+.kit-notice__title {
+  font-size: 13px;
+  color: var(--c-text-1, #1f1f1f);
+  margin-bottom: 2px;
+}
+
+.kit-notice__desc {
+  font-size: 12px;
+  color: var(--c-text-3, #8c8c8c);
+  line-height: 1.5;
+}
+
+.kit-notice__time {
+  flex: none;
+  font-size: 11px;
+  color: var(--c-text-3, #bfbfbf);
+}
+
+.kit-notice__foot {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px 2px;
+  border-top: 1px solid var(--c-border-soft, #f0f0f0);
+}
+
+/* ------------------------------------------------- 11. 迷你图表 */
+
+.kit-chart {
+  width: 100%;
+}
+
+.kit-mini-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.kit-mini-progress__track {
+  position: relative;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--c-border-soft, #f0f0f0);
+  overflow: visible;
+}
+
+.kit-mini-progress__fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.kit-mini-progress__target {
+  position: absolute;
+  top: -3px;
+  width: 2px;
+  height: 14px;
+  background: var(--c-text-2, #8c8c8c);
+  border-radius: 1px;
+}
+
+.kit-mini-progress__meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--c-text-3, #8c8c8c);
+}
+
+.kit-wave {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.kit-wave__canvas {
+  display: block;
+}
+
+.kit-wave__label {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  pointer-events: none;
+}
+
+.kit-wave__percent {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--c-text-1, #1f1f1f);
+}
+
+.kit-wave__title {
+  font-size: 12px;
+  color: var(--c-text-3, #8c8c8c);
+}
+
+/* ------------------------------------------------- 12. 标签输入 TagInput */
+
+.kit-taginput {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 1px solid var(--c-border, #d9d9d9);
+  background: var(--c-card, #ffffff);
+  cursor: text;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.kit-taginput:hover {
+  border-color: var(--c-primary, #4f46e5);
+}
+
+.kit-taginput.is-focused {
+  border-color: var(--c-primary, #4f46e5);
+  box-shadow: 0 0 0 2px var(--c-primary-soft, rgba(79, 70, 229, 0.16));
+}
+
+.kit-taginput.is-disabled {
+  background: var(--c-bg-soft, #f5f5f5);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.kit-taginput__field {
+  flex: 1;
+  min-width: 90px;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font-size: 14px;
+  padding: 2px 0;
+}
+
+.kit-taginput__field::placeholder {
+  color: var(--c-text-3, #bfbfbf);
+}
+
+/* ------------------------------------------------- 13. 异步选择器 AsyncSelect */
+
+.kit-async-select {
+  min-width: 200px;
+}
+
+.kit-async-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.kit-async-option__desc {
+  font-size: 12px;
+  color: var(--c-text-3, #8c8c8c);
+}
+
+.kit-async-select__empty {
+  padding: 16px 0;
+  text-align: center;
+  color: var(--c-text-3, #8c8c8c);
+  font-size: 12px;
+}
+
+/* ------------------------------------------------- 14. 时段录入 TimeRangeInput */
+
+.kit-timerange {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.kit-timerange__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.kit-timerange__index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--c-primary-soft, rgba(79, 70, 229, 0.1));
+  color: var(--c-primary, #4f46e5);
+  font-size: 12px;
+  flex: none;
+}
+
+.kit-timerange__dash {
+  color: var(--c-text-3, #bfbfbf);
+}
+
+.kit-timerange__summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--c-border-soft, #f0f0f0);
+  font-size: 13px;
+  color: var(--c-text-2, #595959);
+}
+
+.kit-timerange__total {
+  font-weight: 600;
+  color: var(--c-primary, #4f46e5);
+}
+
+.kit-timerange__errors {
+  margin: 0;
+  padding-left: 18px;
+  color: #e5484d;
+  font-size: 12px;
+  line-height: 1.8;
+}

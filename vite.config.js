@@ -7,7 +7,6 @@ import http from 'http'
 import https from 'https'
 import fs from 'node:fs'
 import path from 'node:path'
-import process from 'node:process'
 
 /**
  * dev 环境下直接返回 public/ort/ 下的 onnxruntime wasm 运行时文件。
@@ -15,10 +14,11 @@ import process from 'node:process'
  * 生产构建时 public/ 会被原样复制到 dist/，由静态服务器直接服务，无需本插件。
  */
 function serveOrtAssets() {
-  const ortDir = path.resolve(process.cwd(), 'public/ort')
   return {
     name: 'serve-ort-assets',
     configureServer(server) {
+      // 用 Vite 的 root 而不是 process.cwd()：以 `--root` 或从其它目录启动时仍能定位 public/ort
+      const ortDir = path.resolve(server.config.root, 'public/ort')
       // configureServer 钩子在 Vite 内部中间件（含 transform）安装之前执行，
       // 此时直接 use 即为 pre 中间件，可拦截 /ort/ 请求避免被当作 ESM 转换。
       server.middlewares.use((req, res, next) => {
@@ -78,7 +78,7 @@ function embedHelpers() {
         },
         (res) => {
           const status = res.statusCode || 0
-          if ([301, 302, 303, 307, 308].includes(status) && res.headers.location && redirects < 5) {
+          if ([301, 302, 303, 307, 308].includes(status) && res.headers.location && redirects < 3) {
             res.resume()
             let nextUrl
             try {
@@ -114,6 +114,16 @@ function embedHelpers() {
           res.end(JSON.stringify(obj))
         }
 
+        // 安全：本接口会代表调用方发起服务端请求（SSRF 面）。dev server 配置了 host: true
+        // （监听 0.0.0.0），若不限制来源，同一局域网内任何人都可以把开发机当作盲请求代理，
+        // 去探测内网服务或云元数据地址（如 169.254.169.254）。因此仅允许本机回环访问。
+        const remote = req.socket?.remoteAddress || ''
+        const isLoopback =
+          remote === '127.0.0.1' || remote === '::1' || remote === '::ffff:127.0.0.1'
+        if (!isLoopback) {
+          return json(403, { ok: false, error: '该接口仅允许本机访问' })
+        }
+
         if (!target) return json(400, { ok: false, error: '缺少 url 参数' })
         try {
           const u = new URL(target)
@@ -144,7 +154,10 @@ function embedHelpers() {
             allowsFrame,
           })
         } catch (e) {
-          json(502, { ok: false, error: '探测请求失败: ' + e.message })
+          // 不回显 e.message：其内容形如 "connect ECONNREFUSED 127.0.0.1:5432"，
+          // 等于把本接口变成一个有可读结果的端口扫描器。详情只写进 dev server 日志。
+          console.error('[__frame-check] 探测失败:', e?.message || e)
+          json(502, { ok: false, error: '探测请求失败（详情见 dev server 日志）', code: e?.code || null })
         }
       })
     },
@@ -158,11 +171,11 @@ export default defineConfig({
       // 1. 本 monorepo 直接指向 workspace 包源码，零构建、HMR 实时生效
       // 2. 对外独立发布时，从 npm install 导入 dist/ 即可
       '@myorg/react-svg-charts': path.resolve(
-        __dirname,
+        import.meta.dirname,
         'packages/@myorg/react-svg-charts/src/index.js',
       ),
       '@myorg/react-svg-charts/style.css': path.resolve(
-        __dirname,
+        import.meta.dirname,
         'packages/@myorg/react-svg-charts/src/Charts.scss',
       ),
     },

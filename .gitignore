@@ -32,6 +32,11 @@ package-lock.json.bak
 pnpm-debug.log*
 .lighthouseci/
 
+# 锁文件必须入库：本机全局 gitignore（core.excludesFile）忽略了 package-lock.json，
+# 但仓库级规则优先级更高——这里显式反选根锁文件，保证依赖可复现、CI 能跑 npm ci。
+# 只反选仓库根目录这一个：子包内的零散 lock 属于误装产物，不应入库。
+!/package-lock.json
+
 # ============ 测试 ============
 tests/playwright-report/
 tests/test-results/
@@ -74,3 +79,6 @@ temp/
 .trae/
 .trae-cn/
 trae-browser-screenshots/
+
+# 临时类型检查验证目录（本地产物，不入库）
+.tmptest/

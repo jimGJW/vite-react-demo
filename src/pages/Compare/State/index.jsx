@@ -32,6 +32,9 @@ function CartProvider({ children }) {
     setItems(p => p.flatMap(i => i.id !== id ? [i]
       : i.qty > 1 ? [{ ...i, qty: i.qty - 1 }] : []))
   , [])
+  // 整行删除：与 dec 不同，无论 qty 是多少都直接移除（删除按钮专用）
+  const remove = useCallback(id =>
+    setItems(p => p.filter(i => i.id !== id)), [])
   const addItem = useCallback((name, price) =>
     setItems(p => {
       const exist = p.find(i => i.name === name)
@@ -42,7 +45,7 @@ function CartProvider({ children }) {
     setUser(u => ({ ...u, wallet: Math.max(0, u.wallet - totalAmt) }))
   , [totalAmt])
 
-  const value = { items, totalQty, totalAmt, user, setUser, inc, dec, addItem, checkout }
+  const value = { items, totalQty, totalAmt, user, setUser, inc, dec, remove, addItem, checkout }
   return <CartCtx.Provider value={value}>{children}</CartCtx.Provider>
 }
 
@@ -72,7 +75,7 @@ function CartHeader() {
   )
 }
 function CartBody() {
-  const { items, inc, dec, addItem } = useCart()
+  const { items, inc, dec, remove, addItem } = useCart()
   const [name, setName] = useState('')
   const [price, setPrice] = useState('')
   return (
@@ -100,7 +103,7 @@ function CartBody() {
               <Button size="small" icon={<MinusOutlined />} key="-" onClick={() => dec(it.id)} />,
               <Tag color="purple" key="q">× {it.qty}</Tag>,
               <Button size="small" type="primary" icon={<PlusOutlined />} key="+" onClick={() => inc(it.id)} />,
-              <Button size="small" danger type="text" icon={<DeleteOutlined />} key="d" onClick={() => dec(it.id)} />,
+              <Button size="small" danger type="text" icon={<DeleteOutlined />} key="d" onClick={() => remove(it.id)} />,
             ]}
           >
             <div>

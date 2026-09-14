@@ -8,8 +8,20 @@
 // 通用容器 / 工具（具名导出）
 export {
   ChartCard,
+  ChartHeader,
+  ChartEmpty,
+  ChartSkeleton,
+  Tooltip,
+  LegendList,
   ChartTypeSwitch,
   ChartLineIcon, ChartBarIcon, ChartPieIcon, ChartAreaIcon, ChartRadarIcon,
+  // 工具函数 / Hook（与 @myorg/vue-svg-charts 保持一致的公共 API）
+  useMounted,
+  niceNum,
+  niceBounds,
+  polar,
+  PALETTE,
+  DEFAULT_FORMAT,
 } from './shared.jsx'
 
 // 单系列基础图表（default export 重命名为具名）

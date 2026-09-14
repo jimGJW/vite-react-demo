@@ -1,5 +1,6 @@
 // ========================== AI Agent 控制台 ==========================
 // 设计语言：紫蓝青渐变 + 玻璃态卡片 + 流畅动效 + 暗色模式友好
+@use 'sass:color';
 
 // —— 主题变量 —— //
 $primary: #6366f1;          // indigo-500
@@ -391,7 +392,7 @@ $transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
         &.ok {
           background: $success-soft;
-          color: darken($success, 10%);
+          color: color.adjust($success, $lightness: -10%);
           border-color: rgba(16, 185, 129, 0.3);
 
           .agent-action-dot {
@@ -402,7 +403,7 @@ $transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
         &.fail {
           background: $danger-soft;
-          color: darken($danger, 5%);
+          color: color.adjust($danger, $lightness: -5%);
           border-color: rgba(239, 68, 68, 0.3);
 
           .agent-action-dot { background: $danger; }

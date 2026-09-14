@@ -8,14 +8,17 @@
  */
 import { lazy, Suspense, useCallback } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { mountVueBridge } from '../../utils/mountVueBridge.jsx'
 
-// 懒加载真实 Vue SFC（.vue）组件
-const VueMenuVueImpl = lazy(() =>
-  import('./VueMenu.vue').then((mod) => ({
-    default: mountVueBridge(mod.default),
-  })),
-)
+// 懒加载真实 Vue SFC（.vue）组件。
+// mountVueBridge 必须在回调内动态 import：它会连带引入 vue + element-plus（约 755KB），
+// 而 VueMenu 位于首屏 Layout 中，静态引入会把整个 Vue 运行时塞进入口 chunk。
+const VueMenuVueImpl = lazy(async () => {
+  const [{ mountVueBridge }, mod] = await Promise.all([
+    import('../../utils/mountVueBridge.jsx'),
+    import('./VueMenu.vue'),
+  ])
+  return { default: mountVueBridge(mod.default) }
+})
 
 export default function VueMenu({ items, collapsed, openKeys, onOpenChange }) {
   const navigate = useNavigate()

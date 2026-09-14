@@ -4,6 +4,10 @@ import { resolve } from 'node:path'
 
 const BASE_EXTERNALS = [
   'react', 'react-dom',
+  // react-dom 的子路径必须单独列出：isExternal 用精确匹配（BASE_EXTERNALS.includes），
+  // 只写 'react-dom' 不会命中 'react-dom/client'，会导致把整份 React DOM 打进 dist
+  // （曾使 dist/index.js 膨胀到 ~805KB，使用方还会出现双 React 副本）。
+  'react-dom/client', 'react-dom/server',
   'react/jsx-runtime', 'react/jsx-dev-runtime',
   'qr-scanner',
 ]
@@ -18,6 +22,8 @@ function isExternal(id) {
 const BASE_GLOBALS = {
   react: 'React',
   'react-dom': 'ReactDOM',
+  'react-dom/client': 'ReactDOMClient',
+  'react-dom/server': 'ReactDOMServer',
   'react/jsx-runtime': 'jsxRuntime',
   'react/jsx-dev-runtime': 'jsxRuntime',
   'qr-scanner': 'QrScanner',
@@ -48,10 +54,10 @@ export default defineConfig({
     target: 'es2020',
     sourcemap: false,
     minify: 'esbuild',
-    outDir: resolve(__dirname, 'dist'),
+    outDir: resolve(import.meta.dirname, 'dist'),
     emptyOutDir: true,
     lib: {
-      entry: resolve(__dirname, 'src/index.js'),
+      entry: resolve(import.meta.dirname, 'src/index.js'),
       name: 'ReactCoreHooks',
       formats: ['es', 'cjs'],
       fileName: (format) => (format === 'es' ? 'index.js' : 'index.cjs'),

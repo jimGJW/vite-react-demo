@@ -44,6 +44,7 @@
   "author": "",
   "license": "MIT",
   "peerDependencies": {
+    "@myorg/react-core-hooks": "^1",
     "react": ">=18",
     "react-dom": ">=18",
     "qr-scanner": "^1.4"
@@ -54,6 +55,7 @@
     }
   },
   "devDependencies": {
+    "@myorg/react-core-hooks": "^1",
     "@vitejs/plugin-react": "^4",
     "esbuild": "^0.28.2",
     "sass": "^1.80",

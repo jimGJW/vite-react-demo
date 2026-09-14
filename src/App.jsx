@@ -2,8 +2,6 @@ import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { useAuth } from './contexts/useAuth.js'
 import Layout from './layouts/Layout.jsx'
-import { mountVueBridge } from './utils/mountVueBridge.jsx'
-import { mountAngularBridge } from './utils/mountAngularBridge.jsx'
 import './App.scss'
 
 /* —— 路由懒加载：每个页面独立 chunk，按需加载 —— */
@@ -19,23 +17,37 @@ const ThemeDemo = lazy(() => import('./pages/ThemeDemo/index.jsx'))
 const ChartsDemo = lazy(() => import('./pages/ChartsDemo/index.jsx'))
 const EChartsDemo = lazy(() => import('./pages/EChartsDemo/index.jsx'))
 const AntdDemo = lazy(() => import('./pages/AntdDemo/index.jsx'))
-/* Vue 3 SFC 页面：通过挂载桥加载真实的 .vue 文件 */
-const VueComponents = lazy(() =>
-  import('./pages/VueComponents/VueComponents.vue').then((mod) => ({
-    default: mountVueBridge(mod.default),
-  })),
-)
-const StyleShowcase = lazy(() =>
-  import('./pages/StyleShowcase/StyleShowcase.vue').then((mod) => ({
-    default: mountVueBridge(mod.default),
-  })),
-)
-/* Angular 22 standalone component 页面：通过挂载桥加载真实的 .ts 文件 */
-const AngularComponents = lazy(() =>
-  import('./pages/AngularComponents/AngularComponents.ts').then((mod) => ({
-    default: mountAngularBridge(mod.default),
-  })),
-)
+const ChatBotDemo = lazy(() => import('./pages/ChatBotDemo/index.jsx'))
+const ChatBotShare = lazy(() => import('./pages/ChatBotShare/index.jsx'))
+const KitDemo = lazy(() => import('./pages/KitDemo/index.jsx'))
+const StudioDemo = lazy(() => import('./pages/StudioDemo/index.jsx'))
+const TemplatesDemo = lazy(() => import('./pages/TemplatesDemo/index.jsx'))
+const UtilsDemo = lazy(() => import('./pages/UtilsDemo/index.jsx'))
+/* Vue 3 SFC 页面：通过挂载桥加载真实的 .vue 文件
+   注意：挂载桥必须在此处【动态】import，不能在模块顶层静态引入 ——
+   挂载桥会连带引入 vue + element-plus（约 755KB），静态引入会让首屏强制下载整个 Vue 运行时。 */
+const VueComponents = lazy(async () => {
+  const [{ mountVueBridge }, mod] = await Promise.all([
+    import('./utils/mountVueBridge.jsx'),
+    import('./pages/VueComponents/VueComponents.vue'),
+  ])
+  return { default: mountVueBridge(mod.default) }
+})
+const StyleShowcase = lazy(async () => {
+  const [{ mountVueBridge }, mod] = await Promise.all([
+    import('./utils/mountVueBridge.jsx'),
+    import('./pages/StyleShowcase/StyleShowcase.vue'),
+  ])
+  return { default: mountVueBridge(mod.default) }
+})
+/* Angular 22 standalone component 页面：通过挂载桥加载真实的 .ts 文件（同样按需加载） */
+const AngularComponents = lazy(async () => {
+  const [{ mountAngularBridge }, mod] = await Promise.all([
+    import('./utils/mountAngularBridge.jsx'),
+    import('./pages/AngularComponents/AngularComponents.ts'),
+  ])
+  return { default: mountAngularBridge(mod.default) }
+})
 const CommandPaletteDemo = lazy(() => import('./pages/CommandPaletteDemo/index.jsx'))
 const NotifyDemo = lazy(() => import('./pages/NotifyDemo/index.jsx'))
 const DataTableDemo = lazy(() => import('./pages/DataTableDemo/index.jsx'))
@@ -104,6 +116,12 @@ function App() {
           <Route path="charts" element={<ChartsDemo />} />
           <Route path="echarts" element={<EChartsDemo />} />
           <Route path="antd" element={<AntdDemo />} />
+          <Route path="chatbot" element={<ChatBotDemo />} />
+          <Route path="share" element={<ChatBotShare />} />
+          <Route path="kit" element={<KitDemo />} />
+          <Route path="studio" element={<StudioDemo />} />
+          <Route path="templates" element={<TemplatesDemo />} />
+          <Route path="utils" element={<UtilsDemo />} />
           <Route path="vue-components" element={<VueComponents />} />
           <Route path="style-showcase" element={<StyleShowcase />} />
           <Route path="angular-components" element={<AngularComponents />} />

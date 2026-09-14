@@ -41,9 +41,15 @@ function useChart(option) {
     chartRef.current = echarts.init(ref.current)
     const onResize = () => chartRef.current?.resize()
     window.addEventListener('resize', onResize)
+    // 仅监听 window.resize 不够：侧边栏折叠 / 容器尺寸变化不会触发 window resize，
+    // canvas 会保留旧尺寸被裁切。用 ResizeObserver 跟随容器实际尺寸。
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(onResize) : null
+    ro?.observe(ref.current)
     return () => {
+      ro?.disconnect()
       window.removeEventListener('resize', onResize)
       chartRef.current?.dispose()
+      chartRef.current = null
     }
   }, [])
 

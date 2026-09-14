@@ -1,0 +1,49 @@
+# ==============================================================================
+# CI —— 代码质量门禁（lint + 构建）
+#
+# 背景：此前 .github/workflows/ 下只有 code-safety.yml（安全问题扫描），
+# 没有任何 job 会跑 lint / build，因此「把项目改到构建失败」的 PR 也能绿灯合并。
+# 本 workflow 补上这道基础门禁。
+#
+# 依赖：npm ci 需要仓库中存在 package-lock.json（.gitignore 里用 !package-lock.json
+# 覆盖了机器级全局忽略规则）。若锁文件缺失，请改用 npm install。
+#
+# 说明：Python + Playwright 的页面 E2E（tests/test_pages.py）需要浏览器与
+# dev server，暂未纳入本 workflow，可按需另加 job。
+# ==============================================================================
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build

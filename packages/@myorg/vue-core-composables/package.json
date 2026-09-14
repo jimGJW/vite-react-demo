@@ -37,10 +37,14 @@
   "author": "",
   "license": "MIT",
   "peerDependencies": {
+    "@huggingface/transformers": "^3",
     "vue": "^3.0.0",
     "qr-scanner": "^1.4.2"
   },
   "peerDependenciesMeta": {
+    "@huggingface/transformers": {
+      "optional": true
+    },
     "qr-scanner": {
       "optional": true
     }

@@ -93,13 +93,14 @@ export default function useWhisperRecorder({ onResult, onError }) {
   /** 录音完成后：解码 → 重采样 → Whisper 推理 */
   const runRecognition = useCallback(async (blob) => {
     setRecognizing(true)
+    let audioCtx = null
     try {
       const arrayBuffer = await blob.arrayBuffer()
 
       // 解码音频（webm/ogg → PCM）
       const AudioCtx = window.AudioContext || window.webkitAudioContext
-      const ctx = new AudioCtx()
-      const audioBuffer = await ctx.decodeAudioData(arrayBuffer)
+      audioCtx = new AudioCtx()
+      const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer)
       const channel = audioBuffer.getChannelData(0)
       const pcm = resample(channel, audioBuffer.sampleRate, TARGET_SAMPLE_RATE)
 
@@ -129,6 +130,9 @@ export default function useWhisperRecorder({ onResult, onError }) {
       setError(`本地识别失败：${e?.message || e}`)
       onErrorRef.current?.(e)
     } finally {
+      // AudioContext 必须显式关闭：浏览器同时存活的上下文数量有限（约 6 个），
+      // 不关闭会使后续 decodeAudioData / new AudioContext 抛错，识别彻底失效
+      audioCtx?.close?.().catch(() => {})
       setRecognizing(false)
     }
   }, [])
