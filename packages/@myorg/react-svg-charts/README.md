@@ -1,5 +1,7 @@
 # @myorg/react-svg-charts
 
+> 👉 **Vue 3 版本**：[@myorg/vue-svg-charts](../vue-svg-charts/README.md) 功能一一对应，可在纯 Vue 项目直接 `import`。
+
 零依赖纯 React + 原生 SVG 图表组件库。12 个组件独立单文件 + 通用容器 + 图标切换组合组件。
 样式全部消费 CSS 变量且带 fallback，**其他项目 `npm install` 后无需定义任何 CSS 变量即可正常显示 Indigo 玻璃态风格**。
 

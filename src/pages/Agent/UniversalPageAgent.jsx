@@ -840,6 +840,8 @@ const UniversalPageAgent = ({
     iframeRef: externalIframeRef,
     mode: externalMode,
     router,
+    pendingTask,
+    onPendingTaskConsumed,
 }) => {
     const [inputValue, setInputValue] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -851,6 +853,16 @@ const UniversalPageAgent = ({
     const pendingHandlersRef = useRef(new Map());
 
     const activeIframeRef = externalIframeRef || internalIframeRef;
+
+    // 外部注入的待执行任务（如语音助手送来的文本）：回填输入框并通知消费
+    const consumeTaskRef = useRef(onPendingTaskConsumed);
+    useEffect(() => { consumeTaskRef.current = onPendingTaskConsumed; });
+    useEffect(() => {
+        if (pendingTask) {
+            setInputValue(pendingTask);
+            consumeTaskRef.current?.();
+        }
+    }, [pendingTask]);
 
     const sendBridgeMessage = useCallback((command, payload = {}) => {
         if (!activeIframeRef?.current?.contentWindow) {

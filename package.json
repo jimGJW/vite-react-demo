@@ -30,7 +30,10 @@
     "pkg:vue-media:build": "cd packages/@myorg/vue-media-tools && npm run build",
     "pkg:vue-charts:build": "cd packages/@myorg/vue-svg-charts && npm run build",
     "pkg:vue-shell:build": "cd packages/@myorg/vue-admin-shell && npm run build",
-    "pkg:all:build": "npm run pkg:styles:build && npm run pkg:core:build && npm run pkg:ui:build && npm run pkg:media:build && npm run pkg:shell:build && npm run pkg:charts:build && npm run pkg:vue-styles:build && npm run pkg:vue-core:build && npm run pkg:vue-ui:build && npm run pkg:vue-media:build && npm run pkg:vue-charts:build && npm run pkg:vue-shell:build"
+    "pkg:all:build": "npm run pkg:styles:build && npm run pkg:core:build && npm run pkg:ui:build && npm run pkg:media:build && npm run pkg:shell:build && npm run pkg:charts:build && npm run pkg:vue-styles:build && npm run pkg:vue-core:build && npm run pkg:vue-ui:build && npm run pkg:vue-media:build && npm run pkg:vue-charts:build && npm run pkg:vue-shell:build",
+    "pkg:all:build-react": "npm run pkg:styles:build && npm run pkg:core:build && npm run pkg:ui:build && npm run pkg:media:build && npm run pkg:shell:build && npm run pkg:charts:build",
+    "pkg:all:build-vue": "npm run pkg:vue-styles:build && npm run pkg:vue-core:build && npm run pkg:vue-ui:build && npm run pkg:vue-media:build && npm run pkg:vue-charts:build && npm run pkg:vue-shell:build",
+    "pkg:all:pack": "mkdir -p dist-local && for PKG in react-styles-reset react-core-hooks react-ui-basic react-media-tools react-admin-shell react-svg-charts vue-styles-reset vue-core-composables vue-ui-basic vue-media-tools vue-admin-shell vue-svg-charts; do (cd packages/@myorg/$PKG && npm pack --pack-destination ../../../dist-local); done"
   },
   "dependencies": {
     "@angular/animations": "^22.1.4",

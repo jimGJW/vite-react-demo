@@ -40,6 +40,10 @@ export default defineConfig([
       'src/utils/mountVueBridge.jsx',
       'src/contexts/StyleModeContext.jsx',
       'src/components/ChatBot/ChatContext.jsx',
+      // 助手中心：事件常量 + 控制函数 + Provider + useAssistants 属于同一个 Context 单元；
+      // index.jsx 是这些能力的统一出口（桶文件），拆开反而割裂调用方
+      'src/components/Assistants/AssistantContext.jsx',
+      'src/components/Assistants/index.jsx',
     ],
     rules: { 'react-refresh/only-export-components': 'off' },
   },

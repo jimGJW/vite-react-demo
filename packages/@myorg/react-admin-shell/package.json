@@ -58,14 +58,30 @@
     "react-router-dom": "^6 || ^7"
   },
   "peerDependenciesMeta": {
-    "@ant-design/icons": { "optional": true },
-    "@ant-design/v5-patch-for-react-19": { "optional": true },
-    "@huggingface/transformers": { "optional": true },
-    "antd": { "optional": true },
-    "antd-form-builder": { "optional": true },
-    "lodash": { "optional": true },
-    "onnxruntime-web": { "optional": true },
-    "prop-types": { "optional": true }
+    "@ant-design/icons": {
+      "optional": true
+    },
+    "@ant-design/v5-patch-for-react-19": {
+      "optional": true
+    },
+    "@huggingface/transformers": {
+      "optional": true
+    },
+    "antd": {
+      "optional": true
+    },
+    "antd-form-builder": {
+      "optional": true
+    },
+    "lodash": {
+      "optional": true
+    },
+    "onnxruntime-web": {
+      "optional": true
+    },
+    "prop-types": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4",
@@ -76,7 +92,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-org/react-admin-shell.git"
+    "url": "https://github.com/jimGJW/vite-react-demo.git",
+    "directory": "packages/@myorg/react-admin-shell",
+    "homepage": "https://gitee.com/jim_gjw/vite-react-demo"
   },
   "publishConfig": {
     "access": "public"

@@ -51,8 +51,12 @@
     "vue-router": "^4"
   },
   "peerDependenciesMeta": {
-    "@huggingface/transformers": { "optional": true },
-    "onnxruntime-web": { "optional": true }
+    "@huggingface/transformers": {
+      "optional": true
+    },
+    "onnxruntime-web": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5 || ^6",
@@ -63,7 +67,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-org/vue-admin-shell.git"
+    "url": "https://github.com/jimGJW/vite-react-demo.git",
+    "directory": "packages/@myorg/vue-admin-shell",
+    "homepage": "https://gitee.com/jim_gjw/vite-react-demo"
   },
   "publishConfig": {
     "access": "public"

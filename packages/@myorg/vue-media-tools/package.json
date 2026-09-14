@@ -60,7 +60,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-org/vue-media-tools.git"
+    "url": "https://github.com/jimGJW/vite-react-demo.git",
+    "directory": "packages/@myorg/vue-media-tools",
+    "homepage": "https://gitee.com/jim_gjw/vite-react-demo"
   },
   "publishConfig": {
     "access": "public"

@@ -19,7 +19,7 @@ import {
 } from '@ant-design/icons'
 import { useAuth } from '../contexts/useAuth.js'
 import { useStyleMode } from '../contexts/StyleModeContext.jsx'
-import GlobalAgent from '../components/GlobalAgent/index.jsx'
+import Assistants from '../components/Assistants/index.jsx'
 import VueMenu from '../components/VueMenu/index.jsx'
 import './Layout.scss'
 
@@ -54,6 +54,7 @@ const navItems = [
       { key: '/notify', icon: <BellOutlined />, label: '通知中心' },
       { key: '/data-table', icon: <TableOutlined />, label: '高级表格' },
       { key: '/login', icon: <LockOutlined />, label: '星空登录' },
+      { key: '/assistant-demo', icon: <ThunderboltOutlined />, label: '快捷助手' },
     ],
   },
   {
@@ -226,26 +227,28 @@ export default function Layout() {
       {/* ========== 中部：左侧栏 + 右侧内容（唯一滚动容器在这里） ========== */}
       <section className="app-body">
         <aside className="app-sidebar" aria-label="侧边导航">
-          {isVue ? (
-            <VueMenu
-              items={navItems}
-              collapsed={isCollapsed}
-              openKeys={isCollapsed ? [] : openKeys}
-              onOpenChange={setOpenKeys}
-            />
-          ) : (
-            <Menu
-              mode="inline"
-              theme="light"
-              items={navItems}
-              selectedKeys={selectedKeys}
-              openKeys={isCollapsed ? [] : openKeys}
-              onOpenChange={setOpenKeys}
-              onClick={onMenuClick}
-              inlineCollapsed={isCollapsed}
-              className="sidebar-menu"
-            />
-          )}
+          <div className="sidebar-scroll">
+            {isVue ? (
+              <VueMenu
+                items={navItems}
+                collapsed={isCollapsed}
+                openKeys={isCollapsed ? [] : openKeys}
+                onOpenChange={setOpenKeys}
+              />
+            ) : (
+              <Menu
+                mode="inline"
+                theme="light"
+                items={navItems}
+                selectedKeys={selectedKeys}
+                openKeys={isCollapsed ? [] : openKeys}
+                onOpenChange={setOpenKeys}
+                onClick={onMenuClick}
+                inlineCollapsed={isCollapsed}
+                className="sidebar-menu"
+              />
+            )}
+          </div>
 
           {sidebarMode === 'expanded' && (
             <div className="sidebar-foot">
@@ -295,7 +298,8 @@ export default function Layout() {
         )}
       </div>
 
-      <GlobalAgent />
+      {/* 助手中心：AI Agent + 语音助手 + 可拖动快捷助手键 */}
+      <Assistants />
     </div>
   )
 }

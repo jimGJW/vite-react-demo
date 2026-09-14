@@ -1,0 +1,212 @@
+/* 可拖动快捷助手键 */
+
+.qa-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99980;
+  background: transparent;
+}
+
+.qa-fab {
+  position: fixed;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  z-index: 99982;
+  box-shadow: 0 6px 22px rgba(14, 165, 233, 0.45);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+
+  &:hover {
+    transform: scale(1.08);
+    box-shadow: 0 10px 30px rgba(14, 165, 233, 0.6);
+  }
+
+  &:active { cursor: grabbing; }
+
+  &.dragging {
+    cursor: grabbing;
+    transform: scale(1.12);
+    box-shadow: 0 14px 36px rgba(14, 165, 233, 0.7);
+  }
+
+  &.active {
+    background: linear-gradient(135deg, #f43f5e 0%, #8b5cf6 100%);
+    box-shadow: 0 8px 26px rgba(244, 63, 94, 0.5);
+  }
+}
+
+.qa-fab-icon {
+  font-size: 22px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* 有助手面板打开时的呼吸指示点 */
+.qa-fab-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #22c55e;
+  border: 2px solid #fff;
+  animation: qa-breathe 1.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes qa-breathe {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.8); }
+}
+
+.qa-fab-tip {
+  position: absolute;
+  right: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(15, 23, 42, 0.78);
+  color: #fff;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+
+  .qa-fab:hover & { opacity: 1; }
+}
+
+.qa-menu {
+  position: fixed;
+  z-index: 99981;
+  background: var(--glass-bg-strong, rgba(255, 255, 255, 0.96));
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.6));
+  border-radius: 14px;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.2);
+  padding: 6px;
+  max-height: min(60vh, 460px);
+  overflow-y: auto;
+  animation: qa-menu-in 0.18s ease;
+}
+
+@keyframes qa-menu-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.qa-menu-sep {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--c-text-3, #9aa3b2);
+
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--c-border-soft, #f0f0f0);
+  }
+}
+
+.qa-menu-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  font-size: 13px;
+  color: var(--c-text-1, #1f2937);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, color 0.15s;
+
+  &:hover { background: var(--c-primary-soft, #e6f0ff); }
+
+  &.on {
+    background: var(--c-primary-soft, #e6f0ff);
+    color: var(--c-primary, #1677ff);
+    font-weight: 600;
+  }
+}
+
+.qa-menu-icon {
+  font-size: 15px;
+  flex-shrink: 0;
+  width: 18px;
+  text-align: center;
+}
+
+.qa-menu-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qa-menu-state {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--c-text-3, #9aa3b2);
+  flex-shrink: 0;
+
+  &.on { color: var(--c-primary, #1677ff); font-weight: 600; }
+}
+
+/* 隐藏后的恢复标签：右侧边缘清晰可见的竖向按钮，点击恢复助手键 */
+.qa-restore {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 99982;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 34px;
+  padding: 12px 0;
+  border: 1px solid transparent;
+  border-right: none;
+  border-radius: 12px 0 0 12px;
+  background: linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 6px 22px rgba(14, 165, 233, 0.35);
+  opacity: 1;
+  transition: width 0.15s, padding 0.15s, box-shadow 0.15s;
+
+  &:hover {
+    width: 40px;
+    box-shadow: 0 8px 28px rgba(14, 165, 233, 0.5);
+  }
+
+  .qa-restore-icon {
+    font-size: 16px;
+    line-height: 1;
+  }
+
+  .qa-restore-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    writing-mode: vertical-rl;
+  }
+}

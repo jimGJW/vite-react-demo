@@ -1,5 +1,7 @@
 # @myorg/react-media-tools
 
+> 👉 **Vue 3 版本**：[@myorg/vue-media-tools](../vue-media-tools/README.md) 功能一一对应，可在纯 Vue 项目直接 `import`。
+
 媒体工具组件合集：扫码 + 语音输入（可对接 Whisper 本地离线 ASR）。
 
 - `QrScanBtn`：按钮式扫码组件（封装 `useWebQrScanner`）。调用 `navigator.mediaDevices.getUserMedia` 打开摄像头，用 `qr-scanner` 实时解析二维码。

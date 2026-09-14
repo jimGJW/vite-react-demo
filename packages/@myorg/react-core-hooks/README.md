@@ -1,5 +1,7 @@
 # @myorg/react-core-hooks
 
+> 👉 **Vue 3 版本**：[@myorg/vue-core-composables](../vue-core-composables/README.md) 功能一一对应（Hook → composable），可在纯 Vue 项目直接 `import`。
+
 通用 React Context + Hooks 合集。全部零 UI，方便在任何 React 项目复用。
 
 - `AuthProvider / useAuth`：轻量登录态 Provider + Hook，持久化到 `localStorage`，刷新不掉线，支持 `login(name)` / `logout()` / `user` / `ready`。
