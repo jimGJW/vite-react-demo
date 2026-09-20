@@ -35,7 +35,9 @@ export function buildColumns(rows) {
   const keys = []
   rows.forEach((row) => {
     Object.keys(row).forEach((k) => {
-      if (!keys.includes(k)) keys.push(k)
+      // 下划线开头视为内部字段（如行唯一键 _key）：只用于渲染，不生成列
+      if (k.startsWith('_') || keys.includes(k)) return
+      keys.push(k)
     })
   })
   const preferred = Object.keys(FIELD_LABELS).filter((k) => keys.includes(k))

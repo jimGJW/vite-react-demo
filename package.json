@@ -14,6 +14,8 @@
     "build": "vite build",
     "lint": "eslint .",
     "test": "node scripts/run-tests.mjs",
+    "test:ssr": "node scripts/ssr-smoke.mjs",
+    "test:browser": "node scripts/browser-smoke.mjs",
     "preview": "vite preview",
     "test:e2e": "python tests/test_pages.py",
     "test:whisper": "node scripts/test-whisper.mjs",

@@ -43,7 +43,14 @@ function buildColumns() {
 }
 
 export default memo(function TaskTable({ data, title, taskIds, shareState = false, api }) {
-  const rows = useMemo(() => parseArray(data).filter((r) => r && typeof r === 'object'), [data])
+  /* 同 DataTable：预生成行唯一键 _key，避免依赖 antd rowKey 已弃用的 index 参数 */
+  const rows = useMemo(
+    () =>
+      parseArray(data)
+        .filter((r) => r && typeof r === 'object')
+        .map((r, i) => ({ ...r, _key: r.id || `t-${i}` })),
+    [data],
+  )
   const columns = useMemo(() => buildColumns(), [])
   const [selected, setSelected] = useState([])
   const [exporting, setExporting] = useState(false)
@@ -136,7 +143,7 @@ export default memo(function TaskTable({ data, title, taskIds, shareState = fals
 
       <Table
         size="small"
-        rowKey={(record, i) => record.id || `t-${i}`}
+        rowKey="_key"
         columns={columns}
         dataSource={rows}
         pagination={rows.length > 10 ? { pageSize: 10, size: 'small' } : false}

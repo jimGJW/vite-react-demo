@@ -25,6 +25,7 @@ const loadKitDemo = () => import('./pages/KitDemo/index.jsx')
 const loadStudioDemo = () => import('./pages/StudioDemo/index.jsx')
 const loadTemplatesDemo = () => import('./pages/TemplatesDemo/index.jsx')
 const loadUtilsDemo = () => import('./pages/UtilsDemo/index.jsx')
+const loadReactHooksDemo = () => import('./pages/ReactHooksDemo/index.jsx')
 const loadCommandPaletteDemo = () => import('./pages/CommandPaletteDemo/index.jsx')
 const loadNotifyDemo = () => import('./pages/NotifyDemo/index.jsx')
 const loadDataTableDemo = () => import('./pages/DataTableDemo/index.jsx')
@@ -80,6 +81,7 @@ const KitDemo = lazy(loadKitDemo)
 const StudioDemo = lazy(loadStudioDemo)
 const TemplatesDemo = lazy(loadTemplatesDemo)
 const UtilsDemo = lazy(loadUtilsDemo)
+const ReactHooksDemo = lazy(loadReactHooksDemo)
 const VueComponents = lazy(loadVueComponents)
 const StyleShowcase = lazy(loadStyleShowcase)
 const AngularComponents = lazy(loadAngularComponents)
@@ -103,6 +105,7 @@ const allLoaders = [
   loadVoiceAssistant, loadFormBuilderDemo, loadThemeDemo, loadChartsDemo,
   loadEChartsDemo, loadAntdDemo, loadChatBotDemo, loadChatBotShare,
   loadKitDemo, loadStudioDemo, loadTemplatesDemo, loadUtilsDemo,
+  loadReactHooksDemo,
   loadCommandPaletteDemo, loadNotifyDemo,
   loadDataTableDemo, loadTestCenterDemo, loadAssistantDemo, loadLogin,
   loadNotFound, loadCompareParentChild, loadCompareTwoWay, loadCompareProvide,
@@ -177,6 +180,7 @@ function App() {
           <Route path="studio" element={<StudioDemo />} />
           <Route path="templates" element={<TemplatesDemo />} />
           <Route path="utils" element={<UtilsDemo />} />
+          <Route path="react-hooks" element={<ReactHooksDemo />} />
           <Route path="vue-components" element={<VueComponents />} />
           <Route path="style-showcase" element={<StyleShowcase />} />
           <Route path="angular-components" element={<AngularComponents />} />

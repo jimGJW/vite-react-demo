@@ -16,6 +16,7 @@ import {
   FundProjectionScreenOutlined,
   DeploymentUnitOutlined,
   MessageOutlined,
+  BulbOutlined,
 } from '@ant-design/icons'
 import { useAuth } from '../contexts/useAuth.js'
 import { useStyleMode } from '../contexts/StyleModeContext.jsx'
@@ -45,6 +46,7 @@ const navItems = [
       { key: '/studio', icon: <CodepenOutlined />, label: '组件工坊 Studio' },
   { key: '/templates', icon: <AppstoreOutlined />, label: '开源模板库' },
   { key: '/utils', icon: <ToolOutlined />, label: '小功能集 Utils' },
+      { key: '/react-hooks', icon: <BulbOutlined />, label: 'React 核心 API' },
       { key: '/embed', icon: <DesktopOutlined />, label: '嵌套预览' },
       { key: '/form-builder', icon: <FormOutlined />, label: '配置表单' },
       { key: '/theme', icon: <BgColorsOutlined />, label: '主题切换' },

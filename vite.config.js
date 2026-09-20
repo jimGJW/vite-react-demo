@@ -164,6 +164,33 @@ function embedHelpers() {
   }
 }
 
+/**
+ * 消除 onnxruntime wasm 的重复打包（约 21MB）。
+ * onnxruntime-web 里有这么一行兜底逻辑：
+ *   new URL("ort-wasm-simd-threaded.jsep.wasm", import.meta.url).href
+ * 只有调用方【没有】配置 wasmPaths 时才会走到；本项目在 useWhisperRecorder 中
+ * 已显式指向 public/ort/，这份兜底 URL 运行时永远不会被请求。
+ * 但 Vite 会静态分析该 new URL 并把 wasm 当 asset 打进 dist/assets —— 与
+ * public/ort/ 里那一份内容完全相同，白白多出 21MB。
+ * 这里把它改写为指向 public 下已存在的同一文件：产物瘦身，且行为不变。
+ */
+function dedupeOrtWasm() {
+  return {
+    name: 'dedupe-ort-wasm',
+    // 写盘前剔除：比改写源码里的 new URL 更稳（不依赖上游写法，上游改版也不会失效）
+    generateBundle(_opts, bundle) {
+      for (const [key, item] of Object.entries(bundle)) {
+        if (item.type !== 'asset') continue
+        if (!/^ort-wasm-.*\.wasm$/.test(path.basename(item.fileName || key))) continue
+        delete bundle[key]
+        console.log(
+          `[dedupe-ort-wasm] 移除未使用的重复 wasm：${item.fileName}（运行时从 /ort/ 加载，省约 21MB）`,
+        )
+      }
+    },
+  }
+}
+
 export default defineConfig({
   resolve: {
     alias: {
@@ -187,11 +214,14 @@ export default defineConfig({
     babel({
       presets: [reactCompilerPreset()],
       // 排除 .ts 文件（由 @analogjs/vite-plugin-angular 处理 Angular 装饰器）
+      // 排除 .vue 文件（Vue SFC 由 vue 插件编译，React Compiler 对其无用；
+      //   实测 Babel 占构建耗时约 65%，Vue 页面较多，排除后可明显提速）
       // 排除预构建依赖和 node_modules（已编译，Babel 处理大文件会超时导致 ERR_EMPTY_RESPONSE）
-      exclude: [/\.ts$/, /node_modules/],
+      exclude: [/\.ts$/, /\.vue$/, /node_modules/],
     }),
     embedHelpers(),
     serveOrtAssets(),
+    dedupeOrtWasm(),
   ],
   server: {
     host: true,

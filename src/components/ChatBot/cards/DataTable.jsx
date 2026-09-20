@@ -16,7 +16,12 @@ import { FIELD_LABELS } from '../config.js'
 import { buildColumns, downloadCSV, normalizeRows, toCSV } from './utils.js'
 
 export default memo(function DataTable({ data, title, shareState = false }) {
-  const rows = useMemo(() => normalizeRows(data), [data])
+  /* 预生成行唯一键：antd 的 rowKey 函数第二参（index）已弃用且顺序不保证，
+     改为数据自带 _key（下划线前缀由 buildColumns 排除，不会多出一列） */
+  const rows = useMemo(
+    () => normalizeRows(data).map((r, i) => ({ ...r, _key: r.id ?? `r-${i}` })),
+    [data],
+  )
   const columns = useMemo(() => buildColumns(rows), [rows])
   const [view, setView] = useState('table')
 
@@ -69,7 +74,7 @@ export default memo(function DataTable({ data, title, shareState = false }) {
       ) : (
         <Table
           size="small"
-          rowKey={(record, i) => record.id ?? `r-${i}`}
+          rowKey="_key"
           columns={columns}
           dataSource={rows}
           pagination={rows.length > 10 ? { pageSize: 10, size: 'small' } : false}

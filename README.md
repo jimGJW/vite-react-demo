@@ -357,6 +357,7 @@ optimizeDeps: {
 | `/studio`          | 组件工坊        | [StudioDemo](src/pages/StudioDemo)                             | 24 组件按 10 类分组：大屏/规则/图像/表单/报告/导航/表格/布局/可视化/工具 |
 | `/templates`       | 开源模板库      | [TemplatesDemo](src/pages/TemplatesDemo)                       | 19 个纯上游开源模板的元信息卡片库（可过滤/溯源） |
 | `/utils`           | 小功能集        | [UtilsDemo](src/pages/UtilsDemo)                               | 50+ 纯函数 + 20 Hook：防抖/格式化/脱敏/树/水印等 |
+| `/react-hooks`     | React 核心 API  | [ReactHooksDemo](src/pages/ReactHooksDemo)                     | createContext/useContext/useMemo/useCallback 综合案例 + React 19 新特性 |
 | `/form-builder`    | 配置表单         | [FormBuilderDemo](src/pages/FormBuilderDemo)                   | JSON 驱动动态表单              |
 | `/theme`           | 主题切换         | [ThemeDemo](src/pages/ThemeDemo)                               | CSS 变量多主题实时预览            |
 | `/charts`          | SVG 图表组件库    | [ChartsDemo](src/pages/ChartsDemo)                             | 12 种纯 SVG 零依赖图表          |
@@ -607,15 +608,57 @@ optimizeDeps: {
 
 ***
 
-### 12. 测试与质量保障
+### 12. React 核心 API 与 19 新特性（`/react-hooks`）
 
-三层验证，成本从低到高，覆盖不同层面：
+[ReactHooksDemo](src/pages/ReactHooksDemo) —— 把「Context 跨层传值」和「渲染性能」这两个最容易讲糊的话题做成**可动手复现**的演示页：每个结论都配渲染计数徽标和「使用方法」代码块，结论可以自己复现，而不是背文档。
+
+页面分三个分区（顶部 Tabs）：
+
+**① 四件套综合案例** —— 一个「主题色 + 待办清单」，三层组件树：
+
+* `createContext` 建通道（[todoContext.js](src/pages/ReactHooksDemo/todoContext.js)，模块顶层创建、不 export）
+* `useContext` 跨层消费：第 2 层**完全不接 props**，证明中间层不必为数据「修管道」
+* `useMemo` 缓存注入 Context 的 value 对象与派生数据（`stats` / `visible`）
+* `useCallback` 稳定增删改查回调，让 memo 子组件真正生效
+* 第 2 层用 `memo` 包裹且不消费 Context —— 直观演示「**memo 挡得住 props，挡不住 Context**」
+
+**② 逐个 API 讲解** —— `createContext` / `useContext` / `useMemo` / `useCallback` 各一节：使用方法代码 + 可交互演示 + 踩坑要点（如 `defaultValue` 不是初始值、别在组件内部创建 Context）。后两节用 memo 子组件的**渲染计数**做对照实验：一键切换「用 / 不用」，父组件重渲染时子组件会不会被连累，一目了然。
+
+**③ React 19 新特性** —— 10 张卡片，全部可在浏览器里直接验证：
+
+| 特性 | 演示内容 |
+| --- | --- |
+| `useOptimistic` | 乐观点赞：先 +1 上屏，约 800ms 后被真实结果覆盖 |
+| `useActionState` | 表单 action 一次接管 pending / 结果 / 校验 |
+| `use` | 读取 Promise（配合 Suspense），唯一允许条件调用的 Hook |
+| `useId` | 生成稳定唯一 id，正确关联 label ↔ input |
+| `useTransition` | 6000 条筛选可被打断，输入框始终跟手 |
+| `useDeferredValue` | 让慢渲染滞后于输入，实时对照「输入值 / 延迟值」 |
+| `useSyncExternalStore` | 订阅浏览器网络状态（online / offline） |
+| `useEffectEvent` | 在 effect 里读最新值，却不重新订阅 |
+| `ref as prop` | 函数组件直接接收 ref，`forwardRef` 退休 |
+
+* **组件拆分**：`todoContext.js`（Context + Hook，纯 JS）/ `TodoProvider.jsx`（只导出组件）/ `ContextCase.jsx` / `ApiBasics.jsx` / `NewFeatures.jsx` / `CodeBlock.jsx` / `RenderBadge.jsx`
+* **渲染计数刻意不用 state**：`RenderBadge` 用 ref + effect 直接写 DOM，避免「计数把自己再渲染一次」污染观测结果
+* **顺带修掉一个反模式**：`useEffectEvent` 的日志改走异步回调 —— 在 effect 同步阶段 setState 会触发级联渲染，本项目 lint 直接判 error
+
+***
+
+### 13. 测试与质量保障
+
+五层验证，成本从低到高，覆盖不同层面：
 
 | 层 | 命令 | 覆盖 |
 | --- | --- | --- |
 | ① 单元测试 | `npm test` | **86 个断言 / 470ms**，零依赖 node runner（`scripts/run-tests.mjs` + `tests/unit/*.test.mjs`），覆盖 Utils 纯函数、Kit 工具、ChatBot 流式协议、分享协议、高亮拆分、模板数据 |
-| ② 应用内测试中心 | 访问 `/test-center` | 浏览器侧断言：模块导出完整性、`exportCsv` / storage / debounce 计时、路由注册等 node 覆盖不到的部分 |
-| ③ E2E | `npm run test:e2e` | Python + Playwright 真实浏览器逐页访问 |
+| ② SSR 渲染冒烟 | `npm run test:ssr` | 用 Vite 的 SSR 管线把页面真实渲染一遍（模块加载 + 组件树 + 关键内容断言），专抓 `vite build` 只做静态编译的盲区 |
+| ③ 应用内测试中心 | 访问 `/test-center` | 浏览器侧断言：模块导出完整性、`exportCsv` / storage / debounce 计时、路由注册等 node 覆盖不到的部分 |
+| ④ 浏览器冒烟 | `npm run test:browser` | **35 个路由**逐页真实访问，收集 console error 与未捕获异常；CDP 驱动本机 headless Chrome，零新依赖（Node 内置 WebSocket）。需先 `npm run dev` |
+| ⑤ E2E | `npm run test:e2e` | Python + Playwright 真实浏览器交互测试（需额外 pip 安装） |
+
+* **SSR 冒烟**（`scripts/ssr-smoke.mjs`）补的正是 build 的盲区：build 只做静态编译，跑不出 Hook 误用、Context 缺失、SSR 期误用浏览器 API 这类运行时问题；新增页面时在 `targets` 里追加一行即可
+
+* **浏览器冒烟**（`scripts/browser-smoke.mjs`）再补 SSR 的盲区：SSR 没有 `window` / `document`，effect 与浏览器 API 全跳过，抓不到「组件挂载后才炸」的问题。它从 `src/App.jsx` **自动解析路由**（新增页面无需改脚本），逐页断言主内容区真的渲染出内容（取 `main[role="main"]` 而非整页，避免被侧边导航文本"假通过"）
 
 * **不引入 vitest / jest**：纯函数模块本就零依赖，直接用 node 断言更快（470ms）且零安装成本
 * 单测文件约定：`tests/unit/<模块>.test.mjs`，`default` 导出 `[用例名, async fn][]`；断言用 `tests/unit/harness.mjs`
@@ -628,7 +671,10 @@ optimizeDeps: {
 ```
 vite-react-demo/
 ├── scripts/
-│   └── test-whisper.mjs              # Whisper 语音识别链路验证脚本
+│   ├── test-whisper.mjs              # Whisper 语音识别链路验证脚本
+│   ├── run-tests.mjs                 # 零依赖单元测试 runner（npm test）
+│   ├── ssr-smoke.mjs                 # SSR 渲染冒烟（npm run test:ssr）
+│   └── browser-smoke.mjs             # 浏览器逐页冒烟（npm run test:browser，CDP 驱动、零依赖）
 ├── packages/@myorg/                  # 12 个可发布的独立 npm 包（6 React + 6 Vue，一一对应）
 │   ├── react-styles-reset/           # ① 设计 token + 全局 reset（零依赖）
 │   ├── react-core-hooks/             # ② AuthProvider / useWebQrScanner / useWhisperRecorder
@@ -670,7 +716,7 @@ vite-react-demo/
 │   │   │   ├── report/               # 安全扫描报告卡片
 │   │   │   ├── nav/  table/  layout/  viz/  util/   # 进阶交互/表格/布局/可视化/工具
 │   │   ├── Templates/                # ★ 开源模板库（19 个上游开源模板元信息，纯数据模块）
-│   │   ├── Utils/                    # ★ 小功能集（30+ 纯函数 + 18 Hook，零依赖）
+│   │   ├── Utils/                    # ★ 小功能集（50+ 纯函数 + 20 Hook，零依赖）
 │   │   │   ├── utils.js              # 纯函数（node 可直跑断言）
 │   │   │   └── hooks.js              # React Hooks（ref 由调用方传入）
 │   │   └── ...                       # CommandPalette / DataTable / Notification 等
@@ -695,6 +741,7 @@ vite-react-demo/
 │   │   │   └── StyleShowcase.vue     # ★ Vue 3 SFC 样式对比页
 │   │   ├── AngularComponents/
 │   │   │   └── AngularComponents.ts  # ★ Angular 22 Standalone 组件展示页
+│   │   ├── ReactHooksDemo/           # ★ Context 四件套 + React 19 新特性（带渲染计数）
 │   │   └── ...                       # Home / Login / AntdDemo / Charts 等
 │   ├── utils/
 │   │   ├── mountVueBridge.jsx        # ★ React→Vue 挂载桥 HOC
@@ -723,6 +770,9 @@ vite-react-demo/
 | `npm run build`            | 生产构建（产物到 `dist/`）                  |
 | `npm run preview`          | 预览生产构建                             |
 | `npm run lint`             | ESLint 代码检查                        |
+| `npm test`                 | 零依赖单元测试（86 断言 / 约 0.5s）           |
+| `npm run test:ssr`         | SSR 渲染冒烟（页面真实渲染 + 内容断言）           |
+| `npm run test:browser`     | 浏览器逐页冒烟（35 路由，抓 console error）       |
 | `npm run test:e2e`         | Playwright E2E 测试（自动启动 dev server） |
 | `npm run test:whisper`     | Whisper 语音识别链路验证                   |
 | `npm run pkg:all:build`    | 一键构建全部 12 个独立 npm 包（6 React + 6 Vue）       |

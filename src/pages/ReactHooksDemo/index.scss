@@ -1,0 +1,619 @@
+/* ============ React 核心 API 与 19 新特性 ============ */
+.rh-page {
+  padding: 20px 24px 40px;
+  max-width: 1180px;
+  margin: 0 auto;
+
+  &__header {
+    margin-bottom: 6px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    margin: 0 0 8px;
+    color: var(--c-text-1, #000000e0);
+  }
+
+  &__lead {
+    margin: 0 0 14px;
+    max-width: 880px;
+    color: var(--c-text-2, #000000a6);
+    font-size: 0.88rem;
+    line-height: 1.8;
+  }
+
+  &__apis {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+/* —— 页头 API 胶囊 —— */
+.rh-api-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid var(--c-border-soft, #f0f0f0);
+  border-radius: var(--r-pill, 999px);
+  background: var(--c-primary-soft, rgba(22, 119, 255, 0.06));
+
+  code {
+    font-weight: 600;
+    color: var(--c-primary, #1677ff);
+    font-size: 0.82rem;
+  }
+
+  em {
+    font-style: normal;
+    font-size: 0.76rem;
+    color: var(--c-text-3, #00000073);
+  }
+}
+
+/* —— 通用排版 —— */
+.rh-hint {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.75;
+  color: var(--c-text-3, #00000073);
+}
+
+.rh-chip {
+  padding: 2px 8px;
+  border-radius: var(--r-sm, 4px);
+  background: var(--c-primary-soft, rgba(22, 119, 255, 0.06));
+  color: var(--c-primary, #1677ff);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+}
+
+.rh-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  &--wrap {
+    flex-wrap: wrap;
+  }
+
+  &--between {
+    justify-content: space-between;
+  }
+}
+
+.rh-demo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* —— 代码块 —— */
+.rh-code {
+  margin: 12px 0;
+  border: 1px solid var(--c-border-soft, #f0f0f0);
+  border-radius: var(--r-lg, 8px);
+  overflow: hidden;
+  background: var(--c-bg-soft, #fafafa);
+
+  &__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 4px 8px 4px 12px;
+    background: var(--c-card, #fff);
+    border-bottom: 1px solid var(--c-border-soft, #f0f0f0);
+  }
+
+  &__title {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--c-text-2, #000000a6);
+  }
+
+  &__actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  &__lang {
+    margin-right: 4px;
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--c-text-3, #00000073);
+  }
+
+  &__pre {
+    margin: 0;
+    padding: 12px 14px;
+    overflow-x: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.78rem;
+    line-height: 1.7;
+    white-space: pre;
+    color: var(--c-text-1, #000000e0);
+  }
+}
+
+/* —— 渲染次数徽标 —— */
+.rh-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  line-height: 1;
+
+  &__name {
+    font-style: normal;
+    color: var(--c-text-3, #00000073);
+  }
+
+  &__count {
+    padding: 2px 7px;
+    border-radius: var(--r-pill, 999px);
+    background: var(--c-info-soft, #e6f4ff);
+    color: var(--c-info, #1677ff);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    transition: background 0.25s, color 0.25s;
+
+    &[data-fresh] {
+      background: var(--c-warning-soft, #fffbe6);
+      color: var(--c-warning, #faad14);
+    }
+  }
+}
+
+/* —— 三层组件树 —— */
+.rh-layer {
+  margin-bottom: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--c-border-soft, #f0f0f0);
+  border-radius: var(--r-lg, 8px);
+  background: var(--c-card, #fff);
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  &__title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--c-text-1, #000000e0);
+  }
+
+  &--mid {
+    background: var(--c-bg-soft, #fafafa);
+    border-style: dashed;
+  }
+
+  &--inner {
+    margin-bottom: 0;
+    background: var(--c-primary-softer, rgba(22, 119, 255, 0.03));
+  }
+}
+
+/* 主题演示：深色皮肤（用后代选择器覆盖，无需 !important） */
+.rh-theme-dark {
+  background: #001529;
+  border-color: #10314d;
+
+  .rh-layer__title {
+    color: rgba(255, 255, 255, 0.88);
+  }
+
+  .rh-hint {
+    color: rgba(255, 255, 255, 0.62);
+  }
+
+  .rh-layer {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.14);
+  }
+
+  .rh-metric {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.14);
+
+    span {
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    b {
+      color: #fff;
+    }
+  }
+
+  .rh-list__item {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.12);
+
+    .rh-list__label {
+      color: rgba(255, 255, 255, 0.85);
+    }
+  }
+}
+
+/* —— 指标卡 —— */
+.rh-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.rh-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1px solid var(--c-border-soft, #f0f0f0);
+  border-radius: var(--r-md, 6px);
+  background: var(--c-bg-soft, #fafafa);
+
+  span {
+    font-size: 0.72rem;
+    color: var(--c-text-3, #00000073);
+  }
+
+  b {
+    font-size: 1.08rem;
+    color: var(--c-text-1, #000000e0);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* —— 待办列表 —— */
+.rh-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 12px 0;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 8px 6px 10px;
+    border: 1px solid var(--c-border-soft, #f0f0f0);
+    border-radius: var(--r-md, 6px);
+    background: var(--c-card, #fff);
+
+    &.is-done .rh-list__label span {
+      color: var(--c-text-3, #00000073);
+      text-decoration: line-through;
+    }
+  }
+
+  &__label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.84rem;
+    cursor: pointer;
+  }
+}
+
+/* —— 逐 API 讲解 —— */
+.rh-api {
+  padding: 18px 0;
+  border-bottom: 1px dashed var(--c-border-soft, #f0f0f0);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &__head {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  &__index {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: var(--r-md, 6px);
+    background: var(--c-primary-soft, rgba(22, 119, 255, 0.06));
+    color: var(--c-primary, #1677ff);
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  &__name {
+    margin: 0;
+    font-size: 1rem;
+
+    code {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--c-primary, #1677ff);
+    }
+  }
+
+  &__purpose {
+    margin: 2px 0 0;
+    font-size: 0.84rem;
+    color: var(--c-text-2, #000000a6);
+    line-height: 1.7;
+  }
+
+  &__demo {
+    margin-top: 4px;
+  }
+
+  &__points {
+    margin: 12px 0 0;
+    padding-left: 18px;
+
+    li {
+      font-size: 0.82rem;
+      line-height: 1.9;
+      color: var(--c-text-2, #000000a6);
+    }
+  }
+}
+
+/* —— 分区引言 / 观察实验 —— */
+.rh-case__intro {
+  margin-bottom: 14px;
+
+  h2 {
+    margin: 0 0 6px;
+    font-size: 1.12rem;
+    color: var(--c-text-1, #000000e0);
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.86rem;
+    line-height: 1.85;
+    color: var(--c-text-2, #000000a6);
+  }
+}
+
+.rh-tips {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px solid #bae0ff;
+  border-radius: var(--r-lg, 8px);
+  background: var(--c-info-soft, #e6f4ff);
+
+  h3 {
+    margin: 0 0 8px;
+    font-size: 0.92rem;
+    color: var(--c-text-1, #000000e0);
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  li {
+    font-size: 0.82rem;
+    line-height: 1.9;
+    color: var(--c-text-2, #000000a6);
+  }
+}
+
+/* —— 对照分栏 —— */
+.rh-split {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 12px;
+    border: 1px dashed var(--c-border, #d9d9d9);
+    border-radius: var(--r-md, 6px);
+    background: var(--c-bg-soft, #fafafa);
+  }
+}
+
+.rh-child {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--c-border-soft, #f0f0f0);
+  border-radius: var(--r-md, 6px);
+  background: var(--c-card, #fff);
+  font-size: 0.84rem;
+}
+
+.rh-nest {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px dashed var(--c-border, #d9d9d9);
+  border-radius: var(--r-md, 6px);
+  background: var(--c-bg-soft, #fafafa);
+}
+
+/* —— React 19 特性卡片 —— */
+.rh-feature {
+  margin-bottom: 14px;
+  padding: 16px;
+  border: 1px solid var(--c-border-soft, #f0f0f0);
+  border-radius: var(--r-lg, 8px);
+  background: var(--c-card, #fff);
+
+  &__head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+
+    h3 {
+      margin: 0;
+      font-size: 0.98rem;
+      color: var(--c-text-1, #000000e0);
+    }
+  }
+
+  &__desc {
+    margin: 0 0 12px;
+    font-size: 0.84rem;
+    line-height: 1.8;
+    color: var(--c-text-2, #000000a6);
+  }
+}
+
+/* —— 表单控件 —— */
+.rh-input {
+  flex: 1 1 220px;
+  min-width: 180px;
+  padding: 5px 10px;
+  border: 1px solid var(--c-border, #d9d9d9);
+  border-radius: var(--r-md, 6px);
+  background: var(--c-card, #fff);
+  color: inherit;
+  font-size: 0.84rem;
+  outline: none;
+
+  &:focus {
+    border-color: var(--c-primary, #1677ff);
+    box-shadow: 0 0 0 2px var(--c-primary-ring, rgba(22, 119, 255, 0.12));
+  }
+}
+
+.rh-field {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+
+  label {
+    font-size: 0.78rem;
+    color: var(--c-text-2, #000000a6);
+  }
+}
+
+.rh-msg {
+  margin: 0;
+  font-size: 0.82rem;
+
+  &--ok {
+    color: var(--c-success, #52c41a);
+  }
+
+  &--err {
+    color: var(--c-danger, #ff4d4f);
+  }
+}
+
+/* —— 滚动列表 —— */
+.rh-scroll {
+  max-height: 180px;
+  overflow-y: auto;
+  border: 1px solid var(--c-border-soft, #f0f0f0);
+  border-radius: var(--r-md, 6px);
+  background: var(--c-card, #fff);
+
+  &__row {
+    padding: 3px 10px;
+    border-bottom: 1px solid var(--c-border-soft, #f0f0f0);
+    font-size: 0.78rem;
+    color: var(--c-text-2, #000000a6);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+/* —— 状态徽标 / 延迟值对照 —— */
+.rh-pending {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  color: var(--c-warning, #faad14);
+
+  &::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: rh-pulse 1s ease-in-out infinite;
+  }
+}
+
+@keyframes rh-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.rh-deferred {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  > div {
+    display: flex;
+    flex: 1 1 160px;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 10px;
+    border: 1px solid var(--c-border-soft, #f0f0f0);
+    border-radius: var(--r-md, 6px);
+    background: var(--c-bg-soft, #fafafa);
+
+    span {
+      font-size: 0.72rem;
+      color: var(--c-text-3, #00000073);
+    }
+
+    b {
+      font-size: 0.9rem;
+      color: var(--c-text-1, #000000e0);
+    }
+
+    &.is-stale {
+      border-color: #ffe58f;
+      background: var(--c-warning-soft, #fffbe6);
+    }
+  }
+}
+
+.rh-logs {
+  margin: 0;
+  padding: 8px 12px 8px 26px;
+  border: 1px solid var(--c-border-soft, #f0f0f0);
+  border-radius: var(--r-md, 6px);
+  background: var(--c-bg-soft, #fafafa);
+
+  li {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.78rem;
+    line-height: 1.8;
+    color: var(--c-text-2, #000000a6);
+  }
+}
