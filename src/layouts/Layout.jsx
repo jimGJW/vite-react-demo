@@ -16,7 +16,8 @@ import {
   FundProjectionScreenOutlined,
   DeploymentUnitOutlined,
   MessageOutlined,
-  BulbOutlined,
+  BulbOutlined, RocketOutlined,
+  SafetyCertificateOutlined, NodeIndexOutlined,
 } from '@ant-design/icons'
 import { useAuth } from '../contexts/useAuth.js'
 import { useStyleMode } from '../contexts/StyleModeContext.jsx'
@@ -86,13 +87,22 @@ const navItems = [
       { key: '/compare-ref', icon: <AimO2 />, label: 'Ref / DOM 操作' },
     ],
   },
+  {
+    key: 'group-case', icon: <ExperimentOutlined />, label: '进阶案例',
+    children: [
+      { key: '/perf-lab', icon: <RocketOutlined />, label: '性能实验室' },
+      { key: '/error-boundary', icon: <SafetyCertificateOutlined />, label: '错误边界与容错' },
+      { key: '/state-machine', icon: <NodeIndexOutlined />, label: '状态机与时间旅行' },
+      { key: '/web-api', icon: <ApiOutlined />, label: '浏览器原生能力' },
+    ],
+  },
   { key: '/dashboard', icon: <DashboardOutlined />, label: '控制台' },
   { key: '/test-center', icon: <ExperimentOutlined />, label: '测试中心' },
   { key: '/about', icon: <InfoCircleOutlined />, label: '关于' },
 ]
 
 /* 默认展开哪个分组 */
-const DEFAULT_OPEN_KEYS = ['group-toolbox', 'group-compare']
+const DEFAULT_OPEN_KEYS = ['group-toolbox', 'group-compare', 'group-case']
 
 const LS_KEY = 'app.layout.v1'
 const DEFAULT = { sidebarMode: 'expanded', headerVisible: true, openKeys: DEFAULT_OPEN_KEYS }

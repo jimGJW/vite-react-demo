@@ -356,8 +356,12 @@ optimizeDeps: {
 | `/kit`             | 组件工具箱        | [KitDemo](src/pages/KitDemo)                                   | 18 组件 + 4 Hook：移动交互/展示/表单     |
 | `/studio`          | 组件工坊        | [StudioDemo](src/pages/StudioDemo)                             | 24 组件按 10 类分组：大屏/规则/图像/表单/报告/导航/表格/布局/可视化/工具 |
 | `/templates`       | 开源模板库      | [TemplatesDemo](src/pages/TemplatesDemo)                       | 19 个纯上游开源模板的元信息卡片库（可过滤/溯源） |
-| `/utils`           | 小功能集        | [UtilsDemo](src/pages/UtilsDemo)                               | 50+ 纯函数 + 20 Hook：防抖/格式化/脱敏/树/水印等 |
+| `/utils`           | 小功能集        | [UtilsDemo](src/pages/UtilsDemo)                               | 90+ 纯函数 + 25 Hook：防抖/格式化/脱敏/树/水印/校验/集合/日期等 |
 | `/react-hooks`     | React 核心 API  | [ReactHooksDemo](src/pages/ReactHooksDemo)                     | createContext/useContext/useMemo/useCallback 综合案例 + React 19 新特性 |
+| `/perf-lab`        | 性能实验室      | [PerfLabDemo](src/pages/PerfLabDemo)                           | 虚拟滚动 / 实时帧率 / Web Worker / 重渲染优化，四个可当场验证的实验 |
+| `/error-boundary`  | 错误边界与容错    | [ErrorBoundaryDemo](src/pages/ErrorBoundaryDemo)               | 渲染期兜底 + useAsyncError 承接事件与异步错误 + resetKeys 自动复位 |
+| `/state-machine`   | 状态机与时间旅行  | [StateMachineDemo](src/pages/StateMachineDemo)                 | 工单流转图 + 非法流转拦截 + 撤销/重做/任意跳转 |
+| `/web-api`         | 浏览器原生能力   | [WebApiDemo](src/pages/WebApiDemo)                             | 全屏/常亮/定位/通知/分享/网络探测，统一带 supported 字段 |
 | `/form-builder`    | 配置表单         | [FormBuilderDemo](src/pages/FormBuilderDemo)                   | JSON 驱动动态表单              |
 | `/theme`           | 主题切换         | [ThemeDemo](src/pages/ThemeDemo)                               | CSS 变量多主题实时预览            |
 | `/charts`          | SVG 图表组件库    | [ChartsDemo](src/pages/ChartsDemo)                             | 12 种纯 SVG 零依赖图表          |
@@ -650,10 +654,10 @@ optimizeDeps: {
 
 | 层 | 命令 | 覆盖 |
 | --- | --- | --- |
-| ① 单元测试 | `npm test` | **86 个断言 / 470ms**，零依赖 node runner（`scripts/run-tests.mjs` + `tests/unit/*.test.mjs`），覆盖 Utils 纯函数、Kit 工具、ChatBot 流式协议、分享协议、高亮拆分、模板数据 |
+| ① 单元测试 | `npm test` | **184 个断言**，零依赖 node runner（`scripts/run-tests.mjs` + `tests/unit/*.test.mjs`），覆盖 Utils 纯函数、Utils 新增工具、Kit 工具、ChatBot 流式协议、分享协议、高亮拆分、模板数据、状态机、性能实验室、浏览器能力探测 |
 | ② SSR 渲染冒烟 | `npm run test:ssr` | 用 Vite 的 SSR 管线把页面真实渲染一遍（模块加载 + 组件树 + 关键内容断言），专抓 `vite build` 只做静态编译的盲区 |
 | ③ 应用内测试中心 | 访问 `/test-center` | 浏览器侧断言：模块导出完整性、`exportCsv` / storage / debounce 计时、路由注册等 node 覆盖不到的部分 |
-| ④ 浏览器冒烟 | `npm run test:browser` | **35 个路由**逐页真实访问，收集 console error 与未捕获异常；CDP 驱动本机 headless Chrome，零新依赖（Node 内置 WebSocket）。需先 `npm run dev` |
+| ④ 浏览器冒烟 | `npm run test:browser` | **39 个路由**逐页真实访问，收集 console error 与未捕获异常；CDP 驱动本机 headless Chrome，零新依赖（Node 内置 WebSocket）。需先 `npm run dev` |
 | ⑤ E2E | `npm run test:e2e` | Python + Playwright 真实浏览器交互测试（需额外 pip 安装） |
 
 * **SSR 冒烟**（`scripts/ssr-smoke.mjs`）补的正是 build 的盲区：build 只做静态编译，跑不出 Hook 误用、Context 缺失、SSR 期误用浏览器 API 这类运行时问题；新增页面时在 `targets` 里追加一行即可

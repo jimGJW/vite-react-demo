@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { copyText, debounce, getStorage, setStorage } from './utils.js'
 
 /**
@@ -352,4 +352,134 @@ export function useWatermark(ref, text, options = {}) {
       overlay.remove()
     }
   }, [ref, textKey, text, rotate, fontSize, color, fontFamily, gapX, gapY, zIndex])
+}
+
+/* =====================================================================
+   时间与倒计时
+   ===================================================================== */
+
+/**
+ * 返回「当前时间」，按 intervalMs 自动刷新。
+ * 做时钟、相对时间（刚刚 / 3 分钟前）自动更新时很好用。
+ * @param {number} intervalMs 刷新间隔；传 null 则不自动刷新
+ */
+export function useNow(intervalMs = 1000) {
+  const [now, setNow] = useState(() => new Date())
+  useInterval(() => setNow(new Date()), intervalMs)
+  return now
+}
+
+/**
+ * 倒计时。基于「目标时间戳」而不是每轮减一 ——
+ * 标签页被浏览器降频时 setInterval 会漂，按时间戳算才不会越走越慢。
+ *
+ * @param {number} seconds 总秒数
+ * @param {object} [o]
+ * @param {boolean}[o.autoStart] 是否立即开始
+ * @param {Function}[o.onFinish] 归零时回调
+ * @returns {{ left:number, running:boolean, start:(s?:number)=>void, stop:()=>void, reset:()=>void }}
+ */
+export function useCountdown(seconds = 60, { autoStart = false, onFinish } = {}) {
+  const total = Math.max(0, Math.floor(seconds))
+  const [left, setLeft] = useState(total)
+  const [deadline, setDeadline] = useState(null)
+  const onFinishRef = useRef(onFinish)
+
+  useEffect(() => { onFinishRef.current = onFinish }, [onFinish])
+
+  const start = useCallback((s) => {
+    const n = Math.max(0, Math.floor(typeof s === 'number' ? s : total))
+    setLeft(n)
+    setDeadline(Date.now() + n * 1000)
+  }, [total])
+
+  const stop = useCallback(() => setDeadline(null), [])
+
+  const reset = useCallback(() => {
+    setDeadline(null)
+    setLeft(total)
+  }, [total])
+
+  useInterval(() => {
+    if (deadline == null) return
+    const rest = Math.max(0, Math.ceil((deadline - Date.now()) / 1000))
+    setLeft(rest)
+    if (rest === 0) {
+      setDeadline(null)
+      if (onFinishRef.current) onFinishRef.current()
+    }
+  }, deadline == null ? null : 500)
+
+  /* 声明了 autoStart 就在挂载后启动一次（惰性触发，避免挂载即加载） */
+  const startedRef = useRef(false)
+  useEffect(() => {
+    if (!autoStart || startedRef.current) return
+    startedRef.current = true
+    start(total)
+  }, [autoStart, start, total])
+
+  return { left, running: deadline != null, start, stop, reset }
+}
+
+/* =====================================================================
+   事件与状态小工具
+   ===================================================================== */
+
+/**
+ * 声明式事件监听，组件卸载自动解绑。
+ * target 可以传 DOM 节点、window / document，也可以传 ref 对象。
+ *
+ * 注意：handler 用 ref 收编，不会因为父组件重建而反复解绑重绑；
+ * options 请传常量（或用 useMemo），否则每次渲染都视为变化。
+ */
+export function useEventListener(target, type, handler, options) {
+  const handlerRef = useRef(handler)
+
+  useEffect(() => {
+    handlerRef.current = handler
+  }, [handler])
+
+  useEffect(() => {
+    if (!type) return undefined
+    const el = (target && typeof target === 'object' && 'current' in target) ? target.current : target
+    if (!el || typeof el.addEventListener !== 'function') return undefined
+
+    const listener = (e) => {
+      if (handlerRef.current) handlerRef.current(e)
+    }
+    el.addEventListener(type, listener, options)
+    return () => el.removeEventListener(type, listener, options)
+  }, [target, type, options])
+}
+
+/** 强制重渲染。调试、或者依赖了 React 之外的可变数据源时用 */
+export function useUpdate() {
+  const [, setTick] = useState(0)
+  return useCallback(() => setTick((t) => t + 1), [])
+}
+
+/**
+ * Set 状态的便捷封装：多选、标签勾选、批量选择场景少写一堆展开语法。
+ * 每次操作返回新 Set，保证引用变化能被 React 感知。
+ */
+export function useSet(initial = []) {
+  const [set, setSet] = useState(() => new Set(initial))
+
+  const add = useCallback((v) => setSet((s) => new Set(s).add(v)), [])
+  const remove = useCallback((v) => setSet((s) => {
+    const next = new Set(s)
+    next.delete(v)
+    return next
+  }), [])
+  const toggle = useCallback((v) => setSet((s) => {
+    const next = new Set(s)
+    if (next.has(v)) next.delete(v)
+    else next.add(v)
+    return next
+  }), [])
+  const clear = useCallback(() => setSet(new Set()), [])
+  const has = useCallback((v) => set.has(v), [set])
+  const toArray = useMemo(() => Array.from(set), [set])
+
+  return { set, has, add, remove, toggle, clear, toArray, size: set.size }
 }

@@ -25,6 +25,9 @@ const DEBUG_PORT = Number(process.env.CDP_PORT || 9333)
 const SESSION_KEY = 'starfleet.session'
 /** 单页最长等待（ms）：lazy 页面要下载 chunk，太短会误判 */
 const PAGE_TIMEOUT = 12000
+/** 单条 CDP 命令超时（ms）。首次 Runtime.enable 在慢机器上可能要几十秒，
+    写死 20s 会把「启动慢」误判成「脚本失败」，调到 60s 并允许环境变量覆盖 */
+const CDP_TIMEOUT = Number(process.env.CDP_TIMEOUT || 60000)
 /** 取主内容区文本：整页 innerText 会被侧边导航占满，看不出页面到底渲染了什么 */
 const MAIN_TEXT = `((document.querySelector('main[role="main"]')||document.body).innerText||'').replace(/\\s+/g,' ').slice(0,100)`
 
@@ -76,7 +79,7 @@ function createCdp(ws) {
             pending.delete(msgId)
             reject(new Error(`CDP 命令超时: ${method}`))
           }
-        }, 20000)
+        }, CDP_TIMEOUT)
       })
     },
     on(fn) {
@@ -117,9 +120,17 @@ function launchChrome() {
       '--remote-allow-origins=*',
       'about:blank',
     ],
-    { stdio: 'ignore', detached: false },
+    { stdio: ['ignore', 'ignore', 'pipe'], detached: false },
   )
-  return { proc, userDataDir }
+  /* 收集 stderr：Chrome 启动失败（端口占用 / 沙箱拦截 / 版本不兼容）时信息只走 stderr，
+     用 ignore 会完全看不到，失败原因只能靠猜 */
+  let stderrLog = ''
+  proc.stderr?.setEncoding('utf8')
+  proc.stderr?.on('data', (chunk) => {
+    stderrLog += chunk
+    if (stderrLog.length > 4000) stderrLog = stderrLog.slice(-4000)
+  })
+  return { proc, userDataDir, getStderr: () => stderrLog.trim() }
 }
 
 /* ---------- 4. 主流程 ---------- */
@@ -145,30 +156,48 @@ if (!fs.existsSync(CHROME)) {
 }
 
 console.log(`目标：${BASE}    路由数：${routes.length}\n`)
-const { proc: chrome, userDataDir } = launchChrome()
+const { proc: chrome, userDataDir, getStderr } = launchChrome()
 const ready = await waitForTargetReady()
 if (!ready) {
   chrome.kill('SIGKILL')
   console.error('Chrome 调试端口未就绪')
   process.exit(1)
 }
+/* 端口就绪 ≠ target 就绪：刚起的新实例还在初始化，立刻发命令容易挂住 */
+await sleep(800)
 
-let ws
-try {
+/* 开标签页：新起的实例偶尔会在「端口已就绪」之后才真正可用，
+   单次的 fetch 失败直接退出会把偶发抖动误判成脚本故障，这里重试几次 */
+async function openTab() {
   const tab = await (
     await fetch(`http://127.0.0.1:${DEBUG_PORT}/json/new?${encodeURIComponent(BASE)}`, {
       method: 'PUT',
     })
   ).json()
-  ws = new WebSocket(tab.webSocketDebuggerUrl)
+  const ws = new WebSocket(tab.webSocketDebuggerUrl)
   await new Promise((resolve, reject) => {
     ws.addEventListener('open', resolve, { once: true })
     ws.addEventListener('error', reject, { once: true })
     setTimeout(() => reject(new Error('WebSocket 连接超时')), 10000)
   })
-} catch (e) {
+  return ws
+}
+
+let ws
+let lastErr
+for (let attempt = 1; attempt <= 3 && !ws; attempt += 1) {
+  try {
+    ws = await openTab()
+  } catch (e) {
+    lastErr = e
+    await sleep(1000)
+  }
+}
+if (!ws) {
   chrome.kill('SIGKILL')
-  console.error(`无法连接浏览器：${e.message}`)
+  console.error(`无法连接浏览器：${lastErr?.message}`)
+  const err = getStderr()
+  if (err) console.error(`Chrome stderr:\n${err}`)
   process.exit(1)
 }
 

@@ -1,0 +1,203 @@
+/* ============ 性能实验室 PerfLab 演示页 ============ */
+.perf-lab {
+  padding: 20px 24px 32px;
+  max-width: 1320px;
+  margin: 0 auto;
+
+  /* —— 页头 —— */
+  &__header {
+    margin-bottom: 16px;
+  }
+
+  &__title {
+    margin: 0 0 4px !important;
+    font-size: 1.35rem !important;
+  }
+
+  &__lead {
+    margin: 0 !important;
+    font-size: 0.85rem;
+  }
+
+  /* —— 栅格 —— */
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 14px;
+    align-items: start;
+  }
+
+  &__cols {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 14px;
+    align-items: start;
+  }
+
+  &__card {
+    border-radius: var(--r-lg, 8px);
+  }
+
+  &__stage {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* —— 对照实验的独立小框 —— */
+  &__box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px;
+    border-radius: var(--r-md, 6px);
+    background: var(--c-bg-soft, #fafafa);
+    border: 1px solid var(--c-border-soft, #f0f0f0);
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  &__hint {
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--c-text-3, #00000073);
+    line-height: 1.6;
+  }
+
+  &__code {
+    margin: 0;
+    padding: 10px 12px;
+    border-radius: var(--r-md, 6px);
+    background: var(--c-bg-soft, #fafafa);
+    border: 1px solid var(--c-border-soft, #f0f0f0);
+    font-size: 0.75rem;
+    line-height: 1.65;
+    color: var(--c-text-2, #000000a6);
+    overflow-x: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  /* —— 指标条 —— */
+  &__stats {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  &__stat {
+    flex: 1 1 90px;
+    min-width: 90px;
+    padding: 8px 10px;
+    border-radius: var(--r-md, 6px);
+    background: var(--c-bg-soft, #fafafa);
+    border: 1px solid var(--c-border-soft, #f0f0f0);
+
+    dt {
+      margin: 0 0 2px;
+      font-size: 0.72rem;
+      color: var(--c-text-3, #00000073);
+    }
+
+    dd {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--c-text-1, #000000e0);
+    }
+  }
+
+  /* —— 大号帧率读数 —— */
+  &__fps {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+
+    b {
+      font-size: 2.4rem;
+      line-height: 1;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      transition: color 0.2s ease;
+    }
+
+    span {
+      font-size: 0.8rem;
+      color: var(--c-text-3, #00000073);
+    }
+  }
+
+  &__fps--good b { color: var(--c-success, #52c41a); }
+  &__fps--warn b { color: var(--c-warning, #faad14); }
+  &__fps--bad  b { color: var(--c-danger, #ff4d4f); }
+
+  &__spark {
+    display: block;
+    width: 100%;
+    height: 56px;
+    border-radius: var(--r-md, 6px);
+    background: var(--c-bg-soft, #fafafa);
+    border: 1px solid var(--c-border-soft, #f0f0f0);
+  }
+
+  /* —— 主线程阻塞指示：纯 CSS 动画，JS 卡住时它也会停 —— */
+  &__spinner {
+    width: 34px;
+    height: 34px;
+    border-radius: var(--r-sm, 4px);
+    background: var(--grad-primary, linear-gradient(135deg, #1677ff, #4096ff));
+    animation: perf-spin 1s linear infinite;
+  }
+
+  /* —— 虚拟滚动行 —— */
+  &__vrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 36px;
+    padding: 0 12px;
+    border-bottom: 1px solid var(--c-border-soft, #f0f0f0);
+    font-size: 0.8rem;
+    box-sizing: border-box;
+
+    i {
+      font-style: normal;
+      color: var(--c-text-3, #00000073);
+      font-variant-numeric: tabular-nums;
+      min-width: 56px;
+    }
+
+    em {
+      font-style: normal;
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--c-text-1, #000000e0);
+    }
+
+    span {
+      font-variant-numeric: tabular-nums;
+      color: var(--c-text-2, #000000a6);
+    }
+  }
+}
+
+@keyframes perf-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 全量渲染容器（对照用，高度与虚拟列表一致） */
+.perf-plain-list {
+  height: 320px;
+  overflow-y: auto;
+  border: 1px solid var(--c-border-soft, #f0f0f0);
+  border-radius: var(--r-md, 6px);
+  background: var(--c-card, #fff);
+}

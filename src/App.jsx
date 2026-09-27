@@ -26,6 +26,10 @@ const loadStudioDemo = () => import('./pages/StudioDemo/index.jsx')
 const loadTemplatesDemo = () => import('./pages/TemplatesDemo/index.jsx')
 const loadUtilsDemo = () => import('./pages/UtilsDemo/index.jsx')
 const loadReactHooksDemo = () => import('./pages/ReactHooksDemo/index.jsx')
+const loadPerfLabDemo = () => import('./pages/PerfLabDemo/index.jsx')
+const loadErrorBoundaryDemo = () => import('./pages/ErrorBoundaryDemo/index.jsx')
+const loadStateMachineDemo = () => import('./pages/StateMachineDemo/index.jsx')
+const loadWebApiDemo = () => import('./pages/WebApiDemo/index.jsx')
 const loadCommandPaletteDemo = () => import('./pages/CommandPaletteDemo/index.jsx')
 const loadNotifyDemo = () => import('./pages/NotifyDemo/index.jsx')
 const loadDataTableDemo = () => import('./pages/DataTableDemo/index.jsx')
@@ -82,6 +86,10 @@ const StudioDemo = lazy(loadStudioDemo)
 const TemplatesDemo = lazy(loadTemplatesDemo)
 const UtilsDemo = lazy(loadUtilsDemo)
 const ReactHooksDemo = lazy(loadReactHooksDemo)
+const PerfLabDemo = lazy(loadPerfLabDemo)
+const ErrorBoundaryDemo = lazy(loadErrorBoundaryDemo)
+const StateMachineDemo = lazy(loadStateMachineDemo)
+const WebApiDemo = lazy(loadWebApiDemo)
 const VueComponents = lazy(loadVueComponents)
 const StyleShowcase = lazy(loadStyleShowcase)
 const AngularComponents = lazy(loadAngularComponents)
@@ -105,7 +113,8 @@ const allLoaders = [
   loadVoiceAssistant, loadFormBuilderDemo, loadThemeDemo, loadChartsDemo,
   loadEChartsDemo, loadAntdDemo, loadChatBotDemo, loadChatBotShare,
   loadKitDemo, loadStudioDemo, loadTemplatesDemo, loadUtilsDemo,
-  loadReactHooksDemo,
+  loadReactHooksDemo, loadPerfLabDemo,
+  loadErrorBoundaryDemo, loadStateMachineDemo, loadWebApiDemo,
   loadCommandPaletteDemo, loadNotifyDemo,
   loadDataTableDemo, loadTestCenterDemo, loadAssistantDemo, loadLogin,
   loadNotFound, loadCompareParentChild, loadCompareTwoWay, loadCompareProvide,
@@ -181,6 +190,10 @@ function App() {
           <Route path="templates" element={<TemplatesDemo />} />
           <Route path="utils" element={<UtilsDemo />} />
           <Route path="react-hooks" element={<ReactHooksDemo />} />
+          <Route path="perf-lab" element={<PerfLabDemo />} />
+          <Route path="error-boundary" element={<ErrorBoundaryDemo />} />
+          <Route path="state-machine" element={<StateMachineDemo />} />
+          <Route path="web-api" element={<WebApiDemo />} />
           <Route path="vue-components" element={<VueComponents />} />
           <Route path="style-showcase" element={<StyleShowcase />} />
           <Route path="angular-components" element={<AngularComponents />} />

@@ -565,3 +565,360 @@ export function hexToRgba(hex = '', alpha = 1) {
 export const randomInt = (min = 0, max = 100) => Math.floor(Math.random() * (max - min + 1)) + min
 export const randomPick = (arr = []) => (arr.length ? arr[Math.floor(Math.random() * arr.length)] : undefined)
 export const randomId = (prefix = 'id') => `${prefix}-${Math.random().toString(36).slice(2, 10)}`
+
+/* =====================================================================
+   字符串增强
+   ===================================================================== */
+
+/** 截断字符串并追加省略号；max 指的是「含省略号」的总长度 */
+export function truncate(s = '', max = 20, suffix = '…') {
+  const str = String(s)
+  if (max <= 0) return ''
+  if (str.length <= max) return str
+  return str.slice(0, Math.max(0, max - suffix.length)) + suffix
+}
+
+/**
+ * 中英混排字数统计：中日韩按「字」计，拉丁字母数字按「词」计。
+ * 用于字数上限提示、阅读时长估算。
+ */
+export function wordCount(s = '') {
+  const str = String(s)
+  const cjk = str.match(/[\u4e00-\u9fa5\u3040-\u30ff]/g) || []
+  const words = str
+    .replace(/[\u4e00-\u9fa5\u3040-\u30ff]/g, ' ')
+    .match(/[A-Za-z0-9_'-]+/g) || []
+  return cjk.length + words.length
+}
+
+/** 全角转半角（全角空格 → 普通空格），表单输入归一化常用 */
+export function toHalfWidth(s = '') {
+  return String(s)
+    .replace(/[\uFF01-\uFF5E]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xFEE0))
+    .replace(/\u3000/g, ' ')
+}
+
+/** 转义正则元字符 —— 把用户输入拼进 new RegExp 前必须过一遍，否则会炸 */
+export function escapeRegExp(s = '') {
+  return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+/** URL 友好化：小写、空白转连字符、丢弃非法字符 */
+export function slugify(s = '') {
+  return String(s)
+    .trim()
+    .toLowerCase()
+    .replace(/[\s_]+/g, '-')
+    .replace(/[^a-z0-9\u4e00-\u9fa5-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+/** 取姓名首字母做头像占位：中文取前两字，英文取两段首字母 */
+export function initials(name = '') {
+  const s = String(name).trim()
+  if (!s) return ''
+  if (/[\u4e00-\u9fa5]/.test(s)) return s.slice(0, 2)
+  return s.split(/\s+/).slice(0, 2).map((w) => w.charAt(0).toUpperCase()).join('')
+}
+
+/** 去首尾空白，并把中间连续空白压成一个 */
+export const trimAll = (s = '') => String(s).trim().replace(/\s+/g, ' ')
+
+/* =====================================================================
+   数值统计
+   ===================================================================== */
+
+export const sum = (arr = []) => arr.reduce((acc, n) => acc + (Number(n) || 0), 0)
+export const avg = (arr = []) => (arr.length ? sum(arr) / arr.length : 0)
+
+/** 中位数：偶数个取中间两项平均；忽略非数字 */
+export function median(arr = []) {
+  const list = arr.filter((n) => typeof n === 'number' && !Number.isNaN(n)).sort((a, b) => a - b)
+  if (!list.length) return 0
+  const mid = Math.floor(list.length / 2)
+  return list.length % 2 ? list[mid] : (list[mid - 1] + list[mid]) / 2
+}
+
+/** 闭区间判断：inRange(5, 1, 10) → true */
+export const inRange = (n, min, max) => Number(n) >= min && Number(n) <= max
+
+/** 四舍五入到指定小数位：roundTo(1.234, 2) → 1.23 */
+export function roundTo(n, digits = 0) {
+  const p = 10 ** digits
+  return Math.round(Number(n) * p) / p
+}
+
+/** 计算占比（返回数字，不带 % 号）；total 为 0 时返回 0，不产生 NaN */
+export function percentOf(part, total, digits = 1) {
+  const t = Number(total)
+  if (!t) return 0
+  return roundTo((Number(part) / t) * 100, digits)
+}
+
+/** 毫秒 → 中文时长：3天2小时1分 / 1小时5分3秒 / 42秒 */
+export function formatDuration(ms = 0) {
+  const total = Math.max(0, Math.floor(Number(ms) / 1000))
+  const d = Math.floor(total / 86400)
+  const h = Math.floor((total % 86400) / 3600)
+  const m = Math.floor((total % 3600) / 60)
+  const s = total % 60
+  if (d) return `${d}天${h}小时${m}分`
+  if (h) return `${h}小时${m}分${s}秒`
+  if (m) return `${m}分${s}秒`
+  return `${s}秒`
+}
+
+/* =====================================================================
+   数组增强（均返回新数组，不改原数组）
+   ===================================================================== */
+
+/** 按固定长度分块：chunk([1,2,3], 2) → [[1,2],[3]] */
+export function chunk(arr = [], size = 1) {
+  const n = Math.max(1, Math.floor(size))
+  const out = []
+  for (let i = 0; i < arr.length; i += n) out.push(arr.slice(i, i + n))
+  return out
+}
+
+/** 生成序列：range(3) → [0,1,2]；range(1, 5) → [1,2,3,4]；range(5, 0, -2) → [5,3,1] */
+export function range(start = 0, end, step = 1) {
+  const stop = end === undefined ? start : end
+  const from = end === undefined ? 0 : start
+  const s = step === 0 ? 1 : step
+  const out = []
+  if (s > 0) for (let i = from; i < stop; i += s) out.push(i)
+  else for (let i = from; i > stop; i += s) out.push(i)
+  return out
+}
+
+/** 洗牌（Fisher-Yates） */
+export function shuffle(arr = []) {
+  const list = arr.slice()
+  for (let i = list.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1))
+    const t = list[i]
+    list[i] = list[j]
+    list[j] = t
+  }
+  return list
+}
+
+/** 随机抽 n 个不重复元素 */
+export function sample(arr = [], n = 1) {
+  return shuffle(arr).slice(0, Math.max(0, n))
+}
+
+/** 差集：在 a 中但不在 b 中 */
+export const difference = (a = [], b = []) => a.filter((x) => !b.includes(x))
+/** 交集：同时在 a 和 b 中 */
+export const intersection = (a = [], b = []) => a.filter((x) => b.includes(x))
+/** 并集（去重） */
+export const union = (a = [], b = []) => Array.from(new Set([...a, ...b]))
+/** 去掉 falsy 项：0 也会被去掉，这是刻意的 */
+export const compact = (arr = []) => arr.filter(Boolean)
+
+/**
+ * 按 key 计数。key 可传属性名，也可传取值函数。
+ * countBy(rows, 'status') → { 在线: 3, 离线: 1 }
+ */
+export function countBy(arr = [], key) {
+  const pickVal = typeof key === 'function' ? key : (item) => (item == null ? undefined : item[key])
+  return arr.reduce((acc, item) => {
+    const k = String(pickVal(item))
+    acc[k] = (acc[k] || 0) + 1
+    return acc
+  }, {})
+}
+
+/** 按 key 求和 */
+export function sumBy(arr = [], key) {
+  const pickVal = typeof key === 'function' ? key : (item) => (item == null ? undefined : item[key])
+  return sum(arr.map((item) => Number(pickVal(item)) || 0))
+}
+
+/** 把元素从 from 挪到 to（拖拽排序的底层操作）；下标越界时原样返回 */
+export function move(arr = [], from = 0, to = 0) {
+  const list = arr.slice()
+  if (from < 0 || from >= list.length) return list
+  const [item] = list.splice(from, 1)
+  list.splice(Math.max(0, Math.min(list.length, to)), 0, item)
+  return list
+}
+
+/* =====================================================================
+   对象路径存取（支持 'a.b[0].c' 写法）
+   ===================================================================== */
+
+const toPathKeys = (path = '') => String(path)
+  .replace(/\[(\d+)\]/g, '.$1')
+  .split('.')
+  .filter((k) => k !== '')
+
+/** 安全取深层值，取不到返回 fallback，不会因为中间层是 undefined 而抛错 */
+export function get(obj, path = '', fallback) {
+  const keys = toPathKeys(path)
+  if (obj == null || !keys.length) return fallback
+  let cur = obj
+  for (const k of keys) {
+    if (cur == null || typeof cur !== 'object') return fallback
+    cur = cur[k]
+  }
+  return cur === undefined ? fallback : cur
+}
+
+/** 不可变地设置深层值，返回新对象（中间层缺失时自动补对象） */
+export function set(obj, path = '', value) {
+  const keys = toPathKeys(path)
+  if (!keys.length) return obj
+  const root = Array.isArray(obj) ? obj.slice() : { ...(obj || {}) }
+  let cur = root
+  for (let i = 0; i < keys.length - 1; i += 1) {
+    const k = keys[i]
+    const next = cur[k]
+    cur[k] = Array.isArray(next) ? next.slice() : (next && typeof next === 'object' ? { ...next } : {})
+    cur = cur[k]
+  }
+  cur[keys[keys.length - 1]] = value
+  return root
+}
+
+/** 判断路径是否存在（即使末端值是 undefined，只要键在就返回 true） */
+export function has(obj, path = '') {
+  const keys = toPathKeys(path)
+  if (obj == null || !keys.length) return false
+  let cur = obj
+  for (const k of keys) {
+    if (cur == null || typeof cur !== 'object' || !(k in cur)) return false
+    cur = cur[k]
+  }
+  return true
+}
+
+/** 键值互换：{ a: 1 } → { 1: 'a' } */
+export function invert(obj = {}) {
+  return Object.keys(obj).reduce((acc, k) => {
+    acc[String(obj[k])] = k
+    return acc
+  }, {})
+}
+
+/** 映射对象的值，键保持不变 */
+export function mapValues(obj = {}, fn) {
+  if (typeof fn !== 'function') return { ...obj }
+  return Object.keys(obj).reduce((acc, k) => {
+    acc[k] = fn(obj[k], k)
+    return acc
+  }, {})
+}
+
+/* =====================================================================
+   日期增强
+   ===================================================================== */
+
+export function startOfDay(d = new Date()) {
+  const x = new Date(d)
+  x.setHours(0, 0, 0, 0)
+  return x
+}
+
+export function endOfDay(d = new Date()) {
+  const x = new Date(d)
+  x.setHours(23, 59, 59, 999)
+  return x
+}
+
+/** 加减天数，支持负数 */
+export function addDays(d = new Date(), n = 0) {
+  const x = new Date(d)
+  x.setDate(x.getDate() + Number(n))
+  return x
+}
+
+export function isSameDay(a, b) {
+  const x = new Date(a)
+  const y = new Date(b)
+  if (Number.isNaN(x.getTime()) || Number.isNaN(y.getTime())) return false
+  return x.getFullYear() === y.getFullYear()
+    && x.getMonth() === y.getMonth()
+    && x.getDate() === y.getDate()
+}
+
+const WEEKDAYS = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
+export function weekdayOf(d = new Date()) {
+  const x = new Date(d)
+  const day = x.getDay()
+  return WEEKDAYS[day] || ''
+}
+
+/** 某年某月的天数；month 传 1-12 */
+export const daysInMonth = (year, month) => new Date(Number(year), Number(month), 0).getDate()
+
+export const isLeapYear = (year) => {
+  const y = Number(year)
+  return (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0
+}
+
+/* =====================================================================
+   颜色
+   ===================================================================== */
+
+/**
+ * 字符串 → 稳定颜色：同一输入永远得到同一颜色。
+ * 适合给用户头像、标签自动配色，省掉维护一张映射表。
+ */
+export function colorFromString(s = '') {
+  const str = String(s)
+  let h = 0
+  for (let i = 0; i < str.length; i += 1) {
+    h = (h * 31 + str.charCodeAt(i)) % 360
+  }
+  return `hsl(${h}, 65%, 52%)`
+}
+
+/** 按背景亮度返回可读前景色（黑或白），避免浅色底配白字 */
+export function contrastColor(hex = '') {
+  let h = String(hex).trim().replace('#', '')
+  if (h.length === 3) h = h.split('').map((c) => c + c).join('')
+  if (!/^[0-9a-fA-F]{6}$/.test(h)) return '#000000'
+  const n = parseInt(h, 16)
+  const r = (n >> 16) & 255
+  const g = (n >> 8) & 255
+  const b = n & 255
+  const yiq = (r * 299 + g * 587 + b * 114) / 1000   // YIQ 亮度
+  return yiq >= 128 ? '#000000' : '#ffffff'
+}
+
+/* =====================================================================
+   常用校验
+   ===================================================================== */
+
+export const isEmail = (s = '') => /^[\w.!#$%&'*+/=?^`{|}~-]+@[\w-]+(\.[\w-]+)+$/.test(String(s).trim())
+/** 中国大陆手机号（11 位，1 开头第二位 3-9） */
+export const isPhone = (s = '') => /^1[3-9]\d{9}$/.test(String(s).trim())
+export const isNumeric = (s = '') => {
+  const v = String(s).trim()
+  return v !== '' && !Number.isNaN(Number(v))
+}
+export const isChinese = (s = '') => /^[\u4e00-\u9fa5]+$/.test(String(s).trim())
+
+export function isUrl(s = '') {
+  try {
+    new URL(String(s))
+    return true
+  } catch { return false }
+}
+
+/**
+ * 中国大陆 18 位身份证校验：格式 + 校验位（ISO 7064 MOD 11-2）。
+ * 只校验编码是否合法，不代表该号码真实存在。
+ */
+export function isIdCard(s = '') {
+  const v = String(s).trim().toUpperCase()
+  if (!/^\d{17}[\dX]$/.test(v)) return false
+  const weights = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]
+  const codes = ['1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2']
+  let acc = 0
+  for (let i = 0; i < 17; i += 1) acc += Number(v[i]) * weights[i]
+  return codes[acc % 11] === v[17]
+}

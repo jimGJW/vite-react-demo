@@ -1,0 +1,97 @@
+/* ============ 状态机与时间旅行 演示页 ============ */
+.smd {
+  padding: 20px 24px 32px;
+  max-width: 1320px;
+  margin: 0 auto;
+
+  &__header {
+    margin-bottom: 16px;
+  }
+
+  &__title {
+    margin: 0 0 4px !important;
+    font-size: 1.35rem !important;
+  }
+
+  &__lead {
+    margin: 0 !important;
+    font-size: 0.85rem;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+    gap: 14px;
+    align-items: start;
+  }
+
+  &__card {
+    border-radius: var(--r-lg, 8px);
+  }
+
+  &__stage {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  &__hint {
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--c-text-3, #00000073);
+    line-height: 1.6;
+  }
+
+  &__code {
+    margin: 0;
+    padding: 10px 12px;
+    border-radius: var(--r-md, 6px);
+    background: var(--c-bg-soft, #fafafa);
+    border: 1px solid var(--c-border-soft, #f0f0f0);
+    font-size: 0.75rem;
+    line-height: 1.65;
+    color: var(--c-text-2, #000000a6);
+    overflow-x: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  /* —— 状态图 —— */
+  &__flow {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--r-md, 6px);
+    background: var(--c-bg-soft, #fafafa);
+    border: 1px solid var(--c-border-soft, #f0f0f0);
+  }
+
+  /* —— 当前状态大卡 —— */
+  &__now {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: var(--r-md, 6px);
+    background: var(--c-info-soft, #e6f4ff);
+    border: 1px solid rgba(22, 119, 255, 0.18);
+
+    b {
+      font-size: 1.15rem;
+      color: var(--c-primary, #1677ff);
+    }
+  }
+
+  &__zone {
+    padding: 12px;
+    border-radius: var(--r-md, 6px);
+    background: var(--c-bg-soft, #fafafa);
+    border: 1px solid var(--c-border-soft, #f0f0f0);
+  }
+}

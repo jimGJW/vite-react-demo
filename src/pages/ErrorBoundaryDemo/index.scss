@@ -1,0 +1,79 @@
+/* ============ 错误边界与容错 演示页 ============ */
+.ebd {
+  padding: 20px 24px 32px;
+  max-width: 1320px;
+  margin: 0 auto;
+
+  &__header {
+    margin-bottom: 16px;
+  }
+
+  &__title {
+    margin: 0 0 4px !important;
+    font-size: 1.35rem !important;
+  }
+
+  &__lead {
+    margin: 0 !important;
+    font-size: 0.85rem;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 14px;
+    align-items: start;
+  }
+
+  &__card {
+    border-radius: var(--r-lg, 8px);
+  }
+
+  &__stage {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  &__hint {
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--c-text-3, #00000073);
+    line-height: 1.6;
+  }
+
+  &__code {
+    margin: 0;
+    padding: 10px 12px;
+    border-radius: var(--r-md, 6px);
+    background: var(--c-bg-soft, #fafafa);
+    border: 1px solid var(--c-border-soft, #f0f0f0);
+    font-size: 0.75rem;
+    line-height: 1.65;
+    color: var(--c-text-2, #000000a6);
+    overflow-x: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+
+  /* 降级 UI 外壳 */
+  &__fallback {
+    padding: 14px;
+    border-radius: var(--r-md, 6px);
+    border: 1px dashed var(--c-danger, #ff4d4f);
+    background: var(--c-danger-soft, #fff2f0);
+  }
+
+  &__zone {
+    padding: 12px;
+    border-radius: var(--r-md, 6px);
+    background: var(--c-bg-soft, #fafafa);
+    border: 1px solid var(--c-border-soft, #f0f0f0);
+  }
+}
