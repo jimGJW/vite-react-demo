@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { useAuth } from './contexts/useAuth.js'
+import { ChangelogProvider } from './contexts/ChangelogContext.jsx'
 import { AssistantProvider } from './components/Assistants/index.jsx'
 import Layout from './layouts/Layout.jsx'
 import './App.scss'
@@ -159,10 +160,11 @@ function App() {
   }
   return (
     /* 助手中心 Provider 提到路由外层，任意页面都可用 useAssistants() 唤起弹窗 */
-    <AssistantProvider>
-      <Suspense fallback={<PageLoading />}>
-        <Routes>
-        <Route path="/login" element={<Login />} />
+    <ChangelogProvider>
+      <AssistantProvider>
+        <Suspense fallback={<PageLoading />}>
+          <Routes>
+          <Route path="/login" element={<Login />} />
         <Route
           path="/"
           element={
@@ -211,10 +213,11 @@ function App() {
           <Route path="assistant-demo" element={<AssistantDemo />} />
           <Route path="404" element={<NotFound />} />
           <Route path="*" element={<Navigate to="/404" replace />} />
-        </Route>
+          </Route>
         </Routes>
-      </Suspense>
-    </AssistantProvider>
+        </Suspense>
+      </AssistantProvider>
+    </ChangelogProvider>
   )
 }
 

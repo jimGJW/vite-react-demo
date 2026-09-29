@@ -44,6 +44,8 @@ export default defineConfig([
       // index.jsx 是这些能力的统一出口（桶文件），拆开反而割裂调用方
       'src/components/Assistants/AssistantContext.jsx',
       'src/components/Assistants/index.jsx',
+      // 功能版本时间轴：Provider + useChangelog 属于同一 Context 单元
+      'src/contexts/ChangelogContext.jsx',
     ],
     rules: { 'react-refresh/only-export-components': 'off' },
   },

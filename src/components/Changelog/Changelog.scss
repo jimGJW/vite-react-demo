@@ -1,0 +1,140 @@
+/* ============ 时间段下标 icon（PeriodTag） ============ */
+.period-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: #fff;
+  background: var(--pt-color, #1677ff);
+  border-radius: 999px;
+  line-height: 1;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+/* 上标形态：贴在导航文字右上角 */
+.period-tag--subscript {
+  vertical-align: super;
+  padding: 1px 4px;
+  font-size: 0.58rem;
+  margin-left: 2px;
+}
+
+/* 行内药丸：用于抽屉内标题后 */
+.period-tag--inline {
+  padding: 0 5px;
+  font-size: 0.62rem;
+  margin-left: 6px;
+}
+
+.period-tag__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.period-tag__label {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============ 侧边栏文字 + 下标 icon 同行 ============ */
+.nav-label-with-tag {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+/* ============ Header 时间轴触发器 ============ */
+.changelog-trigger {
+  color: var(--c-text-2, rgba(0, 0, 0, 0.65));
+}
+
+/* ============ 下拉菜单项 ============ */
+.cl-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 220px;
+}
+
+.cl-menu-item__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cl-menu-item__dot--all {
+  background: conic-gradient(#1677ff, #52c41a, #fa8c16, #1677ff);
+}
+
+.cl-menu-item__title {
+  font-weight: 600;
+}
+
+.cl-menu-item__sub {
+  color: var(--c-text-3, rgba(0, 0, 0, 0.45));
+  font-size: 0.78rem;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cl-menu-item__count {
+  color: var(--c-text-3, rgba(0, 0, 0, 0.45));
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============ 时间轴抽屉 ============ */
+.changelog-body {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.changelog-release__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 8px;
+}
+
+.changelog-release__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.changelog-release__date {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.changelog-release__title {
+  color: var(--c-text-2, rgba(0, 0, 0, 0.65));
+  font-size: 0.85rem;
+}
+
+.changelog-change__title {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  color: var(--c-text-1, rgba(0, 0, 0, 0.88));
+}
+
+.changelog-change__desc {
+  margin-top: 2px;
+  color: var(--c-text-2, rgba(0, 0, 0, 0.65));
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.changelog-change__time {
+  margin-top: 4px;
+  color: var(--c-text-3, rgba(0, 0, 0, 0.45));
+  font-size: 0.74rem;
+  font-variant-numeric: tabular-nums;
+}

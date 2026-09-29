@@ -23,6 +23,9 @@ import { useAuth } from '../contexts/useAuth.js'
 import { useStyleMode } from '../contexts/StyleModeContext.jsx'
 import Assistants from '../components/Assistants/index.jsx'
 import VueMenu from '../components/VueMenu/index.jsx'
+import { PeriodTag } from '../components/Changelog/PeriodTag.jsx'
+import { ChangelogMenu } from '../components/Changelog/ChangelogMenu.jsx'
+import { ChangelogDrawer } from '../components/Changelog/ChangelogDrawer.jsx'
 import './Layout.scss'
 
 const { Text } = Typography
@@ -100,6 +103,26 @@ const navItems = [
   { key: '/test-center', icon: <ExperimentOutlined />, label: '测试中心' },
   { key: '/about', icon: <InfoCircleOutlined />, label: '关于' },
 ]
+
+/* 给「路由项」追加时间段下标 icon（侧边栏文字右上角小徽标）。
+   分组项递归处理 children；非路由 key（分组 / 分隔符）原样保留。
+   注意：仅作用于 antd Menu，Vue 菜单 label 必须是字符串，不注入。 */
+function injectPeriodBadge(items) {
+  return items.map((it) => {
+    if (it.children) return { ...it, children: injectPeriodBadge(it.children) }
+    const route = typeof it.key === 'string' && it.key.startsWith('/') ? it.key : null
+    if (!route) return it
+    return {
+      ...it,
+      label: (
+        <span className="nav-label-with-tag">
+          <span className="nav-label-text">{it.label}</span>
+          <PeriodTag route={route} />
+        </span>
+      ),
+    }
+  })
+}
 
 /* 默认展开哪个分组 */
 const DEFAULT_OPEN_KEYS = ['group-toolbox', 'group-compare', 'group-case']
@@ -182,6 +205,9 @@ export default function Layout() {
 
   const isCollapsed = sidebarMode === 'collapsed'
 
+  // 注入时间段下标 icon 后的菜单项（仅 antd Menu 使用；VueMenu 保持原 navItems）
+  const menuItems = useMemo(() => injectPeriodBadge(navItems), [])
+
   /* —— 监听 Vue SFC 页面发起的跳转请求 —— */
   useEffect(() => {
     const onNav = (e) => {
@@ -213,6 +239,8 @@ export default function Layout() {
         </div>
 
         <div className="header-right">
+          <ChangelogMenu />
+
           <Tooltip title={headerVisible ? '隐藏顶部导航栏' : '显示顶部导航栏'}>
             <Button
               type="text"
@@ -251,7 +279,7 @@ export default function Layout() {
               <Menu
                 mode="inline"
                 theme="light"
-                items={navItems}
+                items={menuItems}
                 selectedKeys={selectedKeys}
                 openKeys={isCollapsed ? [] : openKeys}
                 onOpenChange={setOpenKeys}
@@ -312,6 +340,9 @@ export default function Layout() {
 
       {/* 助手中心：AI Agent + 语音助手 + 可拖动快捷助手键 */}
       <Assistants />
+
+      {/* 功能版本时间轴抽屉（header 下拉联动） */}
+      <ChangelogDrawer />
     </div>
   )
 }

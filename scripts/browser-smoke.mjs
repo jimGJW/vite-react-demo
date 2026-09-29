@@ -110,7 +110,9 @@ function launchChrome() {
     CHROME,
     [
       '--headless=new',
+      '--no-sandbox',
       '--disable-gpu',
+      '--disable-dev-shm-usage',
       '--no-first-run',
       '--no-default-browser-check',
       '--disable-extensions',
