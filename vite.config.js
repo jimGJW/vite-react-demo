@@ -236,4 +236,38 @@ export default defineConfig({
       '@angular/forms',
     ],
   },
+  build: {
+    // 关闭 sourcemap 减小产物体积（排查问题时可临时打开）
+    sourcemap: false,
+    // 单 chunk 超过该值才告警，避免巨型依赖触发噪音
+    chunkSizeWarningLimit: 2000,
+    rollupOptions: {
+      output: {
+        /**
+         * 构建优化：把体量大、更新频率低的第三方依赖拆成独立 vendor chunk。
+         * 好处：① 主业务 chunk 体积大幅下降；② 依赖命中浏览器长效缓存，
+         * 业务代码发版时无需重新下载 React/antd/echarts 等；③ 并行下载更快。
+         * 仅影响客户端构建（SSR 冒烟走 ssrLoadModule，不经过此分包逻辑）。
+         */
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return undefined
+          if (id.includes('@angular')) return 'vendor-angular'
+          if (id.includes('element-plus') || id.includes('@element-plus')) return 'vendor-element'
+          if (id.includes('@ant-design') || id.includes('/antd/') || id.includes('/rc-')) return 'vendor-antd'
+          if (id.includes('echarts') || id.includes('zrender')) return 'vendor-echarts'
+          if (id.includes('onnxruntime') || id.includes('@huggingface')) return 'vendor-ai'
+          if (id.includes('vue') || id.includes('vue-router') || id.includes('@vue')) return 'vendor-vue'
+          if (
+            id.includes('react') ||
+            id.includes('scheduler') ||
+            id.includes('react-dom') ||
+            id.includes('react-router')
+          ) {
+            return 'vendor-react'
+          }
+          return 'vendor'
+        },
+      },
+    },
+  },
 })
