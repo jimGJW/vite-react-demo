@@ -10,7 +10,7 @@ import './Changelog.scss'
  * 选中任一项 → 打开时间轴抽屉并筛选到对应批次；「全部版本」= 默认全选。
  */
 export function ChangelogMenu() {
-  const { openChangelog } = useChangelog()
+  const { openChangelog, selected } = useChangelog()
 
   const items = [
     {
@@ -39,7 +39,7 @@ export function ChangelogMenu() {
 
   return (
     <Dropdown
-      menu={{ items, onClick: ({ key }) => openChangelog(key) }}
+      menu={{ items, selectedKeys: [selected], onClick: ({ key }) => openChangelog(key) }}
       placement="bottomRight"
       trigger={['click']}
     >

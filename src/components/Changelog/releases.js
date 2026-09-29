@@ -73,5 +73,18 @@ export const ROUTE_LATEST = (() => {
   return map
 })()
 
+/** 路由 → 所有包含它的批次 id 数组（用于选中批次时高亮对应侧边栏项） */
+export const ROUTE_RELEASES = (() => {
+  const map = {}
+  for (const r of RELEASES) {
+    for (const c of r.changes) {
+      if (typeof c.route === 'string' && c.route.startsWith('/')) {
+        (map[c.route] ||= []).push(r.id)
+      }
+    }
+  }
+  return map
+})()
+
 /** 全部改动条目数 */
 export const TOTAL_CHANGES = RELEASES.reduce((n, r) => n + r.changes.length, 0)

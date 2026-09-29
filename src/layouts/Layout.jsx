@@ -26,6 +26,8 @@ import VueMenu from '../components/VueMenu/index.jsx'
 import { PeriodTag } from '../components/Changelog/PeriodTag.jsx'
 import { ChangelogMenu } from '../components/Changelog/ChangelogMenu.jsx'
 import { ChangelogDrawer } from '../components/Changelog/ChangelogDrawer.jsx'
+import { useChangelog } from '../contexts/ChangelogContext.jsx'
+import { ROUTE_RELEASES, getRelease } from '../components/Changelog/releases.js'
 import './Layout.scss'
 
 const { Text } = Typography
@@ -104,23 +106,37 @@ const navItems = [
   { key: '/about', icon: <InfoCircleOutlined />, label: '关于' },
 ]
 
-/* 给「路由项」追加时间段下标 icon（侧边栏文字右上角小徽标）。
+/* 给「路由项」追加时间段下标 icon（侧边栏文字右上角小徽标），并按当前选中的批次高亮。
+   selected==='all'（默认全选）时不做额外高亮；
+   选中某批次时：属于该批次的项加 period-hit 高亮（用该批次颜色），其余淡化 period-off。
    分组项递归处理 children；非路由 key（分组 / 分隔符）原样保留。
    注意：仅作用于 antd Menu，Vue 菜单 label 必须是字符串，不注入。 */
-function injectPeriodBadge(items) {
+function decorateMenuItems(items, selected) {
   return items.map((it) => {
-    if (it.children) return { ...it, children: injectPeriodBadge(it.children) }
+    if (it.children) return { ...it, children: decorateMenuItems(it.children, selected) }
     const route = typeof it.key === 'string' && it.key.startsWith('/') ? it.key : null
     if (!route) return it
-    return {
-      ...it,
-      label: (
-        <span className="nav-label-with-tag">
-          <span className="nav-label-text">{it.label}</span>
-          <PeriodTag route={route} />
-        </span>
-      ),
+
+    const labelNode = (
+      <span className="nav-label-with-tag">
+        <span className="nav-label-text">{it.label}</span>
+        <PeriodTag route={route} />
+      </span>
+    )
+
+    let className
+    let style
+    if (selected && selected !== 'all') {
+      const inRelease = (ROUTE_RELEASES[route] || []).includes(selected)
+      if (inRelease) {
+        className = 'nav-item--period-hit'
+        const r = getRelease(selected)
+        if (r) style = { '--period-color': r.color }
+      } else {
+        className = 'nav-item--period-off'
+      }
     }
+    return { ...it, label: labelNode, className, style }
   })
 }
 
@@ -162,6 +178,7 @@ export default function Layout() {
   const { pathname } = useLocation()
   const { user, logout } = useAuth()
   const { isVue } = useStyleMode()
+  const { selected } = useChangelog()
   const navigate = useNavigate()
 
   const initial = useMemo(() => readLayout(), [])
@@ -205,8 +222,8 @@ export default function Layout() {
 
   const isCollapsed = sidebarMode === 'collapsed'
 
-  // 注入时间段下标 icon 后的菜单项（仅 antd Menu 使用；VueMenu 保持原 navItems）
-  const menuItems = useMemo(() => injectPeriodBadge(navItems), [])
+  // 注入时间段下标 icon 并按选中批次高亮的菜单项（仅 antd Menu 使用；VueMenu 保持原 navItems）
+  const menuItems = useMemo(() => decorateMenuItems(navItems, selected), [selected])
 
   /* —— 监听 Vue SFC 页面发起的跳转请求 —— */
   useEffect(() => {

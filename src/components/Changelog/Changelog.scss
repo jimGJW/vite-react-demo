@@ -44,6 +44,22 @@
   align-items: baseline;
 }
 
+/* ============ 选中批次时侧边栏高亮 ============ */
+/* 命中：用该批次颜色做淡背景 + 左侧色条；未命中：淡化 */
+.nav-item--period-hit > .ant-menu-title-content,
+.sidebar-menu .nav-item--period-hit {
+  font-weight: 600;
+}
+
+.sidebar-menu .nav-item--period-hit {
+  background: color-mix(in srgb, var(--period-color, #1677ff) 14%, transparent) !important;
+  box-shadow: inset 3px 0 0 var(--period-color, #1677ff);
+}
+
+.nav-item--period-off {
+  opacity: 0.38;
+}
+
 /* ============ Header 时间轴触发器 ============ */
 .changelog-trigger {
   color: var(--c-text-2, rgba(0, 0, 0, 0.65));
