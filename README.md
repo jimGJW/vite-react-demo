@@ -20,6 +20,8 @@
 
 * [React + Vue + Angular 三框架架构](#react--vue--angular-三框架架构)
 
+* [微前端（qiankun）](#微前端qiankun)
+
 * [页面与路由](#页面与路由)
 
 * [组件对比中心](#组件对比中心)
@@ -218,6 +220,11 @@ npm run test:e2e
 
 ## React + Vue + Angular 三框架架构
 
+> ⚠️ **已重构**：本节描述的「自研挂载桥（`mountVueBridge` / `mountAngularBridge`）」方案已在
+> v3.2.0 被 **qiankun 微前端** 取代（两个桥接文件与 `VueComponents` / `StyleShowcase` /
+> `AngularComponents` 三个页面已删除）。当前架构见 [微前端（qiankun）](#微前端qiankun)，
+> 本节的架构图与文件清单仅作为历史记录保留。
+
 ### 架构概览
 
 ```
@@ -332,6 +339,98 @@ optimizeDeps: {
   ],
 },
 ```
+
+***
+
+## 微前端（qiankun）
+
+v3.2.0 起，Vue 3 与 Angular 22 不再是「挂在 React 组件树里的组件」，而是**两个独立的子应用工程**，
+由主应用通过 [qiankun](https://qiankun.umijs.org/) 在运行时融合。Vue/Angular 相关代码已全部下沉到
+`micro-apps/`，主应用不再打包任何 Vue / Angular 运行时（主 chunk 因此明显变小）。
+
+### 架构
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  主应用 main（React 19 + Vite，:5173）                        │
+│  ├── /micro-vue       SubAppPage → loadMicroApp(vue)          │
+│  ├── /micro-angular   SubAppPage → loadMicroApp(angular)      │
+│  ├── /micro-frontend  MicroFrontendDemo（串行加载两个子应用）   │
+│  ├── SubAppContext    子应用菜单注册表 + 加载请求调度          │
+│  └── Layout 侧边栏「子应用 (qiankun)」分组                     │
+└───────────┬──────────────────────────────┬───────────────────┘
+            │ loadMicroApp                 │ loadMicroApp
+            ▼                              ▼
+   micro-apps/vue-app            micro-apps/angular-app
+   Vue 3 + Element Plus          Angular 22 Standalone + Signals
+   :7101                          :7102
+   ├── 22 条路由（含嵌套/鉴权）    ├── 14 条路由（canActivate/resolve）
+   ├── 14 个自研组件               ├── 10 个自研组件 + 8 管道 + 7 指令
+   ├── 21 个组合式函数             ├── 6 个 DI 服务 + 函数式守卫/解析器
+   └── 8 个自定义指令              └── 官方 Router（hash 模式）
+```
+
+### 主应用侧关键模块
+
+| 文件 | 作用 |
+| --- | --- |
+| [src/micros/config.js](src/micros/config.js) | `MICRO_APPS` 注册表（name / title / color / port / entry / hostPath / container / qiankunConfig） |
+| [src/micros/qiankunHost.js](src/micros/qiankunHost.js) | `loadMicro(key, containerEl)`：动态 `import` qiankun 的 `loadMicroApp`，SSR 安全 |
+| [src/micros/useSubAppLoader.js](src/micros/useSubAppLoader.js) | 共享 Hook：加载状态机 + 生命周期 + `pendingPath` 定位 |
+| [src/pages/SubAppPage](src/pages/SubAppPage) | **独立宿主页**：进入即自动加载**单个**子应用 |
+| [src/pages/MicroFrontendDemo](src/pages/MicroFrontendDemo) | 同页加载两个子应用（**串行**加载，规避竞态） |
+| [src/contexts/SubAppContext.jsx](src/contexts/SubAppContext.jsx) | 子应用菜单注册表 + 加载请求调度 |
+| [src/layouts/Layout.jsx](src/layouts/Layout.jsx) | 侧边栏「子应用 (qiankun)」菜单组（框架色点 `.micro-dot`） |
+
+### 为什么拆成 `/micro-vue` 与 `/micro-angular` 两个页面
+
+`vite-plugin-qiankun` 在 **dev 模式**下把子应用生命周期挂在全局单例
+（`window.proxy` / `window.moudleQiankunAppLifeCycles`）上。同一个页面并发加载两个子应用时，
+后加载的会覆写前一个的单例，导致另一个子应用 `bootstrap` 超时（表现为白屏 / 卡在 loading）。
+
+架构上消灭竞态：**一个宿主页只加载一个子应用**。需要同页演示时可走 `/micro-frontend`（串行加载）。
+
+### 启动
+
+```bash
+npm run dev:all      # concurrently 同时起：主应用 5173 + vue-app 7101 + angular-app 7102
+npm run dev:vue      # 只起 vue 子应用（7101 可独立访问调试）
+npm run dev:angular  # 只起 angular 子应用（7102 可独立访问调试）
+```
+
+> ⚠️ **构建 / 起服务必须剥离 WorkBuddy 注入的 `NODE_OPTIONS`**：
+> `env -u NODE_OPTIONS CODEBUDDY_SAFE_DELETE_ENABLED=0 npm run build`。
+> 否则输出走 broker IPC 管道，长输出会 `write EPIPE`。
+> dev:all 里的主应用分支已内置 `CODEBUDDY_SAFE_DELETE_ENABLED=0`（改 `vite.config.js` 会触发重启并清空
+> `node_modules/.vite/deps`，超过安全删除阈值会被拦截导致服务挂掉）。
+
+### 校验
+
+| 命令 | 覆盖 |
+| --- | --- |
+| `npm run test:qiankun` | 真实浏览器里点击「一键加载全部子应用」，轮询断言两个容器出现子应用真实渲染的 DOM |
+| `npm run test:ssr` | 主应用页面 SSR 渲染 + 内容断言 |
+| `npm run test:browser` | CDP 驱动本机 Chrome 逐路由访问抓 console error（需先起 dev server） |
+| `node scripts/qiankun-diag.mjs` | 诊断：三个服务探活 + 宿主页容器渲染文本 |
+| `node scripts/subapp-views-diag.mjs` | 逐个点开子应用内全部路由链接（覆盖两个宿主页 + 两个独立端口），双重断言：无 console error + **被点的那条真的拿到 `is-active`**（守卫改道 / 兜底页会被识别成 ⚠️ 而非 ❌） |
+
+> 该脚本打印的视图文本会**剔除页内导航条**——否则 22 条导航文案会把真正的页面内容挤出可视长度，
+> 每条都"通过"但其实什么都没验证到。
+
+### 子应用「页内导航条」的选中反馈
+
+被 qiankun 融合时，子应用菜单注册在宿主页之外的侧边栏，子应用内部本来没有任何路由入口，
+所以两个子应用各自常驻一条**页内导航条**（Vue `.app-nav` / Angular `.ng-tabs`），
+并靠四层信号叠加回答"我点了菜单到底跳没跳"：实心胶囊（框架色渐变 + 白字加粗）、
+彩色光晕外圈、`::before` 前置圆点、`navPop` / `ngTabPop` 弹入动画，
+外加命中分组染色与「当前页 · xxx」徽标。Vue 侧还额外用
+`<router-view v-slot>` + 内置 `<transition>` 做了内容区换页淡入。
+
+两个子应用的选中态类名统一为 `is-active`（页内导航条）、`is-current`（命中分组），
+`subapp-views-diag.mjs` 与 CSS 都依赖这两个约定。
+
+子应用各自的文档见 [micro-apps/vue-app/README.md](micro-apps/vue-app/README.md) 与
+[micro-apps/angular-app/README.md](micro-apps/angular-app/README.md)。
 
 ***
 

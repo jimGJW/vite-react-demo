@@ -6,7 +6,7 @@ import {
   ToolOutlined, ScanOutlined, DesktopOutlined, FormOutlined,
   BgColorsOutlined, BarChartOutlined, DashboardOutlined, AppstoreOutlined,
   CodeOutlined, BellOutlined, TableOutlined, LockOutlined, CodepenOutlined,
-  ExperimentOutlined, InfoCircleOutlined, SwapOutlined,
+  ExperimentOutlined, InfoCircleOutlined,
   MenuFoldOutlined, MenuUnfoldOutlined,
   EyeInvisibleOutlined, EyeOutlined,
   LogoutOutlined, ThunderboltOutlined,
@@ -20,13 +20,13 @@ import {
   SafetyCertificateOutlined, NodeIndexOutlined,
 } from '@ant-design/icons'
 import { useAuth } from '../contexts/useAuth.js'
-import { useStyleMode } from '../contexts/StyleModeContext.jsx'
 import Assistants from '../components/Assistants/index.jsx'
-import VueMenu from '../components/VueMenu/index.jsx'
 import { PeriodTag } from '../components/Changelog/PeriodTag.jsx'
 import { ChangelogMenu } from '../components/Changelog/ChangelogMenu.jsx'
 import { ChangelogDrawer } from '../components/Changelog/ChangelogDrawer.jsx'
 import { useChangelog } from '../contexts/ChangelogContext.jsx'
+import { useSubApps } from '../contexts/SubAppContext.jsx'
+import { MICRO_APPS } from '../micros/config.js'
 import { ROUTE_RELEASES, getRelease } from '../components/Changelog/releases.js'
 import './Layout.scss'
 
@@ -69,9 +69,6 @@ const navItems = [
     key: 'group-compare', icon: <FundProjectionScreenOutlined />, label: '组件对比中心',
     children: [
       { key: '/antd', icon: <AppstoreOutlined />, label: 'Ant Design 组件库' },
-      { key: '/vue-components', icon: <CodeOutlined />, label: 'Vue 组件库 (.vue)' },
-      { key: '/angular-components', icon: <DeploymentUnitOutlined />, label: 'Angular 组件库 (.ts)' },
-      { key: '/style-showcase', icon: <SwapOutlined />, label: '样式总对比' },
       {
         key: '__sep-compare__',
         disabled: true,
@@ -101,6 +98,24 @@ const navItems = [
       { key: '/web-api', icon: <ApiOutlined />, label: '浏览器原生能力' },
     ],
   },
+  {
+    /* 子应用固定入口：启动 npm run dev:all 后，点这两项直达独立宿主页，
+       进入即自动加载对应子应用；加载后子应用自身的功能菜单会动态追加到侧边栏 */
+    key: 'group-micro', icon: <DeploymentUnitOutlined />, label: '子应用 (qiankun)',
+    children: [
+      { key: '/micro-frontend', icon: <PartitionOutlined />, label: '微前端融合总览' },
+      {
+        key: '/micro-vue',
+        icon: <span className="micro-dot" style={{ background: '#42b883' }} />,
+        label: 'Vue 子应用',
+      },
+      {
+        key: '/micro-angular',
+        icon: <span className="micro-dot" style={{ background: '#dd0031' }} />,
+        label: 'Angular 子应用',
+      },
+    ],
+  },
   { key: '/dashboard', icon: <DashboardOutlined />, label: '控制台' },
   { key: '/test-center', icon: <ExperimentOutlined />, label: '测试中心' },
   { key: '/about', icon: <InfoCircleOutlined />, label: '关于' },
@@ -114,7 +129,8 @@ const navItems = [
 function decorateMenuItems(items, selected) {
   return items.map((it) => {
     if (it.children) return { ...it, children: decorateMenuItems(it.children, selected) }
-    const route = typeof it.key === 'string' && it.key.startsWith('/') ? it.key : null
+    /* 带 ?app= 参数的子应用菜单项，PeriodTag 按纯路径查批次 */
+    const route = typeof it.key === 'string' && it.key.startsWith('/') ? it.key.split('?')[0] : null
     if (!route) return it
 
     const labelNode = (
@@ -141,7 +157,15 @@ function decorateMenuItems(items, selected) {
 }
 
 /* 默认展开哪个分组 */
-const DEFAULT_OPEN_KEYS = ['group-toolbox', 'group-compare', 'group-case']
+const DEFAULT_OPEN_KEYS = ['group-toolbox', 'group-compare', 'group-case', 'group-micro']
+
+/**
+ * 「子应用 (qiankun)」是新加的分组：老用户 localStorage 里持久化的 openKeys 不含它，
+ * 直接沿用会保持折叠 → 用户「在菜单里找不到 Vue / Angular 入口」。
+ * 因此读配置时统一把 group-micro 并进去（用户之后手动折叠不影响，因为写回的是他自己的 openKeys）。
+ */
+const MICRO_GROUP_KEY = 'group-micro'
+const withMicroOpen = (keys) => (keys.includes(MICRO_GROUP_KEY) ? keys : [...keys, MICRO_GROUP_KEY])
 
 const LS_KEY = 'app.layout.v1'
 const DEFAULT = { sidebarMode: 'expanded', headerVisible: true, openKeys: DEFAULT_OPEN_KEYS }
@@ -154,7 +178,7 @@ function readLayout() {
     return {
       ...DEFAULT,
       ...parsed,
-      openKeys: parsed.openKeys?.length ? parsed.openKeys : DEFAULT_OPEN_KEYS,
+      openKeys: withMicroOpen(parsed.openKeys?.length ? parsed.openKeys : DEFAULT_OPEN_KEYS),
     }
   } catch { return DEFAULT }
 }
@@ -177,8 +201,8 @@ function writeLayout(v) {
 export default function Layout() {
   const { pathname } = useLocation()
   const { user, logout } = useAuth()
-  const { isVue } = useStyleMode()
   const { selected } = useChangelog()
+  const { subApps, requestSubApp } = useSubApps()
   const navigate = useNavigate()
 
   const initial = useMemo(() => readLayout(), [])
@@ -197,7 +221,25 @@ export default function Layout() {
   })
   const cycleHeader = () => setHeaderVisible((v) => !v)
 
-  const onMenuClick = ({ key }) => navigate(key)
+  const onMenuClick = ({ key }) => {
+    /* 子应用功能菜单：key 形如 micro:vue:/pattern/state（path 内无冒号，安全拆分） */
+    if (key.startsWith('micro:')) {
+      const [, appKey, ...rest] = key.split(':')
+      const path = rest.join(':')
+      const entry = subApps[appKey]
+      const hostPath = MICRO_APPS[appKey]?.hostPath || '/micro-frontend'
+      if (entry?.microApp && pathname === hostPath) {
+        /* 已在宿主页且已加载：直接 update 切换子应用内部页面 */
+        try { entry.microApp.update({ path }) } catch { /* 子应用可能正在卸载 */ }
+      } else {
+        /* 记录定位意图并跳到该子应用的独立宿主页，进入后自动加载并定位 */
+        requestSubApp(appKey, path)
+        navigate(hostPath)
+      }
+      return
+    }
+    navigate(key)
+  }
 
   /* —— 用户下拉菜单 —— */
   const userMenuItems = [
@@ -207,33 +249,73 @@ export default function Layout() {
     if (key === 'logout') { logout(); navigate('/login', { replace: true }) }
   }
 
-  /* —— 选中状态：精确匹配 / 前缀匹配 —— */
+  /* —— 选中状态：精确匹配 / 前缀匹配，外加「子应用内部页面」——
+     子应用菜单项的 key 形如 `micro:vue:/kit`，永远不会等于 pathname（宿主页恒为 /micro-vue），
+     所以必须单独从 subApps[key].currentPath 反推，否则点子应用菜单「完全没有高亮反馈」。
+     currentPath 有两个来源：宿主主动导航时先行写入；子应用内部跳转时由 props.onRouteChange 回传。 */
   const selectedKeys = useMemo(() => {
-    // 优先精确匹配
-    const exact = navItems.flatMap(i => i.children ? i.children.map(c => c.key) : [i.key])
-      .filter(k => k === pathname)
-    if (exact.length) return exact
-    // 前缀匹配（取最长匹配）
-    const prefix = navItems.flatMap(i => i.children ? i.children.map(c => c.key) : [i.key])
-      .filter(k => k !== '/' && pathname.startsWith(k))
-      .sort((a, b) => b.length - a.length)
-    return prefix.length ? [prefix[0]] : []
-  }, [pathname])
+    const all = navItems.flatMap(i => i.children ? i.children.map(c => c.key) : [i.key])
+    const exact = all.filter(k => k === pathname)
+    let keys = exact
+    if (!keys.length) {
+      const prefix = all
+        .filter(k => k !== '/' && pathname.startsWith(k))
+        .sort((a, b) => b.length - a.length)
+      keys = prefix.length ? [prefix[0]] : []
+    }
+    for (const appKey of Object.keys(MICRO_APPS)) {
+      const internal = subApps[appKey]?.currentPath
+      const host = MICRO_APPS[appKey]?.hostPath
+      if (internal && host === pathname) keys = [...keys, `micro:${appKey}:${internal}`]
+    }
+    return keys
+  }, [pathname, subApps])
 
   const isCollapsed = sidebarMode === 'collapsed'
 
-  // 注入时间段下标 icon 并按选中批次高亮的菜单项（仅 antd Menu 使用；VueMenu 保持原 navItems）
-  const menuItems = useMemo(() => decorateMenuItems(navItems, selected), [selected])
-
-  /* —— 监听 Vue SFC 页面发起的跳转请求 —— */
-  useEffect(() => {
-    const onNav = (e) => {
-      const p = e.detail?.path
-      if (p && typeof p === 'string') navigate(p)
+  /* —— 已加载子应用的动态功能菜单（子应用 mount 时经 qiankun props.registerMenu 注册） —— */
+  const microMenuItems = useMemo(() => {
+    const groups = []
+    for (const [appKey, app] of Object.entries(MICRO_APPS)) {
+      const entry = subApps[appKey]
+      if (!entry?.menus?.length) continue
+      groups.push({
+        key: `group-micro-${appKey}`,
+        icon: <span className="micro-dot" style={{ background: app.color }} />,
+        label: entry.title || app.title,
+        className: 'micro-menu-group',
+        children: entry.menus.map((m) => ({
+          key: `micro:${appKey}:${m.path}`,
+          label: m.label,
+          /* is-current 让「当前所在页」带上框架色标记，点过的项一眼能认出来 */
+          className: entry.currentPath === m.path ? 'micro-menu-item is-current' : 'micro-menu-item',
+        })),
+      })
     }
-    window.addEventListener('app:navigate', onNav)
-    return () => window.removeEventListener('app:navigate', onNav)
-  }, [navigate])
+    return groups
+  }, [subApps])
+
+  /**
+   * 当前宿主页对应的子应用功能组自动展开。
+   * 否则 `micro:vue:<path>` 的高亮项藏在折叠的分组里，用户依然「看不见点了什么」。
+   * （只在处于该子应用宿主页时自动展开，不影响其它分组的折叠行为）
+   */
+  const microAutoOpenKeys = useMemo(
+    () => Object.keys(MICRO_APPS)
+      .filter((k) => MICRO_APPS[k]?.hostPath === pathname && subApps[k]?.menus?.length)
+      .map((k) => `group-micro-${k}`),
+    [pathname, subApps],
+  )
+  const menuOpenKeys = useMemo(
+    () => [...new Set([...openKeys, ...microAutoOpenKeys])],
+    [openKeys, microAutoOpenKeys],
+  )
+
+  // 注入时间段下标 icon 并按选中批次高亮的菜单项（仅 antd Menu 使用），末尾拼接子应用动态菜单
+  const menuItems = useMemo(
+    () => [...decorateMenuItems(navItems, selected), ...microMenuItems],
+    [selected, microMenuItems],
+  )
 
   return (
     <div className={`app-shell ${headerVisible ? 'header-on' : 'header-off'} sidebar-${sidebarMode}`}>
@@ -285,26 +367,17 @@ export default function Layout() {
       <section className="app-body">
         <aside className="app-sidebar" aria-label="侧边导航">
           <div className="sidebar-scroll">
-            {isVue ? (
-              <VueMenu
-                items={navItems}
-                collapsed={isCollapsed}
-                openKeys={isCollapsed ? [] : openKeys}
-                onOpenChange={setOpenKeys}
-              />
-            ) : (
-              <Menu
-                mode="inline"
-                theme="light"
-                items={menuItems}
-                selectedKeys={selectedKeys}
-                openKeys={isCollapsed ? [] : openKeys}
-                onOpenChange={setOpenKeys}
-                onClick={onMenuClick}
-                inlineCollapsed={isCollapsed}
-                className="sidebar-menu"
-              />
-            )}
+            <Menu
+              mode="inline"
+              theme="light"
+              items={menuItems}
+              selectedKeys={selectedKeys}
+              openKeys={isCollapsed ? [] : menuOpenKeys}
+              onOpenChange={setOpenKeys}
+              onClick={onMenuClick}
+              inlineCollapsed={isCollapsed}
+              className="sidebar-menu"
+            />
           </div>
 
           {sidebarMode === 'expanded' && (

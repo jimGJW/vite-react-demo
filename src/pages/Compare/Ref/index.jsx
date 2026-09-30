@@ -1,12 +1,10 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef, useState, lazy } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
 import { Button, Space, Input, Tag, Card, Divider, Typography, Progress } from 'antd'
 import {
   ThunderboltOutlined, AimOutlined, ClearOutlined, SyncOutlined,
 } from '@ant-design/icons'
 import CompareLayout from '../../../utils/CompareLayout.jsx'
-import { mountVueBridge } from '../../../utils/mountVueBridge.jsx'
 
-const RefVue = lazy(() => import('./demo-ref.vue').then((m) => ({ default: mountVueBridge(m.default || m) })))
 const { Text, Paragraph } = Typography
 
 /* =====================================================================
@@ -172,7 +170,7 @@ export default function CompareRef() {
         { label: 'forwardRef / defineExpose' },
       ]}
       reactDemo={<ReactDemo />}
-      vueDemo={<RefVue />}
+      vueAppPath="/pattern/ref"
       diffRows={[
         { title: 'DOM 引用声明', antd: 'const r = useRef(null); <input ref={r}/>', vue: 'const r = ref(null); <input ref="r" /> （同名即可绑定）' },
         { title: '跨组件传递 ref', antd: 'forwardRef(MyComp(props, ref))', vue: '子组件默认 ref 指向根 DOM；或 $refs（option API）' },

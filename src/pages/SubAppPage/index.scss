@@ -1,0 +1,25 @@
+.subapp-page {
+  &__title {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4px;
+  }
+}
+
+/* 框架色点（Vue 绿 / Angular 红），页头与卡片标题共用 */
+.subapp-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.micro-container {
+  min-height: 320px;
+  border: 1px dashed var(--c-border, #d9d9d9);
+  border-radius: 8px;
+  padding: 4px;
+  background: var(--c-bg, #fff);
+}

@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { useAuth } from './contexts/useAuth.js'
 import { ChangelogProvider } from './contexts/ChangelogContext.jsx'
+import { SubAppProvider } from './contexts/SubAppContext.jsx'
 import { AssistantProvider } from './components/Assistants/index.jsx'
 import Layout from './layouts/Layout.jsx'
 import './App.scss'
@@ -44,30 +45,12 @@ const loadCompareProvide = () => import('./pages/Compare/Provide/index.jsx')
 const loadCompareState = () => import('./pages/Compare/State/index.jsx')
 const loadCompareSlot = () => import('./pages/Compare/Slot/index.jsx')
 const loadCompareRef = () => import('./pages/Compare/Ref/index.jsx')
-/* Vue 3 SFC / Angular 页面：挂载桥必须在此处【动态】import，不能在模块顶层静态引入 ——
-   挂载桥会连带引入 vue + element-plus（约 755KB），静态引入会让首屏强制下载整个 Vue 运行时。 */
-const loadVueComponents = async () => {
-  const [{ mountVueBridge }, mod] = await Promise.all([
-    import('./utils/mountVueBridge.jsx'),
-    import('./pages/VueComponents/VueComponents.vue'),
-  ])
-  return { default: mountVueBridge(mod.default) }
-}
-const loadStyleShowcase = async () => {
-  const [{ mountVueBridge }, mod] = await Promise.all([
-    import('./utils/mountVueBridge.jsx'),
-    import('./pages/StyleShowcase/StyleShowcase.vue'),
-  ])
-  return { default: mountVueBridge(mod.default) }
-}
-const loadAngularComponents = async () => {
-  const [{ mountAngularBridge }, mod] = await Promise.all([
-    import('./utils/mountAngularBridge.jsx'),
-    import('./pages/AngularComponents/AngularComponents.ts'),
-  ])
-  return { default: mountAngularBridge(mod.default) }
-}
+/* Vue / Angular 演示已迁移至 qiankun 子应用（micro-apps/vue-app、micro-apps/angular-app），
+   通过 /micro-frontend 页面运行时融合，主应用不再携带 Vue/Angular 运行时。 */
 
+const loadMicroFrontendDemo = () => import('./pages/MicroFrontendDemo/index.jsx')
+/* 子应用独立宿主页：每个 qiankun 子应用一个直达页（进入即自动加载） */
+const loadSubAppPage = () => import('./pages/SubAppPage/index.jsx')
 const Home = lazy(loadHome)
 const About = lazy(loadAbout)
 const Dashboard = lazy(loadDashboard)
@@ -91,14 +74,13 @@ const PerfLabDemo = lazy(loadPerfLabDemo)
 const ErrorBoundaryDemo = lazy(loadErrorBoundaryDemo)
 const StateMachineDemo = lazy(loadStateMachineDemo)
 const WebApiDemo = lazy(loadWebApiDemo)
-const VueComponents = lazy(loadVueComponents)
-const StyleShowcase = lazy(loadStyleShowcase)
-const AngularComponents = lazy(loadAngularComponents)
 const CommandPaletteDemo = lazy(loadCommandPaletteDemo)
 const NotifyDemo = lazy(loadNotifyDemo)
 const DataTableDemo = lazy(loadDataTableDemo)
 const TestCenterDemo = lazy(loadTestCenterDemo)
 const AssistantDemo = lazy(loadAssistantDemo)
+const MicroFrontendDemo = lazy(loadMicroFrontendDemo)
+const SubAppPage = lazy(loadSubAppPage)
 const Login = lazy(loadLogin)
 const NotFound = lazy(loadNotFound)
 const CompareParentChild = lazy(loadCompareParentChild)
@@ -120,7 +102,8 @@ const allLoaders = [
   loadDataTableDemo, loadTestCenterDemo, loadAssistantDemo, loadLogin,
   loadNotFound, loadCompareParentChild, loadCompareTwoWay, loadCompareProvide,
   loadCompareState, loadCompareSlot, loadCompareRef,
-  loadVueComponents, loadStyleShowcase, loadAngularComponents,
+  loadMicroFrontendDemo,
+  loadSubAppPage,
 ]
 if (typeof window !== 'undefined') {
   const idle = window.requestIdleCallback || ((cb) => window.setTimeout(cb, 300))
@@ -161,7 +144,8 @@ function App() {
   return (
     /* 助手中心 Provider 提到路由外层，任意页面都可用 useAssistants() 唤起弹窗 */
     <ChangelogProvider>
-      <AssistantProvider>
+      <SubAppProvider>
+        <AssistantProvider>
         <Suspense fallback={<PageLoading />}>
           <Routes>
           <Route path="/login" element={<Login />} />
@@ -196,9 +180,9 @@ function App() {
           <Route path="error-boundary" element={<ErrorBoundaryDemo />} />
           <Route path="state-machine" element={<StateMachineDemo />} />
           <Route path="web-api" element={<WebApiDemo />} />
-          <Route path="vue-components" element={<VueComponents />} />
-          <Route path="style-showcase" element={<StyleShowcase />} />
-          <Route path="angular-components" element={<AngularComponents />} />
+          <Route path="micro-frontend" element={<MicroFrontendDemo />} />
+          <Route path="micro-vue" element={<SubAppPage appKey="vue" />} />
+          <Route path="micro-angular" element={<SubAppPage appKey="angular" />} />
           {/* 组件对比中心：6 个专题 */}
           <Route path="compare-parent-child" element={<CompareParentChild />} />
           <Route path="compare-two-way"      element={<CompareTwoWay />} />
@@ -216,7 +200,8 @@ function App() {
           </Route>
         </Routes>
         </Suspense>
-      </AssistantProvider>
+        </AssistantProvider>
+      </SubAppProvider>
     </ChangelogProvider>
   )
 }

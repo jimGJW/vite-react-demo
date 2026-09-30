@@ -7,7 +7,7 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 export default defineConfig([
   // 忽略根目录与各子包的构建产物（dist / dist-local 不参与 lint）
   // 同时忽略 .vue 文件（由 Vite + Vue SFC 编译器处理，eslint 原生不支持 SFC 语法）
-  globalIgnores(['dist', 'dist-local', 'packages/**/dist', 'packages/**/dist-local', '**/*.vue']),
+  globalIgnores(['dist', 'dist-local', 'packages/**/dist', 'packages/**/dist-local', '**/*.vue', 'micro-apps', 'micro-apps/**']),
   {
     files: ['**/*.{js,jsx}'],
     extends: [
@@ -37,7 +37,6 @@ export default defineConfig([
   // 跨框架桥接 / 上下文等「组件 + Hook/函数」混合模块，豁免 fast refresh 单文件导出限制
   {
     files: [
-      'src/utils/mountVueBridge.jsx',
       'src/contexts/StyleModeContext.jsx',
       'src/components/ChatBot/ChatContext.jsx',
       // 助手中心：事件常量 + 控制函数 + Provider + useAssistants 属于同一个 Context 单元；
@@ -46,6 +45,8 @@ export default defineConfig([
       'src/components/Assistants/index.jsx',
       // 功能版本时间轴：Provider + useChangelog 属于同一 Context 单元
       'src/contexts/ChangelogContext.jsx',
+      // 子应用注册表：Provider + useSubApps 属于同一 Context 单元
+      'src/contexts/SubAppContext.jsx',
     ],
     rules: { 'react-refresh/only-export-components': 'off' },
   },

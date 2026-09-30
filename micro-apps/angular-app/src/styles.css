@@ -1,0 +1,225 @@
+/* angular-app 全局样式（原 AngularComponents.ts 内联样式抽出共用） */
+:root {
+  --ng-primary: #6366f1;
+}
+
+.ng-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #1f2937;
+}
+
+.ng-header { text-align: center; margin-bottom: 24px; position: relative; }
+.ng-header h1 {
+  font-size: 28px; font-weight: 700; margin: 0 0 8px;
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.ng-subtitle { color: #6b7280; font-size: 14px; margin: 0; }
+.ng-badge {
+  display: inline-block; margin-top: 8px; padding: 2px 10px;
+  border-radius: 999px; font-size: 11px; font-weight: 600;
+  background: #eef2ff; color: #6366f1; border: 1px solid #c7d2fe;
+}
+
+/* —— 页内路由导航条（独立运行时与 qiankun 融合时都显示） ——
+   设计目标：在 14 个链接、2 行换行的密集排布里，"当前页"必须一眼可见。
+   手段：实色底 + 白字加粗 + 光晕外圈 + 前置圆点 + 弹入动画 + 分组染色。 */
+.ng-tabs {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px;
+  margin-bottom: 20px; padding: 9px 12px 9px 10px;
+  border: 1px solid #e5e7eb; border-left: 3px solid var(--ng-primary, #6366f1); border-radius: 10px;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfbff 100%);
+  box-shadow: 0 1px 6px rgba(15, 23, 42, 0.05);
+  position: sticky; top: 0; z-index: 10;
+}
+.ng-tabs__group {
+  display: inline-flex; align-items: center; gap: 4px; flex-wrap: wrap;
+  padding: 2px 6px; border-radius: 10px; transition: background 0.2s;
+}
+.ng-tabs__group + .ng-tabs__group { border-left: 1px solid #f3f4f6; padding-left: 12px; }
+/* 命中当前页的分组整体染色，给出"我在哪一组"的空间感 */
+.ng-tabs__group.is-current { background: #eef2ff; }
+.ng-tabs__group.is-current .ng-tabs__label { color: #4f46e5; font-weight: 800; }
+.ng-tabs__label {
+  font-style: normal; font-size: 11px; color: #d1d5db; margin-right: 2px; transition: color 0.2s;
+}
+.ng-tabs__spacer { flex: 1; }
+.ng-tabs__mode {
+  font-size: 11px; padding: 2px 8px; border-radius: 999px;
+  background: #f0fdf4; color: #15803d; white-space: nowrap;
+}
+.ng-tabs__mode.is-embedded { background: #eef2ff; color: #4f46e5; }
+
+/* 当前页徽标：浅底彩字。
+   刻意**不做实色**，否则会和右侧那颗实心"当前菜单胶囊"抢视觉重心。 */
+.ng-tabs__current {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 11px; border-radius: 999px; white-space: nowrap;
+  background: #eef2ff; border: 1px solid #c7d2fe; color: #4338ca;
+  font-size: 12px; font-weight: 600;
+}
+.ng-tabs__current em {
+  font-style: normal; font-size: 10px; letter-spacing: 0.5px; color: #6366f1;
+  padding-right: 6px; border-right: 1px solid #c7d2fe;
+}
+.ng-tabs__current b { font-weight: 800; }
+
+.ng-tab {
+  position: relative; display: inline-flex; align-items: center; gap: 5px;
+  border: 1px solid #e5e7eb; border-radius: 999px; padding: 5px 14px;
+  font-size: 12.5px; cursor: pointer; background: #fff; color: #4b5563;
+  text-decoration: none; white-space: nowrap;
+  transition: background 0.16s, color 0.16s, border-color 0.16s, box-shadow 0.16s, transform 0.16s;
+}
+.ng-tab:hover {
+  border-color: var(--ng-primary, #6366f1); color: var(--ng-primary, #6366f1);
+  background: #f5f6ff; transform: translateY(-1px);
+}
+/* 按下瞬间给一个物理反馈 */
+.ng-tab:active { transform: translateY(0) scale(0.95); }
+
+/* ★ 当前所在页：实色底 / 白字加粗 / 光晕 / 圆点 / 弹入动画 */
+.ng-tab.is-active {
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  border-color: #4f46e5; color: #fff; font-weight: 700;
+  box-shadow: 0 3px 10px rgba(99, 102, 241, 0.45), 0 0 0 2px rgba(99, 102, 241, 0.16);
+  transform: translateY(-1px);
+  animation: ngTabPop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.ng-tab.is-active::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: #fff; box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.35);
+}
+@keyframes ngTabPop {
+  0% { transform: scale(0.82); }
+  62% { transform: scale(1.07); }
+  100% { transform: scale(1); }
+}
+.ng-tab--muted { color: #d1d5db; }
+
+.ng-card {
+  background: #fff; border: 1px solid #e5e7eb; border-radius: 12px;
+  padding: 20px 24px; margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+.ng-card h2 { font-size: 18px; font-weight: 600; margin: 0 0 4px; color: #111827; }
+.ng-desc { font-size: 13px; color: #9ca3af; margin: 0 0 16px; }
+
+.counter-demo { display: flex; align-items: center; gap: 12px; }
+.counter-value { font-size: 28px; font-weight: 700; color: #6366f1; min-width: 40px; text-align: center; }
+.counter-double { margin-left: 12px; color: #8b5cf6; font-weight: 500; }
+
+.input-demo { display: flex; flex-direction: column; gap: 8px; }
+.echo { margin: 0; font-size: 15px; }
+
+.todo-list { list-style: none; padding: 0; margin: 0 0 12px; }
+.todo-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px; border-radius: 8px; transition: background 0.15s;
+}
+.todo-item:hover { background: #f9fafb; }
+.todo-label { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.todo-label .done { text-decoration: line-through; color: #9ca3af; }
+.todo-add { display: flex; gap: 8px; margin-bottom: 8px; }
+.stat { font-size: 13px; color: #6b7280; margin: 4px 0 0; }
+
+.cond-demo { display: flex; flex-direction: column; gap: 12px; }
+.panel {
+  background: #f3f4f6; border-radius: 8px; padding: 12px 16px;
+  border: 1px solid #e5e7eb; font-size: 14px;
+}
+.panel p { margin: 4px 0; }
+
+.di-demo { display: flex; flex-direction: column; gap: 8px; }
+.di-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.log-list {
+  list-style: none; padding: 0; margin: 0;
+  max-height: 160px; overflow-y: auto;
+  font-family: 'SF Mono', Monaco, monospace; font-size: 12px;
+}
+.log-list li { padding: 4px 0; color: #6b7280; border-bottom: 1px dashed #f3f4f6; }
+
+/* —— 管道表格 —— */
+.pipe-table {
+  width: 100%; border-collapse: collapse; font-size: 13px;
+}
+.pipe-table th, .pipe-table td {
+  text-align: left; padding: 8px 10px; border-bottom: 1px solid #f3f4f6;
+}
+.pipe-table th { color: #6b7280; font-weight: 600; font-size: 12px; }
+.pipe-table td:first-child {
+  font-family: 'SF Mono', Monaco, monospace; font-size: 12px; color: #6366f1;
+}
+
+.signal-demo { display: flex; align-items: center; gap: 12px; }
+
+.ng-btn {
+  border: 1px solid #d1d5db; border-radius: 6px; padding: 6px 16px;
+  font-size: 14px; cursor: pointer; background: #fff; color: #374151;
+  transition: all 0.15s;
+}
+.ng-btn:hover { border-color: #6366f1; color: #6366f1; }
+.ng-btn--primary { background: #6366f1; border-color: #6366f1; color: #fff; }
+.ng-btn--primary:hover { background: #4f46e5; border-color: #4f46e5; color: #fff; }
+.ng-btn--danger { background: #fff; border-color: #ef4444; color: #ef4444; padding: 4px 10px; font-size: 13px; }
+.ng-btn--danger:hover { background: #ef4444; color: #fff; }
+
+.ng-input {
+  flex: 1; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px;
+  font-size: 14px; outline: none; transition: border-color 0.15s;
+}
+.ng-input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12); }
+
+.ng-footer {
+  text-align: center; margin-top: 32px; padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+.ng-footer p { margin: 4px 0; font-size: 12px; color: #9ca3af; }
+.ng-footer__log { font-family: 'SF Mono', Monaco, monospace; font-size: 11px; }
+
+/* —— 共享小标签 / 色点（多视图复用，避免每个组件重复定义） —— */
+.ng-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: 4px;
+  background: #f3f4f6; color: #4b5563; font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.ng-chip--ok { background: #f0fdf4; color: #15803d; }
+.ng-chip--info { background: #eef2ff; color: #4f46e5; }
+.ng-chip--warn { background: #fffbeb; color: #b45309; }
+.ng-chip--danger { background: #fef2f2; color: #b91c1c; }
+
+.ng-num { font-variant-numeric: tabular-nums; font-family: 'SF Mono', Monaco, ui-monospace, monospace; font-size: 12px; }
+
+/* 关键字高亮（HighlightPipe 产出，需 global 才能作用到 [innerHTML] 内容） */
+mark.ng-hl { background: #fef08a; color: #713f12; padding: 0 1px; border-radius: 2px; }
+
+/* 复制指令反馈：加了 ng-copied 类后显示气泡 */
+[data-copy-tip] { position: relative; }
+.ng-copied { border-color: #22c55e !important; background: #f0fdf4 !important; color: #15803d !important; }
+.ng-copied::after {
+  content: ' ✓ ' attr(data-copy-tip);
+  position: absolute; top: -20px; right: 0;
+  font-size: 11px; color: #15803d; background: #f0fdf4;
+  padding: 0 5px; border-radius: 4px; border: 1px solid #bbf7d0;
+  white-space: nowrap;
+}
+
+/* appLazy：进入视口才渐显 */
+[appLazy] {
+  opacity: 0; transform: translateY(10px);
+  transition: all 0.45s ease;
+  border: 1px dashed #e5e7eb; border-radius: 8px; background: #fafafa;
+  padding: 14px; margin-bottom: 8px;
+}
+[appLazy].ng-visible {
+  opacity: 1; transform: none;
+  border-style: solid; border-color: #c7d2fe; background: #f8faff;
+}
+
+/* 紧凑模式（ThemeService 切换 documentElement 上的类） */
+.ng-compact .ng-card { padding: 12px 14px; margin-bottom: 8px; }
+.ng-compact .ng-chip { padding: 1px 6px; font-size: 11.5px; }

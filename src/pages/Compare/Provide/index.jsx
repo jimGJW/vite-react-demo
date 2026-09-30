@@ -1,9 +1,7 @@
-import { createContext, useContext, useState, lazy } from 'react'
+import { createContext, useContext, useState } from 'react'
 import { Button, Space, Card, Typography, Tag } from 'antd'
 import CompareLayout from '../../../utils/CompareLayout.jsx'
-import { mountVueBridge } from '../../../utils/mountVueBridge.jsx'
 
-const ProvideVue = lazy(() => import('./demo-provide.vue').then((m) => ({ default: mountVueBridge(m.default || m) })))
 
 const { Text, Paragraph } = Typography
 
@@ -89,7 +87,7 @@ export default function CompareProvide() {
         { label: '依赖注入', color: 'purple' },
       ]}
       reactDemo={<ReactDemo />}
-      vueDemo={<ProvideVue />}
+      vueAppPath="/pattern/provide"
       diffRows={[
         { title: '声明「注入点」', antd: 'const Ctx = createContext(defaultValue)', vue: 'setup() 顶层：provide(\'key\', value)，或在根 app.provide()' },
         { title: '提供值', antd: '<Ctx.Provider value={...}>\n  {children}\n</Ctx.Provider>', vue: 'provide(\'theme\', { cur, setCur, user })' },

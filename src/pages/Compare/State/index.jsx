@@ -1,13 +1,11 @@
-import { createContext, useContext, useState, useMemo, useCallback, lazy } from 'react'
+import { createContext, useContext, useState, useMemo, useCallback } from 'react'
 import { Button, Input, List, Tag, Card, Space, Divider, Badge, Typography } from 'antd'
 import {
   PlusOutlined, MinusOutlined, DeleteOutlined,
   ShoppingCartOutlined, WalletOutlined,
 } from '@ant-design/icons'
 import CompareLayout from '../../../utils/CompareLayout.jsx'
-import { mountVueBridge } from '../../../utils/mountVueBridge.jsx'
 
-const StateVue = lazy(() => import('./demo-state.vue').then((m) => ({ default: mountVueBridge(m.default || m) })))
 const { Text } = Typography
 
 /* =====================================================================
@@ -141,7 +139,7 @@ export default function CompareState() {
         { label: '多组件共享状态' },
       ]}
       reactDemo={<ReactDemo />}
-      vueDemo={<StateVue />}
+      vueAppPath="/pattern/state"
       diffRows={[
         { title: '方案（原生）', antd: 'createContext + Provider + useContext；state 放 Provider 内', vue: 'reactive 或 ref 对象 + provide(key, store)；或 Pinia（官方 store）' },
         { title: '状态引用', antd: 'Provider 的 value 每次 setState 都是新对象，引用变化触发全量 consumer 重渲染', vue: 'reactive 对象引用不变；修改属性会精准触发依赖该属性的订阅者' },

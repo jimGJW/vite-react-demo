@@ -1,10 +1,8 @@
-import { useState, lazy } from 'react'
+import { useState } from 'react'
 import { Input, Button, List, Tag, Divider, message } from 'antd'
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 import CompareLayout from '../../../utils/CompareLayout.jsx'
-import { mountVueBridge } from '../../../utils/mountVueBridge.jsx'
 
-const ParentChildVue = lazy(() => import('./demo-parent-child.vue').then((m) => ({ default: mountVueBridge(m.default || m) })))
 
 /* =====================================================================
    React / Ant Design · 父子组件传值演示
@@ -96,7 +94,7 @@ export default function CompareParentChild() {
         { label: '状态提升' },
       ]}
       reactDemo={<ReactDemo />}
-      vueDemo={<ParentChildVue />}
+      vueAppPath="/pattern/parent-child"
       diffRows={[
         { title: '父 → 子', antd: 'function Child(props) {/* props.title */}', vue: '<script setup>const props = defineProps([\'title\'])</script>' },
         { title: '子 → 父', antd: '<Child onAdd={(v)=>setList(l=>[...l,v])} />', vue: '<script setup>const emit = defineEmits([\'add\'])\nemit(\'add\', v)</script>' },

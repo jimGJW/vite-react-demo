@@ -1,9 +1,7 @@
-import { useState, lazy } from 'react'
+import { useState } from 'react'
 import { Input, Switch, Slider, Space, Tag, Divider, Typography } from 'antd'
 import CompareLayout from '../../../utils/CompareLayout.jsx'
-import { mountVueBridge } from '../../../utils/mountVueBridge.jsx'
 
-const TwoWayVue = lazy(() => import('./demo-two-way.vue').then((m) => ({ default: mountVueBridge(m.default || m) })))
 
 const { Text } = Typography
 
@@ -93,7 +91,7 @@ export default function CompareTwoWay() {
         { label: 'useState / ref' },
       ]}
       reactDemo={<ReactDemo />}
-      vueDemo={<TwoWayVue />}
+      vueAppPath="/pattern/two-way"
       diffRows={[
         { title: '输入框', antd: 'value={x} onChange={e=>setX(e.target.value)}', vue: 'v-model="x"' },
         { title: '开关', antd: 'checked={x} onChange={setX}', vue: 'v-model="x" (组件内部约定 checked)' },

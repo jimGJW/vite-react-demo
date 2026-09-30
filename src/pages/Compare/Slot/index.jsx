@@ -1,12 +1,10 @@
-import { useState, lazy } from 'react'
+import { useState } from 'react'
 import { Button, Space, Tag, Typography, Rate, Avatar } from 'antd'
 import {
   UserOutlined, SettingOutlined, HeartOutlined,
 } from '@ant-design/icons'
 import CompareLayout from '../../../utils/CompareLayout.jsx'
-import { mountVueBridge } from '../../../utils/mountVueBridge.jsx'
 
-const SlotVue = lazy(() => import('./demo-slot.vue').then((m) => ({ default: mountVueBridge(m.default || m) })))
 const { Text } = Typography
 
 /* =====================================================================
@@ -158,7 +156,7 @@ export default function CompareSlot() {
         { label: '内容分发' },
       ]}
       reactDemo={<ReactDemo />}
-      vueDemo={<SlotVue />}
+      vueAppPath="/pattern/slot"
       diffRows={[
         { title: '默认插槽', antd: 'props.children', vue: '<slot />' },
         { title: '命名插槽', antd: '多 props：title / header / footer 都是 ReactNode', vue: '<slot name="header" />\n<template #header>...</template>' },

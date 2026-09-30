@@ -1,7 +1,5 @@
 import { defineConfig } from 'vite'
 import react, { reactCompilerPreset } from '@vitejs/plugin-react'
-import vue from '@vitejs/plugin-vue'
-import angular from '@analogjs/vite-plugin-angular'
 import babel from '@rolldown/plugin-babel'
 import http from 'http'
 import https from 'https'
@@ -208,16 +206,11 @@ export default defineConfig({
     },
   },
   plugins: [
-    vue(),
-    angular(),
     react(),
     babel({
       presets: [reactCompilerPreset()],
-      // 排除 .ts 文件（由 @analogjs/vite-plugin-angular 处理 Angular 装饰器）
-      // 排除 .vue 文件（Vue SFC 由 vue 插件编译，React Compiler 对其无用；
-      //   实测 Babel 占构建耗时约 65%，Vue 页面较多，排除后可明显提速）
       // 排除预构建依赖和 node_modules（已编译，Babel 处理大文件会超时导致 ERR_EMPTY_RESPONSE）
-      exclude: [/\.ts$/, /\.vue$/, /node_modules/],
+      exclude: [/node_modules/],
     }),
     embedHelpers(),
     serveOrtAssets(),
@@ -226,15 +219,10 @@ export default defineConfig({
   server: {
     host: true,
   },
-  // 预构建 Angular 运行时依赖（被 mountAngularBridge 动态 import 引用）
+  // 预构建 qiankun（MicroFrontendDemo 点击加载子应用时才动态 import，
+  // 不预构建的话首次点击会触发按需优化，dev server 卡住数十秒甚至整页刷新）
   optimizeDeps: {
-    include: [
-      '@angular/compiler',
-      '@angular/platform-browser',
-      '@angular/core',
-      '@angular/common',
-      '@angular/forms',
-    ],
+    include: ['qiankun'],
   },
   build: {
     // 关闭 sourcemap 减小产物体积（排查问题时可临时打开）
@@ -248,15 +236,13 @@ export default defineConfig({
          * 好处：① 主业务 chunk 体积大幅下降；② 依赖命中浏览器长效缓存，
          * 业务代码发版时无需重新下载 React/antd/echarts 等；③ 并行下载更快。
          * 仅影响客户端构建（SSR 冒烟走 ssrLoadModule，不经过此分包逻辑）。
+         * 注：Vue/Angular 演示已迁至 qiankun 子应用（micro-apps/），主应用不再打包其运行时。
          */
         manualChunks(id) {
           if (!id.includes('node_modules')) return undefined
-          if (id.includes('@angular')) return 'vendor-angular'
-          if (id.includes('element-plus') || id.includes('@element-plus')) return 'vendor-element'
           if (id.includes('@ant-design') || id.includes('/antd/') || id.includes('/rc-')) return 'vendor-antd'
           if (id.includes('echarts') || id.includes('zrender')) return 'vendor-echarts'
           if (id.includes('onnxruntime') || id.includes('@huggingface')) return 'vendor-ai'
-          if (id.includes('vue') || id.includes('vue-router') || id.includes('@vue')) return 'vendor-vue'
           if (
             id.includes('react') ||
             id.includes('scheduler') ||

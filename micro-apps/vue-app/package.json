@@ -1,0 +1,23 @@
+{
+  "name": "vue-app",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "qiankun 子应用：Vue 3（独立工程，端口 7101）",
+  "scripts": {
+    "dev": "vite --port 7101",
+    "build": "vite build",
+    "preview": "vite preview --port 7101"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.3.2",
+    "element-plus": "^2.13.2",
+    "vue": "^3.5.42",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.8",
+    "vite": "^8.2.0",
+    "vite-plugin-qiankun": "^1.0.0"
+  }
+}

@@ -199,6 +199,63 @@
     &::after { display: none; }                 /* 去掉 antd 默认右侧蓝条 */
   }
 
+  /* =======================================================
+     子应用（qiankun）功能菜单
+     子应用内部路由不会反映到主应用 URL，靠 subApps[key].currentPath 回填选中态；
+     这里给「当前所在页」一个强反馈：左侧框架色竖条 + 实色底 + 圆点，点下去一眼能认出来。
+     ======================================================= */
+  .ant-menu-submenu.micro-menu-group > .ant-menu-submenu-title {
+    font-weight: 600;
+  }
+
+  .ant-menu-item.micro-menu-item {
+    position: relative;
+    padding-left: 30px !important;
+    margin-inline: 4px;
+
+    /* 未选中：左侧留一条淡淡的轨道，暗示"这一组是子应用内部页面" */
+    &::before {
+      content: '';
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--c-border, rgba(0, 0, 0, 0.15));
+      transition: all var(--t-fast, 0.1s);
+    }
+  }
+
+  /* 当前所在页：加粗 + 实色底 + 框架色竖条 + 实心圆点 */
+  .ant-menu-item.micro-menu-item.is-current {
+    background: var(--c-primary-soft, rgba(22, 119, 255, 0.06)) !important;
+    color: var(--c-primary, #1677ff) !important;
+    font-weight: 600;
+
+    &::before {
+      background: currentColor;
+      box-shadow: 0 0 0 3px var(--c-primary-soft, rgba(22, 119, 255, 0.12));
+    }
+
+    /* 左侧竖条：用左侧 accent 强调"你在这里" */
+    &::after {
+      content: '';
+      display: block !important;
+      position: absolute;
+      left: 2px;
+      top: 6px;
+      bottom: 6px;
+      width: 3px;
+      border-radius: 2px;
+      background: currentColor;
+      opacity: 1;
+      inset-inline-end: auto;
+      border: none;
+    }
+  }
+
   /* —— 展开子菜单标题 —— */
   .ant-menu-submenu-selected > .ant-menu-submenu-title {
     color: var(--c-text-1, #000000e0);
@@ -377,4 +434,25 @@
   }
   .app-shell .brand-name { display: none; }
   .app-shell .user-name-text { display: none; }
+}
+
+/* —— 侧边栏子应用入口的框架色点（Vue 绿 / Angular 红） ——
+   注意选择器必须是 `.sidebar-menu`（antd Menu 的 className），
+   早期写成 `.menu .micro-dot` 时匹配不到任何元素 → 色点宽高为 0 → 框架标识「看不见」。 */
+.sidebar-menu .micro-dot,
+.menu .micro-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  vertical-align: middle;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9);
+}
+
+/* 折叠态下把色点放大一点，避免 9px 在图标位里显得太小 */
+.sidebar-menu.ant-menu-inline-collapsed .micro-dot {
+  width: 12px;
+  height: 12px;
+  margin-inline-start: 3px;
 }
