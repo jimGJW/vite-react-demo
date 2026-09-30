@@ -20,6 +20,8 @@
     "test:ssr": "node scripts/ssr-smoke.mjs",
     "test:browser": "node scripts/browser-smoke.mjs",
     "test:qiankun": "node scripts/qiankun-smoke.mjs",
+    "sync:demos": "node scripts/sync-creative-demos.mjs",
+    "sync:demos:check": "node scripts/sync-creative-demos.mjs --check",
     "preview": "vite preview",
     "test:e2e": "python tests/test_pages.py",
     "test:whisper": "node scripts/test-whisper.mjs",

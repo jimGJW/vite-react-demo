@@ -1,0 +1,427 @@
+/**
+ * 创意 Playground 样式
+ *
+ * 颜色统一走主题变量（--c-*，见 src/index.scss）。
+ * 画布区是刻意的深色例外 —— 这些 demo 都在暗场上作画，白底会把辉光全吃掉。
+ */
+.playground {
+  padding: 20px 24px 44px;
+
+  .pg-head {
+    h1 {
+      margin: 0 0 6px;
+      font-size: 22px;
+      color: var(--c-text-1);
+    }
+
+    p {
+      margin: 0 0 18px;
+      max-width: 900px;
+      font-size: 13px;
+      color: var(--c-text-3);
+      line-height: 1.85;
+
+      code {
+        padding: 1px 5px;
+        border-radius: 4px;
+        font-size: 12px;
+        color: var(--c-text-2);
+        background: var(--c-bg-soft);
+      }
+    }
+  }
+
+  .pg-body {
+    display: grid;
+    grid-template-columns: 236px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+  }
+
+  /* —————————————— 左栏：demo 列表 —————————————— */
+  .pg-list {
+    border: 1px solid var(--c-border);
+    border-radius: 10px;
+    padding: 8px;
+    background: var(--c-card);
+    max-height: 660px;
+    overflow: auto;
+
+    &__head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 4px 8px 8px;
+      font-size: 12px;
+      color: var(--c-text-3);
+      border-bottom: 1px solid var(--c-border-soft);
+      margin-bottom: 6px;
+
+      em {
+        font-style: normal;
+        font-weight: 600;
+        color: var(--c-primary);
+      }
+    }
+  }
+
+  /* 手风琴分组卡片：82 个条目平铺会滚到天边，折起来左栏高度才稳。
+     同一时刻只展开一张（React 侧用 openGroup 保证），收起时走 `hidden` 而不是不渲染 ——
+     `[data-pg="demo"]` 必须始终是全集，探针拿它当结构断言。 */
+  .pg-acc {
+    border: 1px solid var(--c-border-soft);
+    border-radius: 8px;
+    margin-bottom: 4px;
+    background: var(--c-card);
+    overflow: hidden;
+
+    &.is-open {
+      border-color: var(--c-primary);
+      box-shadow: 0 0 0 1px var(--c-primary-soft);
+    }
+
+    /* 卡片头就是折叠开关：整条可点，键盘/读屏靠 aria-expanded 传达状态 */
+    &__head {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      width: 100%;
+      padding: 8px 8px 7px;
+      border: 0;
+      background: transparent;
+      font: inherit;
+      color: inherit;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.15s;
+
+      &:hover {
+        background: var(--c-bg-soft);
+      }
+    }
+
+    &__chev {
+      flex: 0 0 auto;
+      font-size: 9px;
+      line-height: 1;
+      color: var(--c-text-3);
+      transition: transform 0.18s ease, color 0.18s ease;
+    }
+
+    &.is-open &__chev {
+      transform: rotate(90deg);
+      color: var(--c-primary);
+    }
+
+    &__label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--c-text-1);
+      padding-left: 7px;
+      border-left: 3px solid var(--c-border);
+      line-height: 1.1;
+      transition: border-color 0.18s ease;
+    }
+
+    &.is-open &__label {
+      border-left-color: var(--c-primary);
+    }
+
+    &__count {
+      flex: 0 0 auto;
+      font-style: normal;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--c-text-3);
+      background: var(--c-bg-soft);
+      border-radius: 999px;
+      padding: 0 6px;
+      line-height: 16px;
+      transition: background 0.18s ease, color 0.18s ease;
+    }
+
+    &.is-open &__count {
+      color: var(--c-primary);
+      background: var(--c-primary-soft);
+    }
+
+    &__hint {
+      flex: 1 1 auto;
+      font-style: normal;
+      font-size: 11px;
+      color: var(--c-text-3);
+      text-align: right;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    /* 展开时轻轻下滑一下，避免「内容突然砸出来」 */
+    &__items {
+      padding: 2px 6px 6px;
+      animation: pgAccIn 0.18s ease both;
+    }
+  }
+
+  @keyframes pgAccIn {
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .pg-item {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    width: 100%;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 7px 8px;
+    margin-bottom: 2px;
+    text-align: left;
+    cursor: pointer;
+    background: transparent;
+    transition: background 0.15s, border-color 0.15s;
+
+    &:hover {
+      background: var(--c-bg-soft);
+    }
+
+    /* 选中态：与全站一致的「实心底 + 描边 + 主色序号」 */
+    &.is-active {
+      border-color: var(--c-primary);
+      background: var(--c-primary-soft);
+    }
+
+    &__no {
+      flex: 0 0 20px;
+      font-size: 11px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: var(--c-text-3);
+    }
+
+    &.is-active &__no {
+      color: var(--c-primary);
+    }
+
+    &__body {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+
+      b {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--c-text-1);
+      }
+
+      em {
+        font-style: normal;
+        font-size: 11px;
+        color: var(--c-text-3);
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  /* —————————————— 右栏：舞台 —————————————— */
+  .pg-stage {
+    min-width: 0;
+  }
+
+  .pg-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 30px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+
+    &__title {
+      font-size: 15px;
+      color: var(--c-text-1);
+    }
+  }
+
+  .pg-tag {
+    padding: 1px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    color: var(--c-primary);
+    background: var(--c-primary-soft);
+  }
+
+  .pg-spacer {
+    flex: 1 1 auto;
+  }
+
+  .pg-canvas-wrap {
+    position: relative;
+    border: 1px solid var(--c-border);
+    border-radius: 10px;
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    min-height: 300px;
+  }
+
+  .pg-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: crosshair;
+    touch-action: none;
+  }
+
+  .pg-hud {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    display: flex;
+    gap: 12px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    pointer-events: none;
+    color: rgba(255, 255, 255, 0.72);
+    background: rgba(6, 10, 20, 0.55);
+    backdrop-filter: blur(3px);
+
+    span {
+      display: inline-flex;
+      align-items: baseline;
+      gap: 5px;
+    }
+
+    i {
+      font-style: normal;
+      color: rgba(255, 255, 255, 0.42);
+    }
+
+    b {
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+      color: #7dd3fc;
+    }
+  }
+
+  .pg-paused {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    padding: 2px 9px;
+    border-radius: 999px;
+    font-size: 11px;
+    color: #ffd666;
+    background: rgba(6, 10, 20, 0.6);
+  }
+
+  /* —————————————— 控件条 —————————————— */
+  .pg-controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    border: 1px solid var(--c-border);
+    border-radius: 10px;
+    background: var(--c-card);
+
+    &__empty {
+      font-size: 12px;
+      color: var(--c-text-3);
+    }
+  }
+
+  .pg-param {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--c-text-2);
+    cursor: pointer;
+
+    &__label {
+      white-space: nowrap;
+    }
+
+    &__val {
+      min-width: 38px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      font-weight: 600;
+      color: var(--c-primary);
+    }
+
+    input[type='range'] {
+      width: 112px;
+      accent-color: var(--c-primary);
+      cursor: pointer;
+    }
+  }
+
+  .pg-sep {
+    width: 1px;
+    height: 20px;
+    background: var(--c-border-soft);
+  }
+
+  .pg-btn {
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
+    padding: 5px 14px;
+    font-size: 12.5px;
+    color: var(--c-text-1);
+    background: var(--c-card);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+
+    &:hover {
+      border-color: var(--c-primary);
+      color: var(--c-primary);
+      background: var(--c-primary-soft);
+    }
+  }
+
+  .pg-btn--act {
+    color: var(--c-primary);
+    border-color: var(--c-primary-ring);
+    background: var(--c-primary-softer);
+  }
+
+  .pg-desc {
+    margin: 12px 0 0;
+    padding: 12px 14px;
+    border-left: 3px solid var(--c-primary);
+    border-radius: 0 8px 8px 0;
+    font-size: 12.5px;
+    line-height: 1.9;
+    color: var(--c-text-3);
+    background: var(--c-bg-soft);
+  }
+
+  @media (max-width: 980px) {
+    .pg-body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .pg-list {
+      max-height: 260px;
+    }
+
+    /* 窄屏下卡片头只有一行宽，hint 会跟组名抢位置，优先保组名 */
+    .pg-acc__hint {
+      display: none;
+    }
+  }
+}

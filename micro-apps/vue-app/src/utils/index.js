@@ -586,3 +586,630 @@ export const rules = {
     v !== values[other] ? `${label}不一致` : true
   ),
 }
+
+/* ============================ 函数组合 ============================ */
+
+/** 从左到右依次执行：pipe(f, g)(x) === g(f(x)) */
+export function pipe(...fns) {
+  return (input) => fns.reduce((acc, fn) => fn(acc), input)
+}
+
+/** 从右到左组合：compose(f, g)(x) === f(g(x)) */
+export function compose(...fns) {
+  return (input) => fns.reduceRight((acc, fn) => fn(acc), input)
+}
+
+/** 恒等函数（占位 / 默认回调） */
+export const identity = (v) => v
+
+/** 空函数（默认回调，避免调用点写 `() => {}`） */
+export const noop = () => {}
+
+/** 侧效应探针：原样返回入参，顺路执行 fn —— 塞进 pipe 里打点用 */
+export function tap(fn) {
+  return (v) => {
+    fn(v)
+    return v
+  }
+}
+
+/** 执行 n 次并把每次下标交给 fn：times(3, i => i * 2) → [0, 2, 4] */
+export function times(n, fn = identity) {
+  return range(Math.max(0, n)).map((i) => fn(i))
+}
+
+/** 偏函数：预置左侧若干实参 */
+export function partial(fn, ...preset) {
+  return (...rest) => fn(...preset, ...rest)
+}
+
+/**
+ * 柯里化：把 fn(a, b, c) 变成 fn(a)(b)(c)。
+ * 用 fn.length 判断"还差几个参数"，播完才真正调用。
+ */
+export function curry(fn) {
+  return function curried(...args) {
+    if (args.length >= fn.length) return fn(...args)
+    return (...rest) => curried(...args, ...rest)
+  }
+}
+
+/* ============================ 数组进阶 ============================ */
+
+/** 按断言一分为二 → [命中[], 未命中[]] */
+export function partition(list, predicate) {
+  const hit = []
+  const miss = []
+  for (const item of list) (predicate(item) ? hit : miss).push(item)
+  return [hit, miss]
+}
+
+/** 计数分组：countBy([{t:'a'},{t:'b'},{t:'a'}], 't') → { a: 2, b: 1 } */
+export function countBy(list, keyFn) {
+  const out = {}
+  for (const item of list) {
+    const k = typeof keyFn === 'function' ? keyFn(item) : item[keyFn]
+    out[k] = (out[k] || 0) + 1
+  }
+  return out
+}
+
+/** 拉链：zip([1,2],[a,b]) → [[1,a],[2,b]]，长度取最短 */
+export function zip(...lists) {
+  const len = Math.min(...lists.map((l) => l.length))
+  return range(len).map((i) => lists.map((l) => l[i]))
+}
+
+/** 解拉链：unzip([[1,a],[2,b]]) → [[1,2],[a,b]] */
+export function unzip(pairs) {
+  return zip(...pairs)
+}
+
+/** 交集（按 keyFn 或原始值判定） */
+export function intersect(a, b, keyFn = identity) {
+  const keys = new Set(b.map(keyFn))
+  return a.filter((item) => keys.has(keyFn(item)))
+}
+
+/** 差集：a 有而 b 没有 */
+export function difference(a, b, keyFn = identity) {
+  const keys = new Set(b.map(keyFn))
+  return a.filter((item) => !keys.has(keyFn(item)))
+}
+
+/** 并集去重（保留首次出现的顺序） */
+export function union(...lists) {
+  return [...new Set(lists.flat())]
+}
+
+/** 洗牌：返回新数组（Fisher–Yates） */
+export function shuffle(list) {
+  const out = [...list]
+  for (let i = out.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[out[i], out[j]] = [out[j], out[i]]
+  }
+  return out
+}
+
+/** 随机取一个 */
+export function sample(list) {
+  return list.length ? list[Math.floor(Math.random() * list.length)] : undefined
+}
+
+/** 随机取 n 个不重复（n 超长时返回整体洗牌） */
+export function sampleMany(list, n) {
+  return shuffle(list).slice(0, Math.max(0, n))
+}
+
+/** 按 keyFn 取最小值 / 最大值（返回元素本身） */
+export function minBy(list, keyFn) {
+  return list.reduce((best, item) => (
+    best === undefined || keyFn(item) < keyFn(best) ? item : best
+  ), undefined)
+}
+export function maxBy(list, keyFn) {
+  return list.reduce((best, item) => (
+    best === undefined || keyFn(item) > keyFn(best) ? item : best
+  ), undefined)
+}
+
+/** 取前 n / 去掉前 n（负数表示从尾部算） */
+export function take(list, n) {
+  return n >= 0 ? list.slice(0, n) : list.slice(n)
+}
+export function drop(list, n) {
+  return n >= 0 ? list.slice(n) : list.slice(0, n)
+}
+
+/** 元素搬家（拖拽排序的落点计算，负索引自动修正）——返回新数组 */
+export function moveItem(list, from, to) {
+  const out = [...list]
+  if (from < 0 || from >= out.length) return out
+  const target = clamp(to, 0, out.length - 1)
+  const [moved] = out.splice(from, 1)
+  out.splice(target, 0, moved)
+  return out
+}
+
+/** 存在则移除、不存在则追加（多选切换，返回新数组） */
+export function toggleInArray(list, value) {
+  return list.includes(value) ? list.filter((v) => v !== value) : [...list, value]
+}
+
+/* ============================ 数值统计 ============================ */
+
+/** 随机整数，默认闭区间 [min, max] */
+export function randomInt(min, max, { inclusive = true } = {}) {
+  const lo = Math.ceil(min)
+  const hi = Math.floor(max)
+  return Math.floor(Math.random() * (hi - lo + (inclusive ? 1 : 0))) + lo
+}
+
+/** 按精度四舍五入：roundTo(1.005, 2) → 1.01（用 EPSILON 规避浮点误差） */
+export function roundTo(n, digits = 2) {
+  const num = Number(n)
+  if (!Number.isFinite(num)) return 0
+  const f = 10 ** digits
+  return Math.round((num + Number.EPSILON) * f) / f
+}
+
+/** 均值 / 中位数 / 标准差 / 百分位（空数组返回 0） */
+export function mean(list) {
+  return list.length ? sumBy(list, identity) / list.length : 0
+}
+
+export function median(list) {
+  if (!list.length) return 0
+  const sorted = sortBy(list, identity)
+  const mid = Math.floor(sorted.length / 2)
+  return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2
+}
+
+export function stdDev(list) {
+  if (list.length < 2) return 0
+  const avg = mean(list)
+  return Math.sqrt(mean(list.map((v) => (v - avg) ** 2)))
+}
+
+/** 百分位（p ∈ [0,100]，线性插值） */
+export function percentile(list, p) {
+  if (!list.length) return 0
+  const sorted = sortBy(list, identity)
+  const idx = clamp(p, 0, 100) / 100 * (sorted.length - 1)
+  const lo = Math.floor(idx)
+  const hi = Math.ceil(idx)
+  return lo === hi ? sorted[lo] : sorted[lo] + (sorted[hi] - sorted[lo]) * (idx - lo)
+}
+
+/** 占比：part / total → 百分比数字（不带 % 号，便于二次计算） */
+export function percentOf(part, total, digits = 1) {
+  if (!Number(total)) return 0
+  return roundTo((Number(part) / Number(total)) * 100, digits)
+}
+
+/** 带符号数字：+1,234 / -1,234 —— 涨跌、环比差值直接可用 */
+export function formatSigned(n, digits = 0) {
+  const num = Number(n)
+  if (!Number.isFinite(num)) return '-'
+  const sign = num > 0 ? '+' : num < 0 ? '-' : ''
+  return sign + formatNumber(Math.abs(num), digits)
+}
+
+/** 线性插值 / 区间映射（进度条、色带、坐标换算） */
+export function lerp(a, b, t) {
+  return a + (b - a) * clamp(t, 0, 1)
+}
+
+export function mapRange(value, [inMin, inMax], [outMin, outMax]) {
+  if (inMax === inMin) return outMin
+  return outMin + ((clamp(value, Math.min(inMin, inMax), Math.max(inMin, inMax)) - inMin) / (inMax - inMin)) * (outMax - outMin)
+}
+
+/** 加权随机：weightedRandom([{w:3},{w:1}], x => x.w) */
+export function weightedRandom(items, weightFn = (x) => x.weight) {
+  const total = sumBy(items, weightFn)
+  if (total <= 0) return sample(items)
+  let r = Math.random() * total
+  for (const item of items) {
+    r -= weightFn(item)
+    if (r <= 0) return item
+  }
+  return items[items.length - 1]
+}
+
+/* ============================ 校验 ============================ */
+
+/** 空值判定：null / undefined / 空串 / 纯空白 都算空 */
+export function isBlank(v) {
+  return v === undefined || v === null || (typeof v === 'string' && v.trim() === '')
+}
+
+export function isEmail(v) {
+  return /^[\w.!#$%&'*+/=?^`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$/.test(String(v ?? ''))
+}
+
+export function isPhoneCN(v) {
+  return /^1[3-9]\d{9}$/.test(String(v ?? ''))
+}
+
+export function isUrl(v) {
+  try {
+    const u = new URL(String(v))
+    return u.protocol === 'http:' || u.protocol === 'https:'
+  } catch {
+    return false
+  }
+}
+
+export function isNumeric(v) {
+  return v !== '' && v !== null && v !== undefined && Number.isFinite(Number(v))
+}
+
+/** 二代身份证 18 位：格式 + ISO 7064:1983.MOD 11-2 校验位 */
+export function isIdCardCN(v) {
+  const id = String(v ?? '').toUpperCase()
+  if (!/^\d{17}[\dX]$/.test(id)) return false
+  const weights = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2]
+  const codes = '10X98765432'
+  const sum = weights.reduce((acc, w, i) => acc + Number(id[i]) * w, 0)
+  return codes[sum % 11] === id[17]
+}
+
+/** 口令强度：长度 + 字符种类 → 0~4 分与中文标签（纯展示口径） */
+export function passwordStrength(pwd) {
+  const s = String(pwd ?? '')
+  let score = 0
+  if (s.length >= 6) score += 1
+  if (s.length >= 10) score += 1
+  if (/[a-z]/.test(s) && /[A-Z]/.test(s)) score += 1
+  if (/\d/.test(s) && /[^\w\s]/.test(s)) score += 1
+  const labels = ['极弱', '偏弱', '一般', '较强', '很强']
+  return { score: clamp(score, 0, 4), label: labels[clamp(score, 0, 4)] }
+}
+
+/* ============================ 时间进阶 ============================ */
+
+const toDate = (input) => (input instanceof Date ? new Date(input) : new Date(input))
+
+/** 加减天数（返回新 Date，不改原对象） */
+export function addDays(input, n) {
+  const d = toDate(input)
+  d.setDate(d.getDate() + n)
+  return d
+}
+
+/** 加减月份：自动处理"1/31 加一月"溢出到 3 月的情况 */
+export function addMonths(input, n) {
+  const d = toDate(input)
+  const day = d.getDate()
+  d.setDate(1)
+  d.setMonth(d.getMonth() + n)
+  d.setDate(Math.min(day, new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate()))
+  return d
+}
+
+/** 整日差：diffDays(明天, 今天) → 1（按本地日界，忽略时分秒） */
+export function diffDays(a, b) {
+  const da = dayRange(a).start
+  const db = dayRange(b).start
+  return Math.round((da - db) / 86400000)
+}
+
+/** 当天 00:00:00 / 23:59:59.999 */
+export function startOfDay(input = new Date()) {
+  return new Date(dayRange(input).start)
+}
+export function endOfDay(input = new Date()) {
+  return new Date(dayRange(input).end)
+}
+
+/** 本周起始（weekStartsOn: 0=周日, 1=周一） */
+export function startOfWeek(input = new Date(), weekStartsOn = 1) {
+  const d = startOfDay(input)
+  const shift = (d.getDay() - weekStartsOn + 7) % 7
+  return addDays(d, -shift)
+}
+
+/** 是否同一天（本地时区） */
+export function isSameDay(a, b) {
+  return formatDate(a, 'YYYY-MM-DD') === formatDate(b, 'YYYY-MM-DD')
+}
+
+/** 中文星期 */
+export function weekdayCN(input = new Date()) {
+  return `周${'日一二三四五六'[toDate(input).getDay()]}`
+}
+
+/** 毫秒 → 人话时长：1 小时 30 分 / 45 秒 */
+export function humanDuration(ms) {
+  const total = Math.max(0, Math.floor(Number(ms) || 0) / 1000)
+  const d = Math.floor(total / 86400)
+  const h = Math.floor((total % 86400) / 3600)
+  const m = Math.floor((total % 3600) / 60)
+  const s = Math.floor(total % 60)
+  const parts = []
+  if (d) parts.push(`${d} 天`)
+  if (h) parts.push(`${h} 小时`)
+  if (m) parts.push(`${m} 分`)
+  if (s || !parts.length) parts.push(`${s} 秒`)
+  return parts.slice(0, 2).join(' ')
+}
+
+/** 毫秒 → 倒计时分段：{ days, hours, minutes, seconds, total } */
+export function countdownParts(ms) {
+  const total = Math.max(0, Math.floor(Number(ms) || 0))
+  return {
+    days: Math.floor(total / 86400000),
+    hours: Math.floor((total % 86400000) / 3600000),
+    minutes: Math.floor((total % 3600000) / 60000),
+    seconds: Math.floor((total % 60000) / 1000),
+    total,
+  }
+}
+
+/** 从生日算年龄（周岁，生日未到减 1） */
+export function ageFrom(birthday, now = new Date()) {
+  const b = toDate(birthday)
+  if (Number.isNaN(b.getTime())) return null
+  let age = now.getFullYear() - b.getFullYear()
+  const beforeBirthday = now.getMonth() < b.getMonth()
+    || (now.getMonth() === b.getMonth() && now.getDate() < b.getDate())
+  if (beforeBirthday) age -= 1
+  return age
+}
+
+/* ============================ 颜色 ============================ */
+
+const HEX_RE = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i
+
+/** #abc / #aabbcc → { r, g, b }；非法输入返回 null */
+export function hexToRgb(hex) {
+  const m = HEX_RE.exec(String(hex ?? '').trim())
+  if (!m) return null
+  let h = m[1]
+  if (h.length === 3) h = h.split('').map((c) => c + c).join('')
+  const num = parseInt(h, 16)
+  return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 }
+}
+
+/** { r, g, b } / [r,g,b] → #rrggbb */
+export function rgbToHex(input) {
+  const { r = 0, g = 0, b = 0 } = Array.isArray(input) ? { r: input[0], g: input[1], b: input[2] } : input
+  const to2 = (v) => clamp(Math.round(Number(v) || 0), 0, 255).toString(16).padStart(2, '0')
+  return `#${to2(r)}${to2(g)}${to2(b)}`
+}
+
+/** 线性混色：t=0 取 a，t=1 取 b */
+export function mixHex(a, b, t = 0.5) {
+  const ca = hexToRgb(a)
+  const cb = hexToRgb(b)
+  if (!ca || !cb) return rgbToHex(ca || cb || { r: 0, g: 0, b: 0 })
+  const k = clamp(t, 0, 1)
+  return rgbToHex({
+    r: ca.r + (cb.r - ca.r) * k,
+    g: ca.g + (cb.g - ca.g) * k,
+    b: ca.b + (cb.b - ca.b) * k,
+  })
+}
+
+/** 提亮 / 加深（等价于向白色 / 黑色混色） */
+export function lighten(hex, amount = 0.2) {
+  return mixHex(hex, '#ffffff', amount)
+}
+export function darken(hex, amount = 0.2) {
+  return mixHex(hex, '#000000', amount)
+}
+
+/** 转 rgba() 字符串（需要透明度时） */
+export function hexToRgbaString(hex, alpha = 1) {
+  const c = hexToRgb(hex)
+  if (!c) return String(hex)
+  return `rgba(${c.r}, ${c.g}, ${c.b}, ${clamp(alpha, 0, 1)})`
+}
+
+/** 在给定底色上可读的文字色（相对亮度阈值法，够用且零依赖） */
+export function readableTextOn(hex) {
+  const c = hexToRgb(hex)
+  if (!c) return '#111827'
+  const luminance = (0.299 * c.r + 0.587 * c.g + 0.114 * c.b) / 255
+  return luminance > 0.62 ? '#111827' : '#ffffff'
+}
+
+/* ============================ 数据结构进阶 ============================ */
+
+/** 队列（FIFO）：enqueue / dequeue / peek / size */
+export function createQueue() {
+  const items = []
+  return {
+    enqueue: (v) => (items.push(v), v),
+    dequeue: () => items.shift(),
+    peek: () => items[0],
+    get size() { return items.length },
+    get isEmpty() { return items.length === 0 },
+    toArray: () => [...items],
+    clear: () => { items.length = 0 },
+  }
+}
+
+/** 栈（LIFO）：push / pop / peek / size */
+export function createStack() {
+  const items = []
+  return {
+    push: (v) => (items.push(v), v),
+    pop: () => items.pop(),
+    peek: () => items[items.length - 1],
+    get size() { return items.length },
+    get isEmpty() { return items.length === 0 },
+    toArray: () => [...items],
+    clear: () => { items.length = 0 },
+  }
+}
+
+/**
+ * 优先队列（二叉堆）：compare(a, b) < 0 表示 a 更优先。
+ * 默认数字升序 —— 最小堆。
+ */
+export function createPriorityQueue(compare = (a, b) => a - b) {
+  const heap = []
+  const swap = (i, j) => { [heap[i], heap[j]] = [heap[j], heap[i]] }
+  const up = (i) => {
+    while (i > 0) {
+      const parent = (i - 1) >> 1
+      if (compare(heap[i], heap[parent]) >= 0) break
+      swap(i, parent)
+      i = parent
+    }
+  }
+  const down = (i) => {
+    for (;;) {
+      const l = i * 2 + 1
+      const r = l + 1
+      let best = i
+      if (l < heap.length && compare(heap[l], heap[best]) < 0) best = l
+      if (r < heap.length && compare(heap[r], heap[best]) < 0) best = r
+      if (best === i) break
+      swap(i, best)
+      i = best
+    }
+  }
+  return {
+    push(v) { heap.push(v); up(heap.length - 1); return v },
+    pop() {
+      if (!heap.length) return undefined
+      const top = heap[0]
+      const last = heap.pop()
+      if (heap.length) { heap[0] = last; down(0) }
+      return top
+    },
+    peek: () => heap[0],
+    get size() { return heap.length },
+    toArray: () => [...heap].sort(compare),
+  }
+}
+
+/** 令牌桶限流：tryTake() 返回是否放行（按钮防连点 / 接口节流） */
+export function createRateLimiter({ limit = 3, interval = 1000 } = {}) {
+  const hits = []
+  return {
+    tryTake(now = Date.now()) {
+      while (hits.length && now - hits[0] >= interval) hits.shift()
+      if (hits.length >= limit) return false
+      hits.push(now)
+      return true
+    },
+    get remaining() { return Math.max(0, limit - hits.length) },
+    reset: () => { hits.length = 0 },
+  }
+}
+
+/** 带 TTL 的缓存（接口结果缓存 / 防抖升级版） */
+export function createTtlCache({ ttl = 60000, capacity = 50 } = {}) {
+  const map = new Map()
+  const dropExpired = (now = Date.now()) => {
+    for (const [k, entry] of map) if (entry.expire <= now) map.delete(k)
+  }
+  return {
+    get(key, now = Date.now()) {
+      const hit = map.get(key)
+      if (!hit) return undefined
+      if (hit.expire <= now) { map.delete(key); return undefined }
+      // 触碰即刷新 LRU 顺序
+      map.delete(key)
+      map.set(key, hit)
+      return hit.value
+    },
+    set(key, value, now = Date.now()) {
+      dropExpired(now)
+      map.delete(key)
+      map.set(key, { value, expire: now + ttl })
+      if (map.size > capacity) map.delete(map.keys().next().value)
+      return value
+    },
+    has: (key, now = Date.now()) => this.get(key, now) !== undefined,
+    get size() { return map.size },
+    clear: () => map.clear(),
+  }
+}
+
+/** 自增计数器：next() / reset() / value */
+export function createCounter(start = 0) {
+  let value = start
+  let initial = start
+  return {
+    next: (step = 1) => (value += step),
+    get value() { return value },
+    reset(to = initial) { initial = to; value = to; return value },
+  }
+}
+
+/** 自增 ID 生成器：有序、可读、不依赖时间戳 */
+export function createIdGenerator(prefix = 'id', start = 1) {
+  let n = start
+  return {
+    next: (pad = 0) => `${prefix}-${String(n++).padStart(pad, '0')}`,
+    get count() { return n - start },
+    reset(to = start) { n = to },
+  }
+}
+
+/** 环形缓冲区：固定容量，写满后覆盖最旧的一条（日志/波形采样） */
+export function createRingBuffer(size = 10) {
+  const buf = []
+  return {
+    push(v) {
+      if (buf.length >= size) buf.shift()
+      buf.push(v)
+      return v
+    },
+    toArray: () => [...buf],
+    get size() { return buf.length },
+    get isFull() { return buf.length >= size },
+    clear: () => { buf.length = 0 },
+  }
+}
+
+/* ============================ 导航分组（三端共用口径） ============================ */
+
+/**
+ * 把扁平的菜单项按 group 归组并排序。
+ *
+ * 三端（React 主应用侧边栏 / Vue 页内导航 / Angular 页内导航）用同一份口径，
+ * 避免"分组顺序、组内顺序、未知分组兜底"在各处各写一遍而慢慢跑偏。
+ *
+ * @param {{path:string,label:string,group:string}[]} items 扁平菜单项
+ * @param {{ order?: string[], fallbackGroup?: string }} [options]
+ * @returns {{ name:string, items:object[] }[]}
+ */
+export function buildNavGroups(items, { order = [], fallbackGroup = '其它' } = {}) {
+  const map = new Map()
+  for (const item of items) {
+    const name = item.group || fallbackGroup
+    if (!map.has(name)) map.set(name, [])
+    map.get(name).push(item)
+  }
+  const rank = (name) => {
+    const i = order.indexOf(name)
+    return i === -1 ? order.length : i
+  }
+  return [...map.entries()]
+    .sort((a, b) => rank(a[0]) - rank(b[0]))
+    .map(([name, groupItems]) => ({ name, items: groupItems }))
+}
+
+/**
+ * 关键字过滤导航分组：命中 label 或 path 即保留；空组自动剔除。
+ * 关键字为空时原样返回（引用不变，便于 Vue computed / Angular computed 缓存）。
+ */
+export function filterNavGroups(groups, keyword) {
+  const kw = String(keyword ?? '').trim().toLowerCase()
+  if (!kw) return groups
+  return groups
+    .map((g) => ({
+      name: g.name,
+      items: g.items.filter((i) => (
+        String(i.label).toLowerCase().includes(kw) || String(i.path).toLowerCase().includes(kw)
+      )),
+    }))
+    .filter((g) => g.items.length > 0)
+}

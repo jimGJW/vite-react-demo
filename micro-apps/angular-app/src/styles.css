@@ -25,36 +25,38 @@
 }
 
 /* —— 页内路由导航条（独立运行时与 qiankun 融合时都显示） ——
-   设计目标：在 14 个链接、2 行换行的密集排布里，"当前页"必须一眼可见。
-   手段：实色底 + 白字加粗 + 光晕外圈 + 前置圆点 + 弹入动画 + 分组染色。 */
+   设计目标：链接变多后既要"当前页一眼可见"，又要"整体读起来是有序的几组"。
+   手段：① 两段式结构（顶栏 + 分组行）；② 组名独立成对齐列；③ 当前页四层信号叠加。 */
 .ng-tabs {
-  display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px;
-  margin-bottom: 20px; padding: 9px 12px 9px 10px;
+  margin-bottom: 20px;
   border: 1px solid #e5e7eb; border-left: 3px solid var(--ng-primary, #6366f1); border-radius: 10px;
   background: linear-gradient(180deg, #ffffff 0%, #fbfbff 100%);
   box-shadow: 0 1px 6px rgba(15, 23, 42, 0.05);
   position: sticky; top: 0; z-index: 10;
 }
-.ng-tabs__group {
-  display: inline-flex; align-items: center; gap: 4px; flex-wrap: wrap;
-  padding: 2px 6px; border-radius: 10px; transition: background 0.2s;
-}
-.ng-tabs__group + .ng-tabs__group { border-left: 1px solid #f3f4f6; padding-left: 12px; }
-/* 命中当前页的分组整体染色，给出"我在哪一组"的空间感 */
-.ng-tabs__group.is-current { background: #eef2ff; }
-.ng-tabs__group.is-current .ng-tabs__label { color: #4f46e5; font-weight: 800; }
-.ng-tabs__label {
-  font-style: normal; font-size: 11px; color: #d1d5db; margin-right: 2px; transition: color 0.2s;
+
+/* —— 顶栏：一行放得下，信息密度最高的部分固定住 —— */
+.ng-tabs__bar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px 8px 10px;
+  border-bottom: 1px solid #f3f4f6;
 }
 .ng-tabs__spacer { flex: 1; }
-.ng-tabs__mode {
-  font-size: 11px; padding: 2px 8px; border-radius: 999px;
-  background: #f0fdf4; color: #15803d; white-space: nowrap;
+
+/* 顶栏品牌位：与 vue-app 的 .app-nav__brand 结构对称，两端读起来是同一套布局 */
+.ng-tabs__brand {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-weight: 700; font-size: 14px; white-space: nowrap;
 }
-.ng-tabs__mode.is-embedded { background: #eef2ff; color: #4f46e5; }
+.ng-tabs__logo {
+  width: 20px; height: 20px; border-radius: 6px;
+  background: var(--ng-primary, #6366f1); color: #fff;
+  font-size: 12px; font-weight: 800;
+  display: inline-flex; align-items: center; justify-content: center;
+}
 
 /* 当前页徽标：浅底彩字。
-   刻意**不做实色**，否则会和右侧那颗实心"当前菜单胶囊"抢视觉重心。 */
+   刻意**不做实色**，否则会和下方那颗实心"当前菜单胶囊"抢视觉重心。 */
 .ng-tabs__current {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 3px 11px; border-radius: 999px; white-space: nowrap;
@@ -67,15 +69,72 @@
 }
 .ng-tabs__current b { font-weight: 800; }
 
+/* —— 菜单过滤框 —— */
+.ng-tabs__filter {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 8px; border: 1px solid #e5e7eb; border-radius: 999px; background: #fff;
+  transition: border-color 0.16s, box-shadow 0.16s;
+}
+.ng-tabs__filter:focus-within {
+  border-color: var(--ng-primary, #6366f1);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.14);
+}
+.ng-tabs__filter-icon { font-size: 13px; color: #aeb4c0; line-height: 1; }
+.ng-tabs__filter-input {
+  border: 0; outline: 0; width: 132px; font-size: 12px; background: transparent; color: #1f2937;
+}
+.ng-tabs__filter-input::placeholder { color: #c2c7d0; }
+.ng-tabs__filter-clear {
+  border: 0; background: #eef0f4; color: #6b7280;
+  width: 16px; height: 16px; border-radius: 50%; line-height: 1; font-size: 12px; cursor: pointer;
+}
+.ng-tabs__filter-clear:hover { background: #e0e3e9; color: var(--ng-primary, #6366f1); }
+
+.ng-tabs__mode {
+  font-size: 11px; padding: 2px 8px; border-radius: 999px;
+  background: #f0fdf4; color: #15803d; white-space: nowrap;
+}
+.ng-tabs__mode.is-embedded { background: #eef2ff; color: #4f46e5; }
+
+/* —— 分组行：组名是**定宽左栏**，链接在右栏自动换行 ——
+   定宽列 = 所有分组的链接从同一条竖线开始，形成对齐网格。
+   这是「整齐」的关键，比把组名混在链接流里强得多。 */
+.ng-tabs__rows { padding: 2px 12px 8px 10px; }
+.ng-tabs__row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 3px 0; position: relative; transition: background 0.2s;
+}
+.ng-tabs__row + .ng-tabs__row { border-top: 1px dashed #f3f4f6; }
+.ng-tabs__row-name {
+  flex: 0 0 40px; text-align: right; padding-top: 7px;
+  font-size: 11.5px; font-weight: 600; letter-spacing: 0.5px; color: #606a76; white-space: nowrap;
+  transition: color 0.2s;
+}
+.ng-tabs__row-links {
+  flex: 1; min-width: 0; display: flex; flex-wrap: wrap; gap: 5px; padding: 1px 0;
+}
+/* 命中当前页的那一行：左侧框架色竖条 + 组名染成框架色加粗 */
+.ng-tabs__row.is-current::before {
+  content: ''; position: absolute; left: -6px; top: 6px; bottom: 6px; width: 3px;
+  border-radius: 2px; background: var(--ng-primary, #6366f1);
+}
+.ng-tabs__row.is-current .ng-tabs__row-name {
+  color: #4f46e5; font-weight: 800;
+}
+.ng-tabs__empty {
+  margin: 6px 0 2px; padding-left: 50px; font-size: 12px; color: #b6bcc8;
+}
+
+/* —— 链接胶囊 —— */
 .ng-tab {
   position: relative; display: inline-flex; align-items: center; gap: 5px;
-  border: 1px solid #e5e7eb; border-radius: 999px; padding: 5px 14px;
-  font-size: 12.5px; cursor: pointer; background: #fff; color: #4b5563;
+  border: 1px solid transparent; border-radius: 999px; padding: 4px 12px;
+  font-size: 12.5px; line-height: 1.6; cursor: pointer; background: #fff; color: #4b5563;
   text-decoration: none; white-space: nowrap;
   transition: background 0.16s, color 0.16s, border-color 0.16s, box-shadow 0.16s, transform 0.16s;
 }
 .ng-tab:hover {
-  border-color: var(--ng-primary, #6366f1); color: var(--ng-primary, #6366f1);
+  border-color: #c7d2fe; color: var(--ng-primary, #6366f1);
   background: #f5f6ff; transform: translateY(-1px);
 }
 /* 按下瞬间给一个物理反馈 */
@@ -99,6 +158,12 @@
   100% { transform: scale(1); }
 }
 .ng-tab--muted { color: #d1d5db; }
+
+/* 窄视口：组名收窄，避免挤压链接区 */
+@media (max-width: 720px) {
+  .ng-tabs__filter-input { width: 92px; }
+  .ng-tabs__row-name { flex-basis: 32px; font-size: 10px; }
+}
 
 .ng-card {
   background: #fff; border: 1px solid #e5e7eb; border-radius: 12px;

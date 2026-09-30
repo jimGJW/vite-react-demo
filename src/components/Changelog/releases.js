@@ -7,6 +7,9 @@
  *   r1  2026-09-14  b776892  四大基础模块上线（Kit/Studio/Templates/Utils/ChatBot/QASharing）
  *   r2  2026-09-20  396587e  React 核心 API 演示 + 五层验证体系
  *   r3  2026-09-27  5f67751  四大进阶模块 + Utils 大扩充
+ *   r4  2026-09-30           微前端三端对称 + 创意分组 + 创意 Playground 32 demo
+ *                            （r4 的 commit 暂未回填：它是「本次提交」，无从预知 hash；
+ *                            该字段目前只作资料展示，没有代码读它）
  *
  * 纯数据文件（无 React），可被单测直接 import。
  */
@@ -56,6 +59,24 @@ export const RELEASES = [
       { route: '/state-machine', title: '状态机与时间旅行', desc: '纯函数状态机 + 撤销栈（commit / undo / redo / jumpTo）', changedAt: '2026-09-27' },
       { route: '/web-api', title: '浏览器原生能力', desc: '全屏 / 常亮 / 定位 / 通知 / 分享 / 网络探测统一收敛', changedAt: '2026-09-27' },
       { route: '/utils', title: '小功能集 Utils（扩充）', desc: '+20 纯函数 + 5 Hook，演示页新增 3 个分类', changedAt: '2026-09-27' },
+    ],
+  },
+  {
+    id: 'r4',
+    short: '9/30',
+    label: '2026-09-30',
+    date: '2026-09-30',
+    color: '#eb2f96',
+    title: '微前端三端对称 + 创意分组',
+    changes: [
+      { route: '/micro-frontend', title: '微前端融合总览', desc: 'qiankun 装载 Vue / Angular 子应用：宿主页 + 侧边栏菜单注册 + 子应用路由回传', changedAt: '2026-09-30' },
+      { route: '/micro-vue', title: 'Vue 子应用', desc: 'Vue 3 + Element Plus，22 条页内导航与主应用同题同路由', changedAt: '2026-09-30' },
+      { route: '/micro-angular', title: 'Angular 子应用', desc: 'Angular 22 standalone + hash 路由，14 条页内导航；独立运行支持深链', changedAt: '2026-09-30' },
+      { route: '/creative', title: '创意实验室', desc: '粒子星轨 / 打字机 / 聚光卡片 / 3D 翻转 / 涟漪按钮 / 磁性按钮', changedAt: '2026-09-30' },
+      { route: '/data-viz', title: '可视化实验室', desc: '力导向关系图 / 螺旋词云 / 热力矩阵，不引图表库手写布局算法', changedAt: '2026-09-30' },
+      { route: '/orbit', title: '星际轨道', desc: '八大行星真实轨道要素：Python 算数据，前端只做投影与插值', changedAt: '2026-09-30' },
+      { route: '/playground', title: '创意 Playground 32 demo', desc: '流场 / 元胞自动机 / 图灵斑图 / 混沌 / 分形 / 分形山脉… 按主题分 6 组', changedAt: '2026-09-30' },
+      { route: '__infra__', title: 'demo 单一真相 + 三端探针', desc: 'create(ctx) 契约一份实现三份薄壳；sync:demos 防漂移 + playground-probe 真浏览器逐项断言', changedAt: '2026-09-30' },
     ],
   },
 ]

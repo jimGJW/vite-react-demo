@@ -5,42 +5,74 @@
       原因：被 qiankun 融合时，主应用侧边栏的子应用菜单是异步注册的、且位置在宿主页之外，
       子应用内部看不到任何路由入口。这里常驻一条"子应用内导航条"，
       保证在子应用模块里随时能看到路由链接并直接跳转。
+
+      布局是「顶栏 + 分组行」两段式：
+        顶栏   —— 品牌 / 当前页 / 菜单过滤 / 运行模式 / 兜底演示
+        分组行 —— 每行一个分组：左侧定宽组名（形成对齐的标签列），右侧链接自动换行
+      相比早先「品牌、分组名、链接全部内联 flex-wrap」的一锅端写法，
+      组名落成独立对齐列后，20+ 条链接读起来是「几行几组」，而不是「一大坨」。
     -->
     <nav class="app-nav">
-      <span class="app-nav__brand">
-        <span class="app-nav__logo">V</span>
-        Vue 3 子应用
-      </span>
+      <div class="app-nav__bar">
+        <span class="app-nav__brand">
+          <span class="app-nav__logo">V</span>
+          Vue 3 子应用
+        </span>
 
-      <!-- 当前页醒目标识：菜单点完一眼能看到"我现在在哪" -->
-      <span class="app-nav__current">
-        <em>当前页</em>
-        <b>{{ currentTitle }}</b>
-      </span>
+        <!-- 当前页醒目标识：菜单点完一眼能看到"我现在在哪" -->
+        <span class="app-nav__current">
+          <em>当前页</em>
+          <b>{{ currentTitle }}</b>
+        </span>
 
-      <span
-        v-for="g in groups"
-        :key="g.name"
-        class="app-nav__group"
-        :class="{ 'is-current': g.name === activeGroup }"
-      >
-        <em class="app-nav__group-label">{{ g.name }}</em>
-        <router-link
-          v-for="item in g.items"
-          :key="item.path"
-          :to="item.path"
-          class="app-nav__link"
-          active-class="is-active"
+        <span class="app-nav__spacer" />
+
+        <!-- 菜单过滤：链接变多后，按名字/路径定位比肉眼扫更快 -->
+        <label class="app-nav__filter">
+          <span class="app-nav__filter-icon" aria-hidden="true">⌕</span>
+          <input
+            ref="filterInput"
+            v-model="keyword"
+            class="app-nav__filter-input"
+            type="text"
+            placeholder="过滤菜单（按 / 聚焦）"
+            @keydown.enter.prevent="gotoFirstMatch"
+            @keydown.esc="keyword = ''"
+          />
+          <button v-if="keyword" class="app-nav__filter-clear" type="button" @click="keyword = ''">×</button>
+        </label>
+
+        <span class="app-nav__mode" :class="{ 'is-embedded': !standalone }">
+          {{ standalone ? '独立运行' : 'qiankun 融合中' }}
+        </span>
+        <a class="app-nav__link app-nav__link--muted" href="#" @click.prevent="go404">404 演示</a>
+      </div>
+
+      <div class="app-nav__rows">
+        <div
+          v-for="g in visibleGroups"
+          :key="g.name"
+          class="app-nav__row"
+          :class="{ 'is-current': g.name === activeGroup }"
         >
-          {{ item.label }}
-        </router-link>
-      </span>
+          <span class="app-nav__row-name">{{ g.name }}</span>
+          <span class="app-nav__row-links">
+            <router-link
+              v-for="item in g.items"
+              :key="item.path"
+              :to="item.path"
+              class="app-nav__link"
+              active-class="is-active"
+            >
+              {{ item.label }}
+            </router-link>
+          </span>
+        </div>
 
-      <span class="app-nav__spacer" />
-      <span class="app-nav__mode" :class="{ 'is-embedded': !standalone }">
-        {{ standalone ? '独立运行' : 'qiankun 融合中' }}
-      </span>
-      <a class="app-nav__link app-nav__link--muted" href="#" @click.prevent="go404">404 演示</a>
+        <p v-if="!visibleGroups.length" class="app-nav__empty">
+          没有匹配「{{ keyword }}」的菜单，按 Esc 清空
+        </p>
+      </div>
     </nav>
 
     <main class="app-view">
@@ -59,10 +91,11 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { qiankunWindow } from 'vite-plugin-qiankun/es/helper'
-import { MENU_ITEMS } from './router.js'
+import { MENU_GROUP_ORDER, MENU_ITEMS } from './router.js'
+import { buildNavGroups, filterNavGroups } from './utils'
 
 /** 是否独立运行（未被 qiankun 加载） */
 const standalone = computed(() => !qiankunWindow.__POWERED_BY_QIANKUN__)
@@ -73,7 +106,7 @@ const route = useRoute()
 const currentTitle = computed(() => route.meta?.title || '页面')
 
 /**
- * 当前路由落在哪个分组 —— 用于把该分组的标签染色。
+ * 当前路由落在哪个分组 —— 用于把该分组那一行整体点亮。
  * 嵌套子路由（/nested/detail/3）按最长前缀归属到父级菜单项，因此也要做前缀匹配。
  */
 const activeGroup = computed(() => {
@@ -86,19 +119,35 @@ const activeGroup = computed(() => {
   return hit?.group || ''
 })
 
-/** 按 meta.group 分组渲染导航 */
-const groups = computed(() => {
-  const order = ['基础', '能力', '鉴权', '通信']
-  const map = new Map()
-  for (const item of MENU_ITEMS) {
-    const name = item.group || '其它'
-    if (!map.has(name)) map.set(name, [])
-    map.get(name).push(item)
+/** 分组渲染：排序口径与主应用侧边栏、Angular 端共用同一份纯函数 */
+const groups = computed(() => buildNavGroups(MENU_ITEMS, { order: MENU_GROUP_ORDER }))
+
+/* —— 菜单过滤 —— */
+const keyword = ref('')
+const filterInput = ref(null)
+const visibleGroups = computed(() => filterNavGroups(groups.value, keyword.value))
+const firstMatch = computed(() => visibleGroups.value[0]?.items[0])
+
+/** 回车 → 直接跳到第一条匹配项（省掉鼠标移动） */
+const gotoFirstMatch = () => {
+  if (firstMatch.value) router.push(firstMatch.value.path)
+}
+
+/**
+ * 按 `/` 聚焦过滤框（不在输入态时）。
+ * 用 window keydown 是因为过滤框本身可能还没被聚焦 —— 这是"命令面板"式的
+ * 低成本键盘可达性，和 ⌘K 一个思路，但不占用浏览器保留快捷键。
+ */
+const onKeydown = (e) => {
+  const tag = document.activeElement?.tagName
+  const typing = tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement?.isContentEditable
+  if (e.key === '/' && !typing) {
+    e.preventDefault()
+    filterInput.value?.focus()
   }
-  return [...map.entries()]
-    .sort((a, b) => order.indexOf(a[0]) - order.indexOf(b[0]))
-    .map(([name, items]) => ({ name, items }))
-})
+}
+onMounted(() => window.addEventListener('keydown', onKeydown))
+onUnmounted(() => window.removeEventListener('keydown', onKeydown))
 
 /** 用一个不存在的 path 演示 404 兜底路由 */
 const go404 = () => { router.push('/not-exist-demo') }
@@ -111,14 +160,10 @@ const go404 = () => { router.push('/not-exist-demo') }
 }
 
 /* —— 应用内导航（独立运行与 qiankun 融合都常驻显示） ——
-   设计目标：在 22 个链接、3 行换行的密集排布里，"当前页"必须一眼可见。
-   手段：实色底 + 白字加粗 + 光晕外圈 + 前置圆点 + 弹出动画 + 分组染色。 */
+   设计目标：在 20+ 个链接、多行换行的密集排布里，既要"当前页一眼可见"，
+   又要"整体读起来是有序的几组"，而不是一坨。
+   手段：① 两段式结构（顶栏 + 分组行）；② 组名独立成对齐列；③ 当前页四层信号叠加。 */
 .app-nav {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 6px 10px;
-  padding: 10px 20px 10px 17px;
   border-bottom: 1px solid #e4e7ed;
   border-left: 3px solid #42b883;
   background: linear-gradient(180deg, #ffffff 0%, #fafefb 100%);
@@ -127,18 +172,39 @@ const go404 = () => { router.push('/not-exist-demo') }
   top: 0;
   z-index: 10;
 }
+
+/* —— 顶栏：一行放得下，永不换行（信息密度最高的部分固定住） —— */
+.app-nav__bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px 8px 14px;
+  border-bottom: 1px solid #f0f3f5;
+}
 .app-nav__brand {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   font-weight: 700;
-  font-size: 15px;
-  margin-right: 6px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.app-nav__logo {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: #42b883;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* 当前页徽标：浅底彩字。
-   刻意**不做实色**，否则会和右侧那颗实心"当前菜单胶囊"抢视觉重心；
-   标题文案靠右侧那颗实心胶囊承担，这里只做一句"你现在在哪"的旁白。 */
+   刻意**不做实色**，否则会和下方那颗实心"当前菜单胶囊"抢视觉重心；
+   标题文案靠实心胶囊承担，这里只做一句"你现在在哪"的旁白。 */
 .app-nav__current {
   display: inline-flex;
   align-items: center;
@@ -162,28 +228,46 @@ const go404 = () => { router.push('/not-exist-demo') }
 }
 .app-nav__current b { font-weight: 800; }
 
-.app-nav__group {
+.app-nav__spacer { flex: 1; }
+
+/* —— 菜单过滤框 —— */
+.app-nav__filter {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  flex-wrap: wrap;
-  padding: 2px 6px;
-  border-radius: 10px;
-  transition: background 0.2s;
+  gap: 5px;
+  padding: 3px 8px;
+  border: 1px solid #e0e6e3;
+  border-radius: 999px;
+  background: #fff;
+  transition: border-color 0.16s, box-shadow 0.16s;
 }
-.app-nav__group + .app-nav__group { border-left: 1px solid #f0f2f5; padding-left: 12px; }
-/* 命中当前页的分组整体染色，给出"我在哪一组"的空间感 */
-.app-nav__group.is-current { background: #eefaf3; }
-.app-nav__group.is-current .app-nav__group-label { color: #2e8b5f; font-weight: 800; }
+.app-nav__filter:focus-within {
+  border-color: #42b883;
+  box-shadow: 0 0 0 3px rgba(66, 184, 131, 0.14);
+}
+.app-nav__filter-icon { font-size: 13px; color: #a8b1ad; line-height: 1; }
+.app-nav__filter-input {
+  border: 0;
+  outline: 0;
+  width: 132px;
+  font-size: 12px;
+  background: transparent;
+  color: #303133;
+}
+.app-nav__filter-input::placeholder { color: #b9c2be; }
+.app-nav__filter-clear {
+  border: 0;
+  background: #eef2f0;
+  color: #6b7a74;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  line-height: 1;
+  font-size: 12px;
+  cursor: pointer;
+}
+.app-nav__filter-clear:hover { background: #dfe7e3; color: #2e8b5f; }
 
-.app-nav__group-label {
-  font-style: normal;
-  font-size: 11px;
-  color: #c0c4cc;
-  margin-right: 2px;
-  transition: color 0.2s;
-}
-.app-nav__spacer { flex: 1; }
 .app-nav__mode {
   font-size: 11px;
   padding: 2px 8px;
@@ -193,30 +277,78 @@ const go404 = () => { router.push('/not-exist-demo') }
   white-space: nowrap;
 }
 .app-nav__mode.is-embedded { background: #ecf5ff; color: #409eff; }
-.app-nav__link--muted { color: #c0c4cc; }
-.app-nav__logo {
-  width: 22px;
-  height: 22px;
-  border-radius: 6px;
-  background: #42b883;
-  color: #fff;
-  font-size: 13px;
-  font-weight: 800;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+
+/* —— 分组行：组名是**定宽左栏**，链接在右栏自动换行 ——
+   定宽列 = 所有分组的链接从同一条竖线开始，形成对齐网格。
+   这是「整齐」的关键，比把组名混在链接流里强得多。 */
+.app-nav__rows {
+  padding: 2px 16px 8px 14px;
 }
+.app-nav__row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 3px 0;
+  position: relative;
+  transition: background 0.2s;
+}
+.app-nav__row + .app-nav__row { border-top: 1px dashed #eef3f0; }
+.app-nav__row-name {
+  flex: 0 0 40px;
+  text-align: right;
+  padding-top: 7px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #5f6f68;
+  white-space: nowrap;
+  transition: color 0.2s;
+}
+.app-nav__row-links {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 1px 0;
+}
+/* 命中当前页的那一行：左侧框架色竖条 + 组名染成框架色加粗 */
+.app-nav__row.is-current::before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  top: 6px;
+  bottom: 6px;
+  width: 3px;
+  border-radius: 2px;
+  background: #42b883;
+}
+.app-nav__row.is-current .app-nav__row-name {
+  color: #2e8b5f;
+  font-weight: 800;
+}
+
+.app-nav__empty {
+  margin: 6px 0 2px;
+  padding-left: 50px;
+  font-size: 12px;
+  color: #b7c2bc;
+}
+
+/* —— 链接胶囊 —— */
 .app-nav__link {
   position: relative;
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  font-size: 13px;
+  font-size: 12.5px;
+  line-height: 1.6;
   color: #606266;
   text-decoration: none;
-  padding: 5px 11px;
+  padding: 4px 11px;
   border-radius: 999px;
   border: 1px solid transparent;
+  white-space: nowrap;
   transition: background 0.16s, color 0.16s, border-color 0.16s, box-shadow 0.16s, transform 0.16s;
 }
 .app-nav__link:hover {
@@ -252,6 +384,8 @@ const go404 = () => { router.push('/not-exist-demo') }
   100% { transform: scale(1); }
 }
 
+.app-nav__link--muted { color: #c0c4cc; }
+
 .app-view {
   padding: 0;
 }
@@ -262,4 +396,10 @@ const go404 = () => { router.push('/not-exist-demo') }
 .view-fade-leave-active { transition: opacity 0.12s ease; }
 .view-fade-enter-from { opacity: 0; transform: translateY(6px); }
 .view-fade-leave-to { opacity: 0; }
+
+/* 窄视口：组名收成小徽标，避免挤压链接区 */
+@media (max-width: 720px) {
+  .app-nav__filter-input { width: 92px; }
+  .app-nav__row-name { flex-basis: 32px; font-size: 10px; }
+}
 </style>

@@ -27,6 +27,21 @@ let routeSub: Subscription | null = null
 type HostProps = { onRouteChange?: (path: string) => void }
 let hostProps: HostProps = {}
 
+/**
+ * 没有显式 pendingPath 时的落点。
+ *
+ * ⚠️ 独立运行时**不能**无条件 navigateByUrl('/components')：
+ * 本应用用 `withHashLocation()`，地址栏里的 `#/playground` 就是真实初始路由，
+ * 无条件跳默认页会把深链整个吃掉（表现是「输什么地址都回到 /components」）。
+ * 融合运行时则由 qiankun 宿主统一控制，hash 没有语义，走默认页。
+ */
+function landingPath() {
+  if (qiankunWindow.__POWERED_BY_QIANKUN__) return '/components'
+  const raw = qiankunWindow.location?.hash ?? ''
+  const p = raw.replace(/^#/, '')
+  return p && p !== '/' ? p : '/components'
+}
+
 async function render() {
   if (appRef) {
     appRef.destroy()
@@ -49,7 +64,7 @@ async function render() {
     routeSub = router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))
       .subscribe((e) => { hostProps.onRouteChange?.(e.urlAfterRedirects) })
-    await router.navigateByUrl(pendingPath ?? '/components').catch(() => router?.navigateByUrl('/404'))
+    await router.navigateByUrl(pendingPath ?? landingPath()).catch(() => router?.navigateByUrl('/404'))
     pendingPath = null
     // 首屏同步一次：navigateByUrl 的 NavigationEnd 可能早于订阅（不会，但保持幂等更稳）
     hostProps.onRouteChange?.(router.url)

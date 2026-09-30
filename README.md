@@ -429,6 +429,28 @@ npm run dev:angular  # 只起 angular 子应用（7102 可独立访问调试）
 两个子应用的选中态类名统一为 `is-active`（页内导航条）、`is-current`（命中分组），
 `subapp-views-diag.mjs` 与 CSS 都依赖这两个约定。
 
+#### 导航条的两段式布局
+
+导航条拆成上下两段，解决「20+ 条菜单挤成一片、看不出层级」的问题：
+
+```text
+┌ 顶栏 .app-nav__bar / .ng-tabs__bar ── 不换行 ────────────────────────────┐
+│ [框架徽标] 当前页 · xxx        [过滤菜单（按 / 聚焦）]  [融合中]  [404 演示] │
+└──────────────────────────────────────────────────────────────────────┘
+┌ 分组行 .app-nav__rows / .ng-tabs__rows ── 每行一组 ────────────────────┐
+│  基础  [首页] [关于] [登录]                                          │
+│  能力  [组件库] [表格] [图表] [表单]                                  │
+│  创意  [创意实验室] [可视化实验室] [星际轨道]                          │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+组名用**定宽 flex 左栏**（`flex: 0 0 40px; text-align: right`），于是所有分组的链接都从同一条竖线开始 ——
+这是"整齐"的可量化定义，`/tmp/nav-layout-probe.mjs` 直接量每条链接的 `left` 是否收敛成单值。
+顶栏的过滤框支持 `/` 全局聚焦、`Enter` 跳第一条命中、`Esc` 清空；分组名与链接文字都参与匹配，空组自动剔除。
+
+分组口径三端共用两个纯函数：`buildNavGroups(items, { order, fallbackGroup })` 与
+`filterNavGroups(groups, keyword)`（空关键字**返回原引用**，便于 `computed` / `useMemo` 缓存）。
+
 子应用各自的文档见 [micro-apps/vue-app/README.md](micro-apps/vue-app/README.md) 与
 [micro-apps/angular-app/README.md](micro-apps/angular-app/README.md)。
 
@@ -470,6 +492,203 @@ npm run dev:angular  # 只起 angular 子应用（7102 可独立访问调试）
 | `/data-table`      | 高级表格         | [DataTableDemo](src/pages/DataTableDemo)                       | 筛选、排序、分页、固定列             |
 | `/test-center`     | 测试中心         | [TestCenterDemo](src/pages/TestCenterDemo)                     | 前端测试用例管理                 |
 | `/404`             | 未命中兜底        | [NotFound](src/pages/NotFound)                                 | <br />                   |
+
+### 创意分组（React / Vue / Angular 三端同题）
+
+同一批 demo 在三个框架里各写一遍，用来横向对照「同一件事换个框架要怎么写」。
+三端入口都在侧边栏的「创意」分组下，路由路径完全一致（`/creative`、`/data-viz`、`/orbit`、`/playground`）。
+
+> **`/playground` 的 32 个 demo 只在 React 主应用验收。** 实现本身是一份框架无关的模块，
+> 两份子应用拷贝由 `npm run sync:demos` 同步（内容完全一致），但左栏的分组标题目前只在主应用渲染——
+> 子应用那边多出来的 20 项是「跟着文件一起同步过去」的，尚未加分组 UI。这是有意为之，不是漏改。
+
+| 路由          | 页面      | React（主应用）                          | Vue（`micro-apps/vue-app`）                                          | Angular（`micro-apps/angular-app`）                                        |
+| ----------- | ------- | ---------------------------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `/creative`  | 创意实验室   | [CreativeLab](src/pages/CreativeLab) | [CreativeLab.vue](micro-apps/vue-app/src/pages/CreativeLab.vue)   | [creative-lab-view.ts](micro-apps/angular-app/src/app/views/creative-lab-view.ts) |
+| `/data-viz`  | 可视化实验室  | [DataVizLab](src/pages/DataVizLab)   | [DataVizLab.vue](micro-apps/vue-app/src/pages/DataVizLab.vue)     | [data-viz-view.ts](micro-apps/angular-app/src/app/views/data-viz-view.ts)     |
+| `/orbit`     | 星际轨道    | [OrbitLab](src/pages/OrbitLab)       | [OrbitLab.vue](micro-apps/vue-app/src/pages/OrbitLab.vue)         | [orbit-lab-view.ts](micro-apps/angular-app/src/app/views/orbit-lab-view.ts)   |
+| `/playground` | 创意 Playground | [Playground](src/pages/Playground)  | [Playground.vue](micro-apps/vue-app/src/pages/Playground.vue)     | [playground-view.ts](micro-apps/angular-app/src/app/views/playground-view.ts) |
+
+三页都不引图表库 / 动画库，算法自己写：
+
+| 页面    | 演示内容                                                          | 关键算法                                                                                     |
+| ----- | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| 创意实验室 | 粒子星轨 / 打字机 / 聚光卡片 / 3D 翻转 / 涟漪按钮 / 磁性按钮（Vue 与 Angular 版另含 ⌘K 命令面板） | canvas 粒子 + 光标引力；光斑位置写 CSS 变量，`pointermove` 不驱动框架渲染                                          |
+| 可视化实验室 | 力导向关系图 / 螺旋词云 / 热力矩阵                                          | 胡克弹簧 + 平方反比斥力 + 向心力逐帧收敛；阿基米德螺线试位 + 包围盒 O(n²) 避让；四段色带线性插值                                 |
+| 星际轨道   | 八大行星按**真实轨道要素**运行，可 hover 预览、点击锁定并追踪任一行星                         | 数据由 Python 产出（见下节）：解开普勒方程 + 三维旋转；前端只做径向压缩、视角投影、插值                                         |
+| 创意 Playground | **32 个算法 demo**，按主题分 6 组：场与流体（4）/ 元胞自动机与自组织（8）/ 天体与力学（6）/ 几何与图案（7）/ 粒子与渲染（5）/ 数值与优化（2） | 一份**框架无关**的 canvas 模块（见下下节），三端只写薄壳                                                                |
+
+#### 创意 Playground：32 个 demo，分 6 组，一份实现，三个薄壳
+
+这 32 个 demo 本质都是「算法 + 逐帧绘制」，跟 React / Vue / Angular 一点关系都没有。
+写三遍只会得到三份互相漂移的拷贝，所以：
+
+| 文件 | 角色 |
+| --- | --- |
+| [`src/creative/demos.js`](src/creative/demos.js) | **唯一真相**。纯 canvas，零框架 API，只 `export { DEMOS, DEMO_GROUPS }` |
+| `micro-apps/vue-app/src/creative/demos.js` | 生成物（`scripts/sync-creative-demos.mjs`），文件头带「自动生成勿手改」横幅 |
+| `micro-apps/angular-app/src/creative/demos.ts` | 同上（Angular 侧以 `.ts` 收，走 `include: src/**/*.ts` 的类型检查） |
+
+```bash
+npm run sync:demos            # 重新生成两份拷贝
+npm run sync:demos:check      # 只比对，不一致 exit 1（单测里已经跑它防漂移）
+```
+
+薄壳只依赖一个契约，不依赖任何框架 API：
+
+```js
+create(ctx) → {
+  resize(w, h)           // 画布 CSS 尺寸变了（ctx 已按 dpr 设好 transform，按 CSS px 画）
+  frame(ts, dt)          // 逐帧：ts = 毫秒时间戳，dt = 秒（薄壳已 clamp 到 ≤ 0.05）
+  pointer(kind, x, y)    // kind ∈ 'down' | 'move' | 'up' | 'leave'；x/y 是画布内 CSS px
+  setParam(key, value)   // 参数控件变化
+  action(key)            // 动作按钮
+  destroy()              // 清理
+}
+```
+
+同一件事，三端薄壳的三种写法（这就是 `/playground` 想要对照的东西）：
+
+| | 实例怎么挂 | 靠什么重建 | HUD（FPS / 指针） |
+| --- | --- | --- | --- |
+| React | `useRef` | `useEffect` 依赖 `[demo, nonce]` | `data-live` 属性 + 容器 `querySelectorAll` 直写 |
+| Vue | 普通变量（不进响应式） | `watch([active, nonce])` | template ref 直写 `textContent` |
+| Angular | 私有字段 | `effect()` 读 signal | `viewChild` 直写 `textContent` |
+
+三端**都刻意没有**把逐帧数据塞进框架状态 —— HUD 一秒钟只写 DOM 两次（每 500ms 汇总 FPS），
+`reconciliation` / 变更检测都是 0 次/秒。这不是为了省那点性能，而是这类页面最常见的翻车方式：
+`setState` 在 rAF 里，页面看起来能跑，一测帧率就知道在给框架做无用工。
+
+32 个 demo 覆盖的算法（分组顺序 = 页面左栏顺序 = `DEMOS` 数组下标顺序）：
+
+**场与流体**
+
+| # | demo | 用到的东西 |
+| --- | --- | --- |
+| 1 | 流场丝绸 | 伪噪声速度场 + 半透明覆写做长拖尾 + 36 个色相桶把「方向」也编码进颜色 |
+| 2 | 水波方程 | 半分辨率网格上的 `h' = (邻域和)/2 − h[n-1]`，斜率当高光 |
+| 3 | 偶极场力线 | 逐条追踪 `dB/ds ∝ ds × B` 画出场线，再按等弧长重采样；用 `log|B|` 控速，粒子在弱场区自然变慢（磁镜捕获） |
+| 4 | 闪电 | 递归中点位移 + 概率分叉 + 三层由粗到细的辉光描边 |
+
+**元胞自动机与自组织**
+
+| # | demo | 用到的东西 |
+| --- | --- | --- |
+| 5 | 康威生命游戏 | 四条规则 + 环形边界 + 残影；可直接在画布上拖拽画活细胞 |
+| 6 | 一维元胞自动机 | Wolfram 初等规则 0–255 可调，每帧整体上移一格（规则 30 / 110 值得单独看） |
+| 7 | 兰顿蚂蚁 | 两行规则（白右转黑左转）自发筑出「高速路」，顺手把状态数目推广到 N |
+| 8 | 沙堆的自组织临界 | 阿贝尔沙堆：≥4 就向四邻各散 1 粒，环形队列迭代到不动点；实时统计雪崩大小的幂律分布 |
+| 9 | 伊辛模型相变 | Metropolis 采样，`ΔE = 2sΣ邻居`，低温长磁畴 / 高温顺磁，实时画磁化强度 |
+| 10 | 反应扩散图灵斑图 | Gray-Scott：`A + 2B → 3B` 与 B 的衰变，`f`/`k` 扫过参数区间就是斑点、条纹、迷宫 |
+| 11 | 黏菌网络 | 三重感知（前 / 左前 / 右前）+ 迹线正反馈 + 扩散蒸发，网络是自己长出来的「最短路径」 |
+| 12 | 扩散限制凝聚 | 随机行走直到贴上已有簇，按到中心的半径着色 —— 分形维数约 1.71 |
+
+**天体与力学**
+
+| # | demo | 用到的东西 |
+| --- | --- | --- |
+| 13 | 螺旋星系 | 密度波理论：椭圆长轴按 `k·ln a` 转动、角速度 `ω ∝ a^-1.5`，两条旋臂是椭圆族的包络 |
+| 14 | N 体引力 | O(n²) 两两引力 + 软化长度防奇点 + 每帧 3 个子步；能看到引力弹弓把星体甩出去 |
+| 15 | 双摆混沌 | RK4 固定步长 1/480s 积分 + 轨迹；初始条件差 0.001 rad 会在一分钟内分道扬镳 |
+| 16 | 洛伦兹吸引子 | RK4 积分 `σ=10, ρ=28, β=8/3`，基准点**固定**在吸引子几何中心 `(0,0,25)` 而非轨迹头，否则画着画着视角会自己乱转 |
+| 17 | 时空网格 | 网格下陷深度 ∝ `Σ m/(r+ε)`，天体在势阱里绕行；不是严格测地线，但「质量弯时空」这层意思到位 |
+| 18 | 弹簧布料 | Verlet 积分 + 每帧 4 次距离约束迭代，线色反映拉伸量 |
+
+**几何与图案**
+
+| # | demo | 用到的东西 |
+| --- | --- | --- |
+| 19 | 万花筒 | n 扇区 × 镜像共 2n 重对称，笔画历史可撤销；进页面自动种一笔，不用先手动画 |
+| 20 | 克拉尼图形 | 方板模态 `|cos nπu·cos mπv − cos mπu·cos nπv|` 的零线，沙粒沿 `−∇|f|` 走并堆在节线上 |
+| 21 | 沃罗诺伊图 | 逐像素取最近 / 次近站点距离，用 `F2 − F1` 描出边界，色相走 `HSV6` 色轮；低分辨率缓冲后放大 |
+| 22 | 林登迈尔系统 | 字符串重写 + 龟形绘图，5 组规则（含随机花括号语法）；自适应缩放，逐帧只画新增段所以能看着它长 |
+| 23 | 弦艺术 | 圆周上按 `i → i·k mod n` 连线，6 个色相桶分批 stroke；换 k 就换一张图 |
+| 24 | 李萨如图形 | 正交简谐振动 `x = A·cos(fx·t + φ)`, `y = B·cos(fy·t)`，频率比决定闭合曲线形状，相位当色相 |
+| 25 | 超公式曲面 | Gielis 公式 `r = (|cos(mθ/4)|ⁿ² + |sin(mθ/4)|ⁿ³)^(−1/n¹)` 两个方向各套一次再相乘，点云 + 手写透视 |
+
+**粒子与渲染**
+
+| # | demo | 用到的东西 |
+| --- | --- | --- |
+| 26 | 粒子文字 | 离屏 canvas 点阵采样 + 弹簧回归 + 鼠标排斥；**弹簧增益必须按「每帧」给（< 4.3）**，写成 `×dt×60` 会两三帧内发散到画布外 |
+| 27 | 3D 点云环面结 | 手写透视 `fov / (fov + z·scale)`，(2,3) 环面结绕两圈 |
+| 28 | 萤火虫同步 | Mirollo–Strogatz 脉冲耦合振荡器，实时显示序参量（从乱到齐） |
+| 29 | 鸟群 Boids | Reynolds 三条规则（分离 / 对齐 / 聚合），5 个色相桶分桶收集线段再一次性 stroke |
+| 30 | 分形山脉 | 中点位移 + 首尾同值保证左右无缝 + 视差滚动 + 星空；`closePath` 后填充山体轮廓 |
+
+**数值与优化**
+
+| # | demo | 用到的东西 |
+| --- | --- | --- |
+| 31 | 曼德博集合 | 逐帧渲染 7 行的渐进渲染 + 平滑着色（`n + 1 - log₂(log|z|)`），点左侧 1/8 处缩回 |
+| 32 | 模拟退火解 TSP | Metropolis 接受准则 + 2-opt 反转（长度变化恰好等于 delta），温度线性下降，实时显示当前路径长度 |
+
+> 假 canvas 也能跑：`tests/unit/creative-demos.test.mjs` 用一个几十行的 2D context stub
+> （按真实 API 面补全了 `closePath` / `ellipse` / `quadraticCurveTo` 等；凡逐像素的 demo
+> 都会 `createElement('canvas')` 拿离屏缓冲，stub 里也已给到）
+> 把 32 个 demo 各真跑 20 帧 + resize + 全套指针事件 + 参数 + 动作，另断言 `DEMO_GROUPS` 恰好铺满 `DEMOS`。
+> 这类断言的价值在于：逐帧数值循环里写错一个下标，lint 和 tsc 都看不出来。
+
+#### 星际轨道的数据来自 Python（`scripts/orbit-data.py`）
+
+前端 canvas 里**一行天体力学都没有** —— 原来那套「看得清但假」的 `aPx` / `periodS` / `phase`
+已经换成由脚本算出的真实数据，职责划得很清：
+
+| 谁 | 负责什么 |
+| --- | --- |
+| Python（`scripts/orbit-data.py`，**零第三方依赖**，只用标准库） | 用 JPL《Keplerian Elements for Approximate Positions of the Major Planets》的 J2000.0 要素 + 每儒略世纪变化率外推到目标历元；解开普勒方程 `M = E - e·sinE`；做三维旋转得到日心黄道坐标；用活力公式算真实速度 |
+| 前端（三端各自的 `OrbitLab`） | 径向压缩（比例模式）、视角投影（绕 x 轴转倾角）、按时间插值取当前位置、配色与交互 |
+
+```bash
+python3 scripts/orbit-data.py                 # 默认历元 2026-10-01，写 4 个文件
+python3 scripts/orbit-data.py 2030-01-01      # 指定历元
+python3 scripts/orbit-data.py --samples 240   # 采样点数（默认 180）
+```
+
+产物：
+
+| 文件 | 用途 |
+| --- | --- |
+| `data/orbital-elements.json` | 权威数据（可单独检视 / 复用），约 86 KB |
+| `src/pages/OrbitLab/orbitData.js` | React 主应用 `import` |
+| `micro-apps/vue-app/src/data/orbit.js` | Vue 子应用 `import` |
+| `micro-apps/angular-app/src/data/orbit.ts` | Angular 子应用（带 `OrbitBody` / `OrbitData` 类型声明） |
+
+脚本跑完会顺手打一张核对表，可直接与天文年历对照（历元 2026-10-01 实测）：
+
+```text
+行星           a(AU)          e     i(°)       P(年)     近日(AU)     远日(AU)    v近日(km/s)
+水星        0.387099   0.205641    7.003      0.241     0.3075     0.4667        58.98
+金星        0.723337   0.006766    3.394      0.615     0.7184     0.7282        35.26
+地球        1.000004   0.016699   -0.003      1.000     0.9833     1.0167        30.29
+火星        1.523715   0.093415    1.848      1.881     1.3814     1.6661        26.50
+木星        5.202856   0.048351    1.304     11.863     4.9513     5.4544        13.71
+土星        9.536341   0.053725    2.487     29.448     9.0240    10.0487        10.18
+天王星      19.188640   0.047246    0.772     84.018    18.2821    20.0952         7.13
+海王星      30.069993   0.008604    1.770    164.790    29.8113    30.3287         5.48
+```
+
+> **采样点为什么按平均近点角均匀**：`M = M₀ + 2πt/P`，M 与时间成正比，
+> 所以按 M 均匀采样 == 按时间均匀采样。前端只要按 `frac(t/P)` 取下标再做一次线性插值就能连续播放，
+> 不必自己解 M → E。180 点的弦高误差在屏幕上小于 0.04px（最坏情况水星近日点附近）。
+
+页面里顺带演示的三个真实结论：
+
+* **比例模式是必需的**：切到 1:1 线性，海王星 30.07 AU 撑满画布时水星只有 3.5px，
+  直接埋进太阳光晕 —— 这就是「真实比例下地球只有一个像素」，天文插图几乎都偷偷做过压缩。
+  所以给了 真实比例 / 平方根 / 对数 三档径向压缩并列对照。
+* **近日点更快**：面板里的瞬时速度是活的（对采样点做数值微分，间隔恒为 `P/180` 天）。
+  水星在 58.98 ~ 38.73 km/s 之间摆动，差 52%。
+* **轨道倾角是真的**：把视角拉到 80° 能看出八条轨道不共面 —— 水星偏 7.0°、金星 3.4°，
+  地球在黄道面内（0°）。这也是首次把三维 `z` 分量真正用起来的地方。
+
+> **高频数据不进框架渲染循环**（三端三种做法，正好横向对照）：
+> React 版把日心距 / 速度 / 区段 / 时钟由 rAF **直写 DOM**；
+> Vue 版用普通变量 `simDays` 推进画布，面板快照按 ~8Hz 回写 `ref`（否则 Element Plus 控件会被 60fps 重渲染）；
+> Angular 版同理，按 ~8Hz `set` 信号。三者画布都是 60fps，reconciliation 都是 0 次/秒。
+>
+> **画布自适应**：三种比例模式下都按画布尺寸算缩放比
+> `(min(w,h)/2 - 34) / 最外圈压缩半径`，所以最外层椭圆永远满幅且不会被上下切平。
 
 ### 组件对比中心
 
@@ -777,7 +996,12 @@ vite-react-demo/
 │   ├── test-whisper.mjs              # Whisper 语音识别链路验证脚本
 │   ├── run-tests.mjs                 # 零依赖单元测试 runner（npm test）
 │   ├── ssr-smoke.mjs                 # SSR 渲染冒烟（npm run test:ssr）
-│   └── browser-smoke.mjs             # 浏览器逐页冒烟（npm run test:browser，CDP 驱动、零依赖）
+│   ├── browser-smoke.mjs             # 浏览器逐页冒烟（npm run test:browser，CDP 驱动、零依赖）
+│   ├── orbit-data.py                 # 星际轨道的真实轨道数据生成器（零第三方依赖，stdlib only）
+│   ├── qiankun-diag.mjs              # 三服务探活 + 宿主页容器渲染文本
+│   └── subapp-views-diag.mjs         # 逐个点开子应用全部路由，双重断言 console error + is-active
+├── data/
+│   └── orbital-elements.json         # ↑ 脚本产出的权威数据（三端数据模块也由它生成）
 ├── packages/@myorg/                  # 12 个可发布的独立 npm 包（6 React + 6 Vue，一一对应）
 │   ├── react-styles-reset/           # ① 设计 token + 全局 reset（零依赖）
 │   ├── react-core-hooks/             # ② AuthProvider / useWebQrScanner / useWhisperRecorder

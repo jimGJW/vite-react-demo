@@ -18,6 +18,7 @@ import {
   MessageOutlined,
   BulbOutlined, RocketOutlined,
   SafetyCertificateOutlined, NodeIndexOutlined,
+  HighlightOutlined, StarOutlined, HeatMapOutlined, CompassOutlined, BlockOutlined,
 } from '@ant-design/icons'
 import { useAuth } from '../contexts/useAuth.js'
 import Assistants from '../components/Assistants/index.jsx'
@@ -99,6 +100,17 @@ const navItems = [
     ],
   },
   {
+    /* 创意分组：与两个子应用的「创意」分组一一对应（同一批 demo 三端各写一遍），
+       便于横向对照 React / Vue / Angular 三套框架的写法差异 */
+    key: 'group-creative', icon: <HighlightOutlined />, label: '创意',
+    children: [
+      { key: '/creative', icon: <StarOutlined />, label: '创意实验室' },
+      { key: '/data-viz', icon: <HeatMapOutlined />, label: '可视化实验室' },
+      { key: '/orbit', icon: <CompassOutlined />, label: '星际轨道' },
+      { key: '/playground', icon: <BlockOutlined />, label: '创意 Playground' },
+    ],
+  },
+  {
     /* 子应用固定入口：启动 npm run dev:all 后，点这两项直达独立宿主页，
        进入即自动加载对应子应用；加载后子应用自身的功能菜单会动态追加到侧边栏 */
     key: 'group-micro', icon: <DeploymentUnitOutlined />, label: '子应用 (qiankun)',
@@ -156,16 +168,24 @@ function decorateMenuItems(items, selected) {
   })
 }
 
-/* 默认展开哪个分组 */
-const DEFAULT_OPEN_KEYS = ['group-toolbox', 'group-compare', 'group-case', 'group-micro']
+/* 默认展开哪个分组：全展开 —— 不把任何入口藏在折叠里（用户手动折叠仍会被记住） */
+const ALL_GROUP_KEYS = navItems.filter((i) => i.children).map((i) => i.key)
+const DEFAULT_OPEN_KEYS = ALL_GROUP_KEYS
 
 /**
- * 「子应用 (qiankun)」是新加的分组：老用户 localStorage 里持久化的 openKeys 不含它，
- * 直接沿用会保持折叠 → 用户「在菜单里找不到 Vue / Angular 入口」。
- * 因此读配置时统一把 group-micro 并进去（用户之后手动折叠不影响，因为写回的是他自己的 openKeys）。
+ * 新加的分组（如「子应用 (qiankun)」「创意」）在老用户的 localStorage 里不存在，
+ * 直接沿用持久化的 openKeys 会保持折叠 → 用户「在菜单里找不到入口」。
+ *
+ * 用一个单独的「已见过分组」清单做**一次性迁移**：只有从没出现过的分组才补进展开态，
+ * 之后用户自己折叠能正常持久化（早期的做法是每次读取都强行并进去，导致折叠永远不生效）。
  */
-const MICRO_GROUP_KEY = 'group-micro'
-const withMicroOpen = (keys) => (keys.includes(MICRO_GROUP_KEY) ? keys : [...keys, MICRO_GROUP_KEY])
+const SEEN_GROUPS_KEY = 'app.layout.seen-groups.v1'
+function readSeenGroups() {
+  try { return JSON.parse(localStorage.getItem(SEEN_GROUPS_KEY) || '[]') } catch { return [] }
+}
+function writeSeenGroups() {
+  try { localStorage.setItem(SEEN_GROUPS_KEY, JSON.stringify(ALL_GROUP_KEYS)) } catch { /* ignore */ }
+}
 
 const LS_KEY = 'app.layout.v1'
 const DEFAULT = { sidebarMode: 'expanded', headerVisible: true, openKeys: DEFAULT_OPEN_KEYS }
@@ -175,10 +195,12 @@ function readLayout() {
     const raw = localStorage.getItem(LS_KEY)
     if (!raw) return DEFAULT
     const parsed = JSON.parse(raw)
+    const seen = readSeenGroups()
+    const fresh = ALL_GROUP_KEYS.filter((k) => !seen.includes(k))
     return {
       ...DEFAULT,
       ...parsed,
-      openKeys: withMicroOpen(parsed.openKeys?.length ? parsed.openKeys : DEFAULT_OPEN_KEYS),
+      openKeys: [...new Set([...(parsed.openKeys?.length ? parsed.openKeys : DEFAULT_OPEN_KEYS), ...fresh])],
     }
   } catch { return DEFAULT }
 }
@@ -212,6 +234,7 @@ export default function Layout() {
 
   useEffect(() => {
     writeLayout({ sidebarMode, headerVisible, openKeys })
+    writeSeenGroups()
   }, [sidebarMode, headerVisible, openKeys])
 
   const toggleSidebar = () => setSidebarMode((prev) => {

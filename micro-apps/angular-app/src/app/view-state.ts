@@ -1,5 +1,6 @@
 import { signal } from '@angular/core'
 import { APP_ROUTES } from './app.routes'
+import { buildNavGroups } from '../utils'
 
 /**
  * 应用级共享状态（模块作用域 signal，等价 Vue 的模块级 ref）
@@ -19,18 +20,17 @@ export const MENU_ITEMS: MenuItem[] = APP_ROUTES
     group: (r.data?.['group'] as string) || '其它',
   }))
 
-/** 按 group 分组（侧边栏渲染用） */
-export const MENU_GROUPS: { name: string; items: MenuItem[] }[] = (() => {
-  const order = ['基础', '能力', '鉴权', '其它']
-  const map = new Map<string, MenuItem[]>()
-  for (const item of MENU_ITEMS) {
-    if (!map.has(item.group)) map.set(item.group, [])
-    map.get(item.group)!.push(item)
-  }
-  return [...map.entries()]
-    .sort((a, b) => order.indexOf(a[0]) - order.indexOf(b[0]))
-    .map(([name, items]) => ({ name, items }))
-})()
+/**
+ * 分组展示顺序 —— 与 vue-app 的 MENU_GROUP_ORDER 保持同一口径，
+ * 由 utils 的 `buildNavGroups()` 消费（三端共用一份排序逻辑）。
+ */
+export const MENU_GROUP_ORDER = ['基础', '能力', '鉴权', '创意', '其它']
+
+/** 按 group 分组（页内导航渲染用；排序交给共用的 buildNavGroups） */
+export const MENU_GROUPS: { name: string; items: MenuItem[] }[] = buildNavGroups(
+  MENU_ITEMS,
+  { order: MENU_GROUP_ORDER },
+)
 
 /** 路由跳转轨迹（由 app.config 的守卫写入，页面可展示） */
 export const routeLog: { url: string; at: Date }[] = []

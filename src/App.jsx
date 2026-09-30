@@ -37,6 +37,11 @@ const loadNotifyDemo = () => import('./pages/NotifyDemo/index.jsx')
 const loadDataTableDemo = () => import('./pages/DataTableDemo/index.jsx')
 const loadTestCenterDemo = () => import('./pages/TestCenterDemo/index.jsx')
 const loadAssistantDemo = () => import('./pages/AssistantDemo/index.jsx')
+/* 创意实验室：与 vue-app / angular-app 的「创意」分组一一对应 */
+const loadCreativeLab = () => import('./pages/CreativeLab/index.jsx')
+const loadDataVizLab = () => import('./pages/DataVizLab/index.jsx')
+const loadOrbitLab = () => import('./pages/OrbitLab/index.jsx')
+const loadPlayground = () => import('./pages/Playground/index.jsx')
 const loadLogin = () => import('./pages/Login/index.jsx')
 const loadNotFound = () => import('./pages/NotFound/index.jsx')
 const loadCompareParentChild = () => import('./pages/Compare/ParentChild/index.jsx')
@@ -79,6 +84,10 @@ const NotifyDemo = lazy(loadNotifyDemo)
 const DataTableDemo = lazy(loadDataTableDemo)
 const TestCenterDemo = lazy(loadTestCenterDemo)
 const AssistantDemo = lazy(loadAssistantDemo)
+const CreativeLab = lazy(loadCreativeLab)
+const DataVizLab = lazy(loadDataVizLab)
+const OrbitLab = lazy(loadOrbitLab)
+const Playground = lazy(loadPlayground)
 const MicroFrontendDemo = lazy(loadMicroFrontendDemo)
 const SubAppPage = lazy(loadSubAppPage)
 const Login = lazy(loadLogin)
@@ -100,6 +109,7 @@ const allLoaders = [
   loadErrorBoundaryDemo, loadStateMachineDemo, loadWebApiDemo,
   loadCommandPaletteDemo, loadNotifyDemo,
   loadDataTableDemo, loadTestCenterDemo, loadAssistantDemo, loadLogin,
+  loadCreativeLab, loadDataVizLab, loadOrbitLab, loadPlayground,
   loadNotFound, loadCompareParentChild, loadCompareTwoWay, loadCompareProvide,
   loadCompareState, loadCompareSlot, loadCompareRef,
   loadMicroFrontendDemo,
@@ -195,6 +205,11 @@ function App() {
           <Route path="data-table" element={<DataTableDemo />} />
           <Route path="test-center" element={<TestCenterDemo />} />
           <Route path="assistant-demo" element={<AssistantDemo />} />
+          {/* 创意实验室：与两个子应用的「创意」分组一一对应，便于横向对照三端写法 */}
+          <Route path="creative" element={<CreativeLab />} />
+          <Route path="data-viz" element={<DataVizLab />} />
+          <Route path="orbit" element={<OrbitLab />} />
+          <Route path="playground" element={<Playground />} />
           <Route path="404" element={<NotFound />} />
           <Route path="*" element={<Navigate to="/404" replace />} />
           </Route>

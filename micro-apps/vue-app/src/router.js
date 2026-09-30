@@ -58,6 +58,32 @@ export const routes = [
   { path: '/pattern/slot', name: 'pattern-slot', component: Slot, meta: { title: '插槽', group: '通信' } },
   { path: '/pattern/ref', name: 'pattern-ref', component: Ref, meta: { title: '模板引用', group: '通信' } },
 
+  /* —— 创意实验室：交互与视觉的「好看且有用」示例 —— */
+  {
+    path: '/creative',
+    name: 'creative',
+    component: lazy(() => import('./pages/CreativeLab.vue')),
+    meta: { title: '创意实验室', group: '创意' },
+  },
+  {
+    path: '/data-viz',
+    name: 'data-viz',
+    component: lazy(() => import('./pages/DataVizLab.vue')),
+    meta: { title: '可视化实验室', group: '创意' },
+  },
+  {
+    path: '/orbit',
+    name: 'orbit',
+    component: lazy(() => import('./pages/OrbitLab.vue')),
+    meta: { title: '星际轨道', group: '创意' },
+  },
+  {
+    path: '/playground',
+    name: 'playground',
+    component: lazy(() => import('./pages/Playground.vue')),
+    meta: { title: '创意 Playground', group: '创意' },
+  },
+
   /* —— 嵌套路由：父级持有 <router-view />，子级渲染在父组件内部 —— */
   {
     path: '/nested',
@@ -106,14 +132,20 @@ export const routes = [
   },
 ]
 
+/**
+ * 分组展示顺序。
+ *
+ * 三端（主应用侧边栏 / Vue 页内导航 / Angular 页内导航）共用同一份口径，
+ * 由 utils 的 `buildNavGroups()` 消费，避免各写一遍慢慢跑偏。
+ */
+export const MENU_GROUP_ORDER = ['基础', '能力', '通信', '鉴权', '创意', '其它']
+
 /** 侧边栏菜单：由 routes 自动派生（带 meta.title 且未标 hidden） */
 export const MENU_ITEMS = routes
   .filter((r) => r.meta?.title && !r.meta.hidden)
   .map((r) => ({
     path: r.path,
-    label: r.meta.group === '通信' && r.path !== '/patterns'
-      ? `└ ${r.meta.title}`
-      : `${r.meta.title}${r.path === '/kit' ? ' · 自有组件' : ''}`,
+    label: `${r.meta.title}${r.path === '/kit' ? ' · 自有组件' : ''}`,
     group: r.meta.group,
   }))
 

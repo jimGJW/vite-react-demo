@@ -1,5 +1,5 @@
 import { Pipe, type PipeTransform } from '@angular/core'
-import { escapeHtml, formatBytes, formatDate, relativeTime, truncate, formatNumber, abbrevNumber } from '../../../utils'
+import { highlight, formatBytes, formatDate, relativeTime, truncate, formatNumber, abbrevNumber } from '../../../utils'
 
 /**
  * 自定义管道（Pipe）—— Angular 官方模板表达式能力
@@ -9,14 +9,11 @@ import { escapeHtml, formatBytes, formatDate, relativeTime, truncate, formatNumb
  * 只有输入引用变化才重新执行，模板里可以放心使用。
  */
 
-/** 关键字高亮：返回已转义的 HTML，配合 [innerHTML] 使用 */
+/** 关键字高亮：复用 utils 的 highlight（内部已转义），配合 [innerHTML] 使用 */
 @Pipe({ name: 'highlight' })
 export class HighlightPipe implements PipeTransform {
   transform(text: string, keyword = '', cls = 'ng-hl'): string {
-    const safe = escapeHtml(text)
-    if (!keyword) return safe
-    const k = escapeHtml(keyword).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    return safe.replace(new RegExp(k, 'gi'), (m) => `<mark class="${cls}">${m}</mark>`)
+    return highlight(text, keyword, cls)
   }
 }
 

@@ -1,0 +1,306 @@
+/**
+ * 星际轨道样式
+ *
+ * 外层卡片 / 控件走主题变量（--c-*，定义见 src/index.scss）；
+ * 画布与叠加其上的参数面板是刻意的深色例外 —— 星空必须有深底，面板压在星空上只能用浅色字。
+ */
+.orbit-lab {
+  padding: 20px 24px 44px;
+  max-width: 1180px;
+
+  .ol-head {
+    h1 {
+      margin: 0 0 6px;
+      font-size: 22px;
+      color: var(--c-text-1);
+    }
+
+    p {
+      margin: 0 0 18px;
+      font-size: 13px;
+      color: var(--c-text-3);
+      line-height: 1.8;
+
+      b {
+        color: var(--c-text-1);
+      }
+    }
+  }
+
+  .ol-card {
+    border: 1px solid var(--c-border);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 14px;
+    background: var(--c-card);
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      color: var(--c-text-1);
+    }
+  }
+
+  /* —— 舞台 —— */
+  .ol-stage {
+    position: relative;
+  }
+
+  .ol-canvas {
+    display: block;
+    width: 100%;
+    height: 520px;
+    border-radius: 12px;
+    background: #05070f;
+    touch-action: none;
+  }
+
+  /**
+   * 参数面板：常显，跟随 hover / 锁定切换。
+   * 默认锁定地球 → 一进页面就有完整信息，不需要先点一下。
+   */
+  .ol-panel {
+    position: absolute;
+    left: 14px;
+    top: 14px;
+    width: 268px;
+    padding: 12px 14px;
+    border: 1px solid rgb(140 165 220 / 30%);
+    border-radius: 10px;
+    color: #e6ecfa;
+    background: rgb(9 14 26 / 86%);
+    backdrop-filter: blur(6px);
+    pointer-events: none;
+
+    &__title {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+      margin-bottom: 9px;
+
+      b {
+        font-size: 14px;
+      }
+
+      em {
+        font-style: normal;
+        font-size: 11px;
+        opacity: 0.6;
+      }
+    }
+
+    &__dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+    }
+
+    &__pin {
+      margin-left: auto;
+      padding: 1px 7px;
+      border-radius: 999px;
+      font-style: normal;
+      font-size: 10px;
+      color: #c7d5ff;
+      background: rgb(99 132 255 / 26%);
+    }
+
+    &__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px 10px;
+      margin: 0;
+
+      div {
+        display: flex;
+        flex-direction: column;
+        gap: 1px;
+      }
+
+      dt {
+        font-size: 10px;
+        opacity: 0.55;
+      }
+
+      dd {
+        margin: 0;
+        font-family: 'SF Mono', Monaco, ui-monospace, monospace;
+        font-size: 12px;
+        font-variant-numeric: tabular-nums;
+      }
+    }
+
+    &__note {
+      margin: 10px 0 0;
+      padding-top: 8px;
+      border-top: 1px solid rgb(140 165 220 / 22%);
+      font-size: 11.5px;
+      line-height: 1.7;
+      opacity: 0.82;
+    }
+  }
+
+  /* —— 控件条 —— */
+  .ol-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .ol-label {
+    font-size: 12.5px;
+    color: var(--c-text-2, var(--c-text-1));
+  }
+
+  .ol-spacer {
+    flex: 1;
+  }
+
+  /* 比例模式：三选一分段控件（线性 / 平方根 / 对数） */
+  .ol-tabs {
+    display: inline-flex;
+    padding: 2px;
+    border: 1px solid var(--c-border);
+    border-radius: 7px;
+    background: var(--c-bg-soft);
+  }
+
+  .ol-tab {
+    padding: 4px 11px;
+    border: 0;
+    border-radius: 5px;
+    font-size: 12px;
+    color: var(--c-text-2, var(--c-text-1));
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.16s ease, color 0.16s ease;
+
+    &:hover {
+      color: var(--c-primary);
+    }
+
+    &.is-on {
+      color: #fff;
+      background: linear-gradient(135deg, var(--c-primary), var(--c-primary-600));
+    }
+  }
+
+  .ol-range {
+    width: 150px;
+    accent-color: var(--c-primary);
+
+    &--sm {
+      width: 90px;
+    }
+  }
+
+  .ol-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--c-border);
+    border-radius: 6px;
+    font-size: 12.5px;
+    color: var(--c-text-1);
+    background: var(--c-card);
+    cursor: pointer;
+    transition: border-color 0.16s ease, color 0.16s ease, background 0.16s ease;
+
+    &:hover {
+      border-color: var(--c-primary);
+      color: var(--c-primary);
+    }
+
+    &.is-on {
+      border-color: #22c55e;
+      color: #15803d;
+      background: #f0fdf4;
+    }
+  }
+
+  .ol-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12.5px;
+    color: var(--c-text-2, var(--c-text-1));
+    cursor: pointer;
+
+    input {
+      accent-color: var(--c-primary);
+    }
+  }
+
+  .ol-tag {
+    padding: 3px 9px;
+    border: 1px solid var(--c-border);
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--c-text-2, var(--c-text-1));
+    background: var(--c-bg-soft);
+    font-variant-numeric: tabular-nums;
+
+    &--info {
+      color: var(--c-text-3);
+      background: transparent;
+      border-style: dashed;
+    }
+
+    &--ok {
+      color: var(--c-primary);
+      border-color: color-mix(in srgb, var(--c-primary) 34%, transparent);
+      background: var(--c-primary-soft);
+    }
+
+    &--end {
+      margin-left: 8px;
+    }
+  }
+
+  /* 当前比例模式的一句话解释：切换模式时换文案，避免"按了不知道发生了什么" */
+  .ol-mode-hint {
+    margin: 10px 0 0;
+    padding-left: 10px;
+    border-left: 2px solid var(--c-primary);
+    font-size: 12px;
+    color: var(--c-text-3);
+    line-height: 1.7;
+  }
+
+  .ol-notes {
+    margin: 0;
+    padding-left: 18px;
+
+    li {
+      font-size: 12.5px;
+      color: var(--c-text-3);
+      line-height: 2;
+    }
+
+    b {
+      color: var(--c-text-1);
+    }
+
+    code {
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 11.5px;
+      background: var(--c-bg-soft);
+    }
+  }
+
+  .ol-meta {
+    margin: 12px 0 0;
+    padding-top: 10px;
+    border-top: 1px dashed var(--c-border);
+    font-size: 11.5px;
+    color: var(--c-text-3);
+    line-height: 1.9;
+
+    code {
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: var(--c-bg-soft);
+    }
+  }
+}

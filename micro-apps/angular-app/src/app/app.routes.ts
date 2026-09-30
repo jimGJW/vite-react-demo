@@ -102,6 +102,32 @@ export const APP_ROUTES: Routes = [
     data: { title: '登录', group: '鉴权' },
   },
 
+  /* —— 创意实验室：交互与视觉的「好看且有用」示例 —— */
+  {
+    path: 'creative',
+    loadComponent: () => import('./views/creative-lab-view').then((m) => m.CreativeLabView),
+    title: '创意实验室 · Angular 子应用',
+    data: { title: '创意实验室', group: '创意' },
+  },
+  {
+    path: 'data-viz',
+    loadComponent: () => import('./views/data-viz-view').then((m) => m.DataVizView),
+    title: '可视化实验室 · Angular 子应用',
+    data: { title: '可视化实验室', group: '创意' },
+  },
+  {
+    path: 'orbit',
+    loadComponent: () => import('./views/orbit-lab-view').then((m) => m.OrbitLabView),
+    title: '星际轨道 · Angular 子应用',
+    data: { title: '星际轨道', group: '创意' },
+  },
+  {
+    path: 'playground',
+    loadComponent: () => import('./views/playground-view').then((m) => m.PlaygroundView),
+    title: '创意 Playground · Angular 子应用',
+    data: { title: '创意 Playground', group: '创意' },
+  },
+
   {
     path: '**',
     loadComponent: () => import('./views/not-found-view').then((m) => m.NotFoundView),
