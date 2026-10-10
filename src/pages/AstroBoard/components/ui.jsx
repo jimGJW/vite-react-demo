@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { Button, Popover, Spin, Tag, Tooltip } from 'antd'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { KPI_DEFS } from '../../../lib/astro/glossary'
-import { kpLevel } from '../../../lib/astro/orbital.js'
 
 /* ---------- 小工具 ---------- */
 

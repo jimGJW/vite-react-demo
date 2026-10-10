@@ -5,13 +5,20 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-/** 海浪 30 分钟（预报数据小时级足够）、实测潮位 6 分钟、高低潮预报 1 小时、全球海域 1 小时、ONI 12 小时 */
+/** 海浪 30 分钟（预报数据小时级足够）、实测潮位 6 分钟、高低潮预报 1 小时、全球海域 1 小时、
+ *  ONI 12 小时；气旋 10 分钟（风暴路径更新快）、气候振荡与海洋温度距平 12 小时（月更）、
+ *  站点气温 30 分钟；浮标 20 分钟（NDBC 本身为整点后 10 分钟内回传，拉更勤是空转） */
 const POLL = {
   waves: 30 * 60_000,
   tides: 6 * 60_000,
   tidePred: 60 * 60_000,
   globalWaves: 3600_000,
   oni: 12 * 3600_000,
+  cyclones: 10 * 60_000,
+  oscillations: 12 * 3600_000,
+  ssta: 12 * 3600_000,
+  stationWeather: 30 * 60_000,
+  buoys: 20 * 60_000,
 }
 
 async function getJSON(url, signal) {
@@ -65,6 +72,11 @@ export function useOceanData() {
   const tidePred = usePolling('/api/ocean/tide-pred', POLL.tidePred)
   const globalWaves = usePolling('/api/ocean/global-waves', POLL.globalWaves)
   const oni = usePolling('/api/ocean/oni', POLL.oni)
+  const cyclones = usePolling('/api/ocean/cyclones', POLL.cyclones)
+  const oscillations = usePolling('/api/ocean/oscillations', POLL.oscillations)
+  const ssta = usePolling('/api/ocean/ssta', POLL.ssta)
+  const stationWeather = usePolling('/api/ocean/station-weather', POLL.stationWeather)
+  const buoys = usePolling('/api/ocean/buoys', POLL.buoys)
 
   return {
     waves,
@@ -72,15 +84,38 @@ export function useOceanData() {
     tidePred,
     globalWaves,
     oni,
+    cyclones,
+    oscillations,
+    ssta,
+    stationWeather,
+    buoys,
     anyLoading:
-      waves.loading || tides.loading || tidePred.loading || globalWaves.loading || oni.loading,
+      waves.loading || tides.loading || tidePred.loading || globalWaves.loading || oni.loading ||
+      cyclones.loading || oscillations.loading || ssta.loading || stationWeather.loading ||
+      buoys.loading,
     reloadAll: useCallback(() => {
       waves.reload()
       tides.reload()
       tidePred.reload()
       globalWaves.reload()
       oni.reload()
+      cyclones.reload()
+      oscillations.reload()
+      ssta.reload()
+      stationWeather.reload()
+      buoys.reload()
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [waves.reload, tides.reload, tidePred.reload, globalWaves.reload, oni.reload]),
+    }, [
+      waves.reload,
+      tides.reload,
+      tidePred.reload,
+      globalWaves.reload,
+      oni.reload,
+      cyclones.reload,
+      oscillations.reload,
+      ssta.reload,
+      stationWeather.reload,
+      buoys.reload,
+    ]),
   }
 }

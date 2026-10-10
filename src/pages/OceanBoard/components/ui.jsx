@@ -1,4 +1,6 @@
 import { Spin, Tag, Tooltip } from 'antd'
+// 海况分级的阈值统一定义在词典里，这里只转发（与 GeoBoard/ui.jsx 同一套做法）
+import { waveLevel } from '../../../lib/earth/glossary.js'
 
 /* ---------- 小工具 ---------- */
 
@@ -29,16 +31,6 @@ function fmtSiteTime(t) {
 /** '2026-10-10 05:19' → '10-10 05:19' */
 function fmtSiteDay(t) {
   return typeof t === 'string' && t.length >= 16 ? t.slice(5, 16) : '—'
-}
-
-/** 浪高分级（近海通行观感：0.5m 以下平靜，2m 以上需要警惕） */
-export function waveLevel(h) {
-  if (h == null) return { label: '—', color: '#94a3b8' }
-  if (h < 0.3) return { label: '平静', color: '#0e9f6e' }
-  if (h < 0.8) return { label: '轻浪', color: '#0ea5e9' }
-  if (h < 1.5) return { label: '中浪', color: '#f59e0b' }
-  if (h < 2.5) return { label: '大浪', color: '#f97316' }
-  return { label: '巨浪', color: '#ef4444' }
 }
 
 /** 卡片外壳：与 GeoBoard 的 Panel 同构（class 前缀 o-） */
@@ -94,4 +86,4 @@ function Metric({ label, value, unit, tone, info }) {
 }
 
 
-export { Panel, Metric, pad, THEME_KEY, readTheme, fmtUTC, fmtSiteTime, fmtSiteDay }
+export { Panel, Metric, pad, THEME_KEY, readTheme, fmtUTC, fmtSiteTime, fmtSiteDay, waveLevel }

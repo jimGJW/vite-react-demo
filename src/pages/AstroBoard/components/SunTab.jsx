@@ -11,7 +11,7 @@ import { f107Level, solarWindLevel } from '../../../lib/astro/orbital.js'
 import { zhAlertLevel, zhFlareClass, zhProtonScale } from '../../../lib/astro/glossary'
 
 export default function SunTab({
-  spaceWeather, solarActivity, aurora, solarCycle, sw, kp, kpInfo, solar, xr, proton, alertData, auroraData, cycleData, active, track, sun,
+  spaceWeather, solarActivity, aurora, solarCycle, sw, kp, kpInfo, solar, xr, proton, alertData, auroraData, cycleData,
 }) {
   return (
     <>

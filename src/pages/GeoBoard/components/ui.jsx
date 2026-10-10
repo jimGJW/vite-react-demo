@@ -1,4 +1,7 @@
 import { Spin, Tag, Tooltip } from 'antd'
+// 震源深度分带 / AQI 分级 / 震级分档的阈值统一定义在词典里（唯一真源），
+// 这里只做转发——否则「名词解释」写的阈值和页面上的颜色会各说各话。
+import { depthClass, aqiLevel, magBand } from '../../../lib/earth/glossary.js'
 
 /* ---------- 小工具 ---------- */
 
@@ -28,33 +31,12 @@ function fmtUTC(d) {
   return `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}`
 }
 
-/** 地震震源深度分级（USGS 惯例：浅源 <70km，中源 70–300km，深源 >300km） */
-export function depthClass(depth) {
-  if (depth == null) return { key: 'unknown', label: '未知', color: '#94a3b8' }
-  if (depth < 70) return { key: 'shallow', label: '浅源', color: '#ef4444' }
-  if (depth <= 300) return { key: 'mid', label: '中源', color: '#f59e0b' }
-  return { key: 'deep', label: '深源', color: '#3b82f6' }
-}
-
-/** EU AQI 色阶（Open-Meteo 的 european_aqi）：数值越低越好 */
-export function aqiLevel(aqi) {
-  if (aqi == null) return { label: '—', color: '#94a3b8' }
-  if (aqi <= 20) return { label: '优', color: '#0e9f6e' }
-  if (aqi <= 40) return { label: '良', color: '#84cc16' }
-  if (aqi <= 60) return { label: '轻度', color: '#f59e0b' }
-  if (aqi <= 80) return { label: '中度', color: '#f97316' }
-  if (aqi <= 100) return { label: '重度', color: '#ef4444' }
-  return { label: '严重', color: '#a21caf' }
-}
-
-/** 震级 Tag 色阶（沿用地震速报习惯：5+ 红、4 橙、3 黄、其余灰） */
+/** 震级 → 颜色（沿用分档色阶，M5–6 中震橙、M6+ 强震红） */
 function magColor(mag) {
-  if (mag == null) return '#94a3b8'
-  if (mag >= 5) return '#ef4444'
-  if (mag >= 4) return '#f97316'
-  if (mag >= 3) return '#eab308'
-  return '#94a3b8'
+  return magBand(mag).color
 }
+
+export { depthClass, aqiLevel }
 
 /** 卡片外壳：与 AstroBoard 的 Panel 同构（class 前缀 g-） */
 function Panel({ title, source, icon, loading, error, children, extra }) {

@@ -10,7 +10,7 @@ import { KPI_DEFS } from '../../../lib/astro/glossary'
 import SolarSystemView from '../../../components/AstroBoard/SolarSystemView.jsx'
 
 export default function SolarTab({
-  iss, stations, selected, setSelected, neo, neoData, planets, solar, active,
+  stations, selected, setSelected, neo, neoData, planets,
 }) {
   return (
     <>

@@ -10,7 +10,7 @@ import { OBSERVERS } from '../../../lib/astro/orbital.js'
 import SkyChart from '../../../components/AstroBoard/SkyChart.jsx'
 
 export default function SkyTab({
-  skyCity, setSkyCity, magLimit, setMagLimit, showLines, setShowLines, showDso, setShowDso, showLabels, setShowLabels, catalog, catalogError, now, planets, moon, sun, active, skyObs, skyNow, sunHorizon, moonHorizon, planetHorizon, visibleConsts, stargazing, stargazingScore, showers,
+  skyCity, setSkyCity, magLimit, setMagLimit, showLines, setShowLines, showDso, setShowDso, showLabels, setShowLabels, catalog, catalogError, moon, skyObs, skyNow, sunHorizon, moonHorizon, planetHorizon, visibleConsts, stargazing, stargazingScore, showers,
 }) {
   return (
     <>

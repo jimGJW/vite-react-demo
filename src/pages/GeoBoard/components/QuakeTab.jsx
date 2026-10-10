@@ -6,8 +6,9 @@ import { AimOutlined } from '@ant-design/icons'
 import { Empty, Table, Tag } from 'antd'
 import { Panel, depthClass, fmtBJT, magColor } from './ui.jsx'
 import QuakeMap from './QuakeMap.jsx'
+import StrongQuakes from './StrongQuakes.jsx'
 
-export default function QuakeTab({ quakes, quakeData }) {
+export default function QuakeTab({ quakes, quakeData, bigQuakes, bigData }) {
   return (
     <div className="geo-tab-content">
       {/* 地震世界地图 */}
@@ -76,6 +77,28 @@ export default function QuakeTab({ quakes, quakeData }) {
           />
         ) : (
           <Empty description="暂无地震数据" />
+        )}
+      </Panel>
+
+      {/* 近 30 天强震：与上面「此刻的脉动」互补，看的是月尺度活动水平 */}
+      <Panel
+        title="近 30 天全球强震（M5.5+）"
+        source="EMSC FDSN（www.seismicportal.eu），minmag=5.5 服务端过滤，30 分钟刷新"
+        icon={<AimOutlined />}
+        loading={bigQuakes.loading}
+        error={bigQuakes.error}
+      >
+        {bigData ? (
+          <StrongQuakes
+            byDay={bigData.byDay}
+            quakes={bigData.quakes}
+            count={bigData.count}
+            perDay={bigData.perDay}
+            strongest={bigData.strongest}
+            windowDays={bigData.windowDays}
+          />
+        ) : (
+          <Empty description="暂无强震数据" />
         )}
       </Panel>
     </div>

@@ -1,4 +1,3 @@
-import { Table, Tag } from 'antd'
 import { GALAXY } from "../../../lib/astro/orbital.js"
 import { zhGalaxyType } from "../../../lib/astro/glossary"
 

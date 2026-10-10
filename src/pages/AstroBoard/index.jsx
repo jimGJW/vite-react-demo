@@ -13,46 +13,23 @@
  *   页面里两者都会标出数据来源，避免把「推算」误当「实测」。
  */
 
-import { useEffect, useMemo, useState } from 'react'
-import { Button, Spin, Tag, Tooltip, Empty, Segmented, Tabs, Popover, ConfigProvider, Select, Slider, Menu, Table, theme as antdTheme } from 'antd'
+import { useMemo, useState } from 'react'
+import { Button, Tooltip, Tabs, ConfigProvider, theme as antdTheme } from 'antd'
 import {
   ReloadOutlined,
-  CompassOutlined,
-  ThunderboltOutlined,
   RocketOutlined,
-  AimOutlined,
-  AlertOutlined,
-  CalendarOutlined,
   MoonOutlined,
   BulbOutlined,
-  BookOutlined,
-  QuestionCircleOutlined,
 } from '@ant-design/icons'
 
-import WorldTrackMap from '../../components/AstroBoard/WorldTrackMap.jsx'
-import SolarSystemView from '../../components/AstroBoard/SolarSystemView.jsx'
-import SkyChart from '../../components/AstroBoard/SkyChart.jsx'
 import { useStarCatalog } from '../../lib/astro/useStarCatalog.js'
-import { azToCompass, observability, useVisibleConstellations } from '../../components/AstroBoard/skyHelpers.js'
+import { useVisibleConstellations } from '../../components/AstroBoard/skyHelpers.js'
 import { equatorialToHorizontal } from '../../lib/astro/skyProjection.js'
 import { useAstroData } from '../../lib/astro/useAstroData.js'
-import {
-  zhMethod,
-  zhMissionType,
-  zhLaunchStatus,
-  zhGalaxyType,
-  zhFlareClass,
-  zhProtonScale,
-  zhAlertLevel,
-  zhDsoType,
-  KPI_DEFS,
-  KPI_GROUPS,
-} from '../../lib/astro/glossary'
 import {
   parseTLESet,
   propagateAt,
   groundTrack,
-  footprintRadius,
   lookElevation,
   subsolarPoint,
   planetPositions,
@@ -60,8 +37,6 @@ import {
   f107Level,
   solarWindLevel,
   OBSERVERS,
-  AU_LIGHT_MINUTES,
-  GALAXY,
   moonInfo,
   moonEquatorial,
   planetEquatorial,
@@ -72,7 +47,7 @@ import {
 } from '../../lib/astro/orbital.js'
 import './index.scss'
 
-import { useNow, useTheme, THEME_KEY, pad, fmtUTC, fmtLocal, fmtLatLon, Panel, Metric, KpiHint, KpiCard, TermTip, MoonSVG, MARK_COLOR, FLARE_TONE, FLARE_LEVELS, flareLevelOf, G_SCALE_ROWS } from './components/ui.jsx'
+import { useNow, useTheme, fmtUTC, Metric } from './components/ui.jsx'
 import EarthTab from './components/EarthTab.jsx'
 import SolarTab from './components/SolarTab.jsx'
 import SunTab from './components/SunTab.jsx'
@@ -81,6 +56,7 @@ import ApodTab from './components/ApodTab.jsx'
 import DeepTab from './components/DeepTab.jsx'
 import DictTab from './components/DictTab.jsx'
 import LaunchTab from './components/LaunchTab.jsx'
+import CaseTab from './components/CaseTab.jsx'
 
 export default function AstroBoard() {
   const { iss, stations, spaceWeather, exoplanets, neo, launches, solarActivity, aurora, solarCycle, apod, reloadAll } = useAstroData()
@@ -261,11 +237,12 @@ export default function AstroBoard() {
   }, [moon, stargazing, kp, kpInfo])
 
   // 流星雨年历：8 场年度流星雨 + 各自状态
+  const nowHour = Math.floor(now.getTime() / 3600_000)
   const showers = useMemo(
     () => METEOR_SHOWERS.map((s) => ({ ...s, ...meteorShowerStatus(s, now) })),
     // now 每秒变，但状态以「天」为单位，取整到小时重算即可
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [Math.floor(now.getTime() / 3600_000)],
+    [nowHour],
   )
 
   const apodData = apod.data?.ok ? apod.data : null
@@ -401,6 +378,7 @@ export default function AstroBoard() {
           { key: 'deep', label: '🌌 深空', children: <DeepTab exoplanets={exoplanets} galaxyView={galaxyView} setGalaxyView={setGalaxyView} /> },
           { key: 'dict', label: '📖 名词解释', children: <DictTab /> },
           { key: 'launch', label: '🚀 航天发射', children: <LaunchTab launches={launches} launchData={launchData} /> },
+          { key: 'cases', label: '📚 案例', children: <CaseTab /> },
         ]}
       />
 

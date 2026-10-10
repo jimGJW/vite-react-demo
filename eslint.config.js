@@ -47,6 +47,12 @@ export default defineConfig([
       'src/contexts/ChangelogContext.jsx',
       // 子应用注册表：Provider + useSubApps 属于同一 Context 单元
       'src/contexts/SubAppContext.jsx',
+      // 三块数据看板（geo / ocean / astro）的 ui.jsx：Panel/Metric 等展示组件
+      // 与 fmtUTC/depthClass/magColor 等纯函数 + 主题常量同文件导出，属同一看板工具单元，
+      // 拆开会切断各 Tab 与词典的引用关系，故按「组件 + 函数」混合模块豁免
+      'src/pages/GeoBoard/components/ui.jsx',
+      'src/pages/OceanBoard/components/ui.jsx',
+      'src/pages/AstroBoard/components/ui.jsx',
     ],
     rules: { 'react-refresh/only-export-components': 'off' },
   },

@@ -5,14 +5,20 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-/** 地震 2 分钟（USGS feed 本身分钟级）、影像 1 小时、环境 10 分钟、自然事件 1 小时、气候指标 12 小时 */
+/** 地震 2 分钟（EMSC feed 本身分钟级）、影像 1 小时、环境 10 分钟、自然事件 1 小时、
+ *  温室气体/海冰/温度距平 12 小时（上游月更，拉再勤也没用）、强震统计 30 分钟、
+ *  火山警报 30 分钟（HANS 通报按天级）、海啸公告 10 分钟（真有事件时是分钟级） */
 const POLL = {
   quakes: 2 * 60_000,
   epic: 3600_000,
   env: 10 * 60_000,
   eonet: 3600_000,
-  co2: 12 * 3600_000,
+  ghg: 12 * 3600_000,
   seaIce: 12 * 3600_000,
+  tempAnomaly: 12 * 3600_000,
+  bigQuakes: 30 * 60_000,
+  volcanoes: 30 * 60_000,
+  tsunami: 10 * 60_000,
 }
 
 async function getJSON(url, signal) {
@@ -65,33 +71,51 @@ export function useGeoData() {
   const epic = usePolling('/api/geo/epic', POLL.epic)
   const env = usePolling('/api/geo/env', POLL.env)
   const eonet = usePolling('/api/geo/eonet', POLL.eonet)
-  const co2 = usePolling('/api/geo/co2', POLL.co2)
+  const ghg = usePolling('/api/geo/ghg', POLL.ghg)
   const seaIce = usePolling('/api/geo/sea-ice', POLL.seaIce)
+  const tempAnomaly = usePolling('/api/geo/temp-anomaly', POLL.tempAnomaly)
+  const bigQuakes = usePolling('/api/geo/big-quakes', POLL.bigQuakes)
+  const volcanoes = usePolling('/api/geo/volcanoes', POLL.volcanoes)
+  const tsunami = usePolling('/api/geo/tsunami', POLL.tsunami)
 
   return {
     quakes,
     epic,
     env,
     eonet,
-    co2,
+    ghg,
     seaIce,
+    tempAnomaly,
+    bigQuakes,
+    volcanoes,
+    tsunami,
     anyLoading:
-      quakes.loading || epic.loading || env.loading || eonet.loading || co2.loading || seaIce.loading,
+      quakes.loading || epic.loading || env.loading || eonet.loading || ghg.loading ||
+      seaIce.loading || tempAnomaly.loading || bigQuakes.loading ||
+      volcanoes.loading || tsunami.loading,
     reloadAll: useCallback(() => {
       quakes.reload()
       epic.reload()
       env.reload()
       eonet.reload()
-      co2.reload()
+      ghg.reload()
       seaIce.reload()
+      tempAnomaly.reload()
+      bigQuakes.reload()
+      volcanoes.reload()
+      tsunami.reload()
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
       quakes.reload,
       epic.reload,
       env.reload,
       eonet.reload,
-      co2.reload,
+      ghg.reload,
       seaIce.reload,
+      tempAnomaly.reload,
+      bigQuakes.reload,
+      volcanoes.reload,
+      tsunami.reload,
     ]),
   }
 }

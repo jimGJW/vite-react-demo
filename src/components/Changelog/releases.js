@@ -10,6 +10,7 @@
  *   r4  2026-09-30           微前端三端对称 + 创意分组 + 创意 Playground 32 demo
  *                            （r4 的 commit 暂未回填：它是「本次提交」，无从预知 hash；
  *                            该字段目前只作资料展示，没有代码读它）
+ *   r5  2026-10-10           数据看板大扩容：地球 / 海洋 / 星空三看板 + Agent 拆分 + 案例体系
  *
  * 纯数据文件（无 React），可被单测直接 import。
  */
@@ -77,6 +78,23 @@ export const RELEASES = [
       { route: '/orbit', title: '星际轨道', desc: '八大行星真实轨道要素：Python 算数据，前端只做投影与插值', changedAt: '2026-09-30' },
       { route: '/playground', title: '创意 Playground 32 demo', desc: '流场 / 元胞自动机 / 图灵斑图 / 混沌 / 分形 / 分形山脉… 按主题分 6 组', changedAt: '2026-09-30' },
       { route: '__infra__', title: 'demo 单一真相 + 三端探针', desc: 'create(ctx) 契约一份实现三份薄壳；sync:demos 防漂移 + playground-probe 真浏览器逐项断言', changedAt: '2026-09-30' },
+    ],
+  },
+  {
+    id: 'r5',
+    short: '10/10',
+    label: '2026-10-10',
+    date: '2026-10-10',
+    color: '#722ed1',
+    title: '数据看板大扩容 + Agent 拆分 + 案例体系',
+    changes: [
+      { route: '/astro', title: '星空看板 AstroBoard', desc: 'd3-celestial 真实星表 + 全天星图 + NOAA/SWPC 空间天气', changedAt: '2026-10-10' },
+      { route: '/geo', title: '地球看板 GeoBoard', desc: '温室气体 / 温度距平 / 双极海冰 / 强震 / 环境气象 / 火山 / 海啸', changedAt: '2026-10-10' },
+      { route: '/ocean', title: '海洋看板 OceanBoard', desc: '气旋 / PDO-AMO / SSTA / 潮汐 / 浮标实况 / 海浪 / 涌浪', changedAt: '2026-10-10' },
+      { route: '/agent', title: '智能体 Agent', desc: '1319 行巨型页拆为 lib + components，主文件仅留编排；修复 react-hooks v7 合规问题', changedAt: '2026-10-10' },
+      { route: '/cases', title: '三看板「📚 案例」页签', desc: '土耳其双震 / 飓风 Ian / 嫦娥六号 / 第 25 太阳周极大等真实事件解读', changedAt: '2026-10-10' },
+      { route: '/dict', title: '共用名词解释词典', desc: 'Geo/Ocean/Astro 共用 glossary.js：阈值唯一真源 + DictView 渲染器', changedAt: '2026-10-10' },
+      { route: '__infra__', title: '看板性能优化', desc: '自包含 Clock 组件隔离秒级渲染；Geo/Ocean 看板顶层不再每秒重渲染', changedAt: '2026-10-10' },
     ],
   },
 ]

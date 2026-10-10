@@ -20,6 +20,7 @@
     "test:ssr": "node scripts/ssr-smoke.mjs",
     "test:browser": "node scripts/browser-smoke.mjs",
     "test:astro": "node scripts/astro-smoke.mjs",
+    "test:earth": "node scripts/earth-smoke.mjs",
     "test:qiankun": "node scripts/qiankun-smoke.mjs",
     "sync:demos": "node scripts/sync-creative-demos.mjs",
     "sync:demos:check": "node scripts/sync-creative-demos.mjs --check",

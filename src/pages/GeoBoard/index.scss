@@ -513,3 +513,292 @@
   border-top: 1px dashed var(--g-line);
   margin-top: 4px;
 }
+
+/* =========================================================
+   温室气体三兄弟
+   ========================================================= */
+.geo-ghg {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.geo-ghg-card {
+  border: 1px solid var(--g-line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: var(--g-panel-2);
+
+  &__head {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  &__name {
+    font-size: 15px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__zh {
+    font-size: 11.5px;
+    color: var(--g-dim);
+  }
+
+  &__val {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__unit {
+    font-size: 12px;
+    font-weight: 500;
+    margin-left: 4px;
+    opacity: 0.75;
+  }
+
+  &__ym {
+    font-size: 11px;
+    color: var(--g-dim);
+    margin-bottom: 4px;
+  }
+
+  &__spark {
+    display: block;
+    width: 100%;
+    height: 74px;
+    margin: 2px 0 8px;
+  }
+
+  &__stats {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 3px 10px;
+    font-size: 12px;
+
+    dt { color: var(--g-dim); }
+    dd { margin: 0; font-variant-numeric: tabular-nums; }
+  }
+
+  &__dim { color: var(--g-dim); font-size: 11px; }
+
+  &__note {
+    margin: 8px 0 0;
+    font-size: 11.5px;
+    line-height: 1.7;
+    color: var(--g-dim);
+  }
+}
+
+/* =========================================================
+   南北极海冰并排
+   ========================================================= */
+.geo-ice-pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+
+  &__label {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--g-fg-strong);
+    margin-bottom: 4px;
+  }
+}
+
+/* =========================================================
+   近 30 天强震
+   ========================================================= */
+.geo-strong {
+  &__stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    margin-bottom: 10px;
+    font-size: 12.5px;
+    color: var(--g-dim);
+  }
+
+  &__stat b {
+    color: var(--g-fg-strong);
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* =========================================================
+   说明性长文本
+   ========================================================= */
+.geo-prose {
+  font-size: 12.5px;
+  line-height: 1.9;
+  color: var(--g-fg);
+
+  p { margin: 0 0 8px; &:last-child { margin: 0; } }
+
+  b { color: var(--g-fg-strong); }
+  strong { color: var(--g-accent); }
+}
+
+/* 表格与卡片里「可点开看释义」的下划线提示 */
+.geo-board .is-info {
+  cursor: help;
+  border-bottom: 1px dashed var(--g-dim-2);
+}
+
+/* =========================================================
+   火山与海啸（USGS HANS + NOAA tsunami.gov）
+   ========================================================= */
+.geo-alert-stat {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-bottom: 10px;
+  font-size: 12.5px;
+  color: var(--g-dim);
+
+  b {
+    color: var(--g-fg-strong);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__sub {
+    margin-left: 4px;
+    font-size: 11px;
+    color: var(--g-dim-2);
+  }
+}
+
+/* 表格里火山英文原名的小字附注 */
+.geo-alert-sub {
+  font-size: 11px;
+  color: var(--g-dim-2);
+  line-height: 1.3;
+}
+
+.geo-tsu-list {
+  display: grid;
+  gap: 12px;
+}
+
+.geo-tsu-item {
+  padding: 12px 14px;
+  border: 1px solid var(--g-line);
+  border-radius: 10px;
+  background: var(--g-panel-2);
+
+  &__head {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 10px;
+    margin-bottom: 6px;
+  }
+
+  &__region {
+    font-size: 14px;
+  }
+
+  &__center {
+    font-size: 11px;
+    color: var(--g-dim-2);
+    padding: 1px 7px;
+    border: 1px solid var(--g-line);
+    border-radius: 999px;
+  }
+
+  &__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    font-size: 12px;
+    color: var(--g-dim);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__note {
+    margin-top: 8px;
+    padding: 8px 10px;
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--g-fg);
+    background: var(--g-bg);
+    border-left: 3px solid var(--g-accent);
+    border-radius: 0 8px 8px 0;
+    white-space: pre-wrap;
+  }
+
+  &__def {
+    margin-top: 6px;
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--g-dim-2);
+  }
+}
+
+/* 等级图例：色点 + 中文 + 英文名 */
+.geo-alert-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--g-line);
+  font-size: 11.5px;
+  color: var(--g-dim);
+
+  &__dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+
+  &__en {
+    margin-left: 4px;
+    font-size: 10.5px;
+    color: var(--g-dim-2);
+  }
+
+  &__sep {
+    width: 1px;
+    height: 14px;
+    background: var(--g-line);
+  }
+}
+
+/* ---------- 案例页签 ---------- */
+.geo-case-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  padding: 4px;
+}
+
+.geo-case__date {
+  font-size: 12px;
+  color: var(--g-dim);
+  margin: 4px 0 10px;
+}
+
+.geo-case__metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-bottom: 12px;
+}
+
+.geo-case__desc {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--g-fg);
+}

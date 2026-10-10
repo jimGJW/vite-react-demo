@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
-import { Empty, Segmented, Table, Tag } from 'antd'
-import { KpiHint, TermTip, fmtUTC, pad } from './ui.jsx'
+import { Empty, Segmented, Tag } from 'antd'
+import { KpiHint, TermTip } from './ui.jsx'
 import { azToCompass, observability } from '../../../components/AstroBoard/skyHelpers.js'
 import { equatorialToHorizontal } from '../../../lib/astro/skyProjection.js'
 import { zhDsoType } from '../../../lib/astro/glossary'

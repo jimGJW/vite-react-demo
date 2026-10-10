@@ -2840,3 +2840,31 @@
     }
   }
 }
+
+/* ---------- 案例页签 ---------- */
+.astro-case-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
+  padding: 4px;
+}
+
+.astro-case__date {
+  font-size: 12px;
+  color: var(--a-dim);
+  margin: 4px 0 10px;
+}
+
+.astro-case__metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-bottom: 12px;
+}
+
+.astro-case__desc {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--a-fg);
+}

@@ -11,8 +11,9 @@
  *   高低潮预报 NOAA CO-OPS         未来 48h 高潮/低潮时刻与潮高
  *   厄尔尼诺   NOAA CPC            ONI 海温距平指数（Niño 3.4 区 3 月滑动均值）
  *
- * 曾经的候选 NDBC 浮标（www.ndbc.noaa.gov/data/realtime2/*.txt）在本网络环境
- * 连接被重置（HTTP 000），与 earthquake.usgs.gov 同症，弃用。
+ * 关于 NDBC：早期尝试的 realtime2/<站号>.txt 单站文件常达 600 KB（45 天逐小时），
+ * 多站并行会拖垮首屏，因此改用 latest_obs.txt（全站最新一行，约 100 KB）。
+ * 不要用逐站 txt 拼全球视图——那是为了看单站历史曲线准备的。
  */
 
 const FETCH_TIMEOUT = 12000
@@ -88,7 +89,10 @@ async function waves() {
   return withCache('waves', 30 * 60_000, async () => {
     const url =
       `https://marine-api.open-meteo.com/v1/marine?latitude=${LAT_STR}&longitude=${LON_STR}` +
-      '&current=wave_height,wave_direction,wave_period,sea_surface_temperature' +
+      '&current=wave_height,wave_direction,wave_period,sea_surface_temperature,' +
+      // 涌浪（swell）与风浪（wind wave）分开取：这是海浪里最常被混为一谈的两个概念
+      'swell_wave_height,swell_wave_period,swell_wave_direction,' +
+      'wind_wave_height,wind_wave_period' +
       '&hourly=wave_height&forecast_days=2&timezone=Asia%2FShanghai'
     const d = JSON.parse(await fetchWithTimeout(url))
     const list = Array.isArray(d) ? d : [d]
@@ -110,6 +114,13 @@ async function waves() {
         waveDir: cur.wave_direction ?? null,
         waveDirText: dirText(cur.wave_direction),
         wavePeriod: cur.wave_period ?? null,
+        // 涌浪：别处风场生成后传过来的长周期波；风浪：本地风直接吹出来的短周期波
+        swellHeight: cur.swell_wave_height ?? null,
+        swellPeriod: cur.swell_wave_period ?? null,
+        swellDir: cur.swell_wave_direction ?? null,
+        swellDirText: dirText(cur.swell_wave_direction),
+        windWaveHeight: cur.wind_wave_height ?? null,
+        windWavePeriod: cur.wind_wave_period ?? null,
         sst: cur.sea_surface_temperature ?? null,
         time: cur.time || null,
         forecast: series,
@@ -254,6 +265,380 @@ async function globalWaves() {
   })
 }
 
+/**
+ * 活跃热带气旋（NOAA NHC 大西洋 / 东太平洋实时风暴清单）。
+ *
+ * NHC 的 CurrentStorms.json 免密钥，字段里已经给了 numeric 经纬度，不用解析 '32.8N' 这种串。
+ * classification 用的是 NHC 内部缩写（DB/LO/TD/TS/HU/PTC/EX…），前端有术语表翻译。
+ * intensity 单位是 **节（kt）**，萨菲尔–辛普森等级按 1 分钟持续风速划分。
+ *
+ * 覆盖范围要说清楚：NHC 只管北大西洋与东太平洋。
+ * 西太平洋（影响我国的台风）由 JTWC / 日本气象厅 / 中央气象台发布，本源不包含。
+ */
+const CYCLONE_CLASS = {
+  DB: '扰动', LO: '低压区', WV: '热带波', TD: '热带低压', TS: '热带风暴',
+  SS: '副热带风暴', SD: '副热带低压', HU: '飓风', PTC: '潜在热带气旋',
+  EX: '温带气旋', PT: '后热带气旋', PS: '后热带气旋', MD: '季风低压',
+}
+
+/** 1 分钟持续风速（kt）→ 萨菲尔–辛普森等级 */
+function saffirSimpson(kt) {
+  if (!Number.isFinite(kt) || kt < 34) return null
+  if (kt <= 63) return { level: 'TS', zh: '热带风暴', cat: 0, color: '#38bdf8' }
+  if (kt <= 82) return { level: 'C1', zh: '一级飓风', cat: 1, color: '#22c55e' }
+  if (kt <= 95) return { level: 'C2', zh: '二级飓风', cat: 2, color: '#eab308' }
+  if (kt <= 112) return { level: 'C3', zh: '三级飓风', cat: 3, color: '#f97316' }
+  if (kt <= 136) return { level: 'C4', zh: '四级飓风', cat: 4, color: '#ef4444' }
+  return { level: 'C5', zh: '五级飓风', cat: 5, color: '#a21caf' }
+}
+
+async function cyclones() {
+  return withCache('cyclones', 10 * 60_000, async () => {
+    const d = JSON.parse(await fetchWithTimeout('https://www.nhc.noaa.gov/CurrentStorms.json'))
+    const raw = d.activeStorms || []
+    const storms = raw
+      .map((s) => {
+        const kt = Number(s.intensity)
+        const lat = Number(s.latitudeNumeric)
+        const lon = Number(s.longitudeNumeric)
+        if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null
+        // 洋盆按 NHC 的编号前缀判定（al=北大西洋 / ep=东北太平洋）。
+        // 不能用经度硬猜：东太平洋与北大西洋都在西经，边界还在移动。
+        const idPre = String(s.id || '').slice(0, 2).toLowerCase()
+        const binPre = String(s.binNumber || '').slice(0, 2).toLowerCase()
+        const basin = idPre === 'ep' || binPre === 'ep' ? 'EP' : 'AT'
+        return {
+          basin,
+          basinZh: basin === 'EP' ? '东北太平洋' : '北大西洋',
+          id: s.id,
+          name: s.name || '未命名',
+          bin: s.binNumber || '',
+          class: s.classification || '—',
+          classZh: CYCLONE_CLASS[s.classification] || s.classification || '—',
+          intensityKt: Number.isFinite(kt) ? kt : null,
+          intensityMs: Number.isFinite(kt) ? Number((kt * 0.5144).toFixed(1)) : null,
+          pressure: Number(s.pressure) || null,
+          lat,
+          lon,
+          moveDir: s.movementDir ?? null,
+          moveSpeedKt: s.movementSpeed ?? null,
+          lastUpdate: s.lastUpdate || null,
+          advisory: s.publicAdvisory?.url || null,
+          scale: saffirSimpson(kt),
+        }
+      })
+      .filter(Boolean)
+      .sort((a, b) => (b.intensityKt || 0) - (a.intensityKt || 0)) // 强的排前面
+    const basins = { AT: 0, EP: 0 }
+    for (const s of storms) basins[s.basin] = (basins[s.basin] || 0) + 1
+    return {
+      ok: true,
+      source: 'NOAA NHC（大西洋 / 东太平洋）',
+      count: storms.length,
+      strongest: storms[0] || null,
+      hurricaneCount: storms.filter((s) => (s.intensityKt || 0) >= 64).length,
+      storms,
+      basins,
+    }
+  })
+}
+
+/**
+ * 海洋—大气年代际振荡：PDO（太平洋十年涛动）与 AMO（大西洋多年代际振荡）。
+ *
+ * 两份都是 NOAA PSL 的固定宽度纯文本，格式略有差异但骨架一样：
+ *   第 1 行是起始/结束年份；之后每行「YYYY + 12 个月值」；末尾有署名行。
+ * 解析只要认「首列是 4 位年份且列数 ≥13」的数据行即可，署名行自然被过滤掉。
+ *
+ * 为什么和 ONI 放一起讲：三者都是「海温距平的气候模态」，
+ * 差别只在时间尺度——ENSO 是 2–7 年，PDO 是 20–30 年（准周期），AMO 是 60–80 年。
+ * PDO 的冷暖位相会**调制** ENSO 的影响强度，所以三者要一起看。
+ */
+const OSC_DEFS = {
+  pdo: {
+    key: 'pdo',
+    zh: '太平洋十年涛动 PDO',
+    en: 'Pacific Decadal Oscillation',
+    region: '北太平洋（20°N 以北）',
+    period: '20–30 年准周期',
+    url: 'https://psl.noaa.gov/data/correlation/pdo.data',
+    color: '#0ea5e9',
+  },
+  amo: {
+    key: 'amo',
+    zh: '大西洋多年代际振荡 AMO',
+    en: 'Atlantic Multidecadal Oscillation',
+    region: '北大西洋（0–70°N）',
+    period: '60–80 年',
+    url: 'https://psl.noaa.gov/data/correlation/amon.us.data',
+    color: '#f97316',
+  },
+}
+
+function parsePslMonthly(txt, def) {
+  const monthly = []
+  for (const line of txt.split('\n')) {
+    const p = line.trim().split(/\s+/)
+    if (p.length < 13) continue
+    if (!/^\d{4}$/.test(p[0])) continue // 首行年份范围与末尾署名行在这里被挡掉
+    const year = Number(p[0])
+    for (let m = 0; m < 12; m++) {
+      const v = Number(p[m + 1])
+      // 缺测占位：PDO 用 -9.90，AMO 用 -99.99。真实值都在 ±3 以内，
+      // 阈值取 -9 可同时挡住两者——只按 -99 过滤会让 PDO 的 -9.90 混进序列，
+      // 把「最近 12 月均值」和年均拉成一条假的暴跌（实测曾算出 -4.3）。
+      if (!Number.isFinite(v) || v <= -9) continue
+      monthly.push({ ym: `${year}-${String(m + 1).padStart(2, '0')}`, year, month: m + 1, value: Number(v.toFixed(3)) })
+    }
+  }
+  if (!monthly.length) throw new Error(`${def.zh} 解析为空`)
+  // 年均值（跳过不满 12 月的年份）
+  const byYear = new Map()
+  for (const r of monthly) {
+    const acc = byYear.get(r.year) || { sum: 0, n: 0 }
+    acc.sum += r.value
+    acc.n += 1
+    byYear.set(r.year, acc)
+  }
+  const annual = [...byYear.entries()]
+    .filter(([, a]) => a.n === 12)
+    .map(([year, a]) => ({ year, value: Number((a.sum / a.n).toFixed(3)) }))
+  const last12 = monthly.slice(-12)
+  return {
+    ...def,
+    history: monthly.slice(-360), // 近 30 年月值
+    annual: annual.slice(-60),
+    latest: monthly[monthly.length - 1],
+    last12: last12.length ? Number((last12.reduce((s, r) => s + r.value, 0) / last12.length).toFixed(3)) : null,
+  }
+}
+
+async function oscillations() {
+  return withCache('osc', 12 * 3600_000, async () => {
+    const [pdoTxt, amoTxt] = await Promise.all([
+      fetchWithTimeout(OSC_DEFS.pdo.url),
+      fetchWithTimeout(OSC_DEFS.amo.url),
+    ])
+    return {
+      ok: true,
+      pdo: parsePslMonthly(pdoTxt, OSC_DEFS.pdo),
+      amo: parsePslMonthly(amoTxt, OSC_DEFS.amo),
+    }
+  })
+}
+
+/**
+ * 全球海洋温度距平（NOAA NCEI「Climate at a Glance」年度序列，基准 1901–2000）。
+ * 返回 JSON：{ description: {...}, data: { "1850": { departure: 0 }, ... } }
+ *
+ * 这是海洋看板里最有分量的一条长期曲线：海洋吸走了温室气体滞留热量的九成以上，
+ * 海洋温度距平几乎是「地球能量失衡」最直接的体温计。
+ */
+async function ssta() {
+  return withCache('ssta', 12 * 3600_000, async () => {
+    const d = JSON.parse(
+      await fetchWithTimeout(
+        'https://www.ncei.noaa.gov/access/monitoring/climate-at-a-glance/global/time-series/globe/ocean/12/12/1850-2026/data.json',
+      ),
+    )
+    const data = d.data || {}
+    const annual = Object.entries(data)
+      .map(([year, v]) => ({ year: Number(year), anom: Number(v?.departure) }))
+      .filter((r) => Number.isFinite(r.year) && Number.isFinite(r.anom))
+      .sort((a, b) => a.year - b.year)
+    if (!annual.length) throw new Error('海洋温度距平解析为空')
+    const recent = annual.slice(-60)
+    const latest = annual[annual.length - 1]
+    const warmest = annual.reduce((a, b) => (b.anom > a.anom ? b : a))
+    return {
+      ok: true,
+      baseline: '1901–2000 年均值',
+      annual,
+      recent,
+      latest,
+      warmest,
+      // 「近 10 年均值」与两个参照期对比：20 世纪均值（≈0，因基准就是它）
+      // 没信息量，真正能说明加速的是 1981–2010 这个现代参照期。
+      last10: Number((annual.slice(-10).reduce((s, r) => s + r.anom, 0) / 10).toFixed(3)),
+      ref1981: (() => {
+        const arr = annual.filter((r) => r.year >= 1981 && r.year <= 2010)
+        return arr.length ? Number((arr.reduce((s, r) => s + r.anom, 0) / arr.length).toFixed(3)) : null
+      })(),
+    }
+  })
+}
+
+/**
+ * 潮位站气象实况（NOAA CO-OPS 气温，旧金山站，过去 24h）。
+ * CO-OPS 只有部分站点提供水温，本站在实测窗口内无水温数据，故只取气温。
+ * 用途：给潮汐页一个「同一站点的海陆温差」上下文——海陆风与雾都源自这个温差。
+ */
+async function stationWeather() {
+  return withCache('stnwx', 30 * 60_000, async () => {
+    const begin = fmtDay(new Date(Date.now() - 24 * 3600_000))
+    const end = fmtDay(new Date())
+    const url =
+      `https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?product=air_temperature` +
+      `&application=vite-react-demo&begin_date=${begin}&end_date=${end}` +
+      `&station=9414290&time_zone=lst_ldt&units=metric&format=json`
+    const d = JSON.parse(await fetchWithTimeout(url))
+    if (!d.data || !d.data.length) throw new Error('站点气温数据为空')
+    const series = d.data.map((r) => ({ t: r.t, v: Number(r.v) })).filter((p) => Number.isFinite(p.v))
+    if (!series.length) throw new Error('站点气温解析为空')
+    const vals = series.map((s) => s.v)
+    return {
+      ok: true,
+      station: d.metadata?.name || 'San Francisco',
+      latest: series[series.length - 1],
+      min: Math.min(...vals),
+      max: Math.max(...vals),
+      series: series.slice(-120),
+    }
+  })
+}
+
+/**
+ * NOAA NDBC 浮标实时观测（latest_obs.txt，一次拉全部站点最新一行）。
+ *
+ * 为什么用 latest_obs.txt 而不是 realtime2/<站号>.txt：
+ *   后者单站就要 600 KB（45 天逐小时），拉 10 个站就是 6 MB；
+ *   latest_obs 全站合计仅 100 KB 左右，且每行就是该站最新一次观测。
+ *
+ * 两个必须知道的坑：
+ *   1. 缺测不是空值而是字符串 'MM'，直接 Number() 会得到 NaN 混进图表，
+ *      必须显式归一成 null。
+ *   2. 站号不全是数字，南太平洋有 'NSTP6'、'32ST0' 这类字母站，
+ *      按数字站号排序/过滤会整段漏掉。
+ *
+ * 站点是动态筛选的（按经纬度框），不硬编码站号清单——
+ * 浮标会退役、会被海浪打走，写死清单迟早出现空洞。
+ */
+async function buoys() {
+  return withCache('buoys', 20 * 60_000, async () => {
+    const txt = await fetchWithTimeout('https://www.ndbc.noaa.gov/data/latest_obs/latest_obs.txt', {
+      timeout: 20000,
+    })
+    const rows = txt
+      .split('\n')
+      .filter((l) => l.trim() && !l.startsWith('#'))
+      .map(parseBuoyRow)
+      .filter(Boolean)
+    if (!rows.length) throw new Error('浮标数据解析为空')
+
+    const regions = BUOY_REGIONS.map((r) => {
+      const inBox = rows.filter(
+        (s) => s.lat >= r.latMin && s.lat <= r.latMax && s.lon >= r.lonMin && s.lon <= r.lonMax,
+      )
+      // 打分：有浪高的站优先，其次看有效字段数（浮标常在风浪传感器上缺项）
+      const scored = inBox
+        .map((s) => ({
+          ...s,
+          // 有实测浪高的站最优先，其次是有水温的，最后才是纯粹的气象站
+          score:
+            (s.wvht != null ? (s.wvht > 0 ? 120 : 60) : 0) +
+            (s.wtmp != null ? 20 : 0) +
+            (s.pres != null ? 10 : 0) +
+            Object.values(s).filter((v) => v != null).length,
+        }))
+        .sort((a, b) => b.score - a.score)
+      return {
+        key: r.key,
+        name: r.name,
+        stationCount: inBox.length,
+        // 每区最多带 2 个站：够看又不至于把表格撑爆
+        stations: scored.slice(0, 2).map(({ score, ...rest }) => rest),
+      }
+    })
+
+    // 「最狂的海」只认真正测到浪的站，避免把 wvht=0 的静稳站当最大值
+    const withWaves = rows.filter((s) => s.wvht != null && s.wvht > 0)
+    const heights = withWaves.map((s) => s.wvht)
+    const wtmp = rows.filter((s) => s.wtmp != null).map((s) => s.wtmp)
+
+    return {
+      ok: true,
+      source: 'NOAA NDBC',
+      totalStations: rows.length,
+      waveStations: withWaves.length,
+      regions: regions.filter((r) => r.stations.length > 0),
+      // 全球浮标网的两个宏观读数：最狂的海在哪、海表温度跨度多大
+      maxWave: heights.length
+        ? withWaves[heights.indexOf(Math.max(...heights))]
+        : null,
+      sstRange: wtmp.length
+        ? { min: Math.min(...wtmp), max: Math.max(...wtmp), n: wtmp.length }
+        : null,
+      // 观测时刻以「最新一行为准」，各站时钟略有先后
+      updatedAt: rows.reduce((a, b) => (b.timeUnix > a ? b.timeUnix : a), 0),
+    }
+  })
+}
+
+/** latest_obs.txt 的固定列（表头两行已跳过），MM = 缺测 */
+function parseBuoyRow(line) {
+  const p = line.trim().split(/\s+/)
+  if (p.length < 22) return null
+  const num = (s) => {
+    const v = Number(s)
+    return Number.isFinite(v) ? v : null
+  }
+  const lat = num(p[1])
+  const lon = num(p[2])
+  if (lat == null || lon == null) return null
+
+  const wvht = num(p[11])
+  const dpd = num(p[12])
+  const apd = num(p[13])
+  const mwd = num(p[14])
+  // 「假平静」识别：没有波浪传感器的站（多为岸站或他国气象浮标）会把
+  // WVHT / DPD 一律填 0，看起来像「海面如镜」，实际是没测。
+  // 判据：波高为 0 且主波周期为 0/空、平均周期与浪向也全空。
+  // 真·平静海况会带正常的周期值（DPD 通常 ≥ 2 s），因此不会误杀。
+  const noWaveSensor = wvht === 0 && (dpd == null || dpd === 0) && apd == null && mwd == null
+
+  const [yyyy, mo, dd, hh, mm] = [p[3], p[4], p[5], p[6], p[7]]
+  const timeUnix = Date.UTC(+yyyy, +mo - 1, +dd, +hh, +mm)
+  return {
+    id: p[0],
+    lat,
+    lon,
+    timeUtc: Number.isFinite(timeUnix)
+      ? `${yyyy}-${mo}-${dd}T${hh}:${mm}Z`
+      : null,
+    timeUnix: Number.isFinite(timeUnix) ? timeUnix : 0,
+    // 风：方向（度，真北）/ 风速 / 阵风，单位 m/s
+    wdir: num(p[8]),
+    wspd: num(p[9]),
+    gst: num(p[10]),
+    // 浪：有效波高 m / 主波周期 s / 平均周期 s / 浪向 degT
+    wvht: noWaveSensor ? null : wvht,
+    dpd: noWaveSensor ? null : dpd,
+    apd,
+    mwd,
+    // 气压 hPa 与 3 小时变压、气温/水温/露点 °C、能见度海里、潮位 ft
+    pres: num(p[15]),
+    ptdy: num(p[16]),
+    atmp: num(p[17]),
+    wtmp: num(p[18]),
+    dewp: num(p[19]),
+    vis: num(p[20]),
+    tide: num(p[21]),
+  }
+}
+
+/** 浮标分区：经纬度框动态筛选，避免硬编码站号清单 */
+const BUOY_REGIONS = [
+  { key: 'nwPacific', name: '西北太平洋（日韩近海）', latMin: 20, latMax: 50, lonMin: 118, lonMax: 148 },
+  { key: 'wPacific', name: '中西太平洋（马里亚纳—密克罗尼西亚）', latMin: 0, latMax: 20, lonMin: 140, lonMax: 180 },
+  { key: 'nePacific', name: '东北太平洋（美国西岸）', latMin: 32, latMax: 50, lonMin: -128, lonMax: -115 },
+  { key: 'gulfAlaska', name: '阿拉斯加湾', latMin: 50, latMax: 62, lonMin: -165, lonMax: -135 },
+  { key: 'hawaii', name: '夏威夷群岛', latMin: 15, latMax: 28, lonMin: -165, lonMax: -152 },
+  { key: 'sPacific', name: '南太平洋（萨摩亚—南美西岸）', latMin: -25, latMax: -5, lonMin: -180, lonMax: -80 },
+  { key: 'nAtlantic', name: '北大西洋（美国东岸）', latMin: 28, latMax: 45, lonMin: -82, lonMax: -66 },
+  { key: 'gulfMexico', name: '墨西哥湾与加勒比', latMin: 18, latMax: 31, lonMin: -98, lonMax: -80 },
+  { key: 'eAtlantic', name: '东北大西洋（西欧外海）', latMin: 45, latMax: 62, lonMin: -25, lonMax: 5 },
+]
+
 /** dev 中间件：/api/ocean/* → 各数据源 */
 export function serveOceanData() {
   const SOURCES = {
@@ -262,6 +647,11 @@ export function serveOceanData() {
     '/api/ocean/tide-pred': tidePred,
     '/api/ocean/oni': oni,
     '/api/ocean/global-waves': globalWaves,
+    '/api/ocean/cyclones': cyclones,
+    '/api/ocean/oscillations': oscillations,
+    '/api/ocean/ssta': ssta,
+    '/api/ocean/station-weather': stationWeather,
+    '/api/ocean/buoys': buoys,
   }
   return {
     name: 'serve-ocean-data',
