@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Menu, Button, Avatar, Dropdown, Typography, Tooltip, Badge } from 'antd'
 import {
   HomeOutlined, RobotOutlined, AudioOutlined, AimOutlined,
   ToolOutlined, ScanOutlined, DesktopOutlined, FormOutlined,
-  BgColorsOutlined, BarChartOutlined, DashboardOutlined, AppstoreOutlined,
+  BgColorsOutlined, BarChartOutlined, DashboardOutlined, AppstoreOutlined, FieldTimeOutlined,
   CodeOutlined, BellOutlined, TableOutlined, LockOutlined, CodepenOutlined,
   ExperimentOutlined, InfoCircleOutlined,
   MenuFoldOutlined, MenuUnfoldOutlined,
@@ -19,6 +19,7 @@ import {
   BulbOutlined, RocketOutlined,
   SafetyCertificateOutlined, NodeIndexOutlined,
   HighlightOutlined, StarOutlined, HeatMapOutlined, CompassOutlined, BlockOutlined,
+  VideoCameraOutlined, GlobalOutlined, EnvironmentOutlined, RadarChartOutlined,
 } from '@ant-design/icons'
 import { useAuth } from '../contexts/useAuth.js'
 import Assistants from '../components/Assistants/index.jsx'
@@ -108,6 +109,18 @@ const navItems = [
       { key: '/data-viz', icon: <HeatMapOutlined />, label: '可视化实验室' },
       { key: '/orbit', icon: <CompassOutlined />, label: '星际轨道' },
       { key: '/playground', icon: <BlockOutlined />, label: '创意 Playground' },
+    ],
+  },
+  {
+    /* 数据看板分组：深空 / 地球 / 海洋 / 时间版本——「天上、地下、海洋、时间」四位一体。
+       与「控制台」同级的顶级分组（原先挤在「创意」分组尾部，现独立成组便于发现） */
+    key: 'group-databoards', icon: <BarChartOutlined />, label: '数据看板',
+    children: [
+      { key: '/astro', icon: <GlobalOutlined />, label: '深空数据看板' },
+      { key: '/geo', icon: <EnvironmentOutlined />, label: '地球数据看板' },
+      { key: '/ocean', icon: <RadarChartOutlined />, label: '海洋数据看板' },
+      /* 时间版本：三大看板 18 个数据源的抓取时刻 / 数据时刻 / 轮换周期总览 */
+      { key: '/timeline', icon: <FieldTimeOutlined />, label: '时间版本' },
     ],
   },
   {
@@ -402,6 +415,18 @@ export default function Layout() {
               className="sidebar-menu"
             />
           </div>
+
+          {/* 隐藏页入口：/not-videos 刻意不进菜单树，只在侧边栏底部留一行低调链接 */}
+          {sidebarMode === 'expanded' && (
+            <Link
+              to="/not-videos"
+              className={`sidebar-hidden-entry${pathname === '/not-videos' ? ' is-current' : ''}`}
+              title="本地视频轮播（隐藏页）"
+            >
+              <VideoCameraOutlined />
+              <span>本地视频轮播</span>
+            </Link>
+          )}
 
           {sidebarMode === 'expanded' && (
             <div className="sidebar-foot">

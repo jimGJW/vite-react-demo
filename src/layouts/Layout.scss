@@ -344,6 +344,37 @@
 }
 
 /* —— sidebar foot —— */
+/* 隐藏页入口：菜单树里没有 /not-videos，只在侧边栏底部留一行低调链接 */
+.app-shell .sidebar-hidden-entry {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0 8px 2px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  color: var(--c-text-3, #00000073);
+  text-decoration: none;
+  transition: color 0.18s ease, background 0.18s ease;
+}
+
+.app-shell .sidebar-hidden-entry:hover {
+  color: var(--c-primary, #1677ff);
+  background: color-mix(in srgb, var(--c-primary, #1677ff) 8%, transparent);
+}
+
+/* 正停在这页时点亮，其余时候保持压暗——与菜单项的「选中高亮 / 未选中变暗」同一口径 */
+.app-shell .sidebar-hidden-entry.is-current {
+  color: var(--c-primary, #1677ff);
+  background: color-mix(in srgb, var(--c-primary, #1677ff) 14%, transparent);
+  font-weight: 600;
+}
+
+/* 侧边栏折叠或隐藏时一并收起（与 .sidebar-foot 同口径） */
+.app-shell.sidebar-collapsed .sidebar-hidden-entry,
+.app-shell.sidebar-hidden .sidebar-hidden-entry { display: none !important; }
+
 .app-shell .sidebar-foot {
   flex-shrink: 0;
   padding: 8px 12px 12px;

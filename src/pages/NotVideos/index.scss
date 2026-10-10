@@ -1,0 +1,351 @@
+/* 隐藏视频轮播页 —— 沉浸式暗色影院
+   独立配色是有意的：这是全屏看视频的页面，浅底会反光、抢视频本身的注意力。
+   主色仍走项目令牌 --c-primary，保证和整体品牌一致。 */
+
+.notvideos {
+  --nv-bg: #0b0d12;
+  --nv-panel: #14171f;
+  --nv-line: #262b36;
+  --nv-text: #e8ebf2;
+  --nv-dim: #8b93a7;
+
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 20px 20px;
+  min-height: 100%;
+  background: var(--nv-bg);
+  color: var(--nv-text);
+  border-radius: 12px;
+
+  &__head,
+  &__foot {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+
+  &__foot {
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--nv-dim);
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  /* 「隐藏」徽标用浅底彩字，不抢主视频的视觉重心 */
+  &__badge {
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--c-primary, #1677ff);
+    background: color-mix(in srgb, var(--c-primary, #1677ff) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c-primary, #1677ff) 38%, transparent);
+  }
+
+  &__stat {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--nv-dim);
+
+    b {
+      color: var(--nv-text);
+      font-weight: 700;
+    }
+  }
+
+  &__stamp {
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 16px;
+    align-items: start;
+  }
+
+  /* ---------- 舞台 ---------- */
+  &__stage {
+    position: relative;
+    background: #000;
+    border: 1px solid var(--nv-line);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  &__video {
+    display: block;
+    width: 100%;
+    max-height: 62vh;
+    background: #000;
+    object-fit: contain;
+    /* 每次切换 src 都会重建元素，用一次淡入把「跳变」抹平 */
+    animation: nv-fade 0.35s ease both;
+  }
+
+  &__caption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 34px 16px 14px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.82), transparent);
+    pointer-events: none;
+  }
+
+  &__name {
+    font-size: 14px;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__sub {
+    font-size: 12px;
+    color: #b9c0d0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__controls {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    gap: 8px;
+  }
+
+  &__btn {
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--nv-line);
+    background: var(--nv-panel);
+    color: var(--nv-text);
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.18s ease, border-color 0.18s ease;
+
+    &:hover {
+      background: #1d2230;
+      border-color: var(--c-primary, #1677ff);
+    }
+  }
+
+  /* ---------- 右侧列表：当前项高亮，其余压暗 ---------- */
+  &__list {
+    max-height: 62vh;
+    overflow-y: auto;
+    padding: 8px;
+    background: var(--nv-panel);
+    border: 1px solid var(--nv-line);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--nv-dim);
+    font-size: 12px;
+    text-align: left;
+    cursor: pointer;
+    transition: color 0.18s ease, background 0.18s ease;
+
+    &:hover {
+      background: #1a1f2b;
+      color: #c7cddc;
+    }
+
+    /* 当前播放项：主色描边 + 提亮；未选中项自然被压暗 */
+    &.is-current {
+      color: var(--nv-text);
+      background: color-mix(in srgb, var(--c-primary, #1677ff) 18%, transparent);
+      border-color: color-mix(in srgb, var(--c-primary, #1677ff) 55%, transparent);
+    }
+  }
+
+  &__idx {
+    flex: 0 0 22px;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.7;
+  }
+
+  &__itemName {
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__itemSub {
+    flex: 0 0 auto;
+    font-size: 11px;
+    opacity: 0.75;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- 目录来源：自己选，不写死路径 ---------- */
+  &__source {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px 16px;
+    background: var(--nv-panel);
+    border: 1px solid var(--nv-line);
+    border-radius: 12px;
+  }
+
+  &__pick {
+    align-self: flex-start;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid color-mix(in srgb, var(--c-primary, #1677ff) 45%, transparent);
+    background: color-mix(in srgb, var(--c-primary, #1677ff) 16%, transparent);
+    color: var(--nv-text);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s ease, border-color 0.18s ease;
+
+    &:hover {
+      background: color-mix(in srgb, var(--c-primary, #1677ff) 26%, transparent);
+      border-color: var(--c-primary, #1677ff);
+    }
+  }
+
+  &__noPick {
+    font-size: 12px;
+    color: #ffb454;
+  }
+
+  &__pathRow {
+    display: flex;
+    gap: 8px;
+  }
+
+  &__input {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--nv-line);
+    background: #0f1219;
+    color: var(--nv-text);
+    font-size: 12px;
+
+    &::placeholder {
+      color: #5a6274;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: var(--c-primary, #1677ff);
+    }
+  }
+
+  &__sourceNow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--nv-dim);
+
+    b {
+      color: var(--nv-text);
+      word-break: break-all;
+    }
+  }
+
+  &__mode {
+    padding: 1px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    color: var(--c-primary, #1677ff);
+    background: color-mix(in srgb, var(--c-primary, #1677ff) 14%, transparent);
+  }
+
+  &__linkBtn {
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--c-primary, #1677ff);
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  /* ---------- 提示 / 空态 ---------- */
+  &__hint {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 60px 20px;
+    color: var(--nv-dim);
+    font-size: 14px;
+    text-align: center;
+  }
+
+  &__dir,
+  &__tip {
+    font-size: 12px;
+    color: var(--nv-dim);
+    word-break: break-all;
+  }
+
+  &__err {
+    color: #ff7875;
+    font-size: 12px;
+  }
+}
+
+@keyframes nv-fade {
+  from {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 窄屏：列表挪到视频下方，避免舞台被挤成一条 */
+@media (max-width: 900px) {
+  .notvideos__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .notvideos__list {
+    max-height: 240px;
+  }
+}

@@ -1,0 +1,365 @@
+/* =====================================================================
+   OceanBoard.scss · 海洋数据看板（/ocean）—— 「天上 / 地下 / 海洋」的「海」
+
+   与 GeoBoard.scss 同架构：
+   - --o-* CSS 变量 + [data-ocean-theme] 主题开关
+   - 默认主题白昼（light 在 :root 级，dark 是覆盖层）
+   - antd 组件颜色交给 ConfigProvider（algorithm 切换），这里只做布局与微调
+   - 色系：海洋蓝青（区别于 astro 深蓝 / geo 翠绿）
+   ===================================================================== */
+
+.o-board {
+  /* —— 白昼（默认）：海洋色系，青蓝点缀 —— */
+  --o-bg: #ecf2f7;
+  --o-panel: #ffffff;
+  --o-panel-2: #f2f7fb;
+  --o-line: #d7e2ec;
+  --o-fg: #233240;
+  --o-fg-strong: #0d1720;
+  --o-dim: #5b6f80;
+  --o-dim-2: #8aa0b2;
+  --o-accent: #0284c7;
+  --o-accent-rgb: 2, 132, 199;
+  --o-accent-soft: #0369a1;
+  --o-deep: #0369a1;
+  --o-warm: #d97706;
+
+  padding: 14px;
+  color: var(--o-fg);
+  background:
+    radial-gradient(1100px 520px at 10% -6%, rgba(2, 132, 199, 0.08), transparent 55%),
+    radial-gradient(900px 460px at 95% 2%, rgba(13, 148, 136, 0.06), transparent 50%),
+    var(--o-bg);
+  min-height: 100%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-sizing: border-box;
+}
+
+/* —— 夜航（深色覆盖）—— */
+.o-board[data-ocean-theme='dark'] {
+  --o-bg: #081018;
+  --o-panel: #0d1a26;
+  --o-panel-2: #122335;
+  --o-line: #1d3346;
+  --o-fg: #e0effa;
+  --o-fg-strong: #ffffff;
+  --o-dim: #7f9cb5;
+  --o-dim-2: #54708a;
+  --o-accent: #38bdf8;
+  --o-accent-rgb: 56, 189, 248;
+  --o-accent-soft: #7dd3fc;
+  --o-deep: #60a5fa;
+  --o-warm: #f59e0b;
+
+  background:
+    radial-gradient(1100px 520px at 10% -6%, rgba(56, 189, 248, 0.07), transparent 55%),
+    radial-gradient(900px 460px at 95% 2%, rgba(45, 212, 191, 0.05), transparent 50%),
+    var(--o-bg);
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+.o-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+
+  h1 {
+    margin: 0;
+    font-size: clamp(20px, 2.6vw, 26px);
+    font-weight: 800;
+    color: var(--o-fg-strong);
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .anticon { color: var(--o-accent); }
+  }
+
+  &__sub {
+    margin: 6px 0 0;
+    font-size: 12.5px;
+    color: var(--o-dim);
+    max-width: 660px;
+    line-height: 1.7;
+
+    a { color: var(--o-accent); text-decoration: none; &:hover { text-decoration: underline; } }
+  }
+
+  &__side {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+}
+
+.o-clock {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  background: var(--o-panel);
+  border: 1px solid var(--o-line);
+  border-radius: 8px;
+  padding: 4px 10px;
+
+  &__label { font-size: 10.5px; color: var(--o-dim); font-weight: 600; }
+  &__val {
+    font-size: 13px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: var(--o-fg-strong);
+    letter-spacing: 0.5px;
+  }
+}
+
+.o-theme-btn {
+  background: var(--o-panel);
+}
+
+/* =========================================================
+   KPI 指标条
+   ========================================================= */
+.o-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.o-metric {
+  background: var(--o-panel);
+  border: 1px solid var(--o-line);
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+
+  &__val {
+    font-size: clamp(18px, 1.9vw, 24px);
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    color: var(--o-fg-strong);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__unit {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--o-dim);
+    margin-left: 4px;
+  }
+
+  &__label {
+    font-size: 11px;
+    color: var(--o-dim);
+
+    &.is-info { cursor: help; border-bottom: 1px dashed var(--o-dim-2); }
+  }
+}
+
+/* =========================================================
+   Tabs（吸顶）与内容
+   ========================================================= */
+.o-tabs {
+  flex-shrink: 0;
+
+  .ant-tabs-nav {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    margin-bottom: 10px;
+    background: color-mix(in srgb, var(--o-bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-radius: 10px;
+    padding: 2px 8px 0;
+  }
+}
+
+.o-tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* =========================================================
+   Panel 卡片
+   ========================================================= */
+.o-panel {
+  background: var(--o-panel);
+  border: 1px solid var(--o-line);
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--o-line);
+    background: var(--o-panel-2);
+    flex-wrap: wrap;
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .anticon { color: var(--o-accent); }
+
+    h3 {
+      margin: 0;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--o-fg-strong);
+    }
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--o-dim);
+  }
+
+  &__body { padding: 12px 14px; }
+}
+
+.o-src-tag { cursor: help; }
+
+.o-fail {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: #dc2626;
+  padding: 6px 0;
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+  }
+}
+
+.o-loading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--o-dim);
+  font-size: 12.5px;
+  padding: 10px 0;
+}
+
+/* =========================================================
+   自绘 SVG 图表
+   ========================================================= */
+.o-chart {
+  min-width: 0;
+
+  svg { width: 100%; height: auto; display: block; }
+
+  &__grid { stroke: var(--o-line); stroke-width: 1; }
+  &__zero { stroke: var(--o-dim-2); stroke-width: 1.2; }
+  &__ref { stroke: var(--o-deep); stroke-width: 1; opacity: 0.55; }
+
+  &__tick {
+    font-size: 10px;
+    fill: var(--o-dim);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__line {
+    fill: none;
+    stroke: var(--o-accent);
+    stroke-width: 2;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+
+  &__area { fill: rgba(var(--o-accent-rgb), 0.12); }
+
+  &__dot { fill: var(--o-accent); stroke: var(--o-panel); stroke-width: 1.5; }
+
+  &__mark {
+    font-size: 10.5px;
+    font-weight: 700;
+    fill: var(--o-fg-strong);
+  }
+
+  &__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 11px;
+    color: var(--o-dim);
+    padding: 6px 2px 0;
+
+    span { display: inline-flex; align-items: center; gap: 5px; }
+
+    i {
+      width: 14px;
+      height: 3px;
+      border-radius: 2px;
+      display: inline-block;
+    }
+  }
+
+  &__caption {
+    font-size: 11px;
+    color: var(--o-dim);
+    line-height: 1.7;
+    padding: 6px 2px 0;
+  }
+}
+
+/* =========================================================
+   表格微调与科普文
+   ========================================================= */
+.o-wave-table,
+.o-tide-table {
+  .ant-table { background: transparent; }
+}
+
+.o-prose {
+  font-size: 12.5px;
+  line-height: 1.9;
+  color: var(--o-fg);
+
+  p { margin: 0 0 8px; &:last-child { margin: 0; } }
+
+  b { color: var(--o-fg-strong); }
+  strong { color: var(--o-accent-soft); }
+}
+
+/* =========================================================
+   FOOT
+   ========================================================= */
+.o-foot {
+  flex-shrink: 0;
+  font-size: 11px;
+  color: var(--o-dim-2);
+  line-height: 1.7;
+  padding: 8px 4px 2px;
+  border-top: 1px dashed var(--o-line);
+  margin-top: 4px;
+}

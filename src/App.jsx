@@ -42,6 +42,8 @@ const loadCreativeLab = () => import('./pages/CreativeLab/index.jsx')
 const loadDataVizLab = () => import('./pages/DataVizLab/index.jsx')
 const loadOrbitLab = () => import('./pages/OrbitLab/index.jsx')
 const loadPlayground = () => import('./pages/Playground/index.jsx')
+/* 隐藏视频轮播页：只在路由表注册，不进侧边栏 navItems，需手动访问 /not-videos */
+const loadNotVideos = () => import('./pages/NotVideos/index.jsx')
 const loadLogin = () => import('./pages/Login/index.jsx')
 const loadNotFound = () => import('./pages/NotFound/index.jsx')
 const loadCompareParentChild = () => import('./pages/Compare/ParentChild/index.jsx')
@@ -88,6 +90,14 @@ const CreativeLab = lazy(loadCreativeLab)
 const DataVizLab = lazy(loadDataVizLab)
 const OrbitLab = lazy(loadOrbitLab)
 const Playground = lazy(loadPlayground)
+const NotVideos = lazy(loadNotVideos)
+const AstroBoard = lazy(() => import('./pages/AstroBoard/index.jsx'))
+const loadGeo = () => import('./pages/GeoBoard/index.jsx')
+const GeoBoard = lazy(loadGeo)
+const loadOcean = () => import('./pages/OceanBoard/index.jsx')
+const OceanBoard = lazy(loadOcean)
+const loadTimeline = () => import('./pages/TimelineBoard/index.jsx')
+const TimelineBoard = lazy(loadTimeline)
 const MicroFrontendDemo = lazy(loadMicroFrontendDemo)
 const SubAppPage = lazy(loadSubAppPage)
 const Login = lazy(loadLogin)
@@ -114,6 +124,8 @@ const allLoaders = [
   loadCompareState, loadCompareSlot, loadCompareRef,
   loadMicroFrontendDemo,
   loadSubAppPage,
+  loadGeo,
+  loadOcean,
 ]
 if (typeof window !== 'undefined') {
   const idle = window.requestIdleCallback || ((cb) => window.setTimeout(cb, 300))
@@ -210,6 +222,12 @@ function App() {
           <Route path="data-viz" element={<DataVizLab />} />
           <Route path="orbit" element={<OrbitLab />} />
           <Route path="playground" element={<Playground />} />
+          <Route path="astro" element={<AstroBoard />} />
+          <Route path="geo" element={<GeoBoard />} />
+          <Route path="ocean" element={<OceanBoard />} />
+          <Route path="timeline" element={<TimelineBoard />} />
+          {/* 隐藏页：不进侧边栏，手动访问 /not-videos */}
+          <Route path="not-videos" element={<NotVideos />} />
           <Route path="404" element={<NotFound />} />
           <Route path="*" element={<Navigate to="/404" replace />} />
           </Route>

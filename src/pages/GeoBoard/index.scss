@@ -1,0 +1,515 @@
+/* =====================================================================
+   GeoBoard.scss · 地球数据看板（/geo）—— 「天上 / 地下」配对的「地」
+
+   与 AstroBoard.scss 同架构：
+   - --g-* CSS 变量 + [data-geo-theme] 主题开关
+   - 唯一差异：默认主题是白昼（light 在 :root 级，dark 是覆盖层）
+   - antd 组件颜色交给 ConfigProvider（algorithm 切换），这里只做布局与微调
+   ===================================================================== */
+
+.geo-board {
+  /* —— 白昼（默认）：大地色系，翠绿点缀 —— */
+  --g-bg: #eef3ec;
+  --g-panel: #ffffff;
+  --g-panel-2: #f4f8f4;
+  --g-line: #dbe5dc;
+  --g-fg: #24312a;
+  --g-fg-strong: #0f1a14;
+  --g-dim: #5c6f62;
+  --g-dim-2: #8ba094;
+  --g-accent: #0e9f6e;
+  --g-accent-rgb: 14, 159, 110;
+  --g-accent-soft: #0b7c58;
+  --g-land: #d5e4d7;
+  --g-sea: #e3eef0;
+  --g-mesh-bg: #eef3ec;
+  --g-track: #0e9f6e;
+  --g-cn: #c2410c;
+
+  padding: 14px;
+  color: var(--g-fg);
+  background:
+    radial-gradient(1100px 520px at 10% -6%, rgba(14, 159, 110, 0.08), transparent 55%),
+    radial-gradient(900px 460px at 95% 2%, rgba(217, 119, 6, 0.06), transparent 50%),
+    var(--g-bg);
+  min-height: 100%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-sizing: border-box;
+}
+
+/* —— 夜航（深色覆盖）—— */
+.geo-board[data-geo-theme='dark'] {
+  --g-bg: #0a120d;
+  --g-panel: #0f1c15;
+  --g-panel-2: #132418;
+  --g-line: #1f3628;
+  --g-fg: #e5f2e9;
+  --g-fg-strong: #ffffff;
+  --g-dim: #8fa89a;
+  --g-dim-2: #63796c;
+  --g-accent: #34d399;
+  --g-accent-rgb: 52, 211, 153;
+  --g-accent-soft: #6ee7b7;
+  --g-land: #1c3327;
+  --g-sea: #0c1a12;
+  --g-mesh-bg: #0a120d;
+  --g-track: #34d399;
+  --g-cn: #f97316;
+
+  background:
+    radial-gradient(1100px 520px at 10% -6%, rgba(52, 211, 153, 0.07), transparent 55%),
+    radial-gradient(900px 460px at 95% 2%, rgba(217, 119, 6, 0.05), transparent 50%),
+    var(--g-bg);
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+.geo-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+
+  h1 {
+    margin: 0;
+    font-size: clamp(20px, 2.6vw, 26px);
+    font-weight: 800;
+    color: var(--g-fg-strong);
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    .anticon { color: var(--g-accent); }
+  }
+
+  &__sub {
+    margin: 6px 0 0;
+    font-size: 12.5px;
+    color: var(--g-dim);
+    max-width: 640px;
+    line-height: 1.7;
+
+    a { color: var(--g-accent); text-decoration: none; &:hover { text-decoration: underline; } }
+  }
+
+  &__side {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+}
+
+.geo-clock {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  background: var(--g-panel);
+  border: 1px solid var(--g-line);
+  border-radius: 8px;
+  padding: 4px 10px;
+
+  &__label { font-size: 10.5px; color: var(--g-dim); font-weight: 600; }
+  &__val {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--g-fg-strong);
+    font-variant-numeric: tabular-nums;
+    min-width: 62px;
+  }
+}
+
+/* =========================================================
+   KPI 指标条
+   ========================================================= */
+.geo-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.geo-metric {
+  background: var(--g-panel);
+  border: 1px solid var(--g-line);
+  border-radius: 10px;
+  padding: 10px 12px 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+
+  &__val {
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.15;
+    color: var(--g-fg-strong);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__unit {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--g-dim);
+    margin-left: 3px;
+  }
+
+  &__label {
+    font-size: 11px;
+    color: var(--g-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    &.is-info { cursor: help; border-bottom: 1px dashed var(--g-dim-2); }
+  }
+}
+
+/* =========================================================
+   TABS（sticky 吸顶，与 astro 一致；颜色走 ConfigProvider）
+   ========================================================= */
+.geo-tabs {
+  flex-shrink: 0;
+
+  .ant-tabs-nav {
+    margin-bottom: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in srgb, var(--g-bg) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-radius: 8px 8px 0 0;
+    padding: 4px 8px 0;
+  }
+
+  .ant-tabs-content-holder { overflow: visible; }
+  .ant-tabs-tabpane { overflow: visible; }
+
+  .ant-tabs-tab {
+    padding: 6px 4px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+  }
+
+  .ant-tabs-ink-bar { height: 3px !important; border-radius: 2px; }
+}
+
+.geo-tab-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* =========================================================
+   PANEL（卡片外壳，与 astro-panel 同构）
+   ========================================================= */
+.geo-panel {
+  background: var(--g-panel);
+  border: 1px solid var(--g-line);
+  border-radius: 14px;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--g-line);
+    background: linear-gradient(90deg, rgba(var(--g-accent-rgb), 0.06), transparent 65%);
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+
+    .anticon { color: var(--g-accent); font-size: 15px; flex-shrink: 0; }
+
+    h3 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--g-fg-strong);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  &__meta { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+
+  &__body { padding: 12px 14px 14px; }
+}
+
+.geo-src-tag { cursor: help; flex-shrink: 0; }
+
+.geo-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 28px 0;
+  color: var(--g-dim);
+  font-size: 13px;
+}
+
+.geo-fail {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #ef4444;
+  font-size: 12.5px;
+
+  &__dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: #ef4444;
+    flex-shrink: 0;
+  }
+}
+
+/* =========================================================
+   地震世界地图
+   ========================================================= */
+.geo-quakemap {
+  &__sea { fill: var(--g-sea); rx: 8; }
+  &__land {
+    fill: var(--g-land);
+    stroke: var(--g-line);
+    stroke-width: 0.6;
+  }
+  &__grid line {
+    stroke: var(--g-line);
+    stroke-width: 0.4;
+    stroke-dasharray: 2 5;
+    opacity: 0.6;
+  }
+
+  &__dot {
+    fill: var(--dot-color, var(--g-accent));
+    fill-opacity: 0.72;
+    stroke: rgba(255, 255, 255, 0.55);
+    stroke-width: 0.6;
+    cursor: pointer;
+    /* 呼吸动画提示"这是实时数据"，浅源（破坏性最强）最明显 */
+    animation: geo-quake-pulse 2.6s ease-in-out infinite;
+  }
+
+  svg { display: block; width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--g-line); }
+
+  &__legend {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 9px;
+    font-size: 11.5px;
+    color: var(--g-dim);
+
+    i {
+      display: inline-block;
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      margin-right: 5px;
+      vertical-align: -1px;
+    }
+
+    &-note { margin-left: auto; color: var(--g-dim-2); }
+  }
+}
+
+@keyframes geo-quake-pulse {
+  0%, 100% { fill-opacity: 0.72; }
+  50% { fill-opacity: 0.42; }
+}
+
+/* 地震列表表格：透明融入面板 */
+.geo-quake-table {
+  .ant-table { background: transparent; font-size: 12.5px; }
+
+  .ant-table-thead > tr > th {
+    background: transparent;
+    color: var(--g-dim);
+    font-size: 11px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--g-line);
+    padding: 6px 10px;
+
+    &::before { display: none; }
+  }
+
+  .ant-table-tbody > tr > td {
+    border-bottom: 1px solid rgba(var(--g-accent-rgb), 0.06);
+    padding: 7px 10px;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* =========================================================
+   EPIC 地球影像
+   ========================================================= */
+.geo-epic {
+  display: grid;
+  grid-template-columns: minmax(300px, 1.3fr) minmax(280px, 1fr);
+  gap: 20px;
+  align-items: start;
+
+  @media (max-width: 900px) { grid-template-columns: 1fr; }
+
+  &__img {
+    display: block;
+    border-radius: 50%; /* 整圆盘照片本身是圆的，圆形裁切消除黑角 */
+    overflow: hidden;
+    border: 1px solid var(--g-line);
+    background: #000;
+    aspect-ratio: 1;
+    justify-self: center;
+    width: min(100%, 460px);
+
+    img { display: block; width: 100%; height: 100%; object-fit: cover; }
+  }
+
+  &__body {
+    min-width: 0;
+
+    h4 {
+      margin: 0 0 10px;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--g-fg-strong);
+    }
+  }
+
+  &__meta { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  &__caption {
+    margin: 12px 0 0;
+    font-size: 12.5px;
+    color: var(--g-fg);
+    line-height: 1.7;
+  }
+
+  &__note {
+    margin: 10px 0 0;
+    font-size: 12px;
+    color: var(--g-dim);
+    line-height: 1.7;
+  }
+
+  /* 当日其余帧胶片条 */
+  &__filmstrip {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+
+    a {
+      position: relative;
+      display: block;
+      width: 72px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 1px solid var(--g-line);
+      transition: border-color 0.15s, transform 0.15s;
+
+      img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
+
+      span {
+        position: absolute;
+        left: 0; right: 0; bottom: 0;
+        font-size: 9.5px;
+        text-align: center;
+        color: #fff;
+        background: rgba(0, 0, 0, 0.55);
+        padding: 1px 0;
+        font-variant-numeric: tabular-nums;
+      }
+
+      &:hover { border-color: var(--g-accent); transform: translateY(-2px); }
+    }
+  }
+}
+
+/* =========================================================
+   城市环境表
+   ========================================================= */
+.geo-env-table {
+  .ant-table { background: transparent; font-size: 12.5px; }
+
+  .ant-table-thead > tr > th {
+    background: transparent;
+    color: var(--g-dim);
+    font-size: 11px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--g-line);
+    padding: 6px 10px;
+
+    &::before { display: none; }
+  }
+
+  .ant-table-tbody > tr > td {
+    border-bottom: 1px solid rgba(var(--g-accent-rgb), 0.06);
+    padding: 8px 10px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ant-table-tbody > tr:last-child > td { border-bottom: none; }
+
+  b { color: var(--g-fg-strong); }
+}
+
+/* =========================================================
+   图表（CO2 折线 / 海冰柱状，自绘 SVG）
+   ========================================================= */
+.geo-chart {
+  &__grid { stroke: var(--g-line); stroke-width: 0.6; }
+  &__tick { fill: var(--g-dim); font-size: 10px; font-variant-numeric: tabular-nums; }
+  &__line {
+    fill: none;
+    stroke: var(--g-accent);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  &__area { fill: rgba(var(--g-accent-rgb), 0.10); }
+  &__dot { fill: var(--g-accent); stroke: var(--g-panel); stroke-width: 2; }
+  &__mark { fill: var(--g-fg-strong); font-size: 11px; font-weight: 700; }
+  &__ref { stroke: #60a5fa; stroke-width: 1.2; opacity: 0.8; }
+  &__ref--warm { stroke: #ef4444; }
+
+  svg { display: block; width: 100%; height: auto; }
+
+  &__caption {
+    margin-top: 8px;
+    font-size: 11.5px;
+    color: var(--g-dim);
+    line-height: 1.7;
+  }
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+.geo-foot {
+  padding: 10px 4px 2px;
+  font-size: 11px;
+  color: var(--g-dim-2);
+  line-height: 1.7;
+  border-top: 1px dashed var(--g-line);
+  margin-top: 4px;
+}
