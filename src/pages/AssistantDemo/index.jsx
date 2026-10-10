@@ -11,29 +11,9 @@ import './index.scss'
 
 const { Paragraph, Text, Title } = Typography
 
-function CodeBlock({ children }) {
-  return <pre className="ad-code">{children}</pre>
-}
 
-function Method({ index, title, desc, code, children }) {
-  return (
-    <section className="ad-method">
-      <Title level={4} className="ad-method-title">
-        <Tag color="blue">方式 {index}</Tag>
-        {title}
-      </Title>
-      <Paragraph className="ad-method-desc">{desc}</Paragraph>
-      <Space wrap className="ad-method-actions">
-        {children}
-      </Space>
-      <CodeBlock>{code}</CodeBlock>
-    </section>
-  )
-}
+import { CodeBlock, Method } from './components/assistantParts.jsx'
 
-/**
- * 快捷助手 Demo —— 演示「在其他页面调用语音助手 / AI Agent 弹窗」的三种方式。
- */
 export default function AssistantDemo() {
   const assistants = useAssistants()
   const [standaloneOpen, setStandaloneOpen] = useState(false)

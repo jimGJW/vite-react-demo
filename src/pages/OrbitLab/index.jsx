@@ -1,151 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { ORBIT_DATA } from './orbitData.js'
+import {
+  meta, SUN, BODIES, DEFAULT_PICK, COMPRESS, SCALE_MODES, MAX_COMPRESSED,
+  positionAt, radiusOf, instantSpeed, phaseTextOf, simDate, formatDays,
+  hitTest, clamp, lerp, withAlpha, sizeOf, SAMPLES, AU_KM, DAY_MS, EPOCH_MS, TAU, DEG,
+} from './components/orbitCore.js'
+import OrbitInfoPanel from './components/OrbitInfoPanel.jsx'
+import OrbitControls from './components/OrbitControls.jsx'
 import './index.scss'
-
-/**
- * 星际轨道（React 主应用版）
- *
- * **数据全部来自 Python**：`scripts/orbit-data.py` 用 JPL 的 J2000 轨道要素（带每儒略世纪
- * 变化率）外推到目标历元，解开普勒方程，输出日心黄道三维坐标采样点 + 真实周期 / 速度 / 距离。
- * 本页只做三件事：比例压缩、视角投影、动画插值 —— 一行天体力学都不算。
- *
- * 为什么必须有个「比例模式」
- *   真实比例下海王星 a = 30.07 AU、水星 a = 0.387 AU，相差 78 倍。1:1 画出来，
- *   水星到太阳只有 3.5px，直接埋进太阳的光晕里 —— 这就是「真实比例下地球只有一个像素」。
- *   所以提供三种径向压缩：真实比例 / 平方根 / 对数。
- *
- * 渲染约定：逐帧变化的东西（日心距、瞬时速度、所处区段、模拟时钟）由 rAF 直写 DOM；
- * 只有「点了才会变」的才进 React state（比例模式 / 视角 / 倍速 / 开关 / 锁定星体）。
- * 于是 60fps 的动画完全不触发 reconciliation。
- *
- * 与之对应的另外两版：`micro-apps/vue-app/src/pages/OrbitLab.vue`、
- * `micro-apps/angular-app/src/app/views/orbit-lab-view.ts`。
- */
-
-/* ============================ 数据解包（模块级，只做一次） ============================ */
-
-const { meta, sun: SUN, planets: BODIES } = ORBIT_DATA
-const SAMPLES = meta.samples
-const AU_KM = 149597870.7
-const DAY_MS = 86400000
-const EPOCH_MS = Date.parse(meta.epoch)
-const TAU = Math.PI * 2
-const DEG = Math.PI / 180
-
-/** 默认锁定地球（它在数据里是第 3 项，下标 2） */
-const DEFAULT_PICK = 2
-
-/* ============================ 纯函数 ============================ */
-
-const clamp = (n, min, max) => Math.min(Math.max(n, min), max)
-const lerp = (a, b, t) => a + (b - a) * t
-
-/** #rrggbb → rgba(...) */
-const withAlpha = (hex, alpha) => {
-  const m = /^#?([0-9a-f]{3}|[0-9a-f]{6})$/i.exec(String(hex ?? '').trim())
-  if (!m) return hex
-  let h = m[1]
-  if (h.length === 3) h = h.split('').map((c) => c + c).join('')
-  const n = parseInt(h, 16)
-  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`
-}
-
-/** 星体绘制半径：真实半径取对数压缩，否则木星要画成水星的 29 倍 */
-const sizeOf = (radiusKm) => Math.max(2.8, 3.0 + 2.6 * Math.log10(radiusKm / 2400))
-
-/**
- * 径向压缩：把「日心距 r」映射成「画布半径 r'」。
- * 三个模式是刻意并列的对照 —— 越往下的模式把内侧拉开得越多，但相对间距就越不真实。
- */
-const COMPRESS = {
-  /* r → r：1:1。海王星撑满画布时，水星只有 3.5px */
-  linear: (r) => r,
-  /* r → √r：折中，内行星能看清，外行星间距仍接近真实排序 */
-  sqrt: (r) => Math.sqrt(r),
-  /* r → log₁₀(1 + r/0.2)：最狠，八条轨道几乎等间距 */
-  log: (r) => Math.log10(1 + r / 0.2),
-}
-
-const SCALE_MODES = [
-  { key: 'linear', label: '真实比例', hint: '1 : 1 线性 —— 内行星会挤进太阳的光晕里，这就是「真实比例下地球只有一个像素」' },
-  { key: 'sqrt', label: '平方根', hint: 'r → √r —— 内行星拉开到看得见，外行星的相对间距还保留' },
-  { key: 'log', label: '对数', hint: 'r → log₁₀(1 + r/0.2) —— 压缩最狠，八条轨道几乎等间距' },
-]
-
-/** 每种压缩模式下「最外圈」（海王星远日点）的压缩半径 —— 只跟模式有关，与画布尺寸无关 */
-const MAX_COMPRESSED = Object.fromEntries(
-  SCALE_MODES.map(({ key }) => [key, COMPRESS[key](BODIES[BODIES.length - 1].aphelionAU)]),
-)
-
-/**
- * 按周期比例取当前位置（线性插值）。
- * 采样点下标 k 对应平近点角 M = meanAnomaly + 360·k/SAMPLES，而 M 与时间成正比，
- * 所以「按时间均匀」=「按下标均匀」，插值误差在屏幕上小于 0.04px。
- */
-const positionAt = (body, phase) => {
-  const { x, y, z } = body.orbit
-  const f = (((phase % 1) + 1) % 1) * SAMPLES
-  const i0 = Math.floor(f) % SAMPLES
-  const i1 = (i0 + 1) % SAMPLES
-  const t = f - Math.floor(f)
-  return {
-    x: lerp(x[i0], x[i1], t),
-    y: lerp(y[i0], y[i1], t),
-    z: lerp(z[i0], z[i1], t),
-  }
-}
-
-const radiusOf = (p) => Math.hypot(p.x, p.y, p.z)
-
-/**
- * 瞬时速度（km/s）：对 Python 给的相邻采样点做数值微分。
- * 相邻采样点的间隔恒为 P/SAMPLES 天，所以这就是 |Δr|/Δt，不需要再解任何方程。
- */
-const instantSpeed = (body, phase) => {
-  const a = positionAt(body, phase)
-  const b = positionAt(body, phase + 1 / SAMPLES)
-  const dr = Math.hypot(b.x - a.x, b.y - a.y, b.z - a.z)
-  const dt = (body.periodDays / SAMPLES) * 86400
-  return (dr * AU_KM) / dt
-}
-
-/** 由日心距判断跑到轨道哪一段了 */
-const phaseTextOf = (body, phase) => {
-  const r = radiusOf(positionAt(body, phase))
-  const mid = (body.perihelionAU + body.aphelionAU) / 2
-  if (r < lerp(body.perihelionAU, mid, 0.34)) return '近日点附近（最快）'
-  if (r < mid) return '离开近日点'
-  if (r < lerp(mid, body.aphelionAU, 0.66)) return '接近远日点'
-  return '远日点附近（最慢）'
-}
-
-/** 模拟时钟：起始历元 + 已流逝天数 */
-const simDate = (days) => {
-  const d = new Date(EPOCH_MS + days * DAY_MS)
-  if (Number.isNaN(d.getTime())) return '—'
-  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`
-}
-
-const formatDays = (days) => {
-  const d = Math.max(0, days)
-  if (d < 1000) return `${d.toFixed(1)} 天`
-  if (d < 365250) return `${(d / 365.25).toFixed(2)} 年`
-  return `${(d / 365250).toFixed(2)} 千年`
-}
-
-/** 命中测试：从最外层往回找（外层后画，压在上层） */
-function hitTest(el, screen, e) {
-  if (!el) return -1
-  const rect = el.getBoundingClientRect()
-  const x = e.clientX - rect.left
-  const y = e.clientY - rect.top
-  for (let i = BODIES.length - 1; i >= 0; i -= 1) {
-    const p = screen[i]
-    if (!p) continue
-    if (Math.hypot(p.x - x, p.y - y) <= sizeOf(BODIES[i].radiusKm) + 9) return i
-  }
-  return -1
-}
 
 /* ============================ 组件 ============================ */
 
@@ -544,91 +405,18 @@ export default function OrbitLab() {
             onPointerLeave={onPointerLeave}
             onClick={onStageClick}
           />
-
-          {/* 参数面板常显（默认锁定地球）—— 真实量，不留占位符 */}
-          <div className="ol-panel">
-            <div className="ol-panel__title">
-              <span className="ol-panel__dot" style={{ background: focused.color }} />
-              <b>{focused.name}</b>
-              <em>{focused.en}</em>
-              {pinned && <i className="ol-panel__pin">已锁定</i>}
-            </div>
-            <dl className="ol-panel__grid">
-              <div><dt>日心距 r</dt><dd data-live="radius">{radiusOf(positionAt(focused, 0)).toFixed(3)} AU</dd></div>
-              <div><dt>瞬时速度</dt><dd data-live="speed">{instantSpeed(focused, 0).toFixed(2)} km/s</dd></div>
-              <div><dt>半长轴 a</dt><dd>{focused.a.toFixed(4)} AU</dd></div>
-              <div><dt>偏心率 e</dt><dd>{focused.e.toFixed(4)}</dd></div>
-              <div><dt>轨道倾角 i</dt><dd>{focused.incl.toFixed(2)}°</dd></div>
-              <div><dt>公转周期 P</dt><dd>{focused.periodYears >= 1 ? `${focused.periodYears.toFixed(2)} 年` : `${focused.periodDays.toFixed(2)} 天`}</dd></div>
-              <div><dt>近日点</dt><dd>{focused.perihelionAU.toFixed(4)} AU</dd></div>
-              <div><dt>远日点</dt><dd>{focused.aphelionAU.toFixed(4)} AU</dd></div>
-              <div><dt>速度区间</dt><dd>{focused.speed.perihelion.toFixed(2)} ~ {focused.speed.aphelion.toFixed(2)}</dd></div>
-              <div><dt>所处区段</dt><dd data-live="phase">近日点附近（最快）</dd></div>
-            </dl>
-            <p className="ol-panel__note">
-              {focused.note}
-              <br />
-              平均半径 {focused.radiusKm.toLocaleString()} km · 质量 {focused.massEarth} 地球
-              {focused.moons > 0 && <> · 已知卫星 {focused.moons} 颗（画布上示意 {Math.min(focused.moons, 4)} 颗）</>}
-            </p>
-          </div>
+          <OrbitInfoPanel focused={focused} pinned={pinned} />
         </div>
 
-        <div className="ol-controls">
-          <span className="ol-label">比例模式</span>
-          <span className="ol-tabs">
-            {SCALE_MODES.map((m) => (
-              <button
-                key={m.key}
-                type="button"
-                className={`ol-tab${m.key === scaleMode ? ' is-on' : ''}`}
-                onClick={() => onScaleMode(m.key)}
-                title={m.hint}
-              >
-                {m.label}
-              </button>
-            ))}
-          </span>
-
-          <span className="ol-label">视角</span>
-          <input
-            className="ol-range ol-range--sm"
-            type="range" min="0" max="80" step="1"
-            value={tilt} onChange={onTilt} aria-label="视角倾角"
-          />
-          <span className="ol-tag">{tilt}°</span>
-
-          <span className="ol-label">时间倍速</span>
-          <input
-            className="ol-range"
-            type="range" min="0" max="4" step="0.05"
-            value={speedExp} onChange={onSpeed} aria-label="时间倍速"
-          />
-          <span className="ol-tag">{speedLabel}</span>
-
-          <button type="button" className={`ol-btn${paused ? ' is-on' : ''}`} onClick={togglePause}>
-            {paused ? '继续' : '暂停'}
-          </button>
-          <button type="button" className="ol-btn" onClick={resetEpoch}>回到历元</button>
-
-          <label className="ol-check">
-            <input type="checkbox" checked={showOrbits} onChange={() => toggle('orbits')} />轨道线
-          </label>
-          <label className="ol-check">
-            <input type="checkbox" checked={showTrails} onChange={() => toggle('trails')} />轨迹
-          </label>
-          <label className="ol-check">
-            <input type="checkbox" checked={showLabels} onChange={() => toggle('labels')} />名称
-          </label>
-
-          <span className="ol-spacer" />
-          <span className="ol-tag ol-tag--info">点行星可锁定</span>
-          <span className="ol-tag ol-tag--ok" data-live="clock">0.0 天 · {simDate(0)}</span>
-        </div>
+        <OrbitControls
+          scaleMode={scaleMode} tilt={tilt} speedExp={speedExp} speedLabel={speedLabel}
+          paused={paused} showOrbits={showOrbits} showTrails={showTrails} showLabels={showLabels}
+          onScaleMode={onScaleMode} onTilt={onTilt} onSpeed={onSpeed}
+          togglePause={togglePause} resetEpoch={resetEpoch} toggle={toggle}
+        />
 
         <p className="ol-mode-hint">{mode.hint}</p>
       </section>
-
       <section className="ol-card">
         <h3>这份数据里能看出什么</h3>
         <ul className="ol-notes">

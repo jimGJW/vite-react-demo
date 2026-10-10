@@ -28,14 +28,8 @@ import './index.scss'
  */
 
 /** 取某个 demo 声明的参数默认值 —— 纯函数，放在模块级避免进依赖 */
-const defaultsFor = (index) => Object.fromEntries(
-  (DEMOS[index]?.params ?? []).map((p) => [p.key, p.value]),
-)
 
-/** 下标 → 所属分组序号。分组是连续区间，所以线性扫一遍就够（模块级算一次） */
-const GROUP_OF = DEMOS.map((_, i) => DEMO_GROUPS.findIndex((g) => i >= g.from && i <= g.to))
-
-const pad2 = (n) => String(n + 1).padStart(2, '0')
+import { defaultsFor, GROUP_OF, pad2 } from './components/playgroundUtils.js'
 
 export default function Playground() {
   const [active, setActive] = useState(0)

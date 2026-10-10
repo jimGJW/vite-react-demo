@@ -6,6 +6,19 @@ import './index.scss'
  * 命令面板演示页
  * 展示 CommandPalette 的接入方式与若干示例命令（导航 / 操作 / 帮助）。
  */
+
+const commands = [
+  {
+    id: 'save',
+    label: '保存',
+    group: '操作',
+    icon: '💾',
+    keywords: ['save', '保存'],
+    action: (cmd) => save(),
+  },
+  // ...
+]
+
 export default function CommandPaletteDemo() {
   const [last, setLast] = useState(null)
   const [closeCount, setCloseCount] = useState(0)
@@ -137,17 +150,6 @@ export default function CommandPaletteDemo() {
       <h2>用法</h2>
       <pre className="demo-code">{`import CommandPalette from '../components/CommandPalette'
 
-const commands = [
-  {
-    id: 'save',
-    label: '保存',
-    group: '操作',
-    icon: '💾',
-    keywords: ['save', '保存'],
-    action: (cmd) => save(),
-  },
-  // ...
-]
 
 <CommandPalette
   commands={commands}
