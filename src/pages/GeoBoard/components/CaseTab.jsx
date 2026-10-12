@@ -1,5 +1,7 @@
 import { Panel, Metric } from './ui.jsx'
 import { magBand, depthClass } from '../../../lib/earth/glossary.js'
+import { getTerm } from '../../../lib/boards/relations.js'
+import KeyTermCard from '../../../components/KeyTermCard/KeyTermCard.jsx'
 
 /**
  * 地球看板「📚 案例」页签：用本看板的维度（震级分档色 / 震源深度带 / 火山航空色码）
@@ -58,9 +60,11 @@ const CASES = [
   },
 ]
 
-export default function CaseTab() {
+export default function CaseTab({ theme = 'dark' }) {
+  const keyTerm = getTerm('earth', 'depth')
   return (
     <div className="geo-case-list">
+      <KeyTermCard term={keyTerm} theme={theme} />
       {CASES.map((c) => (
         <Panel key={c.id} title={c.title} source={c.source} icon={c.icon}>
           <div className="geo-case__date">📅 {c.date}</div>

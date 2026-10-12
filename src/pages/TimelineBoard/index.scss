@@ -1,0 +1,23 @@
+/* 时空档案页：tab 栏吸顶，长内容切换时始终可见导航 */
+.tl-tabs {
+  .ant-tabs-nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    margin-bottom: 16px;
+    padding: 4px 6px;
+    border-radius: 10px;
+    background: rgba(128, 128, 128, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  /* 外层激活条 + 内层子 tab 激活条都用看板主色区分，避免视觉混淆 */
+  .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: var(--tl-accent, #722ed1);
+  }
+
+  .ant-tabs-ink-bar {
+    background: var(--tl-accent, #722ed1);
+  }
+}

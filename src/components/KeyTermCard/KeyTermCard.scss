@@ -1,0 +1,97 @@
+/* KeyTermCard —— 案例页「📌 关键名词」卡。深/浅色由 .light 修饰类切换。 */
+
+.kterm {
+  --kterm-bg: rgba(124, 92, 255, 0.08);
+  --kterm-border: rgba(124, 92, 255, 0.35);
+  --kterm-text: #e8eaf2;
+  --kterm-sub: #aab0c4;
+  --kterm-accent: #9b8cff;
+
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--kterm-border);
+  border-left: 3px solid var(--kterm-accent);
+  border-radius: 10px;
+  background: var(--kterm-bg);
+  color: var(--kterm-text);
+
+  &__h {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  &__pin {
+    font-size: 15px;
+  }
+
+  &__name {
+    color: var(--kterm-accent);
+  }
+
+  &__unit {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--kterm-sub);
+  }
+
+  &__tag {
+    margin-left: auto;
+    padding: 1px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--kterm-border);
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--kterm-sub);
+  }
+
+  &__what {
+    margin: 9px 0 0;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--kterm-text);
+  }
+
+  &__rows {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 8px;
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
+
+  &__row-h {
+    flex: none;
+    color: var(--kterm-accent);
+    font-weight: 600;
+  }
+
+  &__row-b {
+    color: var(--kterm-sub);
+  }
+
+  &__foot {
+    margin: 11px 0 0;
+    font-size: 11px;
+    color: var(--kterm-sub);
+    opacity: 0.82;
+  }
+
+  /* 浅色主题 */
+  &.light {
+    --kterm-bg: rgba(94, 53, 177, 0.06);
+    --kterm-border: rgba(94, 53, 177, 0.3);
+    --kterm-text: #1f2333;
+    --kterm-sub: #5a607a;
+    --kterm-accent: #5b3fb8;
+  }
+}

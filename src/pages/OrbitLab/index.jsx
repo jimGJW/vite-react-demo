@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   meta, SUN, BODIES, DEFAULT_PICK, COMPRESS, SCALE_MODES, MAX_COMPRESSED,
   positionAt, radiusOf, instantSpeed, phaseTextOf, simDate, formatDays,
-  hitTest, clamp, lerp, withAlpha, sizeOf, SAMPLES, AU_KM, DAY_MS, EPOCH_MS, TAU, DEG,
+  hitTest, clamp, lerp, withAlpha, sizeOf, SAMPLES, TAU, DEG,
 } from './components/orbitCore.js'
 import OrbitInfoPanel from './components/OrbitInfoPanel.jsx'
 import OrbitControls from './components/OrbitControls.jsx'

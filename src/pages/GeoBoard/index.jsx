@@ -18,7 +18,7 @@
  */
 
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { Button, Tabs, Tooltip, ConfigProvider, theme as antdTheme } from 'antd'
 import { ReloadOutlined, GlobalOutlined, BulbOutlined, MoonOutlined } from '@ant-design/icons'
 import { useGeoData } from '../../lib/geo/useGeoData.js'
@@ -29,16 +29,31 @@ import EpicTab from './components/EpicTab.jsx'
 import EonetTab from './components/EonetTab.jsx'
 import ClimateTab from './components/ClimateTab.jsx'
 import VolcanoTab from './components/VolcanoTab.jsx'
-import DictTab from './components/DictTab.jsx'
+// DictTab 已集中到 /timeline 聚合名词库（名词解析统一入口），本看板不再单独持有名词页签
 import CaseTab from './components/CaseTab.jsx'
 import Clock from '../../components/Clock.jsx'
+import RelatedData from '../../components/RelatedData/index.jsx'
+import { TAB_KEYS } from '../../lib/boards/relations.js'
+import { healthOf } from '../../lib/boards/health.js'
 import './index.scss'
 
-export default function GeoBoard() {
+export default function GeoBoard({ lockedTab = null } = {}) {
   const {
     quakes, epic, env, eonet, ghg, seaIce, tempAnomaly, bigQuakes, volcanoes, tsunami, reloadAll,
   } = useGeoData()
   const [theme, setTheme] = useState(readTheme)
+
+  /* 页签与 URL 同步：别处「关联数据」跳 ?tab=xxx 过来时要能直接落到目标页签，
+     否则读完关联理由点进去却停在默认页，等于白跳。非法参数回落到默认页签。 */
+  const [searchParams, setSearchParams] = useSearchParams()
+  const tabParam = searchParams.get('tab')
+  const activeTab = TAB_KEYS.geo.includes(tabParam) ? tabParam : 'quake'
+  const onTabChange = (k) => setSearchParams({ tab: k }, { replace: true })
+
+  /** 本看板实时健康度：给「关联数据」底部的三方监控条用 */
+  const health = healthOf([
+    quakes, epic, env, eonet, ghg, seaIce, tempAnomaly, bigQuakes, volcanoes, tsunami,
+  ])
 
   const quakeData = quakes.data?.ok ? quakes.data : null
   const epicData = epic.data?.ok ? epic.data : null
@@ -209,7 +224,9 @@ export default function GeoBoard() {
 
         <Tabs
           className="geo-tabs"
-          defaultActiveKey="quake"
+          activeKey={lockedTab || activeTab}
+          onChange={lockedTab ? () => {} : onTabChange}
+          tabBarStyle={lockedTab ? { display: 'none' } : undefined}
           size="large"
           items={[
             {
@@ -263,17 +280,15 @@ export default function GeoBoard() {
               ),
             },
             {
-              key: 'dict',
-              label: '📖 名词解释',
-              children: <DictTab theme={theme} />,
-            },
-            {
               key: 'cases',
               label: '📚 案例',
-              children: <CaseTab />,
+              children: <CaseTab theme={theme} />,
             },
           ]}
         />
+
+        {/* 关联数据：随当前激活页签变化，给出可以对照着读的其他模块（含跨看板） */}
+        <RelatedData board="geo" tab={activeTab} theme={theme} health={health} />
 
         <footer className="geo-foot">
           全部数据来自公开免费接口（EMSC / NASA EPIC / NASA EONET / Open-Meteo / NOAA GML / NASA GISTEMP /

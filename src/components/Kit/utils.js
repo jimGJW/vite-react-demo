@@ -1,3 +1,5 @@
+import { clamp } from '../Utils/index.js'
+
 /* =====================================================================
  * Kit · 纯函数工具集
  * ---------------------------------------------------------------------
@@ -40,11 +42,8 @@ export function arrayMove(list, from, to) {
   return next
 }
 
-/** 把数值夹在 [min, max] 区间内。 */
-export function clamp(value, min, max) {
-  if (!Number.isFinite(value)) return min
-  return Math.min(Math.max(value, min), max)
-}
+/** 把数值夹在 [min, max] 区间内。实现收敛到 Utils，这里只做转出，保持 Kit 的对外导出面不变。 */
+export { clamp }
 
 /**
  * 归一化为时间戳。接受 Date / number / 时间字符串。

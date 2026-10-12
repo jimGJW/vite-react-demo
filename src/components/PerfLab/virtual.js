@@ -1,3 +1,7 @@
+import { clamp } from '../Utils/index.js'
+
+export { clamp }
+
 /* =====================================================================
    虚拟滚动核心算法（零依赖纯函数）
 
@@ -6,13 +10,7 @@
    （见 tests/unit/perf-lab.test.mjs），不用开浏览器验证边界。
    ===================================================================== */
 
-/** 把 n 夹在 [min, max] 区间内；非数字一律回落到 min */
-export function clamp(n, min, max) {
-  if (typeof n !== 'number' || Number.isNaN(n)) return min
-  if (n < min) return min
-  if (n > max) return max
-  return n
-}
+
 
 /**
  * 计算可见行区间。

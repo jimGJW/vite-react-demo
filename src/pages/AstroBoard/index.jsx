@@ -45,6 +45,7 @@ import {
   meteorShowerStatus,
   stargazingWindow,
 } from '../../lib/astro/orbital.js'
+import { useSearchParams } from 'react-router-dom'
 import './index.scss'
 
 import { useNow, useTheme, fmtUTC, Metric } from './components/ui.jsx'
@@ -54,16 +55,31 @@ import SunTab from './components/SunTab.jsx'
 import SkyTab from './components/SkyTab.jsx'
 import ApodTab from './components/ApodTab.jsx'
 import DeepTab from './components/DeepTab.jsx'
-import DictTab from './components/DictTab.jsx'
+// DictTab 已集中到 /timeline 的聚合名词库，本看板不再单独持有名词页签
 import LaunchTab from './components/LaunchTab.jsx'
 import CaseTab from './components/CaseTab.jsx'
+import RelatedData from '../../components/RelatedData/index.jsx'
+import { TAB_KEYS } from '../../lib/boards/relations.js'
+import { healthOf } from '../../lib/boards/health.js'
 
-export default function AstroBoard() {
+export default function AstroBoard({ lockedTab = null } = {}) {
   const { iss, stations, spaceWeather, exoplanets, neo, launches, solarActivity, aurora, solarCycle, apod, reloadAll } = useAstroData()
   const [selected, setSelected] = useState('css-tianhe')
   const [galaxyView, setGalaxyView] = useState('结构')
   const [passCity, setPassCity] = useState('北京')
   const [theme, setTheme] = useTheme()
+
+  /* 页签与 URL 同步：别处「关联数据」跳 ?tab=xxx 过来时要能直接落到目标页签，
+     否则读完关联理由点进去却停在默认页，等于白跳。非法参数回落到默认页签。 */
+  const [searchParams, setSearchParams] = useSearchParams()
+  const tabParam = searchParams.get('tab')
+  const activeTab = TAB_KEYS.astro.includes(tabParam) ? tabParam : 'earth'
+  const onTabChange = (k) => setSearchParams({ tab: k }, { replace: true })
+
+  /** 本看板实时健康度：给「关联数据」底部的三方监控条用 */
+  const health = healthOf([
+    iss, stations, spaceWeather, exoplanets, neo, launches, solarActivity, aurora, solarCycle, apod,
+  ])
   // 星图状态
   const [skyCity, setSkyCity] = useState('北京')
   const [magLimit, setMagLimit] = useState(4.5)
@@ -367,7 +383,9 @@ export default function AstroBoard() {
 
       <Tabs
         className="astro-tabs"
-        defaultActiveKey="earth"
+        activeKey={lockedTab || activeTab}
+        onChange={lockedTab ? () => {} : onTabChange}
+        tabBarStyle={lockedTab ? { display: 'none' } : undefined}
         size="large"
         items={[
           { key: 'earth', label: '🌍 地球附近', children: <EarthTab iss={iss} stations={stations} selected={selected} setSelected={setSelected} positions={positions} active={active} track={track} sun={sun} moon={moon} visibleTo={visibleTo} passes={passes} passCity={passCity} setPassCity={setPassCity} /> },
@@ -376,11 +394,13 @@ export default function AstroBoard() {
           { key: 'sky', label: '✨ 今晚星空', children: <SkyTab skyCity={skyCity} setSkyCity={setSkyCity} magLimit={magLimit} setMagLimit={setMagLimit} showLines={showLines} setShowLines={setShowLines} showDso={showDso} setShowDso={setShowDso} showLabels={showLabels} setShowLabels={setShowLabels} catalog={catalog} catalogError={catalogError} now={now} planets={planets} moon={moon} sun={sun} active={active} skyObs={skyObs} skyNow={skyNow} sunHorizon={sunHorizon} moonHorizon={moonHorizon} planetHorizon={planetHorizon} visibleConsts={visibleConsts} stargazing={stargazing} stargazingScore={stargazingScore} showers={showers} /> },
           { key: 'apod', label: '🖼 天文一图', children: <ApodTab apod={apod} apodData={apodData} /> },
           { key: 'deep', label: '🌌 深空', children: <DeepTab exoplanets={exoplanets} galaxyView={galaxyView} setGalaxyView={setGalaxyView} /> },
-          { key: 'dict', label: '📖 名词解释', children: <DictTab /> },
           { key: 'launch', label: '🚀 航天发射', children: <LaunchTab launches={launches} launchData={launchData} /> },
-          { key: 'cases', label: '📚 案例', children: <CaseTab /> },
+          { key: 'cases', label: '📚 案例', children: <CaseTab theme={theme} /> },
         ]}
       />
+
+      {/* 关联数据：随当前激活页签变化，给出可以对照着读的其他模块（含跨看板） */}
+      <RelatedData board="astro" tab={activeTab} theme={theme} health={health} />
 
       <footer className="astro-foot">
         全部数据来自公开免费接口（wheretheiss / Celestrak / NOAA SWPC / NASA NEO / NASA Exoplanet Archive / Launch Library 2），仅用于科普与可视化展示，不适用于导航或工程用途。

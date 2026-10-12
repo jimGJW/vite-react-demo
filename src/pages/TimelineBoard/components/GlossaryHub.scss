@@ -1,0 +1,72 @@
+/* 名词库聚合模块（时间版本 / 时空档案页）。
+   文字与边框颜色复用 DictView 的 --dv-* 变量，按 data-gh-theme 切换深 / 浅色，
+   与三看板原名词页签保持同一套配色语言。 */
+
+.gh-root {
+  --dv-panel: #ffffff;
+  --dv-panel-2: #f8fafc;
+  --dv-line: #e2e8f0;
+  --dv-fg: #0f172a;
+  --dv-dim: #64748b;
+  --dv-accent: #0e9f6e;
+}
+
+.gh-root[data-gh-theme='dark'] {
+  --dv-panel: #101820;
+  --dv-panel-2: #16202b;
+  --dv-line: #24303d;
+  --dv-fg: #e6edf5;
+  --dv-dim: #8aa0b6;
+  --dv-accent: #38bdf8;
+}
+
+.gh-head {
+  margin-bottom: 4px;
+}
+
+.gh-title {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 10px;
+  font-size: 18px;
+  color: var(--dv-fg);
+}
+
+.gh-sub {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--dv-dim);
+}
+
+.gh-search {
+  max-width: 440px;
+}
+
+.gh-intro {
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: var(--dv-dim);
+  margin: 10px 0 0;
+
+  b {
+    color: var(--dv-fg);
+  }
+}
+
+.gh-count {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--dv-accent);
+}
+
+.gh-block {
+  margin-top: 24px;
+
+  &__h {
+    margin: 0 0 12px;
+    font-size: 15px;
+    color: var(--dv-fg);
+  }
+}

@@ -1,0 +1,358 @@
+/* 关联数据模块 —— 自带样式，不依赖三块看板各自的 a / g / o 前缀 CSS 变量。
+   注意：CSS 注释不能提前闭合，注释正文里不要写出「星号紧跟斜杠」这样的字符组合。
+   深色为默认，浅色由 .light 修饰类切换（与 DictView 同套约定）。 */
+
+.rd {
+  --rd-bg: rgba(255, 255, 255, 0.04);
+  --rd-border: rgba(255, 255, 255, 0.12);
+  --rd-text: #e6edf7;
+  --rd-sub: rgba(230, 237, 247, 0.55);
+  --rd-card-hover: rgba(255, 255, 255, 0.08);
+  --rd-live: #52c41a;
+
+  margin-top: 18px;
+  padding: 14px 16px 16px;
+  border: 1px solid var(--rd-border);
+  border-radius: 10px;
+  background: var(--rd-bg);
+  color: var(--rd-text);
+
+  &__h {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 0 0 12px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  &__hicon {
+    font-size: 13px;
+  }
+
+  &__hsub {
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--rd-sub);
+  }
+
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 10px;
+  }
+
+  &__card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 12px;
+    border: 1px solid var(--rd-border);
+    border-left: 3px solid var(--rd-accent, #722ed1);
+    border-radius: 8px;
+    background: transparent;
+    transition: background 0.18s ease, transform 0.18s ease;
+
+    &:hover {
+      background: var(--rd-card-hover);
+      transform: translateY(-1px);
+    }
+
+    &.is-open {
+      background: var(--rd-card-hover);
+    }
+  }
+
+  &__top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--rd-accent, #722ed1);
+      outline-offset: 2px;
+    }
+  }
+
+  &__icon {
+    font-size: 14px;
+  }
+
+  &__board {
+    font-weight: 600;
+    color: var(--rd-accent, #722ed1);
+  }
+
+  &__sep {
+    opacity: 0.4;
+  }
+
+  &__tab {
+    font-weight: 500;
+  }
+
+  &__go {
+    margin-left: auto;
+    opacity: 0.45;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+  }
+
+  &__card:hover &__go {
+    opacity: 1;
+    transform: translateX(3px);
+  }
+
+  &__why {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--rd-sub);
+  }
+
+  /* ---------- 三方监控条（细行版，默认在底部） ---------- */
+
+  &__mon {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 12px;
+    padding-top: 9px;
+    border-top: 1px solid var(--rd-border);
+    font-size: 11px;
+    color: var(--rd-sub);
+  }
+
+  &__pulse {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--rd-live);
+    animation: rd-pulse 2.6s ease-in-out infinite;
+  }
+
+  &__mon-h {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    opacity: 0.7;
+  }
+
+  &__mon-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 7px;
+    width: 100%;
+  }
+
+  &__mon-chip {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 6px 9px;
+    border: 0;
+    border-left: 2px solid var(--rd-accent, #722ed1);
+    border-radius: 6px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.18s ease;
+
+    &:hover {
+      background: var(--rd-card-hover);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--rd-accent, #722ed1);
+      outline-offset: 1px;
+    }
+
+    /* 当前看板：淡底高亮，不抢眼 */
+    &.is-self {
+      background: var(--rd-card-hover);
+    }
+  }
+
+  &__mon-top {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+  }
+
+  &__mon-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--rd-accent, #722ed1);
+  }
+
+  &__mon-name {
+    font-weight: 600;
+    color: var(--rd-accent, #722ed1);
+  }
+
+  &__mon-arrow {
+    margin-left: auto;
+    opacity: 0.4;
+  }
+
+  &__mon-live {
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+    color: var(--rd-sub);
+  }
+
+  /* 在盯什么：常态平铺，不再藏进 hover */
+  &__mon-scope {
+    font-size: 11px;
+    line-height: 1.45;
+    color: var(--rd-sub);
+  }
+
+  /* ---------- 资料解释展开区 ---------- */
+
+  &__toggle {
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 0;
+    border: 0;
+    background: none;
+    color: var(--rd-accent, #722ed1);
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  &__chev {
+    font-size: 9px;
+    opacity: 0.7;
+  }
+
+  &__tn {
+    padding: 0 6px;
+    border: 1px solid var(--rd-border);
+    border-radius: 8px;
+    color: var(--rd-sub);
+    font-size: 11px;
+  }
+
+  &__detail {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--rd-border);
+  }
+
+  &__dtext {
+    font-size: 12px;
+    line-height: 1.75;
+    color: var(--rd-text);
+  }
+
+  &__terms {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__terms-h {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--rd-sub);
+  }
+
+  &__term {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 10px;
+    border: 1px solid var(--rd-border);
+    border-radius: 7px;
+    background: var(--rd-card-hover);
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.18s ease;
+
+    &:hover {
+      border-color: var(--rd-accent, #722ed1);
+    }
+  }
+
+  &__term-hd {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 12px;
+  }
+
+  &__term-zh {
+    font-weight: 600;
+  }
+
+  &__term-unit {
+    font-size: 11px;
+    color: var(--rd-sub);
+  }
+
+  &__term-go {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--rd-accent, #722ed1);
+    opacity: 0.8;
+  }
+
+  &__term-what,
+  &__term-scale,
+  &__term-so {
+    font-size: 11px;
+    line-height: 1.65;
+    color: var(--rd-sub);
+
+    b {
+      margin-right: 5px;
+      color: var(--rd-text);
+      font-weight: 600;
+    }
+  }
+}
+
+/* 三方监控条的呼吸点：只在细行左侧，做「在线」的暗示，不抢视线 */
+@keyframes rd-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+/* 浅色主题 */
+.rd.light {
+  --rd-bg: #f7f9fc;
+  --rd-border: rgba(20, 40, 80, 0.14);
+  --rd-text: #1c2430;
+  --rd-sub: rgba(28, 36, 48, 0.62);
+  --rd-card-hover: rgba(20, 40, 80, 0.05);
+  --rd-live: #389e0d;
+}

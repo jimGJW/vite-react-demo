@@ -6,11 +6,17 @@ import {
   ControlOutlined, DownloadOutlined, FunctionOutlined,
   CalculatorOutlined, ClockCircleOutlined, ThunderboltOutlined,
 } from '@ant-design/icons'
-import {
-  DemoCard, FreqDemos, FormatDemos, ArrayDemos, TreeDemos,
-  StorageDemos, InteractDemos, StateDemos, ExportDemos,
-  TextKitDemos, CalcKitDemos, NewHookDemos,
-} from './components/Demos.jsx'
+import FreqDemos from './components/FreqDemos.jsx'
+import FormatDemos from './components/FormatDemos.jsx'
+import ArrayDemos from './components/ArrayDemos.jsx'
+import TreeDemos from './components/TreeDemos.jsx'
+import StorageDemos from './components/StorageDemos.jsx'
+import InteractDemos from './components/InteractDemos.jsx'
+import StateDemos from './components/StateDemos.jsx'
+import ExportDemos from './components/ExportDemos.jsx'
+import TextKitDemos from './components/TextKitDemos.jsx'
+import CalcKitDemos from './components/CalcKitDemos.jsx'
+import NewHookDemos from './components/NewHookDemos.jsx'
 import './index.scss'
 
 const { Title, Paragraph, Text } = Typography

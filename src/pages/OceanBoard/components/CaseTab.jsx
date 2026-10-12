@@ -1,5 +1,7 @@
 import { Panel, Metric } from './ui.jsx'
 import { waveLevel } from '../../../lib/earth/glossary.js'
+import { getTerm } from '../../../lib/boards/relations.js'
+import KeyTermCard from '../../../components/KeyTermCard/KeyTermCard.jsx'
 
 /**
  * 海洋看板「📚 案例」页签：用本看板的维度（有效波高分级 / 飓风分级 / ONI 厄尔尼诺指数）
@@ -55,9 +57,11 @@ const CASES = [
   },
 ]
 
-export default function CaseTab() {
+export default function CaseTab({ theme = 'dark' }) {
+  const keyTerm = getTerm('earth', 'waveHeight')
   return (
     <div className="o-case-list">
+      <KeyTermCard term={keyTerm} theme={theme} />
       {CASES.map((c) => (
         <Panel key={c.id} title={c.title} source={c.source} icon={c.icon}>
           <div className="o-case__date">📅 {c.date}</div>

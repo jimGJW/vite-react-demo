@@ -1,0 +1,169 @@
+/* 数据总结区块样式：只总结深空 / 地球 / 海洋三方的数据现状 */
+.tl-summary {
+  margin-top: 18px;
+}
+
+.tl-summary__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 20px;
+  margin-bottom: 12px;
+}
+
+.tl-summary__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #e6edf7;
+}
+
+.tl-summary__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin-left: auto;
+  font-size: 12px;
+  color: rgba(230, 237, 247, 0.62);
+}
+.tl-summary__meta b {
+  margin: 0 2px;
+  font-size: 14px;
+  color: #e6edf7;
+}
+.tl-summary__meta .ok b { color: #52c41a; }
+.tl-summary__meta .bad b { color: #ff4d4f; }
+.tl-summary__meta .wait b { color: #fa8c16; }
+
+.tl-summary__cols {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.tl-summary__col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 2px solid var(--tl-accent, #722ed1);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.tl-summary__chd {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.tl-summary__bicon { flex: 0 0 auto; }
+
+.tl-summary__bname {
+  font-weight: 700;
+  color: var(--tl-accent, #722ed1);
+}
+
+.tl-summary__bnum {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+  color: rgba(230, 237, 247, 0.7);
+}
+
+.tl-summary__bar {
+  height: 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.tl-summary__bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.6s ease;
+}
+
+/* 源清单：这块板在监控什么，逐个标状态点 */
+.tl-summary__srcs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.tl-summary__srcs li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.tl-summary__srcs .tl-summary__dot {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: rgba(230, 237, 247, 0.28);
+}
+.tl-summary__srcs li.is-ok .tl-summary__dot {
+  background: #52c41a;
+  box-shadow: 0 0 6px rgba(82, 196, 26, 0.8);
+}
+.tl-summary__srcs li.is-down .tl-summary__dot {
+  background: #ff4d4f;
+}
+
+.tl-summary__sname {
+  flex: 1;
+  color: #e6edf7;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tl-summary__scycle {
+  flex: 0 0 auto;
+  font-size: 11px;
+  color: rgba(230, 237, 247, 0.45);
+}
+
+.tl-summary__cft {
+  display: flex;
+  gap: 16px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.12);
+  font-size: 11px;
+  color: rgba(230, 237, 247, 0.55);
+}
+.tl-summary__cft b {
+  color: #e6edf7;
+  font-weight: 600;
+}
+
+/* 浅色主题 */
+.tl-summary.light .tl-summary__title,
+.tl-summary.light .tl-summary__sname,
+.tl-summary.light .tl-summary__cft b {
+  color: #1c2430;
+}
+.tl-summary.light .tl-summary__meta,
+.tl-summary.light .tl-summary__bnum,
+.tl-summary.light .tl-summary__cft {
+  color: rgba(28, 36, 48, 0.6);
+}
+.tl-summary.light .tl-summary__meta b { color: #1c2430; }
+.tl-summary.light .tl-summary__col {
+  background: rgba(28, 36, 48, 0.03);
+  border-color: rgba(28, 36, 48, 0.1);
+}
+.tl-summary.light .tl-summary__bar { background: rgba(28, 36, 48, 0.1); }
+.tl-summary.light .tl-summary__scycle { color: rgba(28, 36, 48, 0.45); }
+.tl-summary.light .tl-summary__srcs .tl-summary__dot { background: rgba(28, 36, 48, 0.25); }
+.tl-summary.light .tl-summary__cft { border-top-color: rgba(28, 36, 48, 0.14); }

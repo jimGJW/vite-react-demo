@@ -1,6 +1,6 @@
+import { clamp } from '../../Utils/index.js'
 import { useEffect, useRef, useState } from 'react'
 
-const clamp = (v, min, max) => Math.min(max, Math.max(min, v))
 
 /**
  * 自由拖拽 + 缩放布局：卡片以百分比定位，可拖动移动、拖角缩放，落位自动限制在容器内。

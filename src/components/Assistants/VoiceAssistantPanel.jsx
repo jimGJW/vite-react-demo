@@ -1,3 +1,4 @@
+import { clamp } from '../Utils/index.js'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import VoiceInput from '../VoiceInput/index.jsx'
 import './VoiceAssistantPanel.scss'
@@ -41,9 +42,7 @@ function savePos(key, pos) {
   } catch { /* ignore */ }
 }
 
-function clamp(v, min, max) {
-  return Math.min(max, Math.max(min, v))
-}
+
 
 /**
  * 语音助手弹窗组件

@@ -2,20 +2,32 @@
  * 时间版本页（/timeline）——「数据看板」家族的第四页。
  *
  * 深空 / 地球 / 海洋三个看板各自忙着展示「数据是什么」，
- * 这一页回答的是另一个维度的问题：「数据是什么时候的」——
+ * 这一页回答另一个维度的问题：「数据是什么时候的」——
  * 每个源最近一次抓取时刻、数据本身描述的时刻、轮换周期与当前状态，
- * 让 18 个免费公开数据源的新鲜度一目了然。
+ * 让三大看板的公开数据源新鲜度一目了然。
  *
- * 完全复用三个看板现有的 useAstroData / useGeoData / useOceanData，
- * 数据时刻来自各代理在 withCache 统一盖的 fetchedAt 戳 + 载荷自带的时间字段。
+ * 顶部用「三位一体」轨道动画（天·地·海）把三块看板汇成视觉核心：
+ * 每颗行星 = 一块看板，半径与描边色折射其实时健康度，点击进入对应看板。
+ * 紧接「数据总结」：只汇总深空 / 地球 / 海洋三方的数据现状（源清单、健康度、新旧），
+ * 不掺功能版本信息——版本演进另有时间轴页面负责，这一页只讲数据。
+ *
+ * 数据时刻来自各代理在 withCache 统一盖的 fetchedAt 戳 + 载荷自带的时间字段；
+ * 健康度来自 useAstroData / useGeoData / useOceanData 每个源的 data/error/stale 标记。
  */
 
 import { useEffect, useMemo, useState } from 'react'
-import { Button, Card, ConfigProvider, Statistic, Table, Tag, Tooltip, theme as antdTheme } from 'antd'
+import { Button, Card, ConfigProvider, Statistic, Table, Tabs, Tag, Tooltip, theme as antdTheme } from 'antd'
 import { BulbOutlined, MoonOutlined, ReloadOutlined } from '@ant-design/icons'
 import { useAstroData } from '../../lib/astro/useAstroData.js'
 import { useGeoData } from '../../lib/geo/useGeoData.js'
 import { useOceanData } from '../../lib/ocean/useOceanData.js'
+import TrinityOrbit from './components/TrinityOrbit.jsx'
+import DataSummary from './components/DataSummary.jsx'
+import GlossaryHub from './components/GlossaryHub.jsx'
+import ModuleView from './components/ModuleView.jsx'
+import './components/TrinityOrbit.scss'
+import './components/DataSummary.scss'
+import './index.scss'
 
 /* ---------- 小工具 ---------- */
 
@@ -86,9 +98,24 @@ const MOMENTS = {
   'geo.epic': (d) => withZone(d?.date, '拍摄日'),
   'geo.env': (d) => withZone(d?.cities?.[0]?.time, '北京时'),
   'geo.eonet': (d) => withZone(d?.time, 'UTC'),
+  'geo.ghg': (d) => {
+    const arr = d?.gases?.co2
+    if (!Array.isArray(arr) || !arr.length) return null
+    return withZone(arr[arr.length - 1]?.t, '月均')
+  },
   'ocean.waves': (d) => withZone(d?.spots?.[0]?.time, '北京时'),
   'ocean.globalWaves': (d) => withZone(d?.spots?.[0]?.time, 'UTC'),
   'ocean.tides': (d) => withZone(d?.events?.[0]?.t, '当地'),
+  /* 以下 8 个源的时间字段均已对照 proxy 实际载荷核过：
+     毫秒戳 → msBJT；字符串 / 年月 → withZone。取不到一律 null，表格渲染成「—」。 */
+  'geo.bigQuakes': (d) => msBJT(d?.quakes?.[0]?.time),
+  'geo.volcanoes': (d) => msBJT(d?.latestUnix),
+  'geo.tsunami': (d) => msBJT(d?.latest?.updatedUnix),
+  'ocean.cyclones': (d) => withZone(d?.strongest?.lastUpdate, '最近更新'),
+  'ocean.oscillations': (d) => withZone(d?.pdo?.latest?.ym, 'PDO 月值'),
+  'ocean.ssta': (d) => withZone(d?.latest?.year, '年均'),
+  'ocean.stationWeather': (d) => withZone(d?.latest?.t, '当地'),
+  'ocean.buoys': (d) => msBJT(d?.updatedAt),
 }
 
 /* ---------- 数据源清单：与三个 hook 的键一一对应 ---------- */
@@ -120,8 +147,12 @@ const BOARDS = [
       { key: 'epic', name: '整圆盘地球影像', desc: 'NASA EPIC（DSCOVR 日地 L1 点拍摄）', cycle: 3600_000 },
       { key: 'env', name: '城市天气 / 空气质量', desc: 'Open-Meteo 天气实况 + 欧洲标准 AQI', cycle: 10 * 60_000 },
       { key: 'eonet', name: '自然事件追踪', desc: 'NASA EONET 火灾 / 风暴 / 火山等事件', cycle: 3600_000 },
-      { key: 'co2', name: 'CO₂ 浓度趋势', desc: 'NOAA GML 全球月均二氧化碳', cycle: 12 * 3600_000 },
-      { key: 'seaIce', name: '北极海冰范围', desc: 'NSIDC 9 月海冰范围年际序列', cycle: 12 * 3600_000 },
+      { key: 'ghg', name: '温室气体浓度趋势', desc: 'NOAA GML 全球月均 CO₂ / CH₄ / N₂O', cycle: 12 * 3600_000 },
+      { key: 'seaIce', name: '南北极海冰范围', desc: 'NSIDC 南北极海冰范围年际序列', cycle: 12 * 3600_000 },
+      { key: 'tempAnomaly', name: '全球温度距平', desc: 'NASA GISTEMP 陆海综合温度距平序列', cycle: 12 * 3600_000 },
+      { key: 'bigQuakes', name: '强震统计（30 天）', desc: 'EMSC 近 30 天 M5.5+ 强震与日均频次', cycle: 30 * 60_000 },
+      { key: 'volcanoes', name: '火山活动警报', desc: 'USGS HANS 火山航空色码 / 地面警报级', cycle: 30 * 60_000 },
+      { key: 'tsunami', name: '海啸预警', desc: 'NOAA tsunami.gov 太平洋 + 国家中心双 feed', cycle: 10 * 60_000 },
     ],
   },
   {
@@ -134,9 +165,17 @@ const BOARDS = [
       { key: 'tidePred', name: '高低潮预报', desc: 'NOAA 潮汐预报（当日起 72h）', cycle: 3600_000 },
       { key: 'globalWaves', name: '全球海域浪况', desc: 'Open-Meteo Marine 十大海域逐时浪高', cycle: 3600_000 },
       { key: 'oni', name: 'ENSO 指数', desc: 'NOAA PSL Oceanic Niño Index 序列', cycle: 12 * 3600_000 },
+      { key: 'cyclones', name: '热带气旋', desc: 'NOAA NHC 大西洋 / 东太平洋活跃风暴', cycle: 10 * 60_000 },
+      { key: 'oscillations', name: '气候振荡 PDO / AMO', desc: 'NOAA PSL 太平洋 / 大西洋年代际振荡月值', cycle: 12 * 3600_000 },
+      { key: 'ssta', name: '海表温度距平', desc: 'NOAA NCEI 全球海洋温度距平年际序列', cycle: 12 * 3600_000 },
+      { key: 'stationWeather', name: '站点气象（潮位站）', desc: 'NOAA CO-OPS 潮位站逐时气温 / 水温', cycle: 30 * 60_000 },
+      { key: 'buoys', name: '浮标实况', desc: 'NOAA NDBC 全球浮标最新观测（浪高 / 水温）', cycle: 20 * 60_000 },
     ],
   },
 ]
+
+/** 三看板主色，与三位一体动画、数据总结共用 */
+const BOARD_COLOR = { astro: '#722ed1', geo: '#13c2c2', ocean: '#1677ff' }
 
 /* ---------- 页面 ---------- */
 
@@ -157,6 +196,39 @@ export default function TimelineBoard() {
 
   const HOOKS = useMemo(() => ({ astro, geo, ocean }), [astro, geo, ocean])
 
+  /** 三块看板的实时健康度（与三位一体动画、数据总结共用） */
+  const boardHealth = useMemo(
+    () =>
+      BOARDS.map((b) => {
+        const states = b.sources.map((s) => HOOKS[b.key][s.key])
+        const total = states.length
+        const ok = states.filter((s) => s.data && !s.error && !s.data.stale).length
+        const bad = states.filter((s) => s.error).length
+        const wait = states.filter((s) => !s.data && !s.error).length
+        return {
+          key: b.key,
+          title: b.title,
+          color: BOARD_COLOR[b.key],
+          total,
+          ok,
+          bad,
+          wait,
+          // 逐个源的状态，供数据总结列出「这块板在监控什么」
+          sources: b.sources.map((s, i) => ({
+            name: s.name,
+            cycleText: fmtCycle(s.cycle),
+            ok: !!(states[i].data && !states[i].error && !states[i].data.stale),
+          })),
+        }
+      }),
+    [HOOKS],
+  )
+
+  const totalSrc = boardHealth.reduce((n, b) => n + b.total, 0)
+  const totalOk = boardHealth.reduce((n, b) => n + b.ok, 0)
+  const totalBad = boardHealth.reduce((n, b) => n + b.bad, 0)
+  const totalWait = boardHealth.reduce((n, b) => n + b.wait, 0)
+
   /** 全部 18 个源的扁平视图：{ board, ...src, ...hookState } */
   const rows = useMemo(
     () =>
@@ -171,22 +243,39 @@ export default function TimelineBoard() {
     [HOOKS],
   )
 
-  const stats = useMemo(() => {
-    const ok = rows.filter((r) => !r.error && !r.data?.stale && r.data)
-    const bad = rows.filter((r) => r.error)
-    const wait = rows.filter((r) => !r.data && !r.error)
-    const ages = ok.map((r) => now.getTime() - r.data?.fetchedAt).filter(Number.isFinite)
-    const freshest = ages.length ? Math.min(...ages) : null
-    const oldest = ages.length ? Math.max(...ages) : null
-    return { ok: ok.length, bad: bad.length, wait: wait.length, freshest, oldest }
-  }, [rows, now])
-
   const reloadAll = () => {
     astro.reloadAll()
     geo.reloadAll()
     ocean.reloadAll()
   }
   const anyLoading = astro.anyLoading || geo.anyLoading || ocean.anyLoading
+
+  /** 最新鲜 / 最陈旧：各源距现在的毫秒数 */
+  const stats = useMemo(() => {
+    const ages = rows.filter((r) => r.data).map((r) => now.getTime() - r.data.fetchedAt)
+    return {
+      freshest: ages.length ? Math.min(...ages) : null,
+      oldest: ages.length ? Math.max(...ages) : null,
+    }
+  }, [rows, now])
+
+  /** 每块看板各自的最新鲜 / 最陈旧（已格式化成「3 分钟前」这类文案） */
+  const boardAges = useMemo(
+    () =>
+      Object.fromEntries(
+        BOARDS.map((b) => {
+          const ts = rows.filter((r) => r.boardKey === b.key && r.data).map((r) => r.data.fetchedAt)
+          return [
+            b.key,
+            {
+              freshest: ts.length ? fmtAgo(Math.max(...ts), now) : '—',
+              oldest: ts.length ? fmtAgo(Math.min(...ts), now) : '—',
+            },
+          ]
+        }),
+      ),
+    [rows, now],
+  )
 
   const antdThemeCfg = useMemo(
     () =>
@@ -259,9 +348,9 @@ export default function TimelineBoard() {
         {/* 顶部：标题 + 主题切换 + 一键刷新 */}
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
           <div style={{ flex: 1 }}>
-            <h1 style={{ margin: 0, fontSize: 'clamp(22px, 3vw, 30px)' }}>🕰️ 时间版本</h1>
+            <h1 style={{ margin: 0, fontSize: 'clamp(22px, 3vw, 30px)' }}>🕰️ 时空档案</h1>
             <p style={{ margin: '6px 0 0', opacity: 0.72 }}>
-              深空 · 地球 · 海洋三大看板 18 个数据源的时间档案——抓取时刻、数据时刻与轮换周期。
+              深空 · 地球 · 海洋三大看板的数据时间档案与名词库——三位一体轨道动画、数据现状总结、实时新鲜度，以及全部名词释义统一检索。
             </p>
           </div>
           <Button icon={<ReloadOutlined />} onClick={reloadAll} loading={anyLoading}>
@@ -273,62 +362,119 @@ export default function TimelineBoard() {
           />
         </div>
 
-        {/* 三钟：本地 / UTC / 儒略日 */}
-        <Card size="small" style={{ marginTop: 20 }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px 48px' }}>
-            <Statistic
-              title="本地时间"
-              valueStyle={{ fontVariantNumeric: 'tabular-nums', fontSize: 'clamp(24px, 3vw, 34px)' }}
-              value={fmtClock(now.getTime())}
-            />
-            <Statistic
-              title="UTC"
-              valueStyle={{ fontVariantNumeric: 'tabular-nums', fontSize: 'clamp(24px, 3vw, 34px)' }}
-              value={`${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}`}
-            />
-            <Statistic
-              title="儒略日 JD"
-              valueStyle={{ fontVariantNumeric: 'tabular-nums', fontSize: 'clamp(24px, 3vw, 34px)' }}
-              value={(now.getTime() / 86400000 + 2440587.5).toFixed(5)}
-            />
-          </div>
-        </Card>
+        {/* 三大板块收进 tab：概览 / 数据档案 / 名词库，避免长页一路下滑 */}
+        <Tabs
+          defaultActiveKey="overview"
+          className="tl-tabs"
+          items={[
+            {
+              key: 'overview',
+              label: '📊 概览',
+              children: (
+                <>
+                  {/* 三位一体动画：天 · 地 · 海 绕核心旋转 */}
+                  <Card size="small" style={{ marginTop: 20 }}>
+                    <TrinityOrbit
+                      boards={boardHealth}
+                      totalOk={totalOk}
+                      totalSrc={totalSrc}
+                      theme={theme}
+                    />
+                    <p style={{ textAlign: 'center', margin: '4px 0 0', fontSize: 12, opacity: 0.55 }}>
+                      天（深空）· 地（地球）· 海（海洋）—— 三位一体，点击任一行星进入对应看板
+                    </p>
+                  </Card>
 
-        {/* 健康度概览 */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12, marginTop: 16 }}>
-          <Card size="small"><Statistic title="数据源总数" value={rows.length} /></Card>
-          <Card size="small"><Statistic title="正常" value={stats.ok} valueStyle={{ color: '#52c41a' }} /></Card>
-          <Card size="small"><Statistic title="出错" value={stats.bad} valueStyle={{ color: stats.bad ? '#ff4d4f' : undefined }} /></Card>
-          <Card size="small"><Statistic title="等待中" value={stats.wait} /></Card>
-          <Card size="small">
-            <Statistic
-              title="最新鲜"
-              value={stats.freshest == null ? '—' : stats.freshest < 1000 ? '刚刚' : fmtAgo(now.getTime() - stats.freshest, now)}
-            />
-          </Card>
-          <Card size="small">
-            <Statistic title="最陈旧" value={stats.oldest == null ? '—' : fmtAgo(now.getTime() - stats.oldest, now)} />
-          </Card>
-        </div>
+                  {/* 数据总结：深空 / 地球 / 海洋三方数据现状 */}
+                  <DataSummary
+                    boards={boardHealth}
+                    ages={boardAges}
+                    totalOk={totalOk}
+                    totalSrc={totalSrc}
+                    totalBad={totalBad}
+                    totalWait={totalWait}
+                    theme={theme}
+                  />
 
-        {/* 三大看板的数据源时间档案 */}
-        {BOARDS.map((b) => (
-          <section key={b.key} style={{ marginTop: 28 }}>
-            <h2 style={{ margin: '0 0 12px', fontSize: 18 }}>
-              {b.icon} {b.title}
-              <span style={{ marginLeft: 10, fontSize: 13, opacity: 0.6 }}>
-                {b.sources.length} 个源 · {b.sources.map((s) => s.name).join(' / ')}
-              </span>
-            </h2>
-            <Table
-              size="small"
-              rowKey="key"
-              columns={columns}
-              dataSource={b.sources.map((s) => ({ ...s, ...HOOKS[b.key][s.key] }))}
-              pagination={false}
-            />
-          </section>
-        ))}
+                  {/* 三钟：本地 / UTC / 儒略日 */}
+                  <Card size="small" style={{ marginTop: 16 }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px 48px' }}>
+                      <Statistic
+                        title="本地时间"
+                        valueStyle={{ fontVariantNumeric: 'tabular-nums', fontSize: 'clamp(24px, 3vw, 34px)' }}
+                        value={fmtClock(now.getTime())}
+                      />
+                      <Statistic
+                        title="UTC"
+                        valueStyle={{ fontVariantNumeric: 'tabular-nums', fontSize: 'clamp(24px, 3vw, 34px)' }}
+                        value={`${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}`}
+                      />
+                      <Statistic
+                        title="儒略日 JD"
+                        valueStyle={{ fontVariantNumeric: 'tabular-nums', fontSize: 'clamp(24px, 3vw, 34px)' }}
+                        value={(now.getTime() / 86400000 + 2440587.5).toFixed(5)}
+                      />
+                    </div>
+                  </Card>
+
+                  {/* 健康度概览 */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12, marginTop: 16 }}>
+                    <Card size="small"><Statistic title="数据源总数" value={rows.length} /></Card>
+                    <Card size="small"><Statistic title="正常" value={totalOk} valueStyle={{ color: '#52c41a' }} /></Card>
+                    <Card size="small"><Statistic title="出错" value={totalBad} valueStyle={{ color: totalBad ? '#ff4d4f' : undefined }} /></Card>
+                    <Card size="small"><Statistic title="等待中" value={totalWait} /></Card>
+                    <Card size="small">
+                      <Statistic
+                        title="最新鲜"
+                        value={stats.freshest == null ? '—' : stats.freshest < 1000 ? '刚刚' : fmtAgo(stats.freshest, now)}
+                      />
+                    </Card>
+                    <Card size="small">
+                      <Statistic title="最陈旧" value={stats.oldest == null ? '—' : fmtAgo(stats.oldest, now)} />
+                    </Card>
+                  </div>
+                </>
+              ),
+            },
+            {
+              key: 'sources',
+              label: '🗂️ 数据档案',
+              children: (
+                <Tabs
+                  defaultActiveKey={BOARDS[0].key}
+                  items={BOARDS.map((b) => ({
+                    key: b.key,
+                    label: `${b.icon} ${b.title}`,
+                    children: (
+                      <div style={{ marginTop: 12 }}>
+                        <p style={{ margin: '0 0 10px', fontSize: 13, opacity: 0.65 }}>
+                          {b.title} · 共 {b.sources.length} 个数据源 · 轮换周期与实时新鲜度
+                        </p>
+                        <Table
+                          size="small"
+                          rowKey="key"
+                          columns={columns}
+                          dataSource={b.sources.map((s) => ({ ...s, ...HOOKS[b.key][s.key] }))}
+                          pagination={false}
+                        />
+                      </div>
+                    ),
+                  }))}
+                />
+              ),
+            },
+            {
+              key: 'glossary',
+              label: '📖 名词库',
+              children: <GlossaryHub theme={theme} />,
+            },
+            {
+              key: 'modules',
+              label: '🧩 模块视图',
+              children: <ModuleView />,
+            },
+          ]}
+        />
 
         <footer style={{ marginTop: 36, fontSize: 12, opacity: 0.55 }}>
           「抓取时刻」是本站代理最近一次成功拉取该源的时间（dev server 内存缓存到期后自动重抓）；

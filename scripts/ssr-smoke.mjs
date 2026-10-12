@@ -56,6 +56,18 @@ const targets = [
     ['星际轨道', '开普勒', '已锁定', '地球', '偏心率', '回到历元', 'orbit-data.py', 'JPL', '日心距'],
   ],
   [
+    'TimelineBoard 时间版本（三位一体动画 + 数据源时间档案）',
+    '/src/pages/TimelineBoard/index.jsx',
+    /* 钉住：标题、三位一体、三看板名、三方数据总结、以及"数据源总数"统计（= 列源数）。
+       这一项专门回归「BOARDS 源键与三个 useXxxData hook 返回键对齐」——一旦写错键名
+       （如把 ghg 写成 co2），boardHealth 里 states.filter(s => s.data) 会抛
+       Cannot read properties of undefined，renderToString 直接炸，CI 立刻红。
+       注：本页只总结深空/地球/海洋的数据现状，不再展示功能版本时间轴，
+       所以这里断言的是「三方数据总结」而不是旧的版本文案。 */
+    ['时空档案', '三位一体', '深空', '地球', '海洋', '三方数据总结', '数据源总数'],
+    { router: true },
+  ],
+  [
     'Playground 创意 Playground',
     '/src/pages/Playground/index.jsx',
     /* 钉住全部 7 个分组标题 + 每组抽一个 demo、以及数据来源：
@@ -68,6 +80,15 @@ const targets = [
       '烟雾平流', '卡门涡街', '极光', '森林火灾', '霍曼转移轨道', '交通流与幽灵堵车',
       '希尔伯特曲线', '莫尔条纹', '光线步进', '半调网点', '牛顿分形', '逻辑斯蒂映射与倍周期',
       '排序算法可视化', '插值 vs 拟合', '幂迭代求主特征值', '蚁群算法解 TSP', '地形剖切'],
+  ],
+  [
+    'UtilsDemo 小功能集',
+    '/src/pages/UtilsDemo/index.jsx',
+    /* 钉住标题 + 默认分类（频率控制）的三张卡 + 侧边分类名。
+       这一项专门回归「Demos.jsx 拆成 12 个文件后的导入是否齐全」——
+       少 import 一个分组、或把分类 render 指向不存在的组件，renderToString 会直接炸。 */
+    ['小功能集 Utils', '频率控制', 'useDebounce · 防抖值', 'useThrottle · 节流值',
+      'retry / sleep · 异步重试', '格式化 · 脱敏', '数组 · 对象', '树结构', '新增 Hook'],
   ],
 ]
 

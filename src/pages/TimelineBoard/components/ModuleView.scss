@@ -1,0 +1,113 @@
+.mv {
+  margin-top: 16px;
+
+  &__bar {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  &__select {
+    flex: 1 1 240px;
+    min-width: 0;
+  }
+
+  &__empty {
+    padding: 48px 0;
+  }
+
+  &__grid {
+    /* repeat(auto-fill) 让勾选 1 个时占满整行、多个时并排；
+       min(100%, 420px) 保证窄屏单列也不溢出容器（不会出现横向滚动） */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 420px), 1fr));
+    gap: 16px;
+    align-items: stretch; /* 同一行的卡片等高，并排对比更整齐 */
+  }
+
+  /* 单个模块卡片：标题条 + 嵌入的看板实例内容，flex 列布局让嵌入区撑满剩余高度 */
+  &-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* 允许在 grid 单元内收缩，配合上面的 min(100%) 防溢出 */
+    border: 1px solid rgba(128, 128, 128, 0.25);
+    border-radius: 12px;
+    overflow: hidden;
+    background: rgba(128, 128, 128, 0.04);
+
+    &__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(128, 128, 128, 0.2);
+      background: rgba(128, 128, 128, 0.08);
+    }
+
+    &__title {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 13px;
+      font-weight: 600;
+    }
+  }
+
+  /* 嵌入看板实例：只留 tab 内容，隐藏看板自身的头部 / 指标条 / 页脚 / 三方监控条 / 切换栏 */
+  &-embed {
+    flex: 1;
+    min-height: 0;
+    /* 最后兜底：杜绝任何横向溢出把外层卡片/整页撑爆 */
+    overflow-x: hidden;
+    /* 内边距随卡片宽度自适应：窄卡片更紧凑，宽卡片更舒展 */
+    padding: clamp(10px, 1.4vw, 18px);
+
+    /* 图表（SVG）/ 图片（地球影像、APOD）等比缩放，绝不溢出窄卡片 */
+    svg,
+    img {
+      max-width: 100% !important;
+      height: auto !important;
+    }
+
+    .geo-hero,
+    .geo-strip,
+    .geo-foot,
+    .astro-hero,
+    .astro-strip,
+    .astro-foot,
+    .o-hero,
+    .o-strip,
+    .o-foot,
+    .rd,
+    .ant-tabs-nav {
+      display: none !important;
+    }
+
+    /* 看板根容器去掉多余外边距与背景，融入卡片，并强制占满卡片宽度 */
+    .geo-board,
+    .astro-board,
+    .o-board {
+      width: 100%;
+      padding: 0 !important;
+      margin: 0 !important;
+      background: transparent !important;
+    }
+
+    /* 看板内部自带的外层间距在嵌入态收一收，避免双重留白 */
+    .geo-tabs,
+    .astro-tabs,
+    .o-tabs {
+      margin: 0 !important;
+    }
+
+    /* 看板内部卡片 / 表格在嵌入态占满宽度，跟随卡片自适应 */
+    .ant-card,
+    .ant-table-wrapper {
+      width: 100%;
+    }
+  }
+}

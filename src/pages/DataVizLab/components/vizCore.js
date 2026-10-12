@@ -1,6 +1,9 @@
+import { clamp } from '../../../components/Utils/index.js'
+
+export { clamp }
+
 /* ============================ 本地数学小工具（本页专用，不进公共模块） ============================ */
 
-export const clamp = (n, min, max) => Math.min(Math.max(n, min), max)
 export const lerp = (a, b, t) => a + (b - a) * clamp(t, 0, 1)
 export const mapRange = (v, inMin, inMax, outMin, outMax) => (
   inMax === inMin ? outMin : outMin + ((clamp(v, inMin, inMax) - inMin) / (inMax - inMin)) * (outMax - outMin)

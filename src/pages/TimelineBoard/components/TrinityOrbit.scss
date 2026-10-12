@@ -1,0 +1,63 @@
+/* 三位一体轨道动画样式（天 · 地 · 海） */
+.tl-trinity {
+  width: min(420px, 92vw);
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  overflow: visible;
+}
+
+.tl-core-num {
+  fill: #e6edf7;
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.tl-core-label {
+  fill: rgba(230, 237, 247, 0.6);
+  font-size: 11px;
+  letter-spacing: 2px;
+}
+
+.tl-path {
+  transition: stroke 0.3s;
+}
+
+/* 行星可点击 */
+.tl-planet-wrap {
+  cursor: pointer;
+}
+
+.tl-planet-body {
+  transition: r 0.25s ease, filter 0.25s ease;
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.25));
+}
+.tl-planet-wrap:hover .tl-planet-body {
+  r: 33px;
+  filter: drop-shadow(0 0 10px rgba(120, 160, 255, 0.85));
+}
+
+.tl-planet-char {
+  fill: #fff;
+  font-size: 17px;
+  font-weight: 800;
+  pointer-events: none;
+}
+.tl-planet-count {
+  fill: rgba(255, 255, 255, 0.85);
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+/* 浅色主题：文字与背景反向 */
+.tl-trinity.light .tl-core-num {
+  fill: #1c2430;
+}
+.tl-trinity.light .tl-core-label {
+  fill: rgba(28, 36, 48, 0.62);
+}
+.tl-trinity.light .tl-planet-char,
+.tl-trinity.light .tl-planet-count {
+  fill: #fff;
+}

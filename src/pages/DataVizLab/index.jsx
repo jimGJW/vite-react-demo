@@ -13,8 +13,8 @@ import './index.scss'
 
 
 import {
-  clamp, lerp, mapRange, hexToRgb, rgbToHex,
-  NODES, LINKS, WORDS, DAYS, HEAT, HEAT_FLAT, HEAT_MAX, HEAT_TOTAL, HEAT_PEAK, HEAT_STOPS, heatColor,
+  clamp, lerp, mapRange,
+  NODES, LINKS, WORDS, DAYS, HEAT, HEAT_MAX, HEAT_TOTAL, HEAT_PEAK, heatColor,
 } from './components/vizCore.js'
 
 /* ============================ 组件 ============================ */

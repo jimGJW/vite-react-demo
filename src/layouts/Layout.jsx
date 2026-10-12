@@ -119,8 +119,8 @@ const navItems = [
       { key: '/astro', icon: <GlobalOutlined />, label: '深空数据看板' },
       { key: '/geo', icon: <EnvironmentOutlined />, label: '地球数据看板' },
       { key: '/ocean', icon: <RadarChartOutlined />, label: '海洋数据看板' },
-      /* 时间版本：三大看板 18 个数据源的抓取时刻 / 数据时刻 / 轮换周期总览 */
-      { key: '/timeline', icon: <FieldTimeOutlined />, label: '时间版本' },
+      /* 时空档案：三大看板 18 个数据源的时间档案 + 聚合名词库（模糊检索） */
+      { key: '/timeline', icon: <FieldTimeOutlined />, label: '时空档案' },
     ],
   },
   {

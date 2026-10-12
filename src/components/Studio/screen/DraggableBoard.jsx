@@ -1,3 +1,4 @@
+import { clamp } from '../../Utils/index.js'
 import { useRef, useState } from 'react'
 
 /**
@@ -26,7 +27,6 @@ import { useRef, useState } from 'react'
  *     renderItem={(it) => it.content} />
  */
 
-const clamp = (v, min, max) => Math.min(max, Math.max(min, v))
 
 /** 矩形相交判定；gap 为允许的重叠容差（百分比），避免浮点误差导致误判 */
 function isOverlap(a, b, gap = 0.6) {

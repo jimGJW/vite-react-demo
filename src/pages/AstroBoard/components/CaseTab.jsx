@@ -1,4 +1,6 @@
 import { Panel, Metric } from './ui.jsx'
+import { getTerm } from '../../../lib/boards/relations.js'
+import KeyTermCard from '../../../components/KeyTermCard/KeyTermCard.jsx'
 
 /**
  * 深空看板「📚 案例」页签：用本看板的维度（发射窗口 / 月相 / 太阳活动周 / 流星雨）
@@ -53,9 +55,11 @@ const CASES = [
   },
 ]
 
-export default function CaseTab() {
+export default function CaseTab({ theme = 'dark' }) {
+  const keyTerm = getTerm('astro', 'sunspot')
   return (
     <div className="astro-case-list">
+      <KeyTermCard term={keyTerm} theme={theme} />
       {CASES.map((c) => (
         <Panel key={c.id} title={c.title} source={c.source} icon={c.icon}>
           <div className="astro-case__date">📅 {c.date}</div>

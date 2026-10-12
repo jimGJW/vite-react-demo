@@ -1,3 +1,4 @@
+import { clamp } from '../../Utils/index.js'
 import { useRef, useState } from 'react'
 import { Button, Space, Input, Tag, Empty } from 'antd'
 import { ZoomInOutlined, ZoomOutOutlined, ReloadOutlined, EnvironmentOutlined, ClearOutlined } from '@ant-design/icons'
@@ -17,7 +18,6 @@ import { ZoomInOutlined, ZoomOutOutlined, ReloadOutlined, EnvironmentOutlined, C
  *   <ImageAnnotator src={dataUrl} annotations={list} onAdd={...} onRemove={...} />
  */
 
-const clamp = (v, a, b) => Math.min(b, Math.max(a, v))
 
 export default function ImageAnnotator({
   src,

@@ -26,6 +26,7 @@
   --g-track: #0e9f6e;
   --g-cn: #c2410c;
 
+  container-type: inline-size;
   padding: 14px;
   color: var(--g-fg);
   background:
@@ -801,4 +802,10 @@
   font-size: 13px;
   line-height: 1.7;
   color: var(--g-fg);
+}
+
+/* 容器查询降级：嵌入窄卡片时，EPIC 地球影像两列并排降为单列
+   （与上方 @media 视口降级互补：嵌入态视口仍宽，仅容器变窄） */
+@container (max-width: 640px) {
+  .geo-epic { grid-template-columns: 1fr; }
 }

@@ -1,3 +1,4 @@
+import { clamp } from '../../Utils/index.js'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import AutoScrollList from './AutoScrollList.jsx'
 
@@ -18,7 +19,6 @@ import AutoScrollList from './AutoScrollList.jsx'
  *   <AdaptTable columns={[{key:'name',title:'名称',width:40}]} dataSource={rows} autoScroll />
  */
 
-const clamp = (v, min, max) => Math.min(max, Math.max(min, v))
 
 export default function AdaptTable({
   columns = [],

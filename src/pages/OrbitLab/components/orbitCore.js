@@ -1,5 +1,9 @@
 import { ORBIT_DATA } from '../orbitData.js'
 
+import { clamp } from '../../../components/Utils/index.js'
+
+export { clamp }
+
 export const { meta, sun: SUN, planets: BODIES } = ORBIT_DATA
 export const SAMPLES = meta.samples
 export const AU_KM = 149597870.7
@@ -13,7 +17,6 @@ export const DEFAULT_PICK = 2
 
 /* ============================ 纯函数 ============================ */
 
-export const clamp = (n, min, max) => Math.min(Math.max(n, min), max)
 export const lerp = (a, b, t) => a + (b - a) * t
 
 /** #rrggbb → rgba(...) */

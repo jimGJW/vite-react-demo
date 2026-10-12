@@ -1,3 +1,4 @@
+import { clamp } from '../Utils/index.js'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAssistants } from './AssistantContext.jsx'
@@ -16,9 +17,7 @@ const DEFAULT_PAGES = [
   { to: '/test-center', label: '测试中心', icon: '🧪' },
 ]
 
-function clamp(v, min, max) {
-  return Math.min(max, Math.max(min, v))
-}
+
 
 function loadJSON(key, fallback) {
   try {

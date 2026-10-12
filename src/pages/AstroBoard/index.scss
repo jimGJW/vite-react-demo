@@ -12,6 +12,7 @@
 
 .astro-board {
   /* ---------- 深空黑（默认） ---------- */
+  container-type: inline-size;
   --a-bg: #060b18;
   --a-panel: #0d1428;
   --a-panel-2: #111a33;
@@ -2867,4 +2868,32 @@
   font-size: 13px;
   line-height: 1.7;
   color: var(--a-fg);
+}
+
+/* ============================================================
+   容器查询降级：看板被嵌入「模块视图」窄卡片（或整页在手机窄屏）时，
+   容器宽度变窄，把两列并排 / 固定多列网格降为单列，避免内容溢出或挤压。
+   整页宽屏（容器 > 640px）不受影响（与上方 @media 视口降级互补：
+   嵌入态视口仍宽，只有容器变窄，故需容器查询才能触发）。
+   ============================================================ */
+@container (max-width: 640px) {
+  .astro-station-layout,
+  .astro-solar-layout,
+  .astro-sw-grid,
+  .astro-exo,
+  .astro-neo-layout,
+  .astro-sky-layout,
+  .astro-apod {
+    grid-template-columns: 1fr;
+  }
+
+  /* 4 列指标卡在窄卡片降为 2 列，避免每项被压到 < 90px 难读 */
+  .astro-detail__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* 月相多列行在窄卡片降为 2 列 */
+  .astro-moon-rows {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

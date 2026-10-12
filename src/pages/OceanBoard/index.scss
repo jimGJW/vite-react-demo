@@ -24,6 +24,7 @@
   --o-deep: #0369a1;
   --o-warm: #d97706;
 
+  container-type: inline-size;
   padding: 14px;
   color: var(--o-fg);
   background:
@@ -571,4 +572,13 @@
   font-size: 13px;
   line-height: 1.7;
   color: var(--o-fg);
+}
+
+/* 容器查询降级：嵌入窄卡片时，把 auto-fit 过大的 min（320px）收紧到 160px，
+   让窄卡片能并排两列而非被迫单列留白（整页宽屏不受影响） */
+@container (max-width: 640px) {
+  .o-osc,
+  .o-case-list {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
 }
