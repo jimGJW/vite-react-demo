@@ -70,6 +70,9 @@ __pycache__/
 venv/
 server.log
 
+# 本地媒体中心演示：hello_effect.py 运行生成的产物，不入库
+public/local-demo/*.svg
+
 # ============ 临时快照 ============
 tmp/
 temp/

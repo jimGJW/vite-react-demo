@@ -1,46 +1,41 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import './index.scss'
+import VideoCarousel from './components/VideoCarousel.jsx'
+import DocViewer from './components/DocViewer.jsx'
+import PythonRunner from './components/PythonRunner.jsx'
+import ImageGrid from './components/ImageGrid.jsx'
+import { POLL_MS, VIDEO_RE, CAN_PICK_DIR, readSavedDir, saveDir } from './components/notVideoUtils.js'
 
 /**
- * 本地视频轮播页 —— 目录由用户自己选，不绑定任何固定路径
+ * 本地媒体中心（由旧版「隐藏视频轮播页」升级）—— 目录由用户自己选，不绑定任何固定路径。
  *
  * 两条数据通路，按浏览器能力自动选择：
- * 1. **目录选择器**（首选，`window.showDirectoryPicker`，Chromium 系）
- *    点按钮弹系统原生文件夹选择框，选完直接在客户端读目录 —— 不经过后端，
- *    因此能选到 iCloud 云盘 / 外接硬盘 / 任意位置，路径完全不写死。
- * 2. **路径直填**（兜底，Safari / Firefox 没有选择器）
- *    手动填绝对目录，后端 `?dir=` 扫描；路径存 localStorage，下次自动恢复。
+ * 1. **目录选择器**（首选，window.showDirectoryPicker，Chromium 系）
+ *    点按钮弹原生文件夹选择框，客户端直读 —— 不经过后端，能选到 iCloud / 外接硬盘 / 任意位置。
+ *    但浏览器安全限制拿不到绝对路径，因此**仅支持视频轮播**。
+ * 2. **路径直填**（兜底 + 完整能力，Safari / Firefox 没有选择器时也用这条）
+ *    手动填绝对目录，后端 ?dir= 扫描并**全分类**返回：视频 / 图片 / 文档 / Python 脚本，
+ *    据内容分四区展示；路径存 localStorage，下次自动恢复。
  *
  * 「实时」：两个通道都是每 8 秒重扫一次，且都不缓存目录列表。
- *
- * 三个刻意的设计：
- * 1. 当前播放项用**文件名**追踪而不是数组下标 —— 新视频插到列表最前时，
- *    下标会整体漂移导致「正看着的视频突然跳到另一个」，按 name 定位则稳如磐石。
- * 2. 默认静音起播 —— 浏览器自动播放策略会拦截带声音的 autoplay，
- *    静音才能真的轮起来；想听声音点一下喇叭按钮即可。
- * 3. 选择器通道用 createObjectURL，**必须按 lastModified 复用并及时 revoke** ——
- *    否则每 8 秒轮询就会漏一批 objectURL，几十轮后内存直接被拖垮。
  */
 
-
-import { POLL_MS, LS_DIR_KEY, VIDEO_RE, CAN_PICK_DIR, readSavedDir, saveDir, fmtSize, fmtTime } from './components/notVideoUtils.js'
+const EMPTY = { videos: [], images: [], docs: [], pythons: [] }
 
 export default function NotVideos() {
   const [mode, setMode] = useState(() => (readSavedDir() ? 'server' : 'none')) // none | picker | server
   const [pickerName, setPickerName] = useState('')
   const [pathInput, setPathInput] = useState(() => readSavedDir())
-  const [videos, setVideos] = useState([])
-  const [currentName, setCurrentName] = useState(null)
-  const [muted, setMuted] = useState(true)
-  const [playing, setPlaying] = useState(false)
+  const [serverData, setServerData] = useState(EMPTY) // 后端全分类（路径直填通道）
+  const [pickerVideos, setPickerVideos] = useState([]) // 选择器通道（仅视频）
   const [err, setErr] = useState(null)
   const [busy, setBusy] = useState(false)
   const [nonce, setNonce] = useState(0) // 手动刷新用：变一次就重跑一轮扫描
-
-  const videoRef = useRef(null)
-  const [activeDir, setActiveDir] = useState(() => readSavedDir()) // 当前生效的目录（路径直填通道）
+  const [activeDir, setActiveDir] = useState(() => readSavedDir())
   const handleRef = useRef(null) // FileSystemDirectoryHandle
   const cacheRef = useRef(new Map()) // name -> { url, lastModified, size }
+  const etagRef = useRef('') // 最近一次扫描响应的 ETag，用于条件请求（304 = 目录没变）
+  const hiddenRef = useRef(false) // 页面是否处于后台标签页（暂停轮询）
 
   /* ---------- 释放选择器通道的 objectURL：换源 + 卸载时都要做 ---------- */
   const dropObjectUrls = useCallback(() => {
@@ -50,7 +45,7 @@ export default function NotVideos() {
 
   useEffect(() => dropObjectUrls, [dropObjectUrls])
 
-  /* ---------- 通道 1：目录选择器（客户端直读，不经后端） ---------- */
+  /* ---------- 通道 1：目录选择器（客户端直读，仅视频，不经后端） ---------- */
   const scanPicker = useCallback(async (handle) => {
     if (!handle) throw new Error('还没有选择文件夹')
     const cache = cacheRef.current
@@ -86,16 +81,31 @@ export default function NotVideos() {
     return list
   }, [])
 
-  /* ---------- 通道 2：路径直填（后端 ?dir= 扫描） ---------- */
+  /* ---------- 通道 2：路径直填（后端全分类：视频/图片/文档/脚本） ---------- */
   const scanServer = useCallback(async (dir) => {
-    const res = await fetch(`/api/not-videos?dir=${encodeURIComponent(dir)}`, { cache: 'no-store' })
+    // 条件请求：目录没变时后端回 304，这里返回 null —— 调用方据此「什么都不做」，
+    // serverData 引用不变，下面所有 memo 化分区零重渲染（121 张图的网格也不重新 diff）
+    const headers = {}
+    if (etagRef.current) headers['If-None-Match'] = etagRef.current
+    const res = await fetch(`/api/not-videos?dir=${encodeURIComponent(dir)}`, { cache: 'no-store', headers })
+    if (res.status === 304) return null
     const data = await res.json()
     if (!data.ok) throw new Error(data.error || '读取失败')
+    // 旧版中间件识别：Vite 只热重载 vite.config.js 本身，不重载它 import 的 vite-local-media.mjs，
+    // 改了中间件不重启 dev 就静默留在旧行为（平铺扫描/无模块方式/无解释器探测）——给明确指引
+    if (!data.caps || !data.caps.recursive) {
+      throw new Error('后端还是旧版中间件（看不到子目录、无法模块方式运行 Python）。请重启 dev server：Ctrl+C 停止，然后重新 npm run dev')
+    }
+    etagRef.current = res.headers.get('ETag') || ''
     const q = encodeURIComponent(dir)
-    return data.videos.map((v) => ({
-      ...v,
-      url: `/not-videos/${encodeURIComponent(v.name)}?dir=${q}`,
-    }))
+    // 后端给的 url 已按 rel 编好子目录段，这里只补 ?dir=（扫描是递归的，rel 可能形如 fx/galaxy.py）
+    const withUrl = (arr) => (arr || []).map((v) => ({ ...v, url: `${v.url}?dir=${q}` }))
+    return {
+      videos: withUrl(data.videos),
+      images: withUrl(data.images),
+      docs: withUrl(data.docs),
+      pythons: withUrl(data.pythons),
+    }
   }, [])
 
   /* ---------- 轮询：两个通道都是每 8 秒重扫，目录变了自动反映 ---------- */
@@ -103,33 +113,55 @@ export default function NotVideos() {
     if (mode === 'none') return undefined
     let stopped = false
     const tick = async () => {
-      setBusy(true)
       try {
-        const list =
-          mode === 'picker'
-            ? await scanPicker(handleRef.current)
-            : await scanServer(activeDir)
-        if (stopped) return
-        setVideos(list)
-        setErr(null)
-        setCurrentName((prev) => (prev && list.some((v) => v.name === prev) ? prev : list[0]?.name ?? null))
+        if (mode === 'picker') {
+          setBusy(true)
+          const list = await scanPicker(handleRef.current)
+          if (stopped) return
+          setPickerVideos(list)
+          setErr(null)
+        } else {
+          const data = await scanServer(activeDir)
+          if (stopped || !data) return // null = 304 未变：连 busy 都不碰，整棵树不重渲染
+          setServerData(data)
+          setErr(null)
+        }
       } catch (e) {
         if (!stopped) setErr(String((e && e.message) || e))
       } finally {
         if (!stopped) setBusy(false)
       }
     }
+    // effect 重跑（切目录 / 手动刷新）总是立即扫：这类操作必须马上看到结果，
+    // 不能因为页面恰好处于后台（headless、窗口失焦都会报 hidden）而被拦掉
     tick()
-    const timer = setInterval(tick, POLL_MS)
+    const timer = setInterval(() => {
+      // 只有定时轮询检查 hidden：后台标签页看不见内容，没必要反复扫描
+      if (hiddenRef.current) return
+      tick()
+    }, POLL_MS)
     return () => {
       stopped = true
       clearInterval(timer)
     }
   }, [mode, nonce, activeDir, scanPicker, scanServer])
 
+  /* ---------- 页面可见性：后台暂停轮询（省 CPU），切回可见立刻补一轮 ---------- */
+  useEffect(() => {
+    const onVis = () => {
+      hiddenRef.current = document.hidden
+      // 切回可见立即补扫：否则要等下一个轮询周期（最长 8s）数据才是新的
+      if (!document.hidden) setNonce((n) => n + 1)
+    }
+    document.addEventListener('visibilitychange', onVis)
+    return () => document.removeEventListener('visibilitychange', onVis)
+  }, [])
+
+  /* ---------- 手动刷新：Python 跑完产物落盘后，由效果区回调触发重扫 ---------- */
+  const refreshScan = useCallback(() => setNonce((n) => n + 1), [])
+
   /* ---------- 选目录 ---------- */
-  const pickDir = useCallback(async () => {
-    if (!CAN_PICK_DIR) return
+  const pickDir = useCallback(async () => {    if (!CAN_PICK_DIR) return
     try {
       const handle = await window.showDirectoryPicker({ mode: 'read' })
       dropObjectUrls() // 换源了，上一个源的 objectURL 没必要留着
@@ -157,50 +189,16 @@ export default function NotVideos() {
     setErr(null)
   }, [pathInput, dropObjectUrls])
 
-  /* ---------- 当前项：按 name 定位，列表变化也不会错位 ---------- */
-  const index = useMemo(() => {
-    const i = videos.findIndex((v) => v.name === currentName)
-    return i >= 0 ? i : 0
-  }, [videos, currentName])
-  const current = videos[index] || null
-
-  const step = useCallback(
-    (delta) => {
-      if (!videos.length) return
-      const next = (index + delta + videos.length) % videos.length
-      setCurrentName(videos[next].name)
-    },
-    [videos, index],
-  )
-
-  /* muted 是 DOM property 不是 attribute，React 不会可靠地同步它，手动补一刀 */
-  useEffect(() => {
-    const el = videoRef.current
-    if (el) el.muted = muted
-  }, [muted, current?.url])
-
-  const togglePlay = useCallback(() => {
-    const el = videoRef.current
-    if (!el) return
-    if (el.paused) {
-      const p = el.play()
-      if (p && p.catch) p.catch(() => setPlaying(false))
-    } else {
-      el.pause()
-    }
-  }, [])
-
-  /* 左右方向键翻页：轮播页的手感 */
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === 'ArrowLeft') step(-1)
-      if (e.key === 'ArrowRight') step(1)
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [step])
-
-  /* ---------- 渲染 ---------- */
+  const counts =
+    mode === 'picker'
+      ? { videos: pickerVideos.length }
+      : {
+          videos: serverData.videos.length,
+          images: serverData.images.length,
+          docs: serverData.docs.length,
+          pythons: serverData.pythons.length,
+        }
+  const total = Object.values(counts).reduce((a, b) => a + b, 0)
   const sourceLabel = mode === 'picker' ? pickerName : mode === 'server' ? activeDir : ''
 
   return (
@@ -208,16 +206,30 @@ export default function NotVideos() {
       <header className="notvideos__head">
         <div className="notvideos__title">
           <span className="notvideos__badge">隐藏</span>
-          <h2>本地视频轮播</h2>
+          <h2>本地媒体中心</h2>
         </div>
-        {videos.length ? (
+        {total ? (
           <div className="notvideos__stat">
-            <span>
-              共 <b>{videos.length}</b> 个
-            </span>
-            <span>
-              第 <b>{index + 1}</b> / {videos.length}
-            </span>
+            {counts.videos ? (
+              <span>
+                视频 <b>{counts.videos}</b>
+              </span>
+            ) : null}
+            {counts.images ? (
+              <span>
+                图片 <b>{counts.images}</b>
+              </span>
+            ) : null}
+            {counts.docs ? (
+              <span>
+                文档 <b>{counts.docs}</b>
+              </span>
+            ) : null}
+            {counts.pythons ? (
+              <span>
+                脚本 <b>{counts.pythons}</b>
+              </span>
+            ) : null}
             <button
               type="button"
               className="notvideos__btn"
@@ -246,7 +258,7 @@ export default function NotVideos() {
           <input
             className="notvideos__input"
             value={pathInput}
-            placeholder="或直接填目录绝对路径，例如：/Users/你/Movies/Clip"
+            placeholder="填目录绝对路径（含子目录；可看文档 / 运行 Python），例如：/Users/你/Movies/Clip"
             onChange={(e) => setPathInput(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') applyPath()
@@ -280,80 +292,58 @@ export default function NotVideos() {
         ) : null}
 
         {err ? <div className="notvideos__err">{err}</div> : null}
+        {mode === 'picker' ? (
+          <div className="notvideos__tip">
+            选择器模式仅支持视频轮播（浏览器拿不到绝对路径，无法读取文档 / 运行 Python）；需要这两项请用上方路径直填。
+          </div>
+        ) : null}
       </section>
 
       {mode === 'none' ? (
         <div className="notvideos__hint">
-          <p>先选一个存放视频的文件夹，页面会自动把它接成轮播。</p>
+          <p>先选一个文件夹，页面会按其中内容自动分区：视频轮播 / 图片 / 文档 / Python 效果。</p>
           <p className="notvideos__dir">
-            不会读取任何固定路径，选到哪儿就放哪儿；目录里新增视频后页面会自动跟着变。
+            不会读取任何固定路径，选到哪儿就放哪儿；目录里新增内容后页面会自动跟着变。
           </p>
         </div>
-      ) : !videos.length ? (
-        <div className="notvideos__hint">
-          <p>这个目录里还没有视频，或读取失败。</p>
-          {err ? <p className="notvideos__err">{err}</p> : null}
+      ) : mode === 'picker' ? (
+        pickerVideos.length ? (
+          <VideoCarousel videos={pickerVideos} />
+        ) : (
+          <div className="notvideos__hint">
+            <p>这个目录里还没有视频，或读取失败。</p>
+            <p className="notvideos__tip">需要看文档 / 跑 Python 效果？请改用上方「路径直填」——选择器模式浏览器拿不到绝对路径，只有它能轮播视频。</p>
+            {err ? <p className="notvideos__err">{err}</p> : null}
+          </div>
+        )
+      ) : serverData.videos.length || serverData.images.length || serverData.docs.length || serverData.pythons.length ? (
+        /* 路径直填：后端全分类，四区展示 */
+        <div className="notvideos__sections">
+          {serverData.videos.length ? <VideoCarousel videos={serverData.videos} /> : null}
+
+          {serverData.images.length ? (
+            <section className="notvideos__section">
+              <div className="notvideos__secHead">
+                <h3>🖼️ 图片</h3>
+                <span className="notvideos__secCount">{serverData.images.length}</span>
+              </div>
+              <ImageGrid images={serverData.images} />
+            </section>
+          ) : null}
+
+          <DocViewer docs={serverData.docs} dir={activeDir} />
+          {/* python 跑完产物会落盘（如 output/*.webp），重扫一次让图片 / 视频区立刻能看到 */}
+          <PythonRunner pythons={serverData.pythons} dir={activeDir} onRefresh={refreshScan} />
         </div>
       ) : (
-        <div className="notvideos__body">
-          <div className="notvideos__stage">
-            <video
-              key={current.url}
-              ref={videoRef}
-              className="notvideos__video"
-              src={current.url}
-              autoPlay
-              playsInline
-              preload="auto"
-              onEnded={() => step(1)}
-              onPlay={() => setPlaying(true)}
-              onPause={() => setPlaying(false)}
-              onError={() => step(1)}
-            />
-            <div className="notvideos__caption">
-              <span className="notvideos__name" title={current.name}>
-                {current.name}
-              </span>
-              <span className="notvideos__sub">
-                {fmtSize(current.size)} · {fmtTime(current.mtime)}
-              </span>
-            </div>
-            <div className="notvideos__controls">
-              <button type="button" className="notvideos__btn" onClick={() => step(-1)}>
-                上一个
-              </button>
-              <button type="button" className="notvideos__btn" onClick={togglePlay}>
-                {playing ? '暂停' : '播放'}
-              </button>
-              <button type="button" className="notvideos__btn" onClick={() => step(1)}>
-                下一个
-              </button>
-              <button type="button" className="notvideos__btn" onClick={() => setMuted((m) => !m)}>
-                {muted ? '取消静音' : '静音'}
-              </button>
-            </div>
-          </div>
-
-          <aside className="notvideos__list">
-            {videos.map((v, i) => (
-              <button
-                type="button"
-                key={v.name}
-                className={`notvideos__item${i === index ? ' is-current' : ''}`}
-                onClick={() => setCurrentName(v.name)}
-                title={v.name}
-              >
-                <span className="notvideos__idx">{i + 1}</span>
-                <span className="notvideos__itemName">{v.name}</span>
-                <span className="notvideos__itemSub">{fmtSize(v.size)}</span>
-              </button>
-            ))}
-          </aside>
+        <div className="notvideos__hint">
+          <p>这个目录里没有可展示的媒体 / 文档 / 脚本。</p>
+          {err ? <p className="notvideos__err">{err}</p> : null}
         </div>
       )}
 
       <footer className="notvideos__foot">
-        <span>每 {POLL_MS / 1000} 秒自动扫描一次 · ← → 切换</span>
+        <span>每 {POLL_MS / 1000} 秒自动扫描一次 · 视频支持 ← → 切换</span>
       </footer>
     </div>
   )

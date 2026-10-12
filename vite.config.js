@@ -8,6 +8,7 @@ import path from 'node:path'
 import { serveAstroData } from './vite-astro-proxy.mjs'
 import { serveGeoData } from './vite-geo-proxy.mjs'
 import { serveOceanData } from './vite-ocean-proxy.mjs'
+import { serveLocalMedia } from './vite-local-media.mjs'
 
 /**
  * dev 环境下直接返回 public/ort/ 下的 onnxruntime wasm 运行时文件。
@@ -42,152 +43,6 @@ function serveOrtAssets() {
   }
 }
 
-/**
- * 隐藏视频轮播页的**兜底**数据源：目录由用户在页面上自己选，经 ?dir=<绝对路径> 传入，**不绑定任何固定路径**。
- * （主通路是浏览器原生目录选择器 showDirectoryPicker，客户端直读、根本不经后端；
- *   本插件只服务于 Safari / Firefox 这类没有选择器的浏览器，以及想手动填路径的场景。）
- *
- * 为什么仍需要走 dev 中间件：手动填路径时，浏览器既列不出本地目录，也不能直接播 file:// 的字节流，
- * 只能由服务端扫描目录并代理文件。本插件只做两件事：
- *   - GET /api/not-videos        实时扫描目录返回列表（每次请求都重新 readdir，新增/删除立刻反映）
- *   - GET /not-videos/<filename> 返回视频字节流，**支持 HTTP Range（206 Partial Content）**
- *     —— 缺了 Range，<video> 拖不动进度条，部分浏览器甚至压根不开始播放。
- * 仅挂在 dev server（configureServer），生产产物不含此能力。
- */
-function serveNotVideos() {
-  // 目录不再写死：由前端选好后经 ?dir=<绝对路径> 传入。
-  // NOT_VIDEO_DIR 只作为不传参数时的兜底，默认空 = 必须先选目录。
-  const FALLBACK_DIR = process.env.NOT_VIDEO_DIR || ''
-  // 可选白名单：NOT_VIDEO_ROOTS="/Users/me/Movies,/Volumes/Disk"（逗号分隔）。
-  // 一旦配置，只有这些根目录下的路径才允许读 —— 否则 ?dir= 等于开了个任意路径读取口。
-  const ALLOWED_ROOTS = (process.env.NOT_VIDEO_ROOTS || '')
-    .split(',')
-    .map((s) => s.trim())
-    .filter(Boolean)
-    .map((p) => path.resolve(p))
-  const MIME = {
-    '.mp4': 'video/mp4',
-    '.m4v': 'video/mp4',
-    '.webm': 'video/webm',
-    '.mov': 'video/quicktime',
-    '.mkv': 'video/x-matroska',
-  }
-
-  /** 把 ?dir= 解析成可读的绝对目录，顺带做存在性 / 类型 / 白名单校验 */
-  function resolveDir(raw) {
-    const dir = String(raw || FALLBACK_DIR).trim()
-    if (!dir) return { error: '未指定目录：请在页面上选择文件夹，或通过 ?dir=<绝对路径> 传入' }
-    const abs = path.resolve(dir)
-    let st
-    try {
-      st = fs.statSync(abs)
-    } catch {
-      return { error: `目录不存在：${abs}` }
-    }
-    if (!st.isDirectory()) return { error: `不是目录：${abs}` }
-    if (ALLOWED_ROOTS.length && !ALLOWED_ROOTS.some((r) => abs === r || abs.startsWith(r + path.sep))) {
-      return { error: `目录不在 NOT_VIDEO_ROOTS 允许范围内：${abs}` }
-    }
-    return { abs }
-  }
-
-  /** 刻意不做缓存：目录随时在变，缓存住列表就等于把「实时」弄丢 */
-  function scanVideos(dir) {
-    const videos = []
-    for (const name of fs.readdirSync(dir)) {
-      if (!MIME[path.extname(name).toLowerCase()]) continue
-      let st
-      try {
-        st = fs.statSync(path.join(dir, name))
-      } catch {
-        continue // 正在写入或已被删掉的文件，直接跳过而不是让整个列表失败
-      }
-      if (!st.isFile()) continue
-      videos.push({
-        name,
-        size: st.size,
-        mtime: Math.floor(st.mtimeMs),
-        url: `/not-videos/${encodeURIComponent(name)}`,
-      })
-    }
-    // 新的排最前：目录里一有新视频，用户第一眼看到的就是它
-    return videos.sort((a, b) => b.mtime - a.mtime)
-  }
-
-  return {
-    name: 'serve-not-videos',
-    configureServer(server) {
-      server.middlewares.use((req, res, next) => {
-        const raw = req.url || ''
-        const url = raw.split('?')[0]
-        // 目录由前端选好后经 ?dir= 传入，每次请求都重新校验，不缓存解析结果
-        const dir = resolveDir(new URLSearchParams(raw.split('?')[1] || '').get('dir'))
-
-        if (url === '/api/not-videos') {
-          res.setHeader('Content-Type', 'application/json; charset=utf-8')
-          // no-store：轮询就是来要最新结果的，任何缓存都会让实时性失效
-          res.setHeader('Cache-Control', 'no-store')
-          if (dir.error) {
-            res.statusCode = 400
-            res.end(JSON.stringify({ ok: false, dir: '', error: dir.error, videos: [] }))
-            return
-          }
-          try {
-            res.end(JSON.stringify({ ok: true, dir: dir.abs, videos: scanVideos(dir.abs), ts: Date.now() }))
-          } catch (e) {
-            res.statusCode = 500
-            res.end(JSON.stringify({ ok: false, dir: dir.abs, error: String(e && e.message), videos: [] }))
-          }
-          return
-        }
-
-        if (url.startsWith('/not-videos/')) {
-          if (dir.error) {
-            res.statusCode = 400
-            res.end(dir.error)
-            return
-          }
-          // basename + 前缀双重校验：彻底堵死 ../ 读到目录外的文件
-          const name = decodeURIComponent(path.basename(url))
-          const file = path.resolve(dir.abs, name)
-          if (!file.startsWith(dir.abs) || !fs.existsSync(file)) {
-            next()
-            return
-          }
-          const total = fs.statSync(file).size
-          const type = MIME[path.extname(name).toLowerCase()] || 'application/octet-stream'
-          const range = req.headers.range
-
-          if (range) {
-            const m = /bytes=(\d*)-(\d*)/.exec(range)
-            const start = m && m[1] ? Number(m[1]) : 0
-            const endRaw = m && m[2] ? Number(m[2]) : total - 1
-            const s = Math.max(0, Math.min(start, total - 1))
-            const e = Math.max(s, Math.min(endRaw, total - 1))
-            res.writeHead(206, {
-              'Content-Range': `bytes ${s}-${e}/${total}`,
-              'Accept-Ranges': 'bytes',
-              'Content-Length': e - s + 1,
-              'Content-Type': type,
-            })
-            fs.createReadStream(file, { start: s, end: e }).pipe(res)
-            return
-          }
-
-          res.writeHead(200, {
-            'Content-Length': total,
-            'Accept-Ranges': 'bytes',
-            'Content-Type': type,
-          })
-          fs.createReadStream(file).pipe(res)
-          return
-        }
-
-        next()
-      })
-    },
-  }
-}
 
 /**
  * 嵌入预览辅助接口（替代旧的 HTML 改写代理方案）：
@@ -366,7 +221,7 @@ export default defineConfig({
     }),
     embedHelpers(),
     serveOrtAssets(),
-    serveNotVideos(),
+    serveLocalMedia(),
     serveAstroData(),
     serveGeoData(),
     serveOceanData(),

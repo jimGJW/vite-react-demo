@@ -326,6 +326,300 @@
     color: #ff7875;
     font-size: 12px;
   }
+
+  /* ---------- 分区（媒体中心：视频 / 图片 / 文档 / Python） ---------- */
+  &__sections {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px 16px;
+    background: var(--nv-panel);
+    border: 1px solid var(--nv-line);
+    border-radius: 12px;
+  }
+
+  &__secHead {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    h3 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+    }
+  }
+
+  &__secCount {
+    padding: 1px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    color: var(--nv-dim);
+    background: #0f1219;
+    border: 1px solid var(--nv-line);
+  }
+
+  &__tip {
+    font-size: 12px;
+    color: #ffb454;
+  }
+
+  /* ---------- 图片网格 ---------- */
+  &__imgGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+
+    a {
+      display: block;
+      aspect-ratio: 1 / 1;
+      border: 1px solid var(--nv-line);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #0f1219;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.2s ease;
+
+      &:hover {
+        transform: scale(1.04);
+      }
+    }
+  }
+
+  /* 增量加载哨兵：滚到它附近就再挂一页图片，避免上百张图一次性全进 DOM */
+  &__imgMore {
+    margin-top: 10px;
+    padding: 10px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--nv-dim, #8a93a6);
+    border: 1px dashed var(--nv-line);
+    border-radius: 10px;
+  }
+
+  /* ---------- 文档查看 ---------- */
+  &__docBody {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+    gap: 12px;
+    align-items: start;
+  }
+
+  &__docList {
+    max-height: 60vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__docView {
+    min-height: 220px;
+    max-height: 60vh;
+    overflow: auto;
+    padding: 12px 14px;
+    background: #0f1219;
+    border: 1px solid var(--nv-line);
+    border-radius: 10px;
+  }
+
+  &__docText {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--nv-text);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  &__docFrame {
+    width: 100%;
+    height: 56vh;
+    border: none;
+    border-radius: 8px;
+    background: #fff;
+  }
+
+  &__docBar {
+    margin-top: 8px;
+    font-size: 12px;
+
+    a {
+      color: var(--c-primary, #1677ff);
+    }
+  }
+
+  /* ---------- Python 效果 ---------- */
+  &__pyList {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__pyRow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: #0f1219;
+    border: 1px solid var(--nv-line);
+    border-radius: 8px;
+  }
+
+  &__pyOut {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  &__pyMeta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--nv-dim);
+
+    b {
+      color: var(--nv-text);
+    }
+  }
+
+  &__pyStd,
+  &__pyErr {
+    margin: 0;
+    padding: 10px 12px;
+    max-height: 220px;
+    overflow: auto;
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  &__pyStd {
+    background: #0f1219;
+    border: 1px solid var(--nv-line);
+    color: var(--nv-text);
+  }
+
+  &__pyErr {
+    background: rgba(255, 120, 117, 0.08);
+    border: 1px solid rgba(255, 120, 117, 0.4);
+    color: #ffb3b0;
+  }
+
+  &__artifacts {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__artifactGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+
+    img,
+    video {
+      width: 100%;
+      border: 1px solid var(--nv-line);
+      border-radius: 8px;
+      background: #000;
+      display: block;
+    }
+  }
+
+  /* ---------- Python 运行参数行：解释器 / 附加参数 / 超时 ---------- */
+  &__pyForm {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+  }
+
+  &__pyField {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    font-size: 11px;
+    color: var(--nv-dim);
+
+    &--args {
+      flex: 1 1 260px;
+    }
+  }
+
+  &__select {
+    padding: 7px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--nv-line);
+    background: #0f1219;
+    color: var(--nv-text);
+    font-size: 12px;
+    max-width: 320px;
+
+    &:focus {
+      outline: none;
+      border-color: var(--c-primary, #1677ff);
+    }
+  }
+
+  /* 实际执行的命令行：模块方式（-m）与普通脚本一眼可辨，出问题能直接复制去终端复现 */
+  &__pyCmd {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: var(--nv-text);
+    word-break: break-all;
+  }
+
+  &__tag {
+    padding: 1px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    color: #59d9ff;
+    background: rgba(89, 217, 255, 0.12);
+    border: 1px solid rgba(89, 217, 255, 0.35);
+  }
+
+  &__btn--stop {
+    border-color: rgba(255, 120, 117, 0.5);
+    color: #ffb3b0;
+
+    &:hover {
+      background: rgba(255, 120, 117, 0.14);
+      border-color: #ff7875;
+    }
+  }
+
+  /* 脚本行选中态：与右侧视频列表同一套「高亮 + 压暗」语义 */
+  &__pyRow.is-current {
+    border-color: color-mix(in srgb, var(--c-primary, #1677ff) 55%, transparent);
+    background: color-mix(in srgb, var(--c-primary, #1677ff) 12%, transparent);
+
+    .notvideos__itemName {
+      color: var(--nv-text);
+    }
+  }
+
+  /* 运行中的输出区加高一点：大型渲染的进度条动辄几百行 */
+  &__pyOut .notvideos__pyStd {
+    max-height: 320px;
+  }
 }
 
 @keyframes nv-fade {
@@ -347,5 +641,26 @@
 
   .notvideos__list {
     max-height: 240px;
+  }
+}
+
+/* 窄屏：文档「列表 + 查看区」两栏改单栏 */
+@media (max-width: 720px) {
+  .notvideos__docBody {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .notvideos__docList {
+    max-height: 200px;
+  }
+
+  /* Python 参数行窄屏竖排，select 不再限宽 */
+  .notvideos__pyForm {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .notvideos__select {
+    max-width: none;
   }
 }

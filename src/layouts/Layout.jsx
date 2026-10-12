@@ -421,7 +421,7 @@ export default function Layout() {
             <Link
               to="/not-videos"
               className={`sidebar-hidden-entry${pathname === '/not-videos' ? ' is-current' : ''}`}
-              title="本地视频轮播（隐藏页）"
+              title="本地媒体中心（隐藏页）"
             >
               <VideoCameraOutlined />
               <span>本地视频轮播</span>

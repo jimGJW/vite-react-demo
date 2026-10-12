@@ -644,6 +644,18 @@
   line-height: 1.5;
 }
 
+/* 守卫来源提示：被拦截的页面路径，一眼看到「登录后回哪去」 */
+.login-brand .login-back {
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  color: #67e8f9;
+
+  b {
+    font-weight: 600;
+    word-break: break-all;
+  }
+}
+
 /* —— 表单 —— */
 .login-form {
   position: relative;

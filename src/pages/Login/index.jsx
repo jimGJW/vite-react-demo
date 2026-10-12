@@ -96,6 +96,13 @@ function Login() {
           </div>
           <h1>星际控制台</h1>
           <p>欢迎归来，舰长。请验证身份以进入主控系统。</p>
+          {/* 守卫跳转来源提示：未登录直接访问受保护页（如 /not-videos）会被带到这里，
+              不说明的话用户会以为页面坏了——「什么反应都没有」就是这么来的 */}
+          {from && from !== '/' ? (
+            <p className="login-back">
+              验证通过后将自动返回 <b>{from}</b>
+            </p>
+          ) : null}
         </div>
 
         <form className="login-form" onSubmit={onSubmit}>
