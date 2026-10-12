@@ -16,6 +16,10 @@
  */
 
 const FETCH_TIMEOUT = 12000
+/* 新增页签（空气/天气/气候档案）用共享表里的 12 城；本文件原有的 CITIES 供旧源使用，
+   两组坐标不合并，避免改到既有 env 源的多点查询参数顺序。 */
+import { openMeteo, forCities, num, CITIES as OM_CITIES, ARCHIVE_CITY } from './vite-open-data.mjs'
+
 const cache = new Map()
 
 async function fetchWithTimeout(url, opts = {}) {
@@ -781,6 +785,145 @@ async function eonet() {
   })
 }
 
+/**
+ * 空气质量 —— Open-Meteo Air Quality（欧洲 CAMS 模式输出）。
+ *
+ * 补的是地球看板最大的一块缺口：此前只有温室气体（CO₂/CH₄/N₂O）这种「全球背景值」，
+ * 没有贴近生活的 PM2.5 / AQI。AQI 与 UV 的分档直接复用 earth 词典（见 lookup 说明），
+ * 服务端只吐数值，不翻译等级——等级语义只有一处，这条规矩不能破。
+ *
+ * 默认返回 US AQI 口径（前端按 us_aqi 分档）。单城失败只让那一行显示「该点无数据」。
+ */
+async function air() {
+  return withCache('geo-air', 10 * 60_000, async () => {
+    const items = await forCities(OM_CITIES, async (c) => {
+      const d = await openMeteo(
+        'air-quality-api.open-meteo.com',
+        `air-quality?latitude=${c.lat}&longitude=${c.lon}` +
+          '&current=pm2_5,pm10,european_aqi,us_aqi,uv_index,ozone,nitrogen_dioxide,sulphur_dioxide,carbon_monoxide' +
+          '&timezone=Asia%2FShanghai',
+      )
+      const cur = d.current || {}
+      return {
+        pm25: num(cur.pm2_5),
+        pm10: num(cur.pm10),
+        // AQI 用欧标：词典 AQI_LEVELS 的分档阈值就是按 european_aqi 写的，别混用 US 口径
+        aqi: num(cur.european_aqi),
+        uv: num(cur.uv_index),
+        ozone: num(cur.ozone),
+        no2: num(cur.nitrogen_dioxide),
+        so2: num(cur.sulphur_dioxide),
+        co: num(cur.carbon_monoxide),
+        time: cur.time || null,
+      }
+    })
+    const good = items.filter((c) => c.ok && c.aqi != null)
+    // 污染重的排前面：这页的用途是「今天哪最差」，不是按地理位置排
+    good.sort((a, b) => b.aqi - a.aqi)
+    return { ok: true, items: good, failed: items.length - good.length }
+  })
+}
+
+/**
+ * 城市天气实况 —— Open-Meteo Forecast。
+ *
+ * 与「地表与气候」页签的分工：那边是温室气体 + 全球温度距平（长时间尺度），
+ * 这边是此刻的温度 / 风 / 降水（即时体感），两个尺度互补。
+ * 天气现象文字用本文件已有的 wmoText（WMO 4677 码表）。
+ */
+async function weather() {
+  return withCache('geo-weather', 10 * 60_000, async () => {
+    const items = await forCities(OM_CITIES, async (c) => {
+      const d = await openMeteo(
+        'api.open-meteo.com',
+        `forecast?latitude=${c.lat}&longitude=${c.lon}` +
+          '&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,' +
+          'wind_speed_10m,wind_direction_10m,surface_pressure' +
+          '&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset' +
+          '&timezone=Asia%2FShanghai&forecast_days=1',
+      )
+      const cur = d.current || {}
+      const daily = d.daily || {}
+      const code = num(cur.weather_code)
+      return {
+        temp: num(cur.temperature_2m),
+        feels: num(cur.apparent_temperature),
+        humidity: num(cur.relative_humidity_2m),
+        precip: num(cur.precipitation),
+        code,
+        text: code == null ? '' : wmoText(code),
+        wind: num(cur.wind_speed_10m),
+        windDir: num(cur.wind_direction_10m),
+        pressure: num(cur.surface_pressure),
+        tMax: num((daily.temperature_2m_max || [])[0]),
+        tMin: num((daily.temperature_2m_min || [])[0]),
+        sunrise: (daily.sunrise || [])[0] || null,
+        sunset: (daily.sunset || [])[0] || null,
+        time: cur.time || null,
+      }
+    })
+    const good = items.filter((c) => c.ok)
+    // 按当日最高温从高到低：一眼看出今天的南北温差
+    good.sort((a, b) => (b.temp ?? -99) - (a.temp ?? -99))
+    return { ok: true, items: good, failed: items.length - good.length }
+  })
+}
+
+/**
+ * 气候档案 —— Open-Meteo Archive（ERA5 再分析逐日值）。
+ *
+ * 取目标城市近 10 个完整年份的逐日气温与降水，**在服务端聚合成年均值**再下发给前端。
+ * 为什么不把 3650 个日值全丢给前端：传输体积大、且前端只画一张十年柱状图，
+ * 聚合后 payload 只有 10 个点。聚合逻辑放服务端，前端只管画。
+ *
+ * 有效年份的判定：该年有 ≥300 天有效观测才纳入，否则最后一年（未过完）会把年均温拉低。
+ */
+async function archive() {
+  return withCache('geo-archive', 24 * 3600_000, async () => {
+    const endYear = new Date().getUTCFullYear() - 1
+    const startYear = endYear - 9
+    const d = await openMeteo(
+      'archive-api.open-meteo.com',
+      `archive?latitude=${ARCHIVE_CITY.lat}&longitude=${ARCHIVE_CITY.lon}` +
+        `&start_date=${startYear}-01-01&end_date=${endYear}-12-31` +
+        '&daily=temperature_2m_mean,precipitation_sum&timezone=Asia%2FShanghai',
+    )
+    const times = d.daily?.time || []
+    const tArr = d.daily?.temperature_2m_mean || []
+    const pArr = d.daily?.precipitation_sum || []
+    const buckets = new Map()
+    times.forEach((day, i) => {
+      const y = String(day).slice(0, 4)
+      const b = buckets.get(y) || { year: Number(y), tSum: 0, tN: 0, pSum: 0 }
+      const tv = num(tArr[i])
+      if (tv != null) {
+        b.tSum += tv
+        b.tN += 1
+      }
+      const pv = num(pArr[i])
+      if (pv != null) b.pSum += pv
+      buckets.set(y, b)
+    })
+    const years = [...buckets.values()]
+      .filter((b) => b.tN >= 300)
+      .map((b) => ({
+        year: b.year,
+        tempMean: Number((b.tSum / b.tN).toFixed(2)),
+        precip: Math.round(b.pSum),
+        days: b.tN,
+      }))
+      .sort((a, b) => a.year - b.year)
+    return {
+      ok: true,
+      city: ARCHIVE_CITY.name,
+      startYear,
+      endYear,
+      years,
+      source: 'ERA5 再分析（Open-Meteo Archive）',
+    }
+  })
+}
+
 /** dev 中间件：/api/geo/* → 各数据源 */
 export function serveGeoData() {
   const SOURCES = {
@@ -795,6 +938,9 @@ export function serveGeoData() {
     '/api/geo/volcanoes': volcanoes,
     '/api/geo/tsunami': tsunami,
     '/api/geo/eonet': eonet,
+    '/api/geo/air': air,
+    '/api/geo/weather': weather,
+    '/api/geo/archive': archive,
   }
   return {
     name: 'serve-geo-data',

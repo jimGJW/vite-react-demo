@@ -3,7 +3,7 @@ import { getTerm } from '../../../lib/boards/relations.js'
 import KeyTermCard from '../../../components/KeyTermCard/KeyTermCard.jsx'
 
 /**
- * 深空看板「📚 案例」页签：用本看板的维度（发射窗口 / 月相 / 太阳活动周 / 流星雨）
+ * 深空看板「📚 真实案例」页签：用本看板的维度（发射窗口 / 月相 / 太阳活动周 / 流星雨）
  * 解读真实航天与天象事件。均为公开史料（NASA / CNSA / NOAA SWPC 通报）。
  */
 
@@ -60,8 +60,20 @@ export default function CaseTab({ theme = 'dark' }) {
   return (
     <div className="astro-case-list">
       <KeyTermCard term={keyTerm} theme={theme} />
-      {CASES.map((c) => (
-        <Panel key={c.id} title={c.title} source={c.source} icon={c.icon}>
+      {CASES.map((c, i) => (
+        <Panel
+          key={c.id}
+          icon={c.icon}
+          source={c.source}
+          /* 标题带「案例 0N」编号徽章：案例卡和其他数据面板共用 Panel 外壳，
+             标题原本长得一模一样，滚下来分不清哪几张是案例。编号既是序号也是身份标识。 */
+          title={
+            <span className="astro-case__title">
+              <em className="astro-case__no">案例 {String(i + 1).padStart(2, '0')}</em>
+              <span className="astro-case__name">{c.title}</span>
+            </span>
+          }
+        >
           <div className="astro-case__date">📅 {c.date}</div>
           <div className="astro-case__metrics">
             {c.metrics.map((m) => (

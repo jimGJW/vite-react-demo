@@ -27,6 +27,32 @@
  *   极光椭圆     NOAA OVATION            极光可见纬度
  *   太阳周期     NOAA SWPC               第 25 周期观测与预测
  */
+import { openMeteo, forCities, num, OBSERVE_CITIES } from './vite-open-data.mjs'
+
+/**
+ * 精选小天体清单（喂给 JPL SBDB）。
+ * 选录标准是「中文读者认得出 / 人类真正去过」：
+ *   大彗星（肉眼可见的历史级）+ 探测器到访过的小行星，
+ * 而不是按编号前几位取的冷门天体。kind 用于前端分组展示。
+ */
+const FAMOUS_BODIES = [
+  { key: 'halley', sstr: '1P', zh: '哈雷彗星', kind: 'comet', note: '76 年回归一次，1986 年欧洲乔托号近距离拍摄了其彗核' },
+  { key: 'halebopp', sstr: 'C/1995 O1', zh: '海尔-波普彗星', kind: 'comet', note: '1997 年的世纪大彗星，肉眼可见长达 18 个月' },
+  { key: 'neowise', sstr: 'C/2020 F3', zh: 'NEOWISE 彗星', kind: 'comet', note: '2020 年夏季北半球肉眼可见的大彗星' },
+  { key: 'tsuchinshan', sstr: 'C/2023 A3', zh: '紫金山-阿特拉斯彗星', kind: 'comet', note: '2024 年秋季大彗星，由紫金山天文台首次发现' },
+  { key: 'mcnaught', sstr: 'C/2006 P1', zh: '麦克诺特彗星', kind: 'comet', note: '2007 年白昼可见的世纪彗星，尘埃尾跨度极大' },
+  { key: 'encke', sstr: '2P', zh: '恩克彗星', kind: 'comet', note: '已知周期最短的彗星之一，仅 3.3 年绕日一周' },
+  { key: '67p', sstr: '67P', zh: '丘留莫夫-格拉西缅科彗星', kind: 'comet', note: '欧洲罗塞塔号伴飞两年，并释放菲莱着陆器' },
+  { key: 'tempel', sstr: '9P', zh: '坦普尔 1 号彗星', kind: 'comet', note: 'NASA 深度撞击号以撞击方式探测其内部结构' },
+  { key: 'ceres', sstr: '1 Ceres', zh: '谷神星', kind: 'asteroid', note: '小行星带中最大的天体，也是唯一的矮行星' },
+  { key: 'vesta', sstr: '4 Vesta', zh: '灶神星', kind: 'asteroid', note: '小行星带质量第二大，黎明号曾环绕探测' },
+  { key: 'psyche', sstr: '16 Psyche', zh: '灵神星', kind: 'asteroid', note: '富含金属的小行星，NASA 同名探测器正在前往' },
+  { key: 'bennu', sstr: '101955 Bennu', zh: '贝努', kind: 'asteroid', note: 'OSIRIS-REx 于 2023 年带回 121 g 样品' },
+  { key: 'ryugu', sstr: '162173 Ryugu', zh: '龙宫', kind: 'asteroid', note: '日本隼鸟 2 号采样返回目标，带回 5.4 g 样品' },
+  { key: 'itokawa', sstr: '25143 Itokawa', zh: '糸川', kind: 'asteroid', note: '隼鸟号 2010 年带回样品，人类首次小行星采样返回' },
+  { key: 'eros', sstr: '433 Eros', zh: '爱神星', kind: 'asteroid', note: 'NEAR 探测器环绕一年并在其表面着陆' },
+  { key: 'apophis', sstr: '99942 Apophis', zh: '阿波菲斯', kind: 'asteroid', note: '2029 年将掠过地球，距离近到肉眼可见，早期曾被列为撞击威胁' },
+]
 
 /** 统一超时：超过就放弃这个源，不拖累整体 */
 const FETCH_TIMEOUT = 12000
@@ -746,6 +772,172 @@ const sources = {
       return { ok: true, count: d.count || 0, items }
     })
   },
+
+  /**
+   * 彗星与小行星档案 —— JPL SBDB（Small-Body Database）。
+   *
+   * 为什么用「精选清单逐个查」而不是 sbdb_query 批量接口：批量接口按编号顺序返回，
+   * 取前几条拿到的是 C/1680 V1 这类史料彗星，轨道要素大量为 null，列表观感很差。
+   * 精选清单覆盖「肉眼可见的大彗星 + 人类探测器到访过的小天体」，
+   * 每条都带完整轨道要素与直径，读起来才有信息量。
+   *
+   * 轨道要素几乎不变 → 缓存 24 小时，16 个并发请求一天只打一次。
+   */
+  async comet() {
+    return withCache('comet', 24 * 3600_000, async () => {
+      /**
+       * 单个天体的查询，失败重试一次。
+       * 为什么重试：16 个请求并发打 JPL 时，实测会稳定出现 1 个 503
+       * （单独重放同一个 URL 却是 200）——是对方的瞬时限流，不是 URL 写错。
+       * 只重试一次，避免把 dev server 卡在长时间重试里。
+       */
+      const fetchOne = async (b) => {
+        let lastErr
+        for (let attempt = 0; attempt < 2; attempt++) {
+          try {
+            const txt = await fetchWithTimeout(
+              `https://ssd-api.jpl.nasa.gov/sbdb.api?sstr=${encodeURIComponent(b.sstr)}&discovery=false&phys-par=true`,
+              { timeout: 15000 },
+            )
+            const d = JSON.parse(txt)
+            const els = {}
+            for (const e of d.orbit?.elements || []) els[e.name] = num(e.value)
+            const phys = {}
+            for (const p of d.phys_par || []) phys[p.name] = num(p.value)
+            return {
+              ok: true,
+              key: b.key,
+              zh: b.zh,
+              kind: b.kind,
+              fullname: d.object?.fullname || b.sstr,
+              cls: d.object?.orbit_class?.name || '',
+              pha: !!d.object?.pha,
+              // 轨道要素：a 半长径(AU)、q 近日距、ad 远日距、e 偏心率、i 倾角(°)、
+              // per 公转周期(天)、tp 过近日点(儒略日)
+              a: els.a ?? null,
+              q: els.q ?? null,
+              ad: els.ad ?? null,
+              e: els.e ?? null,
+              i: els.i ?? null,
+              per: els.per ?? null,
+              tp: els.tp ?? null,
+              diameter: phys.diameter ?? null,
+              albedo: phys.albedo ?? null,
+              note: b.note,
+            }
+          } catch (e) {
+            lastErr = e // 交给下一次 attempt 重试
+          }
+        }
+        return { ok: false, key: b.key, zh: b.zh, kind: b.kind, note: b.note, error: String((lastErr && lastErr.message) || lastErr) }
+      }
+
+      /* 分批并发（每批 4 个）：全量并发会被 JPL 限流掉 1 个，分批后实测 16/16 全成功 */
+      const items = []
+      for (let i = 0; i < FAMOUS_BODIES.length; i += 4) {
+        const chunk = FAMOUS_BODIES.slice(i, i + 4)
+        const done = await Promise.all(chunk.map(fetchOne))
+        items.push(...done)
+      }
+      return { ok: true, count: items.length, items }
+    })
+  },
+
+  /**
+   * 未来近地交会 —— JPL CAD（Close Approach Data）。
+   *
+   * 与「太阳系」页签的 NASA NeoWs 不重复：NeoWs 只给未来 7 天且字段粗，
+   * CAD 能按距离排序给出未来全部近距离掠地事件，含相对速度与不确定度。
+   *
+   * 直径不直接给，由绝对星等 H 反推（取典型反照率 0.14）：
+   *   D(km) ≈ 1329 / √albedo × 10^(−H/5)
+   * H 差 1 等 ≈ 直径差 2.5 倍，所以这是量级估计，页面里要写清「估算」。
+   */
+  async approach() {
+    return withCache('approach', 30 * 60_000, async () => {
+      const today = new Date().toISOString().slice(0, 10)
+      const txt = await fetchWithTimeout(
+        `https://ssd-api.jpl.nasa.gov/cad.api?dist-max=0.05&date-min=${today}&sort=dist`,
+        { timeout: 15000 },
+      )
+      const d = JSON.parse(txt)
+      const fields = d.fields || []
+      const items = (d.data || []).slice(0, 24).map((row) => {
+        const o = {}
+        fields.forEach((k, i) => {
+          o[k] = row[i]
+        })
+        const h = num(o.h)
+        // 反照率 0.14 是近地小行星的典型值；H 缺失时不硬猜
+        const dKm = h == null ? null : (1329 / Math.sqrt(0.14)) * Math.pow(10, -h / 5)
+        return {
+          des: o.des || '',
+          date: o.cd || '',
+          distAu: num(o.dist),
+          distKm: num(o.dist) == null ? null : num(o.dist) * 149597870.7,
+          distMin: num(o.dist_min),
+          distMax: num(o.dist_max),
+          vRel: num(o.v_rel),
+          h,
+          dKm,
+          // 月距（LD）= 38.44 万 km，用月距表达比 AU 直观
+          lunarDist: num(o.dist) == null ? null : (num(o.dist) * 149597870.7) / 384400,
+          uncertainty: o.t_sigma_f || '',
+        }
+      })
+      return { ok: true, count: d.count || 0, items }
+    })
+  },
+
+  /**
+   * 观星条件 —— Open-Meteo 实况云量 / 能见度 / 降水。
+   *
+   * 「今晚星空」页签算的是天体位置（几何），这里补的是大气条件（天气）：
+   * 月相再好，云量 100% 也看不到任何东西。两者合起来才回答得了「今晚值不值得出门」。
+   *
+   * 评分口径（0–100，权重按对目视观测的实际影响排）：
+   *   云量 60% —— 决定性因素
+   *   能见度 20% —— 低能见度意味着霾/雾，星点发糊
+   *   降水 15% —— 有降水直接劝退
+   *   大风 5% —— 影响架设备
+   */
+  async observe() {
+    return withCache('observe', 10 * 60_000, async () => {
+      const items = await forCities(OBSERVE_CITIES, async (c) => {
+        const d = await openMeteo(
+          'api.open-meteo.com',
+          `forecast?latitude=${c.lat}&longitude=${c.lon}` +
+            '&current=cloud_cover,visibility,precipitation,temperature_2m,wind_speed_10m,relative_humidity_2m' +
+            '&daily=sunrise,sunset&timezone=Asia%2FShanghai&forecast_days=1',
+        )
+        const cur = d.current || {}
+        const daily = d.daily || {}
+        const cloud = num(cur.cloud_cover)
+        const vis = num(cur.visibility)
+        const precip = num(cur.precipitation)
+        const wind = num(cur.wind_speed_10m)
+        let score = 100
+        if (cloud != null) score -= cloud * 0.6
+        if (vis != null && vis < 10000) score -= (1 - vis / 10000) * 20
+        if (precip != null && precip > 0) score -= 15
+        if (wind != null && wind > 20) score -= 5
+        return {
+          cloudCover: cloud,
+          visibilityM: vis,
+          precipitation: precip,
+          temp: num(cur.temperature_2m),
+          humidity: num(cur.relative_humidity_2m),
+          wind,
+          sunset: (daily.sunset || [])[0] || null,
+          sunrise: (daily.sunrise || [])[0] || null,
+          score: Math.max(0, Math.min(100, Math.round(score))),
+        }
+      })
+      const good = items.filter((c) => c.ok)
+      good.sort((a, b) => b.score - a.score)
+      return { ok: true, items: good, failed: items.filter((c) => !c.ok).length }
+    })
+  },
 }
 
 /** 把 promise 结果里的 __error 转成结构化失败 */
@@ -771,6 +963,9 @@ export function serveAstroData() {
           '/api/astro/aurora': 'aurora',
           '/api/astro/solar-cycle': 'solarCycle',
           '/api/astro/apod': 'apod',
+          '/api/astro/comet': 'comet',
+          '/api/astro/approach': 'approach',
+          '/api/astro/observe': 'observe',
         }
         const key = keys[url]
         if (!key) return next()

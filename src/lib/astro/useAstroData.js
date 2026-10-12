@@ -23,6 +23,10 @@ const POLL = {
   solarCycle: 6 * 3600_000,
   // APOD 一天一张，DEMO_KEY 限流严格，6 小时刷一次足够
   apod: 6 * 3600_000,
+  // 新增三源：轨道要素几乎不变（服务端也缓存 24h）；近地交会 30 分钟；观星条件随天气 10 分钟
+  comet: 24 * 3600_000,
+  approach: 30 * 60_000,
+  observe: 10 * 60_000,
 }
 
 async function getJSON(url, signal) {
@@ -96,6 +100,9 @@ export function useAstroData() {
   const aurora = usePolling('/api/astro/aurora', POLL.aurora)
   const solarCycle = usePolling('/api/astro/solar-cycle', POLL.solarCycle)
   const apod = usePolling('/api/astro/apod', POLL.apod)
+  const comet = usePolling('/api/astro/comet', POLL.comet)
+  const approach = usePolling('/api/astro/approach', POLL.approach)
+  const observe = usePolling('/api/astro/observe', POLL.observe)
 
   return {
     iss,
@@ -108,6 +115,9 @@ export function useAstroData() {
     aurora,
     solarCycle,
     apod,
+    comet,
+    approach,
+    observe,
     anyLoading:
       iss.loading ||
       stations.loading ||
@@ -118,7 +128,10 @@ export function useAstroData() {
       solarActivity.loading ||
       aurora.loading ||
       solarCycle.loading ||
-      apod.loading,
+      apod.loading ||
+      comet.loading ||
+      approach.loading ||
+      observe.loading,
     reloadAll: useCallback(() => {
       iss.reload()
       stations.reload()
@@ -130,6 +143,9 @@ export function useAstroData() {
       aurora.reload()
       solarCycle.reload()
       apod.reload()
+      comet.reload()
+      approach.reload()
+      observe.reload()
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
       iss.reload,
@@ -142,6 +158,9 @@ export function useAstroData() {
       aurora.reload,
       solarCycle.reload,
       apod.reload,
+      comet.reload,
+      approach.reload,
+      observe.reload,
     ]),
   }
 }

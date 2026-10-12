@@ -30,6 +30,9 @@ import OniTab from './components/OniTab.jsx'
 import CycloneTab from './components/CycloneTab.jsx'
 import BuoysTab from './components/BuoysTab.jsx'
 // DictTab 已集中到 /timeline 聚合名词库（名词解析统一入口），本看板不再单独持有名词页签
+import MarineTab from './components/MarineTab.jsx'
+import CoastTab from './components/CoastTab.jsx'
+import SeaTempTab from './components/SeaTempTab.jsx'
 import CaseTab from './components/CaseTab.jsx'
 import Clock from '../../components/Clock.jsx'
 import RelatedData from '../../components/RelatedData/index.jsx'
@@ -39,7 +42,7 @@ import './index.scss'
 
 export default function OceanBoard({ lockedTab = null } = {}) {
   const {
-    waves, tides, tidePred, globalWaves, oni, cyclones, oscillations, ssta, stationWeather, buoys, reloadAll,
+    waves, tides, tidePred, globalWaves, oni, cyclones, oscillations, ssta, stationWeather, buoys, marine, reloadAll,
   } = useOceanData()
   const [theme, setTheme] = useState(readTheme)
 
@@ -65,6 +68,7 @@ export default function OceanBoard({ lockedTab = null } = {}) {
   const sstaData = ssta.data?.ok ? ssta.data : null
   const wxData = stationWeather.data?.ok ? stationWeather.data : null
   const buoyData = buoys.data?.ok ? buoys.data : null
+  const marineData = marine.data?.ok ? marine.data : null
 
   // 派生：下次高潮 / 低潮（站点时间轴上「现在」= 最新实测采样时刻，字符串比较即时序比较）
   const nextTides = useMemo(() => {
@@ -265,8 +269,23 @@ export default function OceanBoard({ lockedTab = null } = {}) {
               children: <BuoysTab buoys={buoys} buoyData={buoyData} />,
             },
             {
+              key: 'marine',
+              label: '🌊 海况预报',
+              children: <MarineTab marine={marine} marineData={marineData} />,
+            },
+            {
+              key: 'coast',
+              label: '🏖 海岸榜',
+              children: <CoastTab marine={marine} marineData={marineData} />,
+            },
+            {
+              key: 'seatem',
+              label: '🌡 海温趋势',
+              children: <SeaTempTab marine={marine} marineData={marineData} />,
+            },
+            {
               key: 'cases',
-              label: '📚 案例',
+              label: '📚 真实案例',
               children: <CaseTab theme={theme} />,
             },
           ]}

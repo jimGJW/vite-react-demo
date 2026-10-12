@@ -17,6 +17,8 @@
  */
 
 const FETCH_TIMEOUT = 12000
+import { openMeteo, forCities, num, COASTAL_CITIES } from './vite-open-data.mjs'
+
 const cache = new Map()
 
 async function fetchWithTimeout(url, opts = {}) {
@@ -639,6 +641,63 @@ const BUOY_REGIONS = [
   { key: 'eAtlantic', name: '东北大西洋（西欧外海）', latMin: 45, latMax: 62, lonMin: -25, lonMax: 5 },
 ]
 
+/**
+ * 沿海城市海况 —— Open-Meteo Marine（10 个沿海城市，含 7 天逐日预报）。
+ *
+ * 与现有「海浪与海温」页签的分工：那边是少数几个近海点的**未来 24 小时**浪高曲线，
+ * 这边是 10 个城市的**未来 7 天**逐日最大浪高 + 海温区间，视角从「此刻怎么变」
+ * 拉长到「这周哪天适合出海」。同一份响应供三个新页签消费（预报 / 榜单 / 海温趋势），
+ * 所以这里一次抓全，前端按页签切视角，不再重复打上游。
+ *
+ * 浪高分档与适航评级一律由前端按 earth 词典的 waveLevel 计算——
+ * 服务端只吐数值，等级语义不下沉，避免两处阈值漂移。
+ */
+async function marine() {
+  return withCache('marine', 30 * 60_000, async () => {
+    const items = await forCities(COASTAL_CITIES, async (c) => {
+      const d = await openMeteo(
+        'marine-api.open-meteo.com',
+        `marine?latitude=${c.lat}&longitude=${c.lon}` +
+          '&current=wave_height,wave_direction,wave_period,sea_surface_temperature,' +
+          'swell_wave_height,swell_wave_period,wind_wave_height' +
+          '&daily=wave_height_max,wave_period_max,sea_surface_temperature_max,sea_surface_temperature_min' +
+          '&timezone=Asia%2FShanghai&forecast_days=7',
+      )
+      const cur = d.current || {}
+      const daily = d.daily || {}
+      const times = daily.time || []
+      return {
+        waveH: num(cur.wave_height),
+        waveDir: num(cur.wave_direction),
+        waveDirText: dirText(cur.wave_direction),
+        wavePeriod: num(cur.wave_period),
+        sst: num(cur.sea_surface_temperature),
+        swellH: num(cur.swell_wave_height),
+        swellPeriod: num(cur.swell_wave_period),
+        windWaveH: num(cur.wind_wave_height),
+        time: cur.time || null,
+        // 逐日：给「这周哪天能出海」用
+        forecast: times.map((t, i) => ({
+          date: t,
+          waveMax: num((daily.wave_height_max || [])[i]),
+          periodMax: num((daily.wave_period_max || [])[i]),
+          sstMax: num((daily.sea_surface_temperature_max || [])[i]),
+          sstMin: num((daily.sea_surface_temperature_min || [])[i]),
+        })),
+      }
+    })
+    const good = items.filter((c) => c.ok && c.waveH != null)
+    // 大浪排前面：这页的用途是「今天哪片海最不平静」
+    good.sort((a, b) => b.waveH - a.waveH)
+    return {
+      ok: true,
+      items: good,
+      failed: items.length - good.length,
+      maxWave: good.length ? good[0].waveH : null,
+    }
+  })
+}
+
 /** dev 中间件：/api/ocean/* → 各数据源 */
 export function serveOceanData() {
   const SOURCES = {
@@ -652,6 +711,7 @@ export function serveOceanData() {
     '/api/ocean/ssta': ssta,
     '/api/ocean/station-weather': stationWeather,
     '/api/ocean/buoys': buoys,
+    '/api/ocean/marine': marine,
   }
   return {
     name: 'serve-ocean-data',

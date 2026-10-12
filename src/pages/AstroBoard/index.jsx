@@ -57,13 +57,16 @@ import ApodTab from './components/ApodTab.jsx'
 import DeepTab from './components/DeepTab.jsx'
 // DictTab 已集中到 /timeline 的聚合名词库，本看板不再单独持有名词页签
 import LaunchTab from './components/LaunchTab.jsx'
+import CometTab from './components/CometTab.jsx'
+import ApproachTab from './components/ApproachTab.jsx'
+import ObserveTab from './components/ObserveTab.jsx'
 import CaseTab from './components/CaseTab.jsx'
 import RelatedData from '../../components/RelatedData/index.jsx'
 import { TAB_KEYS } from '../../lib/boards/relations.js'
 import { healthOf } from '../../lib/boards/health.js'
 
 export default function AstroBoard({ lockedTab = null } = {}) {
-  const { iss, stations, spaceWeather, exoplanets, neo, launches, solarActivity, aurora, solarCycle, apod, reloadAll } = useAstroData()
+  const { iss, stations, spaceWeather, exoplanets, neo, launches, solarActivity, aurora, solarCycle, apod, comet, approach, observe, reloadAll } = useAstroData()
   const [selected, setSelected] = useState('css-tianhe')
   const [galaxyView, setGalaxyView] = useState('结构')
   const [passCity, setPassCity] = useState('北京')
@@ -270,6 +273,9 @@ export default function AstroBoard({ lockedTab = null } = {}) {
   const alertData = solar?.alerts?.ok ? solar.alerts : null
   const auroraData = aurora.data?.ok ? aurora.data : null
   const cycleData = solarCycle.data?.ok ? solarCycle.data : null
+  const cometData = comet.data?.ok ? comet.data : null
+  const approachData = approach.data?.ok ? approach.data : null
+  const observeData = observe.data?.ok ? observe.data : null
 
   /* ---- antd 全局主题：跟 data-astro-theme 同源切换 ----
      之前 Tabs/Tag 靠 SCSS 逐个覆盖颜色，Select/Slider/Menu/Table 一多就罩不住。
@@ -395,7 +401,10 @@ export default function AstroBoard({ lockedTab = null } = {}) {
           { key: 'apod', label: '🖼 天文一图', children: <ApodTab apod={apod} apodData={apodData} /> },
           { key: 'deep', label: '🌌 深空', children: <DeepTab exoplanets={exoplanets} galaxyView={galaxyView} setGalaxyView={setGalaxyView} /> },
           { key: 'launch', label: '🚀 航天发射', children: <LaunchTab launches={launches} launchData={launchData} /> },
-          { key: 'cases', label: '📚 案例', children: <CaseTab theme={theme} /> },
+          { key: 'comet', label: '☄️ 小天体档案', children: <CometTab comet={comet} cometData={cometData} /> },
+          { key: 'approach', label: '🛰 近地交会', children: <ApproachTab approach={approach} approachData={approachData} /> },
+          { key: 'observe', label: '🔭 观测条件', children: <ObserveTab observe={observe} observeData={observeData} /> },
+          { key: 'cases', label: '📚 真实案例', children: <CaseTab theme={theme} /> },
         ]}
       />
 

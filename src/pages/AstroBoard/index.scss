@@ -2843,6 +2843,45 @@
 }
 
 /* ---------- 案例页签 ---------- */
+/* 案例标题：编号徽章 + 加大加粗。
+   案例卡与本看板其他数据面板共用 Panel 外壳，标题字号颜色完全一致，
+   一屏滚下来分不清哪几张是「案例」——编号徽章既是序号也是身份标识。 */
+.astro-case__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.astro-case__no {
+  flex-shrink: 0;
+  font-style: normal;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--a-accent), var(--a-accent-2));
+  box-shadow: 0 1px 4px rgba(var(--a-accent-rgb), 0.4);
+}
+
+.astro-case__name {
+  font-weight: 700;
+}
+
+.astro-case-list {
+  .astro-panel__title h3 {
+    font-size: 16px;
+    color: var(--a-accent);
+    letter-spacing: 0.3px;
+  }
+
+  .astro-panel__head {
+    background: linear-gradient(90deg, rgba(var(--a-accent-rgb), 0.14) 0%, transparent 55%);
+  }
+}
+
 .astro-case-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -2896,4 +2935,84 @@
   .astro-moon-rows {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+/* ============================================================
+   新增页签：小天体档案 / 近地交会 / 观测条件
+   ============================================================ */
+.astro-comet-lead,
+.astro-approach-lead,
+.astro-obs-lead {
+  margin: 0 0 12px;
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--a-dim);
+}
+
+.astro-comet-name {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.astro-comet-full { font-size: 11px; color: var(--a-dim); }
+.astro-comet-cls { font-size: 11.5px; color: var(--a-dim); }
+.astro-comet-note { font-size: 12px; }
+.astro-comet-none { color: var(--a-dim); }
+
+.astro-comet-unit {
+  margin-left: 2px;
+  font-size: 10px;
+  color: var(--a-dim);
+}
+
+.astro-comet-failed {
+  margin-top: 10px;
+  font-size: 11.5px;
+  color: var(--a-dim);
+}
+
+/* 表头虚线下划线 = 「这里有解释，悬停看」 */
+.astro-comet-th,
+.astro-approach-th {
+  border-bottom: 1px dashed var(--a-line);
+  cursor: help;
+}
+
+.astro-approach-count { font-size: 12px; color: var(--a-dim); }
+.astro-approach-dim { font-size: 11.5px; color: var(--a-dim); }
+
+.astro-obs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 12px;
+}
+
+.astro-obs-card {
+  border: 1px solid var(--a-line);
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: var(--a-panel-2);
+}
+
+.astro-obs-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.astro-obs-city { font-size: 14px; }
+.astro-obs-score { font-size: 22px; font-weight: 700; line-height: 1; cursor: help; }
+.astro-obs-tag { margin: 4px 0 8px; font-size: 12px; font-weight: 600; }
+
+.astro-obs-rows {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 10px;
+  margin: 0;
+  font-size: 12px;
+
+  dt { color: var(--a-dim); }
+  dd { margin: 0; }
 }

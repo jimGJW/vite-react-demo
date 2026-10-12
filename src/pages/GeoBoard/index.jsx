@@ -30,6 +30,9 @@ import EonetTab from './components/EonetTab.jsx'
 import ClimateTab from './components/ClimateTab.jsx'
 import VolcanoTab from './components/VolcanoTab.jsx'
 // DictTab 已集中到 /timeline 聚合名词库（名词解析统一入口），本看板不再单独持有名词页签
+import AirTab from './components/AirTab.jsx'
+import WeatherTab from './components/WeatherTab.jsx'
+import ArchiveTab from './components/ArchiveTab.jsx'
 import CaseTab from './components/CaseTab.jsx'
 import Clock from '../../components/Clock.jsx'
 import RelatedData from '../../components/RelatedData/index.jsx'
@@ -39,7 +42,7 @@ import './index.scss'
 
 export default function GeoBoard({ lockedTab = null } = {}) {
   const {
-    quakes, epic, env, eonet, ghg, seaIce, tempAnomaly, bigQuakes, volcanoes, tsunami, reloadAll,
+    quakes, epic, env, eonet, ghg, seaIce, tempAnomaly, bigQuakes, volcanoes, tsunami, air, weather, archive, reloadAll,
   } = useGeoData()
   const [theme, setTheme] = useState(readTheme)
 
@@ -65,6 +68,9 @@ export default function GeoBoard({ lockedTab = null } = {}) {
   const bigData = bigQuakes.data?.ok ? bigQuakes.data : null
   const volcanoData = volcanoes.data?.ok ? volcanoes.data : null
   const tsunamiData = tsunami.data?.ok ? tsunami.data : null
+  const airData = air.data?.ok ? air.data : null
+  const weatherData = weather.data?.ok ? weather.data : null
+  const archiveData = archive.data?.ok ? archive.data : null
 
   // 派生统计：最大震级 / 最深震源 / 城市平均 PM2.5
   const quakeStats = useMemo(() => {
@@ -280,8 +286,23 @@ export default function GeoBoard({ lockedTab = null } = {}) {
               ),
             },
             {
+              key: 'air',
+              label: '🌫 空气质量',
+              children: <AirTab air={air} airData={airData} />,
+            },
+            {
+              key: 'weather',
+              label: '🌤 城市天气',
+              children: <WeatherTab weather={weather} weatherData={weatherData} />,
+            },
+            {
+              key: 'archive',
+              label: '📈 气候档案',
+              children: <ArchiveTab archive={archive} archiveData={archiveData} />,
+            },
+            {
               key: 'cases',
-              label: '📚 案例',
+              label: '📚 真实案例',
               children: <CaseTab theme={theme} />,
             },
           ]}

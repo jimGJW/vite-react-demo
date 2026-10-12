@@ -4,7 +4,7 @@ import { getTerm } from '../../../lib/boards/relations.js'
 import KeyTermCard from '../../../components/KeyTermCard/KeyTermCard.jsx'
 
 /**
- * 海洋看板「📚 案例」页签：用本看板的维度（有效波高分级 / 飓风分级 / ONI 厄尔尼诺指数）
+ * 海洋看板「📚 真实案例」页签：用本看板的维度（有效波高分级 / 飓风分级 / ONI 厄尔尼诺指数）
  * 解读真实海洋事件。数值取自 NOAA / NHC / 各国机构的历史通报。
  */
 
@@ -62,8 +62,18 @@ export default function CaseTab({ theme = 'dark' }) {
   return (
     <div className="o-case-list">
       <KeyTermCard term={keyTerm} theme={theme} />
-      {CASES.map((c) => (
-        <Panel key={c.id} title={c.title} source={c.source} icon={c.icon}>
+      {CASES.map((c, i) => (
+        <Panel
+          key={c.id}
+          icon={c.icon}
+          source={c.source}
+          title={
+            <span className="o-case__title">
+              <em className="o-case__no">案例 {String(i + 1).padStart(2, '0')}</em>
+              <span className="o-case__name">{c.title}</span>
+            </span>
+          }
+        >
           <div className="o-case__date">📅 {c.date}</div>
           <div className="o-case__metrics">
             {c.metrics.map((m) => (

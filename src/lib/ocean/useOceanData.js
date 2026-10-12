@@ -19,6 +19,8 @@ const POLL = {
   ssta: 12 * 3600_000,
   stationWeather: 30 * 60_000,
   buoys: 20 * 60_000,
+  // 新增：沿海城市海况（含 7 天预报）小时级更新足够，30 分钟
+  marine: 30 * 60_000,
 }
 
 async function getJSON(url, signal) {
@@ -77,6 +79,7 @@ export function useOceanData() {
   const ssta = usePolling('/api/ocean/ssta', POLL.ssta)
   const stationWeather = usePolling('/api/ocean/station-weather', POLL.stationWeather)
   const buoys = usePolling('/api/ocean/buoys', POLL.buoys)
+  const marine = usePolling('/api/ocean/marine', POLL.marine)
 
   return {
     waves,
@@ -89,10 +92,11 @@ export function useOceanData() {
     ssta,
     stationWeather,
     buoys,
+    marine,
     anyLoading:
       waves.loading || tides.loading || tidePred.loading || globalWaves.loading || oni.loading ||
       cyclones.loading || oscillations.loading || ssta.loading || stationWeather.loading ||
-      buoys.loading,
+      buoys.loading || marine.loading,
     reloadAll: useCallback(() => {
       waves.reload()
       tides.reload()
@@ -104,6 +108,7 @@ export function useOceanData() {
       ssta.reload()
       stationWeather.reload()
       buoys.reload()
+      marine.reload()
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
       waves.reload,
@@ -116,6 +121,7 @@ export function useOceanData() {
       ssta.reload,
       stationWeather.reload,
       buoys.reload,
+      marine.reload,
     ]),
   }
 }

@@ -19,6 +19,10 @@ const POLL = {
   bigQuakes: 30 * 60_000,
   volcanoes: 30 * 60_000,
   tsunami: 10 * 60_000,
+  // 新增三源：空气与天气随实况 10 分钟；气候档案是十年年均值，服务端缓存 24h，12 小时拉一次即可
+  air: 10 * 60_000,
+  weather: 10 * 60_000,
+  archive: 12 * 3600_000,
 }
 
 async function getJSON(url, signal) {
@@ -77,6 +81,9 @@ export function useGeoData() {
   const bigQuakes = usePolling('/api/geo/big-quakes', POLL.bigQuakes)
   const volcanoes = usePolling('/api/geo/volcanoes', POLL.volcanoes)
   const tsunami = usePolling('/api/geo/tsunami', POLL.tsunami)
+  const air = usePolling('/api/geo/air', POLL.air)
+  const weather = usePolling('/api/geo/weather', POLL.weather)
+  const archive = usePolling('/api/geo/archive', POLL.archive)
 
   return {
     quakes,
@@ -89,10 +96,13 @@ export function useGeoData() {
     bigQuakes,
     volcanoes,
     tsunami,
+    air,
+    weather,
+    archive,
     anyLoading:
       quakes.loading || epic.loading || env.loading || eonet.loading || ghg.loading ||
       seaIce.loading || tempAnomaly.loading || bigQuakes.loading ||
-      volcanoes.loading || tsunami.loading,
+      volcanoes.loading || tsunami.loading || air.loading || weather.loading || archive.loading,
     reloadAll: useCallback(() => {
       quakes.reload()
       epic.reload()
@@ -104,6 +114,9 @@ export function useGeoData() {
       bigQuakes.reload()
       volcanoes.reload()
       tsunami.reload()
+      air.reload()
+      weather.reload()
+      archive.reload()
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
       quakes.reload,
@@ -116,6 +129,9 @@ export function useGeoData() {
       bigQuakes.reload,
       volcanoes.reload,
       tsunami.reload,
+      air.reload,
+      weather.reload,
+      archive.reload,
     ]),
   }
 }
