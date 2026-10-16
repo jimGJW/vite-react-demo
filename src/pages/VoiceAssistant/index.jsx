@@ -1,5 +1,6 @@
 import VoiceAssistantPanel from '../../components/Assistants/VoiceAssistantPanel.jsx'
 import { useAssistants } from '../../components/Assistants/index.jsx'
+import { useI18n } from '../../i18n/index.js'
 import './index.scss'
 
 /**
@@ -13,14 +14,14 @@ import './index.scss'
  */
 export default function VoiceAssistant() {
   const assistants = useAssistants()
+  const { t } = useI18n()
 
   return (
     <div className="page-card voice-page">
-      <h1>语音助手</h1>
+      <h1>{t('voice.page.title')}</h1>
       <p className="voice-page-desc">
-        语音转文字，支持两种引擎：<strong>在线识别</strong>（浏览器原生，实时连续）与
-        <strong>离线识别</strong>（本地 Whisper 模型，语音不出本机，无需外网，模型已内置无需下载）。
-        识别出的文字会自动填入文本框，可直接编辑修改。
+        {t('voice.page.descPre')}<strong>{t('voice.input.webEngine')}</strong>{t('voice.page.descOnline')}
+        <strong>{t('voice.input.localEngine')}</strong>{t('voice.page.descOffline')}
       </p>
 
       <VoiceAssistantPanel
@@ -29,9 +30,8 @@ export default function VoiceAssistant() {
       />
 
       <p className="voice-page-tip">
-        <strong>使用提示：</strong> 在任意页面点击右下角的<strong>快捷助手键 ⚡</strong>（可拖动），
-        展开菜单即可开关「语音助手」弹窗、或一键跳转到其它页面；也可按
-        <strong> Ctrl+Shift+V </strong>快捷键直接呼出语音助手浮层。
+        <strong>{t('voice.page.tipLabel')}</strong> {t('voice.page.tipPre')}<strong>{t('voice.page.tipKey')}</strong>{t('voice.page.tipMid')}
+        <strong>{t('voice.page.tipShortcut')}</strong>{t('voice.page.tipPost')}
       </p>
     </div>
   )

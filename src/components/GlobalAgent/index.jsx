@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import UniversalPageAgent from '../../pages/Agent/UniversalPageAgent'
 import { useNavigate as useReactRouterNavigate } from 'react-router-dom'
-
-// 在 GlobalAgent 组件内部，增加一行：
+import { useI18n } from '../../i18n/index.js'
 
 import './index.scss'
 
@@ -69,6 +68,7 @@ function GlobalAgent({
     const [dragging, setDragging] = useState(false)
     const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 })
     const panelRef = useRef(null)
+    const { t } = useI18n()
 
     const setOpenState = useCallback((next) => {
         if (isControlled) onOpenChange?.(next)
@@ -198,14 +198,14 @@ function GlobalAgent({
                         <div className="ga-panel-header">
                             <div className="ga-panel-title">
                                 <span className="ga-panel-icon">🤖</span>
-                                <span>AI Agent</span>
+                                <span>{t('assistants.globalAgent.title')}</span>
                                 <span className="ga-panel-shortcut">Ctrl+Shift+A</span>
                             </div>
                             <div className="ga-panel-actions">
-                                <button className="ga-btn-icon" onClick={() => setCollapsed((c) => !c)} title={collapsed ? '展开' : '折叠'}>
+                                <button className="ga-btn-icon" onClick={() => setCollapsed((c) => !c)} title={collapsed ? t('assistants.common.expand') : t('assistants.common.collapse')}>
                                     {collapsed ? '▢' : '—'}
                                 </button>
-                                <button className="ga-btn-icon" onClick={close} title="关闭">✕</button>
+                                <button className="ga-btn-icon" onClick={close} title={t('assistants.common.close')}>✕</button>
                             </div>
                         </div>
                         {!collapsed && (
@@ -239,15 +239,15 @@ function GlobalAgent({
                     <span className="ga-bubble-icon">🤖</span>
                     <span className="ga-bubble-ring" />
                 </div>
-                <div className="ga-bubble-tooltip">AI Agent</div>
+                <div className="ga-bubble-tooltip">{t('assistants.globalAgent.title')}</div>
             </div>
-            )}
+        )}
 
-            {!hideBubble && !open && (
-                <div className="ga-hint" onClick={toggle}>
-                    <span>🤖 Ctrl+Shift+A 呼出 Agent · Ctrl+↑↓ 滚动 · Ctrl+⌥+←→ 前进后退</span>
-                </div>
-            )}
+        {!hideBubble && !open && (
+            <div className="ga-hint" onClick={toggle}>
+                <span>{t('assistants.globalAgent.hint')}</span>
+            </div>
+        )}
         </>
     )
 }

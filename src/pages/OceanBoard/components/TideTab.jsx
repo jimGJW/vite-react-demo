@@ -4,38 +4,41 @@
  */
 import { CloudOutlined, DotChartOutlined, LineChartOutlined } from '@ant-design/icons'
 import { Empty, Table, Tag, Tooltip } from 'antd'
+import { useI18n } from '../../../i18n/index.js'
 import { Panel, fmtSiteDay } from './ui.jsx'
 import TideCurve from './TideCurve.jsx'
 import { zhTideDatum } from '../../../lib/earth/glossary.js'
 
 /** 站点气温概况条（与潮位同站，给「海陆温差」一个上下文） */
 function StationWeather({ wx }) {
+  const { t } = useI18n()
   if (!wx) return null
   return (
     <div className="o-stnwx">
       <span>
-        站点气温{' '}
+        {t('ocean.tide.wxLabel')}{' '}
         <b>
           {wx.latest.v.toFixed(1)} °C
         </b>
-        <span className="o-stnwx__sub">（{wx.latest.t.slice(11, 16)} 站点时间）</span>
+        <span className="o-stnwx__sub">（{wx.latest.t.slice(11, 16)} {t('ocean.time.site')}）</span>
       </span>
       <span>
-        24h 区间 <b>{wx.min.toFixed(1)}</b> ~ <b>{wx.max.toFixed(1)}</b> °C
+        {t('ocean.tide.wxRange')} <b>{wx.min.toFixed(1)}</b> ~ <b>{wx.max.toFixed(1)}</b> °C
       </span>
-      <Tooltip title="海陆温差驱动海陆风：白天陆地升温快，风从海上吹向陆地；夜间相反。旧金山的夏季浓雾就源自这个温差">
-        <span className="is-info">海陆温差 → 海陆风与雾</span>
+      <Tooltip title={t('ocean.tide.wxTipTitle')}>
+        <span className="is-info">{t('ocean.tide.wxTipText')}</span>
       </Tooltip>
     </div>
   )
 }
 
 export default function TideTab({ tides, tideData, tidePred, predData, stationWeather, wxData }) {
+  const { t } = useI18n()
   return (
     <div className="o-tab-content">
       <Panel
-        title="实测潮位（过去 24 小时）"
-        source="NOAA CO-OPS 潮位站 9414290（旧金山），6 分钟采样，6 分钟刷新"
+        title={t('ocean.tide.panelObs')}
+        source={t('ocean.tide.srcObs')}
         icon={<LineChartOutlined />}
         loading={tides.loading}
         error={tides.error}
@@ -43,13 +46,13 @@ export default function TideTab({ tides, tideData, tidePred, predData, stationWe
         {tideData ? (
           <TideCurve series={tideData.series} latest={tideData.latest} station={tideData.station} />
         ) : (
-          <Empty description="暂无潮位数据" />
+          <Empty description={t('ocean.tide.emptyObs')} />
         )}
       </Panel>
 
       <Panel
-        title="高低潮预报（未来 48 小时）"
-        source="NOAA CO-OPS 调和预报（interval=hilo），1 小时刷新；时间为站点当地时间"
+        title={t('ocean.tide.panelPred')}
+        source={t('ocean.tide.srcPred')}
         icon={<DotChartOutlined />}
         loading={tidePred.loading}
         error={tidePred.error}
@@ -60,23 +63,23 @@ export default function TideTab({ tides, tideData, tidePred, predData, stationWe
             size="small"
             rowKey={(r) => r.t}
             dataSource={predData.events}
-            pagination={{ pageSize: 8, size: 'small', showTotal: (t) => `共 ${t} 个潮候` }}
+            pagination={{ pageSize: 8, size: 'small', showTotal: (n) => t('ocean.tide.total', { n }) }}
             columns={[
               {
-                title: '时刻（站点）',
+                title: t('ocean.tide.colTime'),
                 dataIndex: 't',
                 width: 140,
-                render: (t) => fmtSiteDay(t),
+                render: (tt) => fmtSiteDay(tt),
               },
               {
-                title: '类型',
+                title: t('ocean.tide.colType'),
                 dataIndex: 'type',
                 width: 100,
-                render: (t) =>
-                  t === 'H' ? <Tag color="blue">高潮</Tag> : <Tag color="cyan">低潮</Tag>,
+                render: (tt) =>
+                  tt === 'H' ? <Tag color="blue">{t('ocean.tide.high')}</Tag> : <Tag color="cyan">{t('ocean.tide.low')}</Tag>,
               },
               {
-                title: '预报潮高',
+                title: t('ocean.tide.colLevel'),
                 dataIndex: 'v',
                 align: 'right',
                 render: (v) => `${v.toFixed(2)} m（MLLW）`,
@@ -84,38 +87,35 @@ export default function TideTab({ tides, tideData, tidePred, predData, stationWe
             ]}
           />
         ) : (
-          <Empty description="暂无潮汐预报" />
+          <Empty description={t('ocean.tide.emptyPred')} />
         )}
       </Panel>
 
       <Panel
-        title="站点气温实况（与潮位同站）"
-        source="NOAA CO-OPS 气象传感器，旧金山站 9414290，30 分钟刷新"
+        title={t('ocean.tide.panelWx')}
+        source={t('ocean.tide.srcWx')}
         icon={<CloudOutlined />}
         loading={stationWeather.loading}
         error={stationWeather.error}
       >
-        {wxData ? <StationWeather wx={wxData} /> : <Empty description="暂无站点气象数据" />}
+        {wxData ? <StationWeather wx={wxData} /> : <Empty description={t('ocean.tide.emptyWx')} />}
       </Panel>
 
       <Panel
-        title="潮位基准面是什么意思"
-        source="科普说明（静态）"
+        title={t('ocean.tide.panelDatum')}
+        source={t('ocean.srcIntro')}
         icon={<LineChartOutlined />}
       >
         <div className="o-prose">
           <p>
-            潮位表的零点不是海平面，而是一个约定的<b>基准面</b>。本站用的是{' '}
+            {t('ocean.tide.prose1a')}
             <Tooltip title={zhTideDatum('MLLW')?.desc}>
-              <b className="is-info">MLLW（平均较低低潮面）</b>
+              <b className="is-info">MLLW（{t('ocean.tide.mllw')}）</b>
             </Tooltip>
-            ——取每日两次低潮中<b>较低</b>的那一个做长期平均。美国海图与潮位表通用它，
-            好处是绝大多数实测水位都为正，不会出现负潮位带来的换算混乱。
+            {t('ocean.tide.prose1b')}
           </p>
           <p>
-            注意它和「平均海平面 MSL」不是一回事：MSL 才是海平面上升研究用的基准。
-            同一个验潮站的 MLLW 与 MSL 之间可以差出半米以上，
-            <strong>跨基准引用潮位必须做换算</strong>，否则会凭空多出或吃掉几十厘米。
+            {t('ocean.tide.prose2')}
           </p>
         </div>
       </Panel>

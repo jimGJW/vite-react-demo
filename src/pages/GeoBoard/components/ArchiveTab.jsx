@@ -13,6 +13,7 @@
 import { ExperimentOutlined } from '@ant-design/icons'
 import { Empty, Statistic } from 'antd'
 import { Panel } from './ui.jsx'
+import { useI18n } from '../../../i18n/index.js'
 
 /** 年均温 → 条形宽度与配色：以 10 年区间为标尺，冷暖用蓝红区分 */
 function barOf(v, min, max) {
@@ -25,6 +26,7 @@ function barOf(v, min, max) {
 }
 
 export default function ArchiveTab({ archive, archiveData }) {
+  const { t } = useI18n()
   const years = archiveData?.years || []
   const city = archiveData?.city || ''
   const temps = years.map((y) => y.tempMean).filter((v) => v != null)
@@ -39,26 +41,26 @@ export default function ArchiveTab({ archive, archiveData }) {
   return (
     <div className="geo-tab-content">
       <Panel
-        title="📈 气候档案（近十年）"
-        source="Open-Meteo Archive · ERA5 再分析逐日值，服务端聚合为年均"
+        title={'📈 ' + t('geo.archive.title')}
+        source={t('geo.archive.source')}
         icon={<ExperimentOutlined />}
         loading={archive.loading}
         error={archive.error}
       >
         {!archive.loading && !years.length ? (
-          <Empty description="未取到气候档案数据" />
+          <Empty description={t('geo.archive.empty')} />
         ) : (
           <>
             <div className="geo-arch-summary">
-              <Statistic title="统计城市" value={city} />
+              <Statistic title={t('geo.archive.statCity')} value={city} />
               <Statistic
-                title="十年年均温跨度"
+                title={t('geo.archive.statSpan')}
                 value={max - min}
                 precision={2}
                 suffix="°C"
               />
               <Statistic
-                title={`${first?.year} → ${last?.year} 年均温变化`}
+                title={t('geo.archive.statChange', { from: first?.year, to: last?.year })}
                 value={delta}
                 precision={2}
                 suffix="°C"
@@ -66,10 +68,7 @@ export default function ArchiveTab({ archive, archiveData }) {
               />
             </div>
             <p className="geo-arch-lead">
-              条形长度以这十年的最低—最高年均温为标尺，蓝色偏冷、红色偏暖。
-              十年里有冷有暖是正常的年际波动（受 ENSO、季风强度等影响），
-              真正需要注意的是<b>十年两端的差值</b>：单站十年上升 {delta == null ? '—' : `${delta.toFixed(1)}`}°C
-              已明显大于同期的年际噪声。
+              {t('geo.archive.lead', { delta: delta == null ? '—' : delta.toFixed(1) })}
             </p>
             <div className="geo-arch-table">
               {years.map((y) => {
@@ -90,14 +89,14 @@ export default function ArchiveTab({ archive, archiveData }) {
                       <div className="geo-arch-bar is-precip" style={{ width: precipBar }} />
                       <span className="geo-arch-val">{y.precip} mm</span>
                     </div>
-                    <span className="geo-arch-days">{y.days} 天</span>
+                    <span className="geo-arch-days">{t('geo.archive.days', { n: y.days })}</span>
                   </div>
                 )
               })}
             </div>
             <div className="geo-arch-legend">
-              <span><i className="geo-arch-dot is-temp" />年均温</span>
-              <span><i className="geo-arch-dot is-precip" />年降水总量</span>
+              <span><i className="geo-arch-dot is-temp" />{t('geo.archive.legendTemp')}</span>
+              <span><i className="geo-arch-dot is-precip" />{t('geo.archive.legendPrecip')}</span>
             </div>
           </>
         )}

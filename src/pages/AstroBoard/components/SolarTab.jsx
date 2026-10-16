@@ -8,17 +8,19 @@ import { KpiHint, Panel } from './ui.jsx'
 import { AU_LIGHT_MINUTES } from '../../../lib/astro/orbital.js'
 import { KPI_DEFS } from '../../../lib/astro/glossary'
 import SolarSystemView from '../../../components/AstroBoard/SolarSystemView.jsx'
+import { useI18n } from '../../../i18n/index.js'
 
 export default function SolarTab({
   stations, selected, setSelected, neo, neoData, planets,
 }) {
+  const { t } = useI18n()
   return (
     <>
               <div className="astro-tab-content">
                 {/* 太阳系 */}
       <Panel
-        title="太阳系行星实时位置"
-        source="JPL Standish 轨道近似根数（本地解算），历元 J2000，适用 1800–2050"
+        title={t('astro.solarTitle')}
+        source={t('astro.solarSource')}
         icon={<CompassOutlined />}
         loading={stations.loading}
         error={stations.error}
@@ -37,7 +39,7 @@ export default function SolarTab({
             dataSource={planets}
             columns={[
               {
-                title: '行星',
+                title: t('astro.solarColPlanet'),
                 dataIndex: 'name',
                 render: (_, p) => (
                   <span className="astro-pt-name">
@@ -47,19 +49,19 @@ export default function SolarTab({
                 ),
               },
               {
-                title: '日心黄经',
+                title: t('astro.solarColHelioLon'),
                 dataIndex: 'heliocentricLon',
                 align: 'right',
                 render: (v) => `${Number(v).toFixed(1)}°`,
               },
               {
-                title: '地心距离',
+                title: t('astro.solarColGeoDist'),
                 dataIndex: 'geoDist',
                 align: 'right',
                 render: (v, p) => (p.key === 'earth' ? '—' : `${Number(v).toFixed(3)} AU`),
               },
               {
-                title: '轨道半径',
+                title: t('astro.solarColOrbitR'),
                 dataIndex: 'a',
                 align: 'right',
                 render: (v) => `${Number(v).toFixed(2)} AU`,
@@ -72,43 +74,42 @@ export default function SolarTab({
             rowClassName={(p) => (selected === p.key ? 'is-active' : '')}
           />
           <div className="astro-pt-foot">
-            阳光走完 1 AU 需要 {AU_LIGHT_MINUTES.toFixed(1)} 分钟（8 分 20 秒）·
-            地球轨道内行星的「地心距离」随相位变化，近日点约 0.983 AU、远日点约 1.017 AU
+            {t('astro.solarFoot', { min: AU_LIGHT_MINUTES.toFixed(1) })}
           </div>
         </div>
       </Panel>
 
       {/* 近地小行星 */}
       <Panel
-        title="近地天体（NEO）监视"
-        source="NASA NeoWs（Near Earth Object Web Service，DEMO_KEY）"
+        title={t('astro.neoTitle')}
+        source={t('astro.neoSource')}
         icon={<AlertOutlined />}
         loading={neo.loading}
         error={neo.error}
-        extra={neoData?.hazardous ? <Tag bordered={false} className="astro-hazard-tag">⚠ {neoData.hazardous} 颗潜在危险</Tag> : undefined}
+        extra={neoData?.hazardous ? <Tag bordered={false} className="astro-hazard-tag">{t('astro.neoHazardTag', { n: neoData.hazardous })}</Tag> : undefined}
       >
         <div className="astro-neo-layout">
           {neoData?.nearest && (
             <div className="astro-neo-nearest">
-              <div className="astro-neo-nearest__label">最近接近</div>
+              <div className="astro-neo-nearest__label">{t('astro.neoNearest')}</div>
               <div className="astro-neo-nearest__name">{neoData.nearest.name}</div>
               <div className="astro-neo-nearest__dist">
                 {neoData.nearest.distKm.toLocaleString()} km
               </div>
               <div className="astro-neo-nearest__lunar">
-                {neoData.nearest.distLunar} 倍地月距离
+                {t('astro.neoLunarDist', { n: neoData.nearest.distLunar })}
                 <KpiHint kpiKey="distLunar" />
               </div>
               <div className="astro-neo-nearest__meta">
                 <span>
-                  直径 {neoData.nearest.diameterMin}–{neoData.nearest.diameterMax} m
+                  {t('astro.neoDiameter', { min: neoData.nearest.diameterMin, max: neoData.nearest.diameterMax })}
                   <KpiHint kpiKey="diameter" />
                 </span>
-                <span>速度 {neoData.nearest.velocityKmh.toLocaleString()} km/h</span>
-                <span>接近时间 {neoData.nearest.date.replace('T', ' ').slice(0, 16)} UTC</span>
+                <span>{t('astro.neoVelocity', { v: neoData.nearest.velocityKmh.toLocaleString() })}</span>
+                <span>{t('astro.neoApproachTime', { time: neoData.nearest.date.replace('T', ' ').slice(0, 16) })}</span>
                 {neoData.nearest.hazardous && (
                   <Tooltip title={KPI_DEFS.hz.what}>
-                    <span className="astro-neo-hazard">⚠ 潜在危险小行星</span>
+                    <span className="astro-neo-hazard">{t('astro.neoHazardLabel')}</span>
                   </Tooltip>
                 )}
               </div>
@@ -116,7 +117,7 @@ export default function SolarTab({
           )}
           <div className="astro-neo-table">
             <div className="astro-neo-thead">
-              <span>名称</span><span>距离(万km)</span><span>地月倍数</span><span>速度(km/h)</span><span>直径(m)</span><span>危险</span>
+              <span>{t('astro.neoColName')}</span><span>{t('astro.neoColDist')}</span><span>{t('astro.neoColLunar')}</span><span>{t('astro.neoColVel')}</span><span>{t('astro.neoColDiam')}</span><span>{t('astro.neoColHazard')}</span>
             </div>
             {neoData?.items?.map((n) => (
               <div key={n.id} className={`astro-neo-row${n.hazardous ? ' is-hazard' : ''}`}>

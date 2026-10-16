@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { Alert, Button, Card, Space, Tag, Typography } from 'antd'
+import {  Button, Card, Space, Tag, Typography } from 'antd'
 import { SafetyCertificateOutlined } from '@ant-design/icons'
 import ErrorBoundary from '../../components/ErrorBoundary/index.jsx'
-import { useAsyncError } from '../../components/ErrorBoundary/useAsyncError.js'
+import { useI18n } from '../../i18n/index.js'
 import './index.scss'
 
 const { Title, Paragraph, Text } = Typography
@@ -12,6 +12,7 @@ const { Title, Paragraph, Text } = Typography
 import { Bomb, AsyncThrower, NaiveThrower } from './components/errorBoundaryParts.jsx'
 
 export default function ErrorBoundaryDemo() {
+  const { t } = useI18n()
   const [armed, setArmed] = useState(false)
   const [resetKey, setResetKey] = useState(0)
   const [armedKeyed, setArmedKeyed] = useState(false)
@@ -25,60 +26,58 @@ export default function ErrorBoundaryDemo() {
     <div className="ebd">
       <header className="ebd__header">
         <Title level={4} className="ebd__title">
-          <SafetyCertificateOutlined /> 错误边界与容错
+          <SafetyCertificateOutlined /> {t('errorBoundary.title')}
         </Title>
         <Paragraph type="secondary" className="ebd__lead">
-          子树崩溃不等于整页白屏。<code>ErrorBoundary</code> 能把渲染错误圈在局部，
-          换上降级 UI 并提供重试；而事件、定时器、Promise 里的错误它天生看不见 —— 那部分要靠
-          <code> useAsyncError()</code> 抛回渲染期。下面四个案例都可以当场点。
+          {t('errorBoundary.lead1')}<code>ErrorBoundary</code>{t('errorBoundary.lead2')}
+          <code> useAsyncError()</code>{t('errorBoundary.lead3')}
         </Paragraph>
       </header>
 
       <div className="ebd__grid">
         {/* ===== 案例 1：渲染期错误 ===== */}
-        <Card size="small" className="ebd__card" title="① 渲染期错误：边界天生能抓">
+        <Card size="small" className="ebd__card" title={t('errorBoundary.case1Title')}>
           <div className="ebd__stage">
             <Text type="secondary" className="ebd__hint">
-              组件在 render 里 throw，会被最近的 ErrorBoundary 拦下，改渲染 fallback。
+              {t('errorBoundary.case1Hint')}
             </Text>
             <ErrorBoundary
               onError={(err) => record(err)}
               onReset={() => setArmed(false)}
               fallback={({ error, reset }) => (
                 <div className="ebd__fallback">
-                  <Text strong type="danger">子树已崩溃，页面其余部分不受影响</Text>
+                  <Text strong type="danger">{t('errorBoundary.case1Crashed')}</Text>
                   <Paragraph style={{ margin: '6px 0 8px', fontSize: '0.78rem' }}>
                     {error.message}
                   </Paragraph>
-                  <Button size="small" onClick={reset}>重试（复位子树）</Button>
+                  <Button size="small" onClick={reset}>{t('errorBoundary.retryReset')}</Button>
                 </div>
               )}
             >
               <Bomb armed={armed} label="案例①" />
             </ErrorBoundary>
             <Space>
-              <Button danger onClick={() => setArmed(true)}>触发渲染期错误</Button>
-              <Button onClick={() => setArmed(false)}>复位</Button>
+              <Button danger onClick={() => setArmed(true)}>{t('errorBoundary.triggerRender')}</Button>
+              <Button onClick={() => setArmed(false)}>{t('errorBoundary.resetBtn')}</Button>
             </Space>
           </div>
         </Card>
 
         {/* ===== 案例 2：事件 / 异步错误 ===== */}
-        <Card size="small" className="ebd__card" title="② 事件与异步错误：靠 useAsyncError 抛回渲染期">
+        <Card size="small" className="ebd__card" title={t('errorBoundary.case2Title')}>
           <div className="ebd__stage">
             <Text type="secondary" className="ebd__hint">
-              点击下面任意按钮，错误会被 <code>useAsyncError</code> 在下一次渲染时抛出，
-              于是同样被边界接住 —— 三个入口（事件 / 定时器 / Promise）效果一致。
+              {t('errorBoundary.case2Hint1')}<code>useAsyncError</code>{t('errorBoundary.case2Hint2')}
             </Text>
             <ErrorBoundary
               onError={(err) => record(err)}
               fallback={({ error, reset }) => (
                 <div className="ebd__fallback">
-                  <Text strong type="danger">异步错误已被兜住</Text>
+                  <Text strong type="danger">{t('errorBoundary.case2Caught')}</Text>
                   <Paragraph style={{ margin: '6px 0 8px', fontSize: '0.78rem' }}>
                     {error.message}
                   </Paragraph>
-                  <Button size="small" onClick={reset}>重试</Button>
+                  <Button size="small" onClick={reset}>{t('errorBoundary.retry')}</Button>
                 </div>
               )}
             >
@@ -93,41 +92,39 @@ onClick={() => throwError(e)}      // 事件`}</pre>
         </Card>
 
         {/* ===== 案例 3：对照组 ===== */}
-        <Card size="small" className="ebd__card" title="③ 对照组：直接 throw 边界看不见">
+        <Card size="small" className="ebd__card" title={t('errorBoundary.case3Title')}>
           <div className="ebd__stage">
             <Text type="secondary" className="ebd__hint">
-              这个按钮也在 ErrorBoundary 里，但它在事件回调里直接 throw。
-              点一下：控制台会报错，但<b>不会</b>出现降级 UI —— 因为事件处理发生在 React 渲染之外。
+              {t('errorBoundary.case3Hint1')}<b>{t('errorBoundary.case3HintBold')}</b>{t('errorBoundary.case3Hint2')}
             </Text>
             <ErrorBoundary
               fallback={() => (
-                <div className="ebd__fallback">你不会看到这行字 —— 边界抓不到事件里的错误</div>
+                <div className="ebd__fallback">{t('errorBoundary.case3Fallback')}</div>
               )}
             >
               <NaiveThrower />
             </ErrorBoundary>
             <Text type="secondary" className="ebd__hint">
-              这正是案例 ② 存在的理由。
+              {t('errorBoundary.case3Reason')}
             </Text>
           </div>
         </Card>
 
         {/* ===== 案例 4：resetKeys ===== */}
-        <Card size="small" className="ebd__card" title="④ resetKeys：依赖变了自动复位">
+        <Card size="small" className="ebd__card" title={t('errorBoundary.case4Title')}>
           <div className="ebd__stage">
             <Text type="secondary" className="ebd__hint">
-              常见场景：切换用户 / 切换数据源后，旧的报错状态应当自动清空，
-              而不是让用户手动点重试。把依赖传进 <code>resetKeys</code> 即可。
+              {t('errorBoundary.case4Hint1')}<code>resetKeys</code>{t('errorBoundary.case4Hint2')}
             </Text>
             <ErrorBoundary
               resetKeys={[resetKey]}
               onError={(err) => record(err)}
               fallback={({ error }) => (
                 <div className="ebd__fallback">
-                  <Text strong type="danger">已崩溃（resetKey = {resetKey}）</Text>
+                  <Text strong type="danger">{t('errorBoundary.case4Crashed', { resetKey })}</Text>
                   <Paragraph style={{ margin: '6px 0', fontSize: '0.78rem' }}>{error.message}</Paragraph>
                   <Text type="secondary" style={{ fontSize: '0.75rem' }}>
-                    改一下右边的 resetKey，边界会自动复位
+                    {t('errorBoundary.case4AutoReset')}
                   </Text>
                 </div>
               )}
@@ -135,23 +132,23 @@ onClick={() => throwError(e)}      // 事件`}</pre>
               <Bomb armed={armedKeyed} label="案例④" />
             </ErrorBoundary>
             <Space wrap>
-              <Button danger onClick={() => setArmedKeyed(true)}>触发错误</Button>
+              <Button danger onClick={() => setArmedKeyed(true)}>{t('errorBoundary.triggerError')}</Button>
               <Button type="primary" onClick={() => setResetKey((k) => k + 1)}>
-                改 resetKey（当前 {resetKey}）
+                {t('errorBoundary.changeResetKey', { resetKey })}
               </Button>
             </Space>
           </div>
         </Card>
 
         {/* ===== 捕获记录 ===== */}
-        <Card size="small" className="ebd__card" title="onError 捕获记录（模拟上报）">
+        <Card size="small" className="ebd__card" title={t('errorBoundary.logTitle')}>
           <div className="ebd__stage">
             <Text type="secondary" className="ebd__hint">
-              真实项目里 <code>onError</code> 通常接日志上报。这里只留最近 5 条。
+              {t('errorBoundary.logHint1')}<code>onError</code>{t('errorBoundary.logHint2')}
             </Text>
             <div className="ebd__zone">
               {caught.length === 0 ? (
-                <Text type="secondary" style={{ fontSize: '0.8rem' }}>还没有捕获到错误，去上面点几个按钮</Text>
+                <Text type="secondary" style={{ fontSize: '0.8rem' }}>{t('errorBoundary.logEmpty')}</Text>
               ) : (
                 <ul style={{ margin: 0, paddingLeft: 18, display: 'grid', gap: 6 }}>
                   {caught.map((c, i) => (

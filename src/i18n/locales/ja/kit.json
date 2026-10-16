@@ -1,0 +1,165 @@
+{
+  "page": {
+    "title": "コンポーネントツールキット Kit",
+    "descLead": "ローカルの 2 つの存種プロジェクト（旧モバイル / 旧タブレット）から選び出した汎用能力を、業務結合を外して React 19 + antd 5 コンポーネントに書き直したもの。",
+    "descTail": "完整的な調清単（何を選び、なぜ、何をスキップしたか）は",
+    "tabInteraction": "モバイルインタラクション（{count}）",
+    "tabDisplay": "データ表示（{count}）",
+    "tabForm": "フォーム部品（{count}）"
+  },
+  "display": {
+    "ellipsisTitle": "テキスト省略 Ellipsis",
+    "switchData": "データ切り替え",
+    "ellipsisDesc": "単一行は nowrap + ellipsis、複数行は -webkit-line-clamp を使用。原実装の「二分探索で 1 文字ずつ測る」方式は line-clamp 対応ブラウザでは不要になったため、丸ごと削除した。",
+    "singleTooltip": "単一行 + Tooltip",
+    "twoLines": "2 行省略",
+    "twoLinesExpand": "2 行 + 展開可能",
+    "countdownTitle": "カウントダウン Countdown",
+    "countdownDesc": "原実装は毎秒 1 回減算しており、バックグラウンドのタブが間引かれると誤差が蓄積した。ここでは毎 tick  Date.now() で再計算するため、フォアグラウンドに戻った瞬間に訂正される。",
+    "countdownCardLabel": "カード形式（目標：2 時間 45 分後）",
+    "countdownPlainLabel": "プレーン形式 DD 天 HH:mm:ss",
+    "statTitle": "メトリックカード StatCard（上げ赤・下げ緑）",
+    "statDesc": "原プロジェクトの NumberInfo + Trend を統合。色は国内の慣習に従い—— 上昇は赤、下降は緑。欧米式の配色が必要な場合は colorMode=\"us\" を渡す。",
+    "timelineTitle": "時系列トレンド TimelineChart",
+    "timelineDesc": "原実装は G2 + g2-plugin-slider に依存しており（domId は Math.random() 生成のため、React 19  strict モードの二重呼び出しで不一致になる）、ECharts の dataZoom は組み込み機能なので、底部のズームバー + ホイールズームを一度設定するだけ。",
+    "noticeTitle": "通知パネル NoticePanel",
+    "noticeDesc": "原プロジェクトの NoticeIcon と Cart（重複率 90%）を統合。クリアボタンは二度確認に対応—— onClear を Promise を返すようにするだけ。",
+    "markAllRead": "すべて既読",
+    "noticeHint": "ベルをクリックで展開"
+  },
+  "stat": {
+    "completionTitle": "今月の工単完了率",
+    "completionFooter": "先月比 +4.8 ポイント",
+    "goalLabel": "目標 95%",
+    "inspectTitle": "日均点検数",
+    "inspectSub": "直近 7 日平均",
+    "assetTitle": "グループ別資産数",
+    "assetFooter": "机房の比率が最高",
+    "onlineTitle": "機器オンライン率",
+    "onlineWave": "オンライン"
+  },
+  "demo": {
+    "inbound": "入庫",
+    "outbound": "出庫"
+  },
+  "form": {
+    "tagTitle": "タグ入力 TagInput",
+    "tagDesc": "空白 / Enter / 中英文のコンマで送信可能。入力欄が空のとき退格で前のタグを削除。「甲, 乙 丙」を貼り付けると一度に 3 つのタグに分割される。最大 6 個。",
+    "currentTags": "現在のタグ：{tags}",
+    "emptyValue": "（空）",
+    "asyncTitle": "非同期選択 AsyncSelect",
+    "asyncDesc": "初回展開時またはキーワード入力時にだけリクエスト（遅延読み込み）+ 300ms デバウンス + リクエスト競合保護。fields による項目マッピングや、任意のオプション描画に対応。",
+    "asyncPlaceholder": "資産名 / ピンイン / 分组を検索",
+    "asyncMultiPlaceholder": "複数選択 + マウント即読み込み",
+    "selected": "選択済み：{value}",
+    "notSelected": "（未選択）",
+    "timerangeTitle": "時間帯入力 TimeRangeInput",
+    "timerangeDesc": "原実装の 3 つの検証（終了が開始より後 / 1 区間が上限以内 / 2 区間が重複しない）を残し、「起止が未入力」のヒントを追加。合計稼働時間はリアルタイム計算。",
+    "fillOverlap": "重複する時間帯を填入",
+    "reset": "復元"
+  },
+  "inter": {
+    "signTitle": "電子署名 SignaturePad",
+    "signDesc": "Canvas 手書き + DPR 高清 + 元に戻す / クリア / PNG 書き出し。react-canvas-draw 依存を外し、書き出し時に白地を敷く（そうしないと透明 PNG が画像ビューアで黒くなる）。",
+    "pullTitle": "下拉更新 PullToRefresh",
+    "pullDesc": "減衰係数 2.5、しきい値 56px。スクロール可能な祖先がすべて最上部にあるときだけ発火し、preventDefault の代わりに overscroll-behavior: contain を使う。",
+    "infiniteTitle": "下端読み込み InfiniteScroll",
+    "infiniteDesc": "IntersectionObserver で手書きのスクロール監視を代替。哨兵ノードは常にマウントされ、読み込み中は下に 1 行だけ文案を追加表示する。{loaded}/36 件を読み込み済み。",
+    "infiniteEnd": "全 36 件読み込み済み",
+    "sortTitle": "ドラッグ並べ替え SortableList",
+    "sortDesc": "ゼロ依存（原実装の react-sortable-hoc は React 19 と非互換）。ハンドルでドラッグし、ハンドル聚焦後は ↑ / ↓ キーでも移動できる。",
+    "dragging": "拖动中",
+    "marqueeTitle": "マーキー AutoScrollText",
+    "marqueeDesc": "内容が実際に容器幅を超えたときだけ起動。アニメーション時間 = はみ出した像素 / speed なので、長いテキストが速く滾ることはない。",
+    "marqueeShort": "短いテキストは滾らない",
+    "ballTitle": "フローティングボール FloatingBall",
+    "ballDesc": "位置は「left / (画面幅 - ボール幅)」の**比率**として永続化されるため、回転やウィンドウの拡大縮小後も妥当なまま。離すと左右の最も近い辺に吸着し、クリックでページ先頭に戻る。",
+    "ballShow": "表示",
+    "ballHide": "非表示"
+  },
+  "sign": {
+    "generated": "署名を生成しました（{bytes} バイトの dataURL）",
+    "empty": "まだ署名していません"
+  },
+  "ball": {
+    "position": "現在の座標：left {left}px / top {top}px",
+    "hint": "ドラッグ後に吸着した座標がここに表示されます",
+    "backTop": "トップへ戻る"
+  },
+  "pull": {
+    "tipDrag": "下拉してお試しください（マウスドラッグも可）",
+    "tipRefresh": "更新すると先頭に 1 件挿入されます",
+    "refreshedAt": "{time} に更新"
+  },
+  "data": {
+    "longText": "資産ライフサイクル管理平台は調達論証、設置検収、日常点検、予防保全、計量校正、故障修理、効率分析、廃棄処理などの環節をカバーしており、いずれの環節の記録欠落も資産状態の判断とコンプライアンス監査に影響するため、毎回の操作を追跡可能な電子檔案として沈殿させる必要がある。",
+    "rowTitle": "点検記録 #{no}",
+    "tagInspection": "点検",
+    "tagPreventive": "予防保全",
+    "tagMetrology": "計量検定"
+  },
+  "ellipsis": {
+    "expand": "展開",
+    "collapse": "折りたたむ"
+  },
+  "countdown": {
+    "day": "日",
+    "hour": "時",
+    "minute": "分",
+    "second": "秒"
+  },
+  "notice": {
+    "empty": "メッセージはありません",
+    "clear": "クリア",
+    "aria": "通知"
+  },
+  "miniProgress": {
+    "target": "目標値"
+  },
+  "timeline": {
+    "seriesA": "系列 A",
+    "seriesB": "系列 B",
+    "seriesFallback": "系列 {index}"
+  },
+  "async": {
+    "placeholder": "選択してください",
+    "empty": "データがありません"
+  },
+  "tagInput": {
+    "placeholder": "入力後 Enter で追加"
+  },
+  "timeRange": {
+    "add": "時間帯を追加",
+    "summary": "合計稼働時間",
+    "start": "開始",
+    "end": "終了",
+    "remove": "この時間帯を削除",
+    "duration": "{hours} 時間 {minutes} 分",
+    "durationHint": "（{time}）",
+    "errIncomplete": "第 {index} 区間の起止時間が未入力です",
+    "errOrder": "第 {index} 区間の終了時間は開始時間より後である必要があります",
+    "errExceed": "第 {index} 区間の時長が {maxHours} 時間を超えています",
+    "errOverlap": "第 {first} 区間と第 {second} 区間が重複しています"
+  },
+  "ballAria": "フローティングボール",
+  "infinite": {
+    "loading": "読み込み中…",
+    "end": "これ以上ありません"
+  },
+  "ptr": {
+    "pull": "下拉して更新",
+    "release": "離して更新",
+    "refreshing": "更新中…"
+  },
+  "kitSign": {
+    "placeholder": "ここに手書き署名",
+    "penColor": "ペンの色 {color}",
+    "undo": "元に戻す",
+    "clear": "クリア",
+    "download": "書き出し",
+    "downloadTip": "PNG として書き出し（白地を敷きます）"
+  },
+  "sort": {
+    "aria": "ドラッグして並べ替え、または上下矢印キーで移動"
+  }
+}

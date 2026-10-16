@@ -28,6 +28,7 @@
 import { useCallback, useMemo } from 'react'
 import { Button, Result, Spin } from 'antd'
 import { EditOutlined, LinkOutlined } from '@ant-design/icons'
+import { useI18n } from '../../../i18n/index.js'
 import ConversationList from './ConversationList.jsx'
 import useShareConversation from './useShareConversation.js'
 import { createSharedRenderers } from './sharedRenderers.jsx'
@@ -66,20 +67,21 @@ export default function SharedConversationView({
   /** 是否显示续写按钮 */
   showContinue = true,
   /** 页头 */
-  title = 'AI 对话分享',
-  subtitle = '以下内容由分享者从对话中截取，只读展示',
+  title,
+  subtitle,
 
   /* 文案 */
-  continueText = '继续追问此对话',
-  loadingText = '正在加载分享内容…',
-  emptyText = '分享内容为空或已被撤回',
-  endText = '以上为分享内容',
-  dividerText = '全新的开始',
+  continueText,
+  loadingText,
+  emptyText,
+  endText,
+  dividerText,
   answerTips,
 
   className = '',
   style,
 }) {
+  const { t } = useI18n()
   const { data, loading, error, sessionId, reload } = useShareConversation({
     userShareId,
     request,
@@ -89,6 +91,14 @@ export default function SharedConversationView({
     onLoaded,
     onError,
   })
+
+  const viewTitle = title ?? t('chatbot.share.viewTitle')
+  const viewSubtitle = subtitle ?? t('chatbot.share.viewSubtitle')
+  const resolvedContinueText = continueText ?? t('chatbot.share.continueText')
+  const resolvedLoadingText = loadingText ?? t('chatbot.share.loadingText')
+  const resolvedEmptyText = emptyText ?? t('chatbot.share.emptyText')
+  const resolvedEndText = endText ?? t('chatbot.share.endText')
+  const resolvedDividerText = dividerText ?? t('chatbot.divider.newStart')
 
   /* renderers 由调用方决定：undefined → 用内置卡片预设；{} → 退化成纯 Markdown */
   const mergedRenderers = useMemo(
@@ -113,8 +123,8 @@ export default function SharedConversationView({
         <div className="qa-head__main">
           <LinkOutlined className="qa-head__logo" />
           <div className="qa-head__text">
-            <div className="qa-head__title">{title}</div>
-            {subtitle ? <div className="qa-head__sub">{subtitle}</div> : null}
+            <div className="qa-head__title">{viewTitle}</div>
+            {viewSubtitle ? <div className="qa-head__sub">{viewSubtitle}</div> : null}
           </div>
         </div>
       </header>
@@ -123,16 +133,16 @@ export default function SharedConversationView({
         {loading ? (
           <div className="qa-loading">
             <Spin size="small" />
-            <span>{loadingText}</span>
+            <span>{resolvedLoadingText}</span>
           </div>
         ) : error ? (
           <Result
             status="warning"
-            title="分享内容加载失败"
-            subTitle={error.message || '请稍后重试，或确认链接是否完整'}
+            title={t('chatbot.share.loadFailed')}
+            subTitle={error.message || t('chatbot.share.retryHint')}
             extra={
               <Button type="primary" onClick={() => reload()}>
-                重新加载
+                {t('chatbot.share.reload')}
               </Button>
             }
           />
@@ -141,9 +151,9 @@ export default function SharedConversationView({
             data={data}
             renderers={mergedRenderers}
             renderContent={renderContent}
-            emptyText={emptyText}
-            endText={endText}
-            dividerText={dividerText}
+            emptyText={resolvedEmptyText}
+            endText={resolvedEndText}
+            dividerText={resolvedDividerText}
             answerTips={answerTips}
           />
         )}
@@ -152,7 +162,7 @@ export default function SharedConversationView({
       {canContinue ? (
         <footer className="qa-foot">
           <Button type="primary" block icon={<EditOutlined />} onClick={handleContinue}>
-            {continueText}
+            {resolvedContinueText}
           </Button>
         </footer>
       ) : null}

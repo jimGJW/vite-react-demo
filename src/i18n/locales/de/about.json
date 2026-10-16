@@ -1,0 +1,11 @@
+{
+  "title": "Über die Seite",
+  "desc": "Ein standardmäßiges React-Projektgerüst mit Routing, Layout und Multi-Seiten-Struktur — ein Ausgangspunkt für deine weitere Entwicklung.",
+  "stackTitle": "Tech-Stack",
+  "react19": "Kern-UI-Bibliothek",
+  "router7": "Frontend-Routing",
+  "vite8": "Build-Werkzeug",
+  "eslint": "Code-Standards",
+  "structureTitle": "Verzeichnisstruktur",
+  "structure": "src/\n├── layouts/     # Layout-Komponenten\n├── pages/       # Seitenkomponenten (ein Ordner pro Seite)\n├── App.jsx      # Routing-Einstieg\n├── main.jsx     # App-Einstieg\n└── index.scss    # Globale Stile"
+}

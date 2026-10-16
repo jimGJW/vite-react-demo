@@ -5,7 +5,10 @@
  * 一眼就能看到「早年几乎全蓝、近三十年几乎全红」这个结构性转变——
  * 折线图会把这种转变柔化成一条斜线。
  */
+import { useI18n } from '../../../i18n/index.js'
+
 export default function TempTrend({ annual, latest12, lastYear, warmest, baseline }) {
+  const { t } = useI18n()
   if (!annual?.length) return null
   const W = 640
   const H = 210
@@ -24,7 +27,7 @@ export default function TempTrend({ annual, latest12, lastYear, warmest, baselin
   }
   return (
     <div className="geo-chart">
-      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="全球地表温度距平年际变化">
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t('geo.temp.aria')}>
         {ticks.map((t) => (
           <g key={t}>
             <line x1={PAD.l} y1={y(t)} x2={W - PAD.r} y2={y(t)} className="geo-chart__grid" />
@@ -45,7 +48,7 @@ export default function TempTrend({ annual, latest12, lastYear, warmest, baselin
             fill={barColor(a.anom)}
             rx="1"
           >
-            <title>{`${a.year} 年：${a.anom >= 0 ? '+' : ''}${a.anom.toFixed(2)} °C`}</title>
+            <title>{t('geo.temp.barTitle', { year: a.year, val: `${a.anom >= 0 ? '+' : ''}${a.anom.toFixed(2)}` })}</title>
           </rect>
         ))}
         <text x={PAD.l} y={H - 8} className="geo-chart__tick">{annual[0].year}</text>
@@ -54,10 +57,14 @@ export default function TempTrend({ annual, latest12, lastYear, warmest, baselin
         </text>
       </svg>
       <div className="geo-chart__caption">
-        全球陆海综合温度距平（NASA GISTEMP v4，基准 {baseline}）· 最暖年份{' '}
-        <b>{warmest.year} 年（+{warmest.anom.toFixed(2)} °C）</b> · {lastYear.year} 年 +{lastYear.anom.toFixed(2)} °C ·
-        最近 12 个月滑动平均 <b>+{latest12?.toFixed(2)} °C</b>
-        —— 《巴黎协定》努力控制在 +1.5 °C 以内
+        {t('geo.temp.caption', {
+          baseline,
+          warmestYear: warmest.year,
+          warmestAnom: warmest.anom.toFixed(2),
+          lastYear: lastYear.year,
+          lastAnom: lastYear.anom.toFixed(2),
+          latest12: latest12 != null ? latest12.toFixed(2) : '—',
+        })}
       </div>
     </div>
   )

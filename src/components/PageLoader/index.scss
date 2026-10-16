@@ -1,0 +1,169 @@
+/* 路由懒加载回退：跃迁主题加载态（脉冲主星 + 错相轨道 + 星点闪烁） */
+.page-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 56vh;
+  padding: 48px 16px;
+  animation: pl-fade-in 0.35s ease both;
+  user-select: none;
+}
+
+@keyframes pl-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.page-loader__scene {
+  position: relative;
+  width: 148px;
+  height: 148px;
+  margin-bottom: 18px;
+}
+
+/* —— 主星：呼吸脉冲 + 光晕 —— */
+.pl-planet {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 34px;
+  height: 34px;
+  transform: translate(-50%, -50%);
+}
+
+.pl-planet__core {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 30%, #91caff 0%, var(--c-primary, #1677ff) 45%, #00246b 100%);
+  box-shadow:
+    inset -4px -5px 8px rgba(0, 20, 80, 0.55),
+    0 0 18px rgba(22, 119, 255, 0.45);
+  animation: pl-pulse 1.6s ease-in-out infinite;
+}
+
+.pl-planet__glow {
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(22, 119, 255, 0.22) 0%, transparent 68%);
+  animation: pl-pulse 1.6s ease-in-out infinite reverse;
+}
+
+@keyframes pl-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.92; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+/* —— 三条错相轨道：虚线椭圆 + 边缘卫星点 —— */
+.pl-orbit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  border: 1px dashed rgba(22, 119, 255, 0.35);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.pl-orbit--1 {
+  width: 78px;
+  height: 78px;
+  animation: pl-spin 2.4s linear infinite;
+}
+
+.pl-orbit--2 {
+  width: 112px;
+  height: 112px;
+  border-color: rgba(114, 46, 209, 0.32);
+  animation: pl-spin 3.6s linear infinite reverse;
+}
+
+.pl-orbit--3 {
+  width: 146px;
+  height: 146px;
+  border-color: rgba(19, 194, 194, 0.3);
+  animation: pl-spin 5s linear infinite;
+}
+
+.pl-dot {
+  position: absolute;
+  left: 50%;
+  top: -4px;
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  border-radius: 50%;
+  background: var(--c-primary, #1677ff);
+  box-shadow: 0 0 8px rgba(22, 119, 255, 0.8);
+}
+
+.pl-orbit--2 .pl-dot {
+  background: var(--c-accent, #722ed1);
+  box-shadow: 0 0 8px rgba(114, 46, 209, 0.8);
+}
+
+.pl-orbit--3 .pl-dot {
+  background: var(--c-accent-2, #13c2c2);
+  box-shadow: 0 0 8px rgba(19, 194, 194, 0.8);
+}
+
+@keyframes pl-spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* —— 背景星点：错峰闪烁 —— */
+.pl-star {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 6px rgba(22, 119, 255, 0.9);
+  opacity: 0.7;
+  animation: pl-twinkle 1.8s ease-in-out infinite;
+}
+
+.pl-star--a { left: 6px; top: 26px; animation-delay: 0s; }
+.pl-star--b { left: 118px; top: 18px; animation-delay: 0.35s; }
+.pl-star--c { left: 132px; top: 96px; animation-delay: 0.7s; }
+.pl-star--d { left: 22px; top: 118px; animation-delay: 1.05s; }
+.pl-star--e { left: 96px; top: 138px; animation-delay: 1.4s; }
+
+@keyframes pl-twinkle {
+  0%, 100% { opacity: 0.15; transform: scale(0.7); }
+  50% { opacity: 0.9; transform: scale(1.15); }
+}
+
+/* —— 文案 —— */
+.page-loader__title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--c-text-1, #000000e0);
+}
+
+.page-loader__desc {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--c-text-3, #00000073);
+}
+
+/* 暗色主题（StyleMode 的 dark 态挂在 :root 上，与登录页一致用媒体查询兜底） */
+@media (prefers-color-scheme: dark) {
+  .pl-star { background: #cfe4ff; }
+}
+
+/* —— 动效减弱：只留静态星球与文字 —— */
+@media (prefers-reduced-motion: reduce) {
+  .page-loader,
+  .pl-planet__core,
+  .pl-planet__glow,
+  .pl-orbit,
+  .pl-star {
+    animation: none !important;
+  }
+  .pl-orbit { transform: translate(-50%, -50%); }
+}

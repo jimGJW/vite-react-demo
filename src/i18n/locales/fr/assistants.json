@@ -1,0 +1,68 @@
+{
+  "common": {
+    "expand": "Déplier",
+    "collapse": "Replier",
+    "close": "Fermer"
+  },
+  "quick": {
+    "voice": "Assistant vocal",
+    "agent": "AI Agent",
+    "on": "Activé",
+    "off": "Désactivé",
+    "navSep": "Accès rapide",
+    "jump": "Aller",
+    "other": "Autres",
+    "top": "Revenir en haut",
+    "hide": "Masquer le bouton assistant",
+    "assistant": "Assistant",
+    "fabTitle": "Bouton assistant (déplaçable)",
+    "fabAria": "Bouton assistant",
+    "restoreTitle": "Afficher le bouton assistant",
+    "pages": {
+      "home": "Accueil",
+      "agent": "Console d'agent IA",
+      "voice": "Assistant vocal",
+      "dashboard": "Tableau de bord",
+      "testCenter": "Centre de test"
+    }
+  },
+  "voice": {
+    "title": "Assistant vocal",
+    "subtitle": "Dictée vocale · double moteur en ligne / hors ligne",
+    "charCount": "{count} caractères",
+    "envOnline": "En ligne",
+    "envOffline": "Hors ligne",
+    "copy": "Tout copier",
+    "copied": "Copié ✓",
+    "clear": "Vider",
+    "sendToAgent": "Confier à l'agent IA →",
+    "sendToAgentTip": "Confier le texte reconnu à l'agent IA pour exécution",
+    "historyTitle": "Historique de reconnaissance",
+    "historyEmpty": "Aucun historique pour le moment. Cliquez ci-dessus sur « Démarrer la saisie vocale » ou « Démarrer l'enregistrement »",
+    "diagnose": "Diagnostic de l'environnement",
+    "browserLabel": "Navigateur",
+    "webSupport": "Reconnaissance en ligne (Web Speech API)",
+    "localSupport": "Reconnaissance hors ligne (Whisper local)",
+    "supported": "Pris en charge",
+    "unsupported": "Non pris en charge",
+    "webNote": "(La reconnaissance du chinois sous Chrome dépend des services Google et peut être indisponible sur les réseaux locaux)",
+    "localNote": "(le modèle est intégré dans public/models/ et fonctionne entièrement hors ligne)",
+    "currentStatus": "État actuel",
+    "statusListening": "À l'écoute en ligne",
+    "statusRecording": "Enregistrement",
+    "statusRecognizing": "Transcription hors ligne",
+    "statusIdle": "Inactif",
+    "browser": {
+      "none": "Inconnu",
+      "edge": "Microsoft Edge",
+      "chrome": "Google Chrome",
+      "firefox": "Mozilla Firefox",
+      "safari": "Apple Safari",
+      "unknown": "Navigateur inconnu"
+    }
+  },
+  "globalAgent": {
+    "title": "AI Agent",
+    "hint": "🤖 Ctrl+Shift+A pour appeler l'agent · Ctrl+↑↓ pour défiler · Ctrl+⌥+←→ pour avancer/reculer"
+  }
+}

@@ -1,0 +1,339 @@
+{
+  "layout": {
+    "reactColumn": "React · Ant Design",
+    "vueColumn": "Vue 3 · Element Plus（子应用）",
+    "subappTitle": "vue-app 子应用（端口 7101）",
+    "subappDesc": "本案例的 Vue 实现（Element Plus 官方用法）已迁移为独立工程，由 qiankun 运行时融合。",
+    "openLoaded": "在 Vue 子应用中打开此案例",
+    "openLoad": "加载 Vue 子应用并打开此案例",
+    "targetPre": "目标页面：",
+    "targetPost": "。加载后该子应用的功能菜单会出现在左侧边栏，可直接切换其他案例。",
+    "diffTitle": "原理对比",
+    "diffPoint": "对比点",
+    "diffAntd": "React · Ant Design",
+    "diffVue": "Vue 3 · Element Plus",
+    "codeTitle": "核心代码片段",
+    "codeAntd": "Ant Design / React",
+    "codeVue": "Vue 3 / Element Plus"
+  },
+  "parentChild": {
+    "title": "父子组件传值",
+    "subtitle": "父→子：props（React）vs defineProps（Vue）；子→父：回调 vs 自定义 emit 事件。",
+    "tagProps": "Props 单向数据流",
+    "tagEmit": "onChange / emit",
+    "tagLift": "状态提升",
+    "receiveProps": "Todo List（子组件）· 接收 props：",
+    "inputPlaceholder": "添加一条待办…",
+    "emptyWarn": "不能为空",
+    "addButton": "添加",
+    "emptyText": "暂无待办 — 子组件通过 onAdd 回调通知父组件",
+    "demoTitle": "本季度 OKR",
+    "item1": "完成 React-Vue 双框架集成",
+    "item2": "落地组件化重构",
+    "parentState": "父组件 state：items.length =",
+    "diff": {
+      "fatherToChild": {
+        "title": "父 → 子",
+        "antd": "function Child(props) {/* props.title */}",
+        "vue": "<script setup>const props = defineProps(['title'])</script>"
+      },
+      "childToFather": {
+        "title": "子 → 父",
+        "antd": "<Child onAdd={(v)=>setList(l=>[...l,v])} />",
+        "vue": "<script setup>const emit = defineEmits(['add'])\nemit('add', v)</script>"
+      },
+      "defaultValue": {
+        "title": "默认值",
+        "antd": "function Child({ title = '默认' }) {}",
+        "vue": "withDefaults(defineProps({ title: { type: String, default: '默认' } }), {})"
+      },
+      "propsModify": {
+        "title": "props 修改",
+        "antd": "直接不可变；通过回调让父改 state",
+        "vue": "直接不可变；v-model:xxx 是 emit('update:xxx') 的语法糖"
+      },
+      "eventNaming": {
+        "title": "事件命名",
+        "antd": "props 回调 onXxx 驼峰",
+        "vue": "emit('add') kebab-case 模板 @add"
+      }
+    }
+  },
+  "twoWay": {
+    "title": "双向绑定",
+    "subtitle": "React：受控组件（value + onChange）显式绑定；Vue：v-model 语法糖（:modelValue + @update:modelValue）。",
+    "tagSugar": "受控 vs 语法糖",
+    "tagMulti": "v-model:xxx 多字段",
+    "tagState": "useState / ref",
+    "nameLabel": "姓名：",
+    "namePlaceholder": "请输入姓名",
+    "demoName": "张三",
+    "enableLabel": "启用功能：",
+    "currentLabel": "当前：",
+    "enabledText": "已启用",
+    "disabledText": "已禁用",
+    "volumeLabel": "音量：",
+    "customLabel": "自定义组件双向绑定（value + onChange）：",
+    "customCounterLabel": "自定义计数器",
+    "parentStateLabel": "父组件 state",
+    "parentCount": "父组件 count =",
+    "controlledNote": "（子组件内部没有自己的状态，完全受控）",
+    "diff": {
+      "input": {
+        "title": "输入框",
+        "antd": "value={x} onChange={e=>setX(e.target.value)}",
+        "vue": "v-model=\"x\""
+      },
+      "switch": {
+        "title": "开关",
+        "antd": "checked={x} onChange={setX}",
+        "vue": "v-model=\"x\" (组件内部约定 checked)"
+      },
+      "custom": {
+        "title": "自定义组件 (单值)",
+        "antd": "value={n} onChange={setN}",
+        "vue": "<Counter v-model=\"n\" />  → props.modelValue + emit('update:modelValue')"
+      },
+      "multiField": {
+        "title": "多字段双向绑定",
+        "antd": "逐字段 value/a/b/c + onChangeXxx",
+        "vue": "v-model:title / v-model:visible / v-model:count"
+      },
+      "modifier": {
+        "title": "修改修饰符",
+        "antd": "onChange 里 trim/lowercase 自己写",
+        "vue": ".trim .number .lazy，defineModel({ trim: true })"
+      },
+      "essence": {
+        "title": "本质",
+        "antd": "单向数据流；手动 onChange 驱动",
+        "vue": "单向数据流（props只读 + emit）；v-model 是语法糖"
+      }
+    }
+  },
+  "provide": {
+    "title": "跨层传值 (Provide / Inject)",
+    "subtitle": "避免层层 props 钻穿：React 用 createContext + Provider + useContext；Vue 用 provide / inject + readonly 防篡改。",
+    "tagDrilling": "Props drilling",
+    "tagContext": "Context / provide/inject",
+    "tagDi": "依赖注入",
+    "childLayer": "第 3 层 · Child",
+    "childDirect": "直接 useContext()",
+    "themeLabel": "theme：",
+    "userLabel": "用户：",
+    "notLoggedIn": "未登录",
+    "grandchildToggle": "孙组件触发「切换主题」",
+    "fatherLayer": "第 2 层 · Father（无 props，透传）",
+    "grandpaLayer": "第 1 层 · GrandPa（Provider）",
+    "toggleTheme": "切换主题",
+    "diff": {
+      "injectPoint": {
+        "title": "声明「注入点」",
+        "antd": "const Ctx = createContext(defaultValue)",
+        "vue": "setup() 顶层：provide('key', value)，或在根 app.provide()"
+      },
+      "provide": {
+        "title": "提供值",
+        "antd": "<Ctx.Provider value={...}>\n  {children}\n</Ctx.Provider>",
+        "vue": "provide('theme', { cur, setCur, user })"
+      },
+      "consume": {
+        "title": "消费值",
+        "antd": "const { theme } = useContext(Ctx)",
+        "vue": "const theme = inject('theme', defaultVal)"
+      },
+      "default": {
+        "title": "默认值机制",
+        "antd": "createContext(default)；未被 Provider 包裹时返回 default",
+        "vue": "inject(key, default)，第二个参数即默认值"
+      },
+      "reactive": {
+        "title": "响应式",
+        "antd": "Provider value 引用变化（setState）→ 所有 consumer re-render",
+        "vue": "provide 传入 ref/reactive → inject 自动响应"
+      },
+      "safe": {
+        "title": "修改安全",
+        "antd": "Context 值可以是任何结构；自行约定只通过回调改",
+        "vue": "provide(key, readonly(state)) 禁止子组件直接修改"
+      }
+    }
+  },
+  "ref": {
+    "title": "Ref / DOM 操作",
+    "subtitle": "React：useRef（DOM/变量）+ forwardRef + useImperativeHandle（命令式 API）；Vue：ref=\"x\" + defineExpose 暴露方法。",
+    "tagRef": "useRef vs ref",
+    "tagImperative": "命令式 API",
+    "tagForward": "forwardRef / defineExpose",
+    "videoTitle": "影片「React vs Vue」",
+    "inputPlaceholder": "点击「聚焦」选中文字…",
+    "focusSelect": "聚焦 + 选中",
+    "reverseText": "倒转文字",
+    "reverseLog": "反转输入框文字 → ",
+    "logEmpty": "下方日志区：点击右侧按钮，自动滚动到底部（scrollBox.current.scrollTo）",
+    "appendScroll": "追加（滚到底）",
+    "appendLog": "追加日志：",
+    "clear": "清空",
+    "domRefCard": "① DOM Ref：操作原生 input / div",
+    "imperativeCard": "② forwardRef + useImperativeHandle：命令式组件 API",
+    "playing": "▶ 播放中",
+    "paused": "⏸ 已暂停",
+    "playBtn": "▶ play()",
+    "pauseBtn": "⏸ pause()",
+    "seekBtn": "⏭ seek(30s)",
+    "jumpEnd": "⏩ 跳到结尾",
+    "resetBtn": "⟲ reset()",
+    "getStateBtn": "getState() → 打印",
+    "imperativeNote1": "父组件无法直接读取子组件内部 state；必须通过",
+    "imperativeNote2": "显式暴露方法。和 Vue 3 的",
+    "imperativeNote3": "一一对应。",
+    "diff": {
+      "domRef": {
+        "title": "DOM 引用声明",
+        "antd": "const r = useRef(null); <input ref={r}/>",
+        "vue": "const r = ref(null); <input ref=\"r\" /> （同名即可绑定）"
+      },
+      "crossRef": {
+        "title": "跨组件传递 ref",
+        "antd": "forwardRef(MyComp(props, ref))",
+        "vue": "子组件默认 ref 指向根 DOM；或 $refs（option API）"
+      },
+      "exposeApi": {
+        "title": "暴露命令式 API",
+        "antd": "useImperativeHandle(ref, () => ({ play, ... }), deps)",
+        "vue": "defineExpose({ play, pause, getState })"
+      },
+      "readWrite": {
+        "title": "读取 / 写入 ref 值",
+        "antd": "r.current 读写，.current 修改不触发渲染",
+        "vue": "r.value 读写；ref(reactive) 自动响应式"
+      },
+      "multiRef": {
+        "title": "多个 ref：列表",
+        "antd": "ref={el => arr[i] = el}（回调 ref）或 useRef([])",
+        "vue": "<div v-for=\"i in 5\" :ref=\"el => list[i]=el\" /> 或 :ref=\"keyed\""
+      },
+      "sideEffect": {
+        "title": "「副作用」DOM 操作",
+        "antd": "在 useEffect 里操作（挂载后 / 依赖变化后）",
+        "vue": "onMounted 钩子中"
+      }
+    }
+  },
+  "slot": {
+    "title": "插槽 / Children 分发",
+    "subtitle": "React：children / 多 ReactNode props（named）/ renderItem render-prop（scoped）；Vue：默认 slot / named slot / scoped slot 带数据暴露。",
+    "tagChildren": "children · named · scoped",
+    "tagRender": "renderItem = scoped slot",
+    "tagDistribute": "内容分发",
+    "defaultSlot": "① 默认插槽：children",
+    "welcome": "🎯 欢迎来到你的工作台",
+    "todayText": "今天是美好的一天。子组件通过 props.children 直接渲染这整段。",
+    "startWork": "开始工作",
+    "viewNotify": "查看通知 3",
+    "namedSlot": "② 命名插槽：多 ReactNode props（title / extra / footer / children）",
+    "subtitle2": "前端工程师 · 5 年经验",
+    "setting": "设置",
+    "followed": "已关注",
+    "follow": "关注",
+    "comment": "💬 评论：128",
+    "repost": "🔁 转发：54",
+    "view": "👀 浏览：2.3k",
+    "bodyPre": "正在写一个",
+    "bodyMid1": "混合项目，",
+    "bodyUse": "使用",
+    "bodyMid2": "命名插槽分发内容，",
+    "bodyVue": "与 Vue 的",
+    "bodyEnd": "对应。",
+    "scopedSlot": "③ 作用域插槽：renderItem（render-prop）",
+    "soldOut": "商品已售罄",
+    "noData": "暂无数据",
+    "productKeyboard": "键盘",
+    "productMouse": "鼠标",
+    "productMonitor": "显示器",
+    "diff": {
+      "default": {
+        "title": "默认插槽",
+        "antd": "props.children",
+        "vue": "<slot />"
+      },
+      "named": {
+        "title": "命名插槽",
+        "antd": "多 props：title / header / footer 都是 ReactNode",
+        "vue": "<slot name=\"header\" />\n<template #header>...</template>"
+      },
+      "scoped": {
+        "title": "作用域插槽（列表渲染）",
+        "antd": "renderItem={(row, idx) => <Item />} 或 itemRender 属性",
+        "vue": "<template #default=\"{ row, $index }\">\n  直接使用 row / $index\n</template>"
+      },
+      "fallback": {
+        "title": "回退内容（fallback）",
+        "antd": "在容器组件里写：children || 默认节点",
+        "vue": "<slot>默认内容</slot>"
+      },
+      "multiSlot": {
+        "title": "多 slot + 数据",
+        "antd": "各 slot prop 接收 (scope) => ReactNode（函数式 slot）",
+        "vue": "<slot name=\"foot\" :total=\"total\" :count=\"count\" />\n<template #foot=\"{ total, count }\">"
+      },
+      "scenario": {
+        "title": "应用场景",
+        "antd": "通用 Card / Modal / Table column / List itemRender",
+        "vue": "同左 + v-slot 指令全家桶"
+      }
+    }
+  },
+  "state": {
+    "title": "全局状态共享",
+    "subtitle": "React：createContext + useReducer 或 useMemo 封装 store；Vue：reactive + provide/inject 或 Pinia。本页均采用「框架原生方案」对比，不引入 Redux/Zustand/Pinia。",
+    "tagContext": "Context vs provide+reactive",
+    "tagCart": "购物车实战",
+    "tagShare": "多组件共享状态",
+    "cartTitle": "购物车（共享状态）",
+    "wallet": "钱包：¥",
+    "qtyLabel": "数量：",
+    "amtLabel": "金额：",
+    "checkout": "立即结算",
+    "productList": "商品列表（独立消费组件）",
+    "namePlaceholder": "商品名",
+    "pricePlaceholder": "价格",
+    "addButton": "加入",
+    "emptyCart": "购物车为空",
+    "subtotal": "小计：¥",
+    "book1": "Vue 3 实战",
+    "book2": "React 设计模式",
+    "diff": {
+      "native": {
+        "title": "方案（原生）",
+        "antd": "createContext + Provider + useContext；state 放 Provider 内",
+        "vue": "reactive 或 ref 对象 + provide(key, store)；或 Pinia（官方 store）"
+      },
+      "reference": {
+        "title": "状态引用",
+        "antd": "Provider 的 value 每次 setState 都是新对象，引用变化触发全量 consumer 重渲染",
+        "vue": "reactive 对象引用不变；修改属性会精准触发依赖该属性的订阅者"
+      },
+      "perf": {
+        "title": "性能优化",
+        "antd": "拆多个 Context / memo + useCallback / useMemo / 选择器库",
+        "vue": "computed 派生态自动缓存；组件粒度精确"
+      },
+      "async": {
+        "title": "异步修改",
+        "antd": "在 Provider 组件内写 useCallback(async ()=> {...setState})",
+        "vue": "action 即普通 async 函数直接修改 reactive 属性"
+      },
+      "devtools": {
+        "title": "Devtools",
+        "antd": "React DevTools Components 看 Context；Redux/Zustand 有独立面板",
+        "vue": "Vue DevTools → Pinia 面板或 Setup 状态树"
+      },
+      "prod": {
+        "title": "生产常用封装",
+        "antd": "Zustand / Redux Toolkit / Jotai",
+        "vue": "Pinia（替换 Vuex）"
+      }
+    }
+  }
+}

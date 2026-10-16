@@ -1,0 +1,68 @@
+{
+  "common": {
+    "expand": "展开",
+    "collapse": "折叠",
+    "close": "关闭"
+  },
+  "quick": {
+    "voice": "语音助手",
+    "agent": "AI Agent",
+    "on": "已开启",
+    "off": "已关闭",
+    "navSep": "快捷跳转",
+    "jump": "跳转",
+    "other": "其他",
+    "top": "回到顶部",
+    "hide": "隐藏助手键",
+    "assistant": "助手",
+    "fabTitle": "快捷助手键（可拖动）",
+    "fabAria": "快捷助手键",
+    "restoreTitle": "展开快捷助手键",
+    "pages": {
+      "home": "首页",
+      "agent": "AI Agent 控制台",
+      "voice": "语音助手",
+      "dashboard": "控制台",
+      "testCenter": "测试中心"
+    }
+  },
+  "voice": {
+    "title": "语音助手",
+    "subtitle": "语音转文字 · 在线 / 离线双引擎",
+    "charCount": "{count} 字",
+    "envOnline": "在线",
+    "envOffline": "离线",
+    "copy": "复制全文",
+    "copied": "已复制 ✓",
+    "clear": "清空",
+    "sendToAgent": "交给 AI Agent →",
+    "sendToAgentTip": "把识别出的文字交给 AI Agent 执行",
+    "historyTitle": "识别记录",
+    "historyEmpty": "还没有识别记录，点击上方「开始语音输入」或「开始录音」试试",
+    "diagnose": "环境诊断",
+    "browserLabel": "浏览器",
+    "webSupport": "在线识别（Web Speech API）",
+    "localSupport": "离线识别（本地 Whisper）",
+    "supported": "支持",
+    "unsupported": "不支持",
+    "webNote": "（Chrome 中文识别依赖 Google 服务，国内网络可能无法使用）",
+    "localNote": "（模型已内置在 public/models/，完全离线）",
+    "currentStatus": "当前状态",
+    "statusListening": "在线聆听中",
+    "statusRecording": "录音中",
+    "statusRecognizing": "离线转写中",
+    "statusIdle": "空闲",
+    "browser": {
+      "none": "未知",
+      "edge": "Microsoft Edge",
+      "chrome": "Google Chrome",
+      "firefox": "Mozilla Firefox",
+      "safari": "Apple Safari",
+      "unknown": "未知浏览器"
+    }
+  },
+  "globalAgent": {
+    "title": "AI Agent",
+    "hint": "🤖 Ctrl+Shift+A 呼出 Agent · Ctrl+↑↓ 滚动 · Ctrl+⌥+←→ 前进后退"
+  }
+}

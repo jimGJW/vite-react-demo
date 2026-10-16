@@ -2,6 +2,7 @@ import { clamp } from '../../Utils/index.js'
 import { useRef, useState } from 'react'
 import { Button, Space, Input, Tag, Empty } from 'antd'
 import { ZoomInOutlined, ZoomOutOutlined, ReloadOutlined, EnvironmentOutlined, ClearOutlined } from '@ant-design/icons'
+import { useI18n } from '../../../i18n/index.js'
 
 /**
  * ImageAnnotator · 图像标注与缩放平移
@@ -27,6 +28,7 @@ export default function ImageAnnotator({
   editable = true,
   className = '',
 }) {
+  const { t } = useI18n()
   const stageRef = useRef(null)
   const [scale, setScale] = useState(1)
   const [offset, setOffset] = useState({ x: 0, y: 0 })
@@ -72,7 +74,7 @@ export default function ImageAnnotator({
       id: `mk_${Date.now().toString(36)}`,
       x: nx,
       y: ny,
-      label: draftLabel.trim() || `标注 ${annotations.length + 1}`,
+      label: draftLabel.trim() || t('studio.comp.annoLabel', { no: annotations.length + 1 }),
     })
     setDraftLabel('')
   }
@@ -87,7 +89,7 @@ export default function ImageAnnotator({
           <Button size="small" icon={<ZoomOutOutlined />} onClick={() => zoomBy(0.85)} />
           <span className="st-annotator__scale">{Math.round(scale * 100)}%</span>
           <Button size="small" icon={<ZoomInOutlined />} onClick={() => zoomBy(1.18)} />
-          <Button size="small" icon={<ReloadOutlined />} onClick={reset} title="复位" />
+          <Button size="small" icon={<ReloadOutlined />} onClick={reset} title={t('studio.comp.annoReset')} />
         </Space>
         <Space size={4}>
           <Button
@@ -97,12 +99,12 @@ export default function ImageAnnotator({
             disabled={!editable}
             onClick={() => setAnnotateMode((v) => !v)}
           >
-            {annotateMode ? '标注中(点图添加)' : '标注'}
+            {annotateMode ? t('studio.comp.annoActive') : t('studio.comp.annoStart')}
           </Button>
           <Input
             size="small"
             className="st-annotator__label"
-            placeholder="标注文案"
+            placeholder={t('studio.comp.annoPlaceholder')}
             value={draftLabel}
             onChange={(e) => setDraftLabel(e.target.value)}
           />
@@ -125,7 +127,7 @@ export default function ImageAnnotator({
             {src ? (
               <img src={src} alt="" draggable={false} className="st-annotator__img" />
             ) : (
-              <div className="st-annotator__placeholder">放入 src 以显示底图</div>
+              <div className="st-annotator__placeholder">{t('studio.comp.annoNeedSrc')}</div>
             )}
             {annotations.map((a) => (
               <button
@@ -136,7 +138,7 @@ export default function ImageAnnotator({
                 title={a.label}
                 onClick={(e) => {
                   e.stopPropagation()
-                  if (editable && window.confirm(`删除标注「${a.label}」？`)) onRemove?.(a.id)
+                  if (editable && window.confirm(t('studio.comp.annoRemove', { label: a.label }))) onRemove?.(a.id)
                 }}
               >
                 <EnvironmentOutlined />
@@ -148,7 +150,7 @@ export default function ImageAnnotator({
 
         <div className="st-annotator__side">
           <div className="st-annotator__side-head">
-            <span>标注 ({annotations.length})</span>
+            <span>{t('studio.comp.annoList', { count: annotations.length })}</span>
             {editable && annotations.length > 0 && (
               <Button
                 size="small"
@@ -157,12 +159,12 @@ export default function ImageAnnotator({
                 icon={<ClearOutlined />}
                 onClick={() => annotations.forEach((a) => onRemove?.(a.id))}
               >
-                清空
+                {t('studio.comp.annoClear')}
               </Button>
             )}
           </div>
           {annotations.length === 0 ? (
-            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无标注" />
+            <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('studio.comp.annoEmpty')} />
           ) : (
             <ul className="st-annotator__list">
               {annotations.map((a) => (

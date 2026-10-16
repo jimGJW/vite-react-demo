@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { Button, Space, Tag, Typography } from 'antd'
 import { useChart } from './useChart.js'
+import { useI18n } from '../../../i18n/index.js'
 
 const { Text } = Typography
 
@@ -34,6 +35,7 @@ export default function AxisBreakBar({
   maxBreaks = 3,
   className = '',
 }) {
+  const { t } = useI18n()
   const elRef = useRef(null)
   const chartRef = useRef(null)
   const [userBreaks, setUserBreaks] = useState([])
@@ -114,14 +116,14 @@ export default function AxisBreakBar({
       yAxis: [
         {
           type: 'value',
-          name: '高值区间',
+          name: t('studio.comp.highRange'),
           nameTextStyle: { color: '#8c8c8c' },
           breaks,
           axisLabel: { formatter: `{value}${unit}` },
         },
         {
           type: 'value',
-          name: '低值区间',
+          name: t('studio.comp.lowRange'),
           nameTextStyle: { color: '#8c8c8c' },
           splitLine: { show: false },
           axisLabel: { formatter: `{value}${unit}` },
@@ -129,7 +131,7 @@ export default function AxisBreakBar({
       ],
       series: [
         {
-          name: '低值',
+          name: t('studio.comp.lowValue'),
           type: 'bar',
           yAxisIndex: 1,
           barMaxWidth: 26,
@@ -138,7 +140,7 @@ export default function AxisBreakBar({
           data: low,
         },
         {
-          name: '高值',
+          name: t('studio.comp.highValue'),
           type: 'bar',
           yAxisIndex: 0,
           barMaxWidth: 26,
@@ -147,7 +149,7 @@ export default function AxisBreakBar({
         },
       ],
     }),
-    [categories, low, high, breaks, unit, title],
+    [categories, low, high, breaks, unit, title, t],
   )
 
   useChart(elRef, option, {
@@ -168,15 +170,15 @@ export default function AxisBreakBar({
         <div className="st-axisbreak__bar">
           {title != null && <Text strong>{title}</Text>}
           <Space size={6}>
-            <Tag color={breaks.length ? 'processing' : 'default'}>断轴 {breaks.length}</Tag>
+            <Tag color={breaks.length ? 'processing' : 'default'}>{t('studio.comp.breaks', { count: breaks.length })}</Tag>
             <Button size="small" onClick={reset} disabled={userBreaks.length === 0}>
-              重置断轴
+              {t('studio.comp.resetBreaks')}
             </Button>
           </Space>
         </div>
       )}
       <div ref={elRef} className="st-axisbreak__canvas" style={{ height }} />
-      <div className="st-axisbreak__hint">在图上横向拖拽可选择要折叠的数值区间</div>
+      <div className="st-axisbreak__hint">{t('studio.comp.axisHint')}</div>
     </div>
   )
 }

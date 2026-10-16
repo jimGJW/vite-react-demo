@@ -30,7 +30,7 @@ export const STREAM_ERROR_CODES = {
   3001: 'network-error',
 }
 
-/** 语义 key → 用户文案 */
+/** 语义 key → 用户文案（未注入 t 时的回退，亦供单测使用） */
 export const STREAM_ERROR_MESSAGES = {
   'invalid-user': '登录状态已失效，请重新登录',
   'auth-error': '身份校验失败，请重新登录',
@@ -39,6 +39,23 @@ export const STREAM_ERROR_MESSAGES = {
   'quota-exhausted': '今日额度已用完',
   'network-error': '网络或系统异常，请稍后重试',
   unknown: '服务异常，请稍后重试',
+}
+
+/** 错误码 / 语义 key → i18n 键后缀（chatbot.error.<suffix>） */
+export const STREAM_ERROR_KEYS = {
+  1001: 'invalidUser',
+  1002: 'authError',
+  2001: 'sessionNotFound',
+  2002: 'pointsExhausted',
+  2003: 'quotaExhausted',
+  3001: 'networkError',
+  'invalid-user': 'invalidUser',
+  'auth-error': 'authError',
+  'session-not-found': 'sessionNotFound',
+  'points-exhausted': 'pointsExhausted',
+  'quota-exhausted': 'quotaExhausted',
+  'network-error': 'networkError',
+  unknown: 'serviceError',
 }
 
 /**
@@ -96,9 +113,11 @@ export function classifyFrame(frame) {
   return { kind: 'unknown', frame }
 }
 
-/** 错误码/语义 → 用户文案 */
-export function resolveErrorMessage(codeOrKey) {
+/** 错误码/语义 → 用户文案（传入 t 时返回当前语种文案，否则回退简体中文常量） */
+export function resolveErrorMessage(codeOrKey, t) {
   const key = STREAM_ERROR_CODES[codeOrKey] ?? codeOrKey ?? 'unknown'
+  const suffix = STREAM_ERROR_KEYS[key] ?? STREAM_ERROR_KEYS.unknown
+  if (t) { const key = 'chatbot.error.' + suffix; return t(key) }
   return STREAM_ERROR_MESSAGES[key] ?? STREAM_ERROR_MESSAGES.unknown
 }
 

@@ -1,0 +1,339 @@
+{
+  "layout": {
+    "reactColumn": "React · Ant Design",
+    "vueColumn": "Vue 3 · Element Plus（サブアプリ）",
+    "subappTitle": "vue-app サブアプリ（ポート 7101）",
+    "subappDesc": "本ケースの Vue 実装（Element Plus 公式の使い方）は独立プロジェクトへ移行され、qiankun ランタイムが融合します。",
+    "openLoaded": "Vue サブアプリでこのケースを開く",
+    "openLoad": "Vue サブアプリを読み込んでこのケースを開く",
+    "targetPre": "対象ページ：",
+    "targetPost": "。読み込み後、このサブアプリの機能メニューが左サイドバーに表示され、他のケースに直接切り替えられます。",
+    "diffTitle": "原理の比較",
+    "diffPoint": "比較ポイント",
+    "diffAntd": "React · Ant Design",
+    "diffVue": "Vue 3 · Element Plus",
+    "codeTitle": "核心コード片段",
+    "codeAntd": "Ant Design / React",
+    "codeVue": "Vue 3 / Element Plus"
+  },
+  "parentChild": {
+    "title": "親子コンポーネントの値渡し",
+    "subtitle": "父→子：props（React）vs defineProps（Vue）；子→父：コールバック vs カスタム emit イベント。",
+    "tagProps": "Props の一方向データフロー",
+    "tagEmit": "onChange / emit",
+    "tagLift": "状態のリフトアップ",
+    "receiveProps": "Todo List（子コンポーネント）· props 受取：",
+    "inputPlaceholder": "やることを追加…",
+    "emptyWarn": "空にできません",
+    "addButton": "追加",
+    "emptyText": "やることはまだありません — 子が onAdd コールバックで親に通知します",
+    "demoTitle": "今四半期の OKR",
+    "item1": "React-Vue デュアルフレームワーク統合を完了",
+    "item2": "コンポーネント化リファクタを定着させる",
+    "parentState": "親の state：items.length =",
+    "diff": {
+      "fatherToChild": {
+        "title": "父 → 子",
+        "antd": "function Child(props) {/* props.title */}",
+        "vue": "<script setup>const props = defineProps(['title'])</script>"
+      },
+      "childToFather": {
+        "title": "子 → 親",
+        "antd": "<Child onAdd={(v)=>setList(l=>[...l,v])} />",
+        "vue": "<script setup>const emit = defineEmits(['add'])\nemit('add', v)</script>"
+      },
+      "defaultValue": {
+        "title": "デフォルト値",
+        "antd": "function Child({ title = '默认' }) {}",
+        "vue": "withDefaults(defineProps({ title: { type: String, default: '默认' } }), {})"
+      },
+      "propsModify": {
+        "title": "props の変更",
+        "antd": "直接イミュータブル。コールバックで親に state を変更させる",
+        "vue": "直接イミュータブル。v-model:xxx は emit('update:xxx') のシンタックスシュガー"
+      },
+      "eventNaming": {
+        "title": "イベント命名",
+        "antd": "props コールバック onXxx キャメルケース",
+        "vue": "emit('add') kebab-case テンプレート @add"
+      }
+    }
+  },
+  "twoWay": {
+    "title": "双方向バインディング",
+    "subtitle": "React：制御コンポーネント（value + onChange）で明示的に束縛；Vue：v-model シンタックスシュガー（:modelValue + @update:modelValue）。",
+    "tagSugar": "制御 vs シンタックスシュガー",
+    "tagMulti": "v-model:xxx 複数フィールド",
+    "tagState": "useState / ref",
+    "nameLabel": "名前：",
+    "namePlaceholder": "名前を入力してください",
+    "demoName": "太郎",
+    "enableLabel": "機能を有効化：",
+    "currentLabel": "現在：",
+    "enabledText": "有効",
+    "disabledText": "無効",
+    "volumeLabel": "音量：",
+    "customLabel": "カスタムコンポーネントの双方向バインディング（value + onChange）：",
+    "customCounterLabel": "カスタムカウンター",
+    "parentStateLabel": "親の state",
+    "parentCount": "親の count =",
+    "controlledNote": "（子コンポーネントは自分の状態を持たず、完全に制御される）",
+    "diff": {
+      "input": {
+        "title": "入力ボックス",
+        "antd": "value={x} onChange={e=>setX(e.target.value)}",
+        "vue": "v-model=\"x\""
+      },
+      "switch": {
+        "title": "スイッチ",
+        "antd": "checked={x} onChange={setX}",
+        "vue": "v-model=\"x\" (コンポーネント内部で checked を約束)"
+      },
+      "custom": {
+        "title": "カスタムコンポーネント（単値）",
+        "antd": "value={n} onChange={setN}",
+        "vue": "<Counter v-model=\"n\" />  → props.modelValue + emit('update:modelValue')"
+      },
+      "multiField": {
+        "title": "複数フィールドの双方向バインディング",
+        "antd": "フィールドごとに value/a/b/c + onChangeXxx",
+        "vue": "v-model:title / v-model:visible / v-model:count"
+      },
+      "modifier": {
+        "title": "修飾子",
+        "antd": "onChange 内で trim/lowercase を自分で書く",
+        "vue": ".trim .number .lazy，defineModel({ trim: true })"
+      },
+      "essence": {
+        "title": "本質",
+        "antd": "一方向データフロー；手動の onChange で駆動",
+        "vue": "一方向データフロー（props は読み取り専用 + emit）。v-model はシンタックスシュガー"
+      }
+    }
+  },
+  "provide": {
+    "title": "層をまたぐ値渡し (Provide / Inject)",
+    "subtitle": "レイヤーを通じた props のドリリングを回避。React は createContext + Provider + useContext、Vue は provide / inject + readonly で改ざん防止。",
+    "tagDrilling": "Props drilling",
+    "tagContext": "Context / provide/inject",
+    "tagDi": "依存性注入",
+    "childLayer": "第 3 層 · Child",
+    "childDirect": "直接 useContext()",
+    "themeLabel": "theme：",
+    "userLabel": "ユーザー：",
+    "notLoggedIn": "未ログイン",
+    "grandchildToggle": "孫コンポーネントが「テーマ切替」をトリガー",
+    "fatherLayer": "第 2 層 · Father（props なし、通過）",
+    "grandpaLayer": "第 1 層 · GrandPa（Provider）",
+    "toggleTheme": "テーマを切替",
+    "diff": {
+      "injectPoint": {
+        "title": "「注入ポイント」を宣言",
+        "antd": "const Ctx = createContext(defaultValue)",
+        "vue": "setup() トップレベル：provide('key', value)、またはルートの app.provide()"
+      },
+      "provide": {
+        "title": "値の提供",
+        "antd": "<Ctx.Provider value={...}>\n  {children}\n</Ctx.Provider>",
+        "vue": "provide('theme', { cur, setCur, user })"
+      },
+      "consume": {
+        "title": "値の消費",
+        "antd": "const { theme } = useContext(Ctx)",
+        "vue": "const theme = inject('theme', defaultVal)"
+      },
+      "default": {
+        "title": "デフォルト値の仕組み",
+        "antd": "createContext(default)。Provider でラップされていない場合 default を返す",
+        "vue": "inject(key, default)。第 2 引数がデフォルト値"
+      },
+      "reactive": {
+        "title": "リアクティブ",
+        "antd": "Provider の value 参照が変化（setState）→ 全 consumer が再レンダー",
+        "vue": "provide に ref/reactive を渡す → inject が自動で反応"
+      },
+      "safe": {
+        "title": "変更の安全性",
+        "antd": "Context の値は任意の構造にできる。コールバック経由でのみ変更するよう自分で決める",
+        "vue": "provide(key, readonly(state)) で子の直接変更を禁止"
+      }
+    }
+  },
+  "ref": {
+    "title": "Ref / DOM 操作",
+    "subtitle": "React：useRef（DOM/変数）+ forwardRef + useImperativeHandle（命令型 API）。Vue：ref=\"x\" + defineExpose でメソッド公開。",
+    "tagRef": "useRef vs ref",
+    "tagImperative": "命令型 API",
+    "tagForward": "forwardRef / defineExpose",
+    "videoTitle": "動画「React vs Vue」",
+    "inputPlaceholder": "「フォーカス」をクリックして文字を選択…",
+    "focusSelect": "フォーカス + 選択",
+    "reverseText": "文字を反転",
+    "reverseLog": "入力欄の文字を反転 → ",
+    "logEmpty": "下のログ領域：右のボタンを押すと自動で最下部までスクロール（scrollBox.current.scrollTo）",
+    "appendScroll": "追加（最上部へスクロール）",
+    "appendLog": "ログを追加：",
+    "clear": "クリア",
+    "domRefCard": "① DOM Ref：ネイティブ input / div を操作",
+    "imperativeCard": "② forwardRef + useImperativeHandle：命令型コンポーネント API",
+    "playing": "▶ 再生中",
+    "paused": "⏸ 一時停止",
+    "playBtn": "▶ play()",
+    "pauseBtn": "⏸ pause()",
+    "seekBtn": "⏭ seek(30s)",
+    "jumpEnd": "⏩ 最後へジャンプ",
+    "resetBtn": "⟲ reset()",
+    "getStateBtn": "getState() → 印刷",
+    "imperativeNote1": "親は子の内部 state を直接読めません。次を介して公開する必要がある：",
+    "imperativeNote2": "メソッドを明示的に公開します。Vue 3 の",
+    "imperativeNote3": "と一対一に対応します。",
+    "diff": {
+      "domRef": {
+        "title": "DOM 参照の宣言",
+        "antd": "const r = useRef(null); <input ref={r}/>",
+        "vue": "const r = ref(null); <input ref=\"r\" />（同名でバインド）"
+      },
+      "crossRef": {
+        "title": "コンポーネント間の ref 受け渡し",
+        "antd": "forwardRef(MyComp(props, ref))",
+        "vue": "子の ref は既定でルート DOM を指す。または $refs（options API）"
+      },
+      "exposeApi": {
+        "title": "命令型 API の公開",
+        "antd": "useImperativeHandle(ref, () => ({ play, ... }), deps)",
+        "vue": "defineExpose({ play, pause, getState })"
+      },
+      "readWrite": {
+        "title": "ref 値の読み書き",
+        "antd": "r.current で読み書き。.current の変更では再レンダーしない",
+        "vue": "r.value で読み書き。ref(reactive) は自動でリアクティブ"
+      },
+      "multiRef": {
+        "title": "複数 ref：リスト",
+        "antd": "ref={el => arr[i] = el}（コールバック ref）または useRef([])",
+        "vue": "<div v-for=\"i in 5\" :ref=\"el => list[i]=el\" /> 或 :ref=\"keyed\""
+      },
+      "sideEffect": {
+        "title": "「副作用」DOM 操作",
+        "antd": "useEffect 内で操作（マウント後 / 依存変更後）",
+        "vue": "onMounted フック内"
+      }
+    }
+  },
+  "slot": {
+    "title": "スロット / Children 配分",
+    "subtitle": "React：children / 複数 ReactNode props（named）/ renderItem render-prop（scoped）。Vue：既定 slot / named slot / scoped slot（データ公開付き）。",
+    "tagChildren": "children · named · scoped",
+    "tagRender": "renderItem = scoped slot",
+    "tagDistribute": "コンテンツ配分",
+    "defaultSlot": "① 既定スロット：children",
+    "welcome": "🎯 ワークスペースへようこそ",
+    "todayText": "今日は素晴らしい一日。子が props.children 経由でこの全体を直接レンダーします。",
+    "startWork": "作業を開始",
+    "viewNotify": "通知 3 件を表示",
+    "namedSlot": "② 名前付きスロット：複数 ReactNode props（title / extra / footer / children）",
+    "subtitle2": "フロントエンドエンジニア · 5 年",
+    "setting": "設定",
+    "followed": "フォロー中",
+    "follow": "フォロー",
+    "comment": "💬 コメント：128",
+    "repost": "🔁 リポスト：54",
+    "view": "👀 表示：2.3k",
+    "bodyPre": "作っているのは",
+    "bodyMid1": "ハイブリッドプロジェクト。",
+    "bodyUse": "を使って",
+    "bodyMid2": "名前付きスロットでコンテンツを配分し、",
+    "bodyVue": "Vue の",
+    "bodyEnd": "に対応します。",
+    "scopedSlot": "③ スコープスロット：renderItem（render-prop）",
+    "soldOut": "商品は完売しました",
+    "noData": "データがありません",
+    "productKeyboard": "キーボード",
+    "productMouse": "マウス",
+    "productMonitor": "モニター",
+    "diff": {
+      "default": {
+        "title": "既定スロット",
+        "antd": "props.children",
+        "vue": "<slot />"
+      },
+      "named": {
+        "title": "名前付きスロット",
+        "antd": "複数 props：title / header / footer はすべて ReactNode",
+        "vue": "<slot name=\"header\" />\n<template #header>...</template>"
+      },
+      "scoped": {
+        "title": "スコープスロット（リスト描画）",
+        "antd": "renderItem={(row, idx) => <Item />} または itemRender プロパティ",
+        "vue": "<template #default=\"{ row, $index }\">\n  直接使用 row / $index\n</template>"
+      },
+      "fallback": {
+        "title": "フォールバック内容",
+        "antd": "コンテナ内に書く：children || 既定ノード",
+        "vue": "<slot>默认内容</slot>"
+      },
+      "multiSlot": {
+        "title": "複数 slot + データ",
+        "antd": "各 slot prop が (scope) => ReactNode を受け取る（関数スロット）",
+        "vue": "<slot name=\"foot\" :total=\"total\" :count=\"count\" />\n<template #foot=\"{ total, count }\">"
+      },
+      "scenario": {
+        "title": "適用场景",
+        "antd": "汎用 Card / Modal / Table column / List itemRender",
+        "vue": "左に同じ + v-slot ディレクティブ一式"
+      }
+    }
+  },
+  "state": {
+    "title": "グローバル状態共有",
+    "subtitle": "React：createContext + useReducer または useMemo で store をラップ。Vue：reactive + provide/inject または Pinia。本ページは「フレームワーク純正」のみで比較し、Redux/Zustand/Pinia は使いません。",
+    "tagContext": "Context vs provide+reactive",
+    "tagCart": "ショッピングカート実戦",
+    "tagShare": "複数コンポーネントで状態共有",
+    "cartTitle": "カート（共有状態）",
+    "wallet": "ウォレット：¥",
+    "qtyLabel": "数量：",
+    "amtLabel": "金額：",
+    "checkout": "今すぐ精算",
+    "productList": "商品リスト（独立した消費コンポーネント）",
+    "namePlaceholder": "商品名",
+    "pricePlaceholder": "価格",
+    "addButton": "追加",
+    "emptyCart": "カートは空です",
+    "subtotal": "小計：¥",
+    "book1": "Vue 3 実戦",
+    "book2": "React デザインパターン",
+    "diff": {
+      "native": {
+        "title": "方式（純正）",
+        "antd": "createContext + Provider + useContext。state は Provider 内に置く",
+        "vue": "reactive または ref オブジェクト + provide(key, store)。または Pinia（公式 store）"
+      },
+      "reference": {
+        "title": "状態の参照",
+        "antd": "Provider の value は setState のたび新オブジェクトで、参照変化が全 consumer を再レンダー",
+        "vue": "reactive オブジェクトの参照は不変。プロパティ変更はそのプロパティに依存する購読者のみを正確にトリガー"
+      },
+      "perf": {
+        "title": "パフォーマンス最適化",
+        "antd": "複数 Context に分割 / memo + useCallback / useMemo / セレクタライブラリ",
+        "vue": "computed の派生状態は自動キャッシュ。コンポーネントの粒度は precise"
+      },
+      "async": {
+        "title": "非同期変更",
+        "antd": "Provider コンポーネント内に useCallback(async ()=> {...setState}) を書く",
+        "vue": "action は reactive プロパティを直接変更する普通の async 関数"
+      },
+      "devtools": {
+        "title": "Devtools",
+        "antd": "React DevTools Components で Context を確認。Redux/Zustand は専用パネル",
+        "vue": "Vue DevTools → Pinia パネルまたは Setup 状態ツリー"
+      },
+      "prod": {
+        "title": "本番でよく使うラッパ",
+        "antd": "Zustand / Redux Toolkit / Jotai",
+        "vue": "Pinia（Vuex の後継）"
+      }
+    }
+  }
+}

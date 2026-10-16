@@ -122,31 +122,37 @@ export function minutesToTime(minutes) {
  *   3. 单段时长不得超过 maxHours
  *   4. 任意两段不得时间重叠
  *
+ * 错误信息默认输出中文（kit-utils.test.mjs 直接断言中文字面量）；
+ * 传入 t 时改用 i18n 键（kit.timeRange.err*），供 UI 层本地化。
+ *
  * @param {{start?:string, end?:string}[]} ranges
- * @param {{maxHours?:number}} [options]
+ * @param {{maxHours?:number, t?:Function}} [options]
  * @returns {{ok:boolean, errors:string[], totalMinutes:number}}
  */
-export function validateTimeRanges(ranges, { maxHours = 24 } = {}) {
+export function validateTimeRanges(ranges, { maxHours = 24, t } = {}) {
   const list = Array.isArray(ranges) ? ranges : []
   const errors = []
   let totalMinutes = 0
   const spans = []
+
+  /* 有 t 走 i18n 键，无 t 落回中文字面量 */
+  const msg = (key, vars, fallback) => (typeof t === 'function' ? t(key, vars) : fallback)
 
   list.forEach((range, index) => {
     const label = `第 ${index + 1} 段`
     const start = timeToMinutes(range?.start)
     const end = timeToMinutes(range?.end)
     if (Number.isNaN(start) || Number.isNaN(end)) {
-      errors.push(`${label}的起止时间未填写完整`)
+      errors.push(msg('kit.timeRange.errIncomplete', { index: index + 1 }, `${label}的起止时间未填写完整`))
       return
     }
     if (end <= start) {
-      errors.push(`${label}的结束时间需晚于开始时间`)
+      errors.push(msg('kit.timeRange.errOrder', { index: index + 1 }, `${label}的结束时间需晚于开始时间`))
       return
     }
     const duration = end - start
     if (duration > maxHours * 60) {
-      errors.push(`${label}时长超过 ${maxHours} 小时`)
+      errors.push(msg('kit.timeRange.errExceed', { index: index + 1, maxHours }, `${label}时长超过 ${maxHours} 小时`))
       return
     }
     totalMinutes += duration
@@ -156,7 +162,7 @@ export function validateTimeRanges(ranges, { maxHours = 24 } = {}) {
   spans.forEach((a, i) => {
     spans.slice(i + 1).forEach((b) => {
       if (a.start < b.end && a.end > b.start) {
-        errors.push(`第 ${a.index + 1} 段与第 ${b.index + 1} 段时间重叠`)
+        errors.push(msg('kit.timeRange.errOverlap', { first: a.index + 1, second: b.index + 1 }, `第 ${a.index + 1} 段与第 ${b.index + 1} 段时间重叠`))
       }
     })
   })

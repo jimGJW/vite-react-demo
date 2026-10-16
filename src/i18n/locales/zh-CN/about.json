@@ -1,0 +1,11 @@
+{
+  "title": "关于页面",
+  "desc": "这是一个标准的 React 项目脚手架示例,集成了路由、布局和多页面结构,可以作为你后续开发的起点。",
+  "stackTitle": "技术栈",
+  "react19": "核心 UI 库",
+  "router7": "前端路由",
+  "vite8": "构建工具",
+  "eslint": "代码规范",
+  "structureTitle": "目录结构",
+  "structure": "src/\n├── layouts/     # 布局组件\n├── pages/       # 页面组件（每个页面独立文件夹）\n├── App.jsx      # 路由入口\n├── main.jsx     # 应用入口\n└── index.scss    # 全局样式"
+}

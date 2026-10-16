@@ -1,0 +1,38 @@
+{
+  "demo": {
+    "title": "⚡ Assistants rapides",
+    "leadBefore": "L'assistant vocal et l'AI Agent sont déjà composantés et peuvent être invoqués en popup sur n'importe quelle page. La ",
+    "leadKey": " touche Assistants rapides ",
+    "leadAfter": " en bas à droite est librement déplaçable ; cliquez pour déplier le menu afin d'activer/désactiver les deux assistants ou de sauter directement à une page donnée.",
+    "statusLabel": "État actuel : ",
+    "voiceLabel": "Assistant vocal",
+    "agentLabel": "AI Agent",
+    "on": "Activé",
+    "off": "Désactivé",
+    "openVoice": "🎙️ Ouvrir l'assistant vocal",
+    "agentPrefix": "🤖 ",
+    "closeBtn": "Fermer",
+    "openBtn": "Ouvrir",
+    "agentSuffix": " AI Agent",
+    "sendToAgent": "➡️ Confier la commande à l'Agent",
+    "closeAll": "Tout fermer",
+    "fillAgentBtn": "L'Agent saisit « {text} »",
+    "scrollBottom": "Défiler jusqu'en bas de la page",
+    "analyzeButtons": "Analyse quels boutons comporte la page actuelle",
+    "dispatchOpen": "dispatchEvent → Ouvrir l'assistant vocal",
+    "dispatchToggle": "dispatchEvent → Basculer l'AI Agent",
+    "standaloneBtn": "Ouvrir le panneau vocal autonome",
+    "standaloneTitle": "Assistant vocal (instance autonome)"
+  },
+  "method": {
+    "tag": "Méthode",
+    "m1Title": "Hook useAssistants (recommandé dans les composants React)",
+    "m1Desc": "Après avoir monté <Assistants /> dans le Layout, tout composant de page peut lire et contrôler les panneaux d'assistants via le Hook.",
+    "m2Title": "API impérative (utilisable depuis toute page JS / Vue)",
+    "m2Desc": "Sans dépendance au contexte React ; appelable directement depuis un SFC Vue, du JS natif ou la console du navigateur.",
+    "m3Title": "Événements natifs window (inter-frameworks / inter-stacks)",
+    "m3Desc": "Les pages Vue, Angular ou à l'intérieur d'une iframe peuvent toutes réveiller les assistants avec cet événement, cohérent avec l'usage existant de app:navigate dans le projet.",
+    "m4Title": "Composant embarqué (contrôlé indépendamment du centre d'assistants)",
+    "m4Desc": "Le panneau vocal est lui-même un composant contrôlé ordinaire ; il peut aussi s'utiliser seul dans une page avec son propre state."
+  }
+}

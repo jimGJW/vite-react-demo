@@ -30,9 +30,15 @@
 export function createMachine(config = {}) {
   const { initial = '', states = {} } = config
 
+  /* label 允许是 { zh-CN, en, ... } 字典（i18n）；取词时回退简体，保证纯函数测试/兜底稳定 */
   const labelOf = (id) => {
     const node = states[id]
-    return (node && node.label) || id
+    const label = node && node.label
+    if (label == null) return id
+    if (typeof label === 'object' && !Array.isArray(label)) {
+      return label['zh-CN'] ?? label[Object.keys(label)[0]] ?? id
+    }
+    return label
   }
 
   /** 查目标状态；事件不合法 / 目标不存在都返回 null */

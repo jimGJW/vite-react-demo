@@ -234,11 +234,11 @@ export const TEMPLATES = [
 
 /* 过滤分组（用于顶部 Segmented 切换） */
 export const GROUPS = [
-  { key: 'all', label: '全部' },
-  { key: 'React', label: 'React' },
-  { key: 'Vue', label: 'Vue' },
-  { key: '移动端', label: '移动端' },
-  { key: '组件库·工具', label: '组件库·工具' },
+  { key: 'all', label: '全部', labelKey: 'all' },
+  { key: 'React', label: 'React', labelKey: 'react' },
+  { key: 'Vue', label: 'Vue', labelKey: 'vue' },
+  { key: '移动端', label: '移动端', labelKey: 'mobile' },
+  { key: '组件库·工具', label: '组件库·工具', labelKey: 'libs' },
 ]
 
 /* 框架 → 主题色（与 --c-* 设计系统对齐） */

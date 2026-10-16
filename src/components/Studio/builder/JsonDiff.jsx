@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Tag, Segmented } from 'antd'
+import { useI18n } from '../../../i18n/index.js'
 
 /**
  * JsonDiff · 结构化对象对比
@@ -60,10 +61,10 @@ function diff(left, right) {
 }
 
 const TYPE_META = {
-  added: { color: 'success', label: '新增' },
-  removed: { color: 'error', label: '删除' },
-  changed: { color: 'warning', label: '修改' },
-  same: { color: 'default', label: '未变' },
+  added: { color: 'success', key: 'studio.comp.diffAdded' },
+  removed: { color: 'error', key: 'studio.comp.diffRemoved' },
+  changed: { color: 'warning', key: 'studio.comp.diffChanged' },
+  same: { color: 'default', key: 'studio.comp.diffSame' },
 }
 
 function fmt(v) {
@@ -74,6 +75,7 @@ function fmt(v) {
 }
 
 export default function JsonDiff({ left, right, className = '' }) {
+  const { t } = useI18n()
   const rows = useMemo(() => diff(left, right), [left, right])
   const [mode, setMode] = useState('changed')
 
@@ -91,24 +93,24 @@ export default function JsonDiff({ left, right, className = '' }) {
           value={mode}
           onChange={setMode}
           options={[
-            { label: `变化 (${counts.added || 0}+${counts.removed || 0}+${counts.changed || 0})`, value: 'changed' },
-            { label: '全部', value: 'all' },
+            { label: t('studio.comp.diffChanges', { added: counts.added || 0, removed: counts.removed || 0, changed: counts.changed || 0 }), value: 'changed' },
+            { label: t('studio.comp.diffAll'), value: 'all' },
           ]}
         />
         <div className="st-jsondiff__legend">
           {['added', 'removed', 'changed'].map((t) => (
-            <Tag key={t} color={TYPE_META[t].color}>{TYPE_META[t].label} {counts[t] || 0}</Tag>
+            <Tag key={t} color={TYPE_META[t].color}>{t(TYPE_META[t].key)} {counts[t] || 0}</Tag>
           ))}
         </div>
       </div>
 
       <div className="st-jsondiff__list">
-        {shown.length === 0 && <div className="st-jsondiff__empty">两份数据完全一致</div>}
+        {shown.length === 0 && <div className="st-jsondiff__empty">{t('studio.comp.diffIdentical')}</div>}
         {shown.map((r) => (
           <div key={r.path} className={`st-jsondiff__row is-${r.type}`}>
             <code className="st-jsondiff__path">{r.path}</code>
             <Tag color={TYPE_META[r.type].color} className="st-jsondiff__tag">
-              {TYPE_META[r.type].label}
+              {t(TYPE_META[r.type].key)}
             </Tag>
             <span className="st-jsondiff__val st-jsondiff__val--left">{fmt(r.left)}</span>
             <span className="st-jsondiff__arrow">→</span>

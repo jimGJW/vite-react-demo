@@ -1,0 +1,20 @@
+{
+  "title": "状态机与时间旅行",
+  "lead1": "把「谁能流转到哪」从组件里抽成一张状态表，非法流转在",
+  "lead2": " 里就被拦掉，不用在业务代码里到处写 if。 再配一个撤销栈，就免费得到时间旅行（撤销 / 重做 / 任意跳转）。",
+  "flowTitle": "工单流转图（当前状态高亮）",
+  "flowAria": "工单状态流转图",
+  "step": "第 {current} / {total} 步",
+  "grayHint": "灰色按钮表示当前状态下不允许该操作 —— 状态机直接返回 ok:false， 业务代码不需要再写一遍判断。",
+  "triggerTip": "触发 {event}",
+  "travelTitle": "时间旅行：撤销 / 重做 / 任意跳转",
+  "travelHint": "历史栈存的是「状态快照序列」。提交新状态时若不在末尾， 后面的 redo 分支会被丢弃 —— 这是所有撤销栈的标准行为。",
+  "undo": "撤销",
+  "redo": "重做",
+  "jumpStart": "回到最初",
+  "timelineLabel": "时间轴",
+  "sliderTip": "第 {step} 步：{label}",
+  "stepItem": "第 {step} 步 · {label}",
+  "currentMark": "（当前）",
+  "disableReason": "「{label}」状态下不能触发「{event}」"
+}

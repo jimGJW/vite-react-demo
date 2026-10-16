@@ -22,6 +22,7 @@ import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Button, Tabs, Tooltip, ConfigProvider, theme as antdTheme } from 'antd'
 import { ReloadOutlined, CompassOutlined, BulbOutlined, MoonOutlined } from '@ant-design/icons'
+import { useI18n } from '../../i18n/index.js'
 import { useOceanData } from '../../lib/ocean/useOceanData.js'
 import { Metric, readTheme, THEME_KEY, fmtSiteTime, waveLevel } from './components/ui.jsx'
 import WavesTab from './components/WavesTab.jsx'
@@ -44,6 +45,7 @@ export default function OceanBoard({ lockedTab = null } = {}) {
   const {
     waves, tides, tidePred, globalWaves, oni, cyclones, oscillations, ssta, stationWeather, buoys, marine, reloadAll,
   } = useOceanData()
+  const { t } = useI18n()
   const [theme, setTheme] = useState(readTheme)
 
   /* 页签与 URL 同步：别处「关联数据」跳 ?tab=xxx 过来时要能直接落到目标页签，
@@ -119,27 +121,29 @@ export default function OceanBoard({ lockedTab = null } = {}) {
         {/* 顶部概览 */}
         <div className="o-hero">
           <div className="o-hero__main">
-            <h1><CompassOutlined /> 海洋数据看板</h1>
+            <h1><CompassOutlined /> {t('ocean.hero.title')}</h1>
             <p className="o-hero__sub">
-              「天上 · 地下 · 海洋」的第三块拼图——<Link to="/astro">深空看板</Link>看天、
-              <Link to="/geo">地球看板</Link>看地，这里看海：近海的海浪与海温、
-              旧金山站的实测潮位与高低潮预报、以及正在发生的厄尔尼诺。
+              {t('ocean.hero.subPre')}
+              <Link to="/astro">{t('ocean.hero.linkAstro')}</Link>
+              {t('ocean.hero.subMid')}
+              <Link to="/geo">{t('ocean.hero.linkGeo')}</Link>
+              {t('ocean.hero.subPost')}
             </p>
           </div>
           <div className="o-hero__side">
             <Clock prefix="o" />
-            <Tooltip title={theme === 'dark' ? '切换到白昼' : '切换到夜航'}>
+            <Tooltip title={theme === 'dark' ? t('ocean.theme.toDay') : t('ocean.theme.toNight')}>
               <Button
                 icon={theme === 'dark' ? <BulbOutlined /> : <MoonOutlined />}
                 onClick={toggleTheme}
                 size="small"
                 className="o-theme-btn"
               >
-                {theme === 'dark' ? '白昼' : '夜航'}
+                {theme === 'dark' ? t('ocean.theme.day') : t('ocean.theme.night')}
               </Button>
             </Tooltip>
             <Button icon={<ReloadOutlined />} onClick={reloadAll} loading={waves.loading} size="small">
-              刷新
+              {t('ocean.refresh')}
             </Button>
           </div>
         </div>
@@ -147,67 +151,67 @@ export default function OceanBoard({ lockedTab = null } = {}) {
         {/* 关键指标条 */}
         <div className="o-strip">
           <Metric
-            label="最大浪高（5 站）"
+            label={t('ocean.metric.maxWave.label')}
             value={waveData?.maxWave != null ? waveData.maxWave.toFixed(2) : '—'}
             unit={waveData?.maxWave != null ? 'm' : ''}
             tone="var(--o-accent)"
-            info="青岛外海/长江口/厦门/珠江口/三亚 5 个近海观测点中的当前最大浪高（Open-Meteo Marine 网格预报）"
+            info={t('ocean.metric.maxWave.info')}
           />
           <Metric
-            label="平均海表温度"
+            label={t('ocean.metric.avgSst.label')}
             value={waveData?.avgSst != null ? waveData.avgSst.toFixed(1) : '—'}
             unit={waveData?.avgSst != null ? '°C' : ''}
             tone="#0d9488"
-            info="5 个近海点海表温度（SST）的算术平均；SST 是台风生成与厄尔尼诺的关键变量"
+            info={t('ocean.metric.avgSst.info')}
           />
           <Metric
-            label="当前潮位"
+            label={t('ocean.metric.tideNow.label')}
             value={tideData?.latest?.v != null ? tideData.latest.v.toFixed(2) : '—'}
             unit={tideData?.latest?.v != null ? 'm' : ''}
             tone="#0369a1"
-            info="旧金山站最新实测水位（MLLW 基准 = 平均较低低潮面，美国潮位站通用零点）"
+            info={t('ocean.metric.tideNow.info')}
           />
           <Metric
-            label="下次高潮"
+            label={t('ocean.metric.nextHigh.label')}
             value={nextTides?.nextH ? `${fmtSiteTime(nextTides.nextH.t)}` : '—'}
             unit={nextTides?.nextH ? `· ${nextTides.untilH}h 后` : ''}
             tone="#1d4ed8"
-            info="NOAA 潮汐调和预报（未来 48h）；时间为站点当地时间"
+            info={t('ocean.metric.nextHigh.info')}
           />
           <Metric
-            label="下次低潮"
+            label={t('ocean.metric.nextLow.label')}
             value={nextTides?.nextL ? `${fmtSiteTime(nextTides.nextL.t)}` : '—'}
             unit={nextTides?.nextL ? `· ${nextTides.untilL}h 后` : ''}
             tone="#0891b2"
-            info="潮差 = 相邻高潮与低潮之差，赶海、进港避浅都看它"
+            info={t('ocean.metric.nextLow.info')}
           />
           <Metric
-            label="活跃热带气旋"
+            label={t('ocean.metric.cyclone.label')}
             value={cycData ? `${cycData.count}` : '—'}
             unit={cycData ? `个 · 飓风 ${cycData.hurricaneCount}` : ''}
             tone={cycData?.hurricaneCount ? '#ef4444' : 'var(--o-accent)'}
-            info="NOAA NHC 责任区（北大西洋 + 东北太平洋）当前活跃气旋数；飓风级为 64 kt 以上。西北太平洋台风不在本源内"
+            info={t('ocean.metric.cyclone.info')}
           />
           <Metric
-            label="海洋温度距平"
+            label={t('ocean.metric.ssta.label')}
             value={sstaData ? `+${sstaData.latest.anom.toFixed(2)}` : '—'}
             unit={sstaData ? `°C · ${sstaData.latest.year}` : ''}
             tone="#ef4444"
-            info="全球海洋年均温相对 1901–2000 年基准的偏差；地球滞留热量的九成以上进了海洋"
+            info={t('ocean.metric.ssta.info')}
           />
           <Metric
-            label="厄尔尼诺 ONI"
+            label={t('ocean.metric.oni.label')}
             value={oniData ? `${oniData.latest.anom >= 0 ? '+' : ''}${oniData.latest.anom.toFixed(2)}` : '—'}
             unit={oniData ? oniData.state : ''}
             tone={oniData ? (oniData.latest.anom >= 0.5 ? '#dc2626' : oniData.latest.anom <= -0.5 ? '#1d4ed8' : '#64748b') : undefined}
-            info="Niño 3.4 区海温距平 3 月滑动均值；≥ +0.5 厄尔尼诺 / ≤ −0.5 拉尼娜，|ONI|≥2.0 为超强"
+            info={t('ocean.metric.oni.info')}
           />
           <Metric
-            label="浮标最大浪（实测）"
+            label={t('ocean.metric.buoy.label')}
             value={buoyData?.maxWave ? buoyData.maxWave.wvht.toFixed(1) : '—'}
             unit={buoyData?.maxWave ? 'm' : ''}
             tone={buoyData?.maxWave ? waveLevel(buoyData.maxWave.wvht).color : undefined}
-            info="NOAA NDBC 全球浮标网当前实测到的最大有效波高（区别于上方「最大浪高」的模式预报值）"
+            info={t('ocean.metric.buoy.info')}
           />
         </div>
 
@@ -220,7 +224,7 @@ export default function OceanBoard({ lockedTab = null } = {}) {
           items={[
             {
               key: 'waves',
-              label: '🌊 海浪与海温',
+              label: `🌊 ${t('ocean.tab.waves')}`,
               children: (
                 <WavesTab
                   waves={waves}
@@ -232,7 +236,7 @@ export default function OceanBoard({ lockedTab = null } = {}) {
             },
             {
               key: 'tide',
-              label: '🌗 潮汐',
+              label: `🌗 ${t('ocean.tab.tide')}`,
               children: (
                 <TideTab
                   tides={tides}
@@ -246,7 +250,7 @@ export default function OceanBoard({ lockedTab = null } = {}) {
             },
             {
               key: 'oni',
-              label: '🌡 气候振荡',
+              label: `🌡 ${t('ocean.tab.oni')}`,
               children: (
                 <OniTab
                   oni={oni}
@@ -260,32 +264,32 @@ export default function OceanBoard({ lockedTab = null } = {}) {
             },
             {
               key: 'cyclone',
-              label: '🌀 热带气旋',
+              label: `🌀 ${t('ocean.tab.cyclone')}`,
               children: <CycloneTab cyclones={cyclones} cycData={cycData} />,
             },
             {
               key: 'buoy',
-              label: '🛟 浮标实况',
+              label: `🛟 ${t('ocean.tab.buoy')}`,
               children: <BuoysTab buoys={buoys} buoyData={buoyData} />,
             },
             {
               key: 'marine',
-              label: '🌊 海况预报',
+              label: `🌊 ${t('ocean.tab.marine')}`,
               children: <MarineTab marine={marine} marineData={marineData} />,
             },
             {
               key: 'coast',
-              label: '🏖 海岸榜',
+              label: `🏖 ${t('ocean.tab.coast')}`,
               children: <CoastTab marine={marine} marineData={marineData} />,
             },
             {
               key: 'seatem',
-              label: '🌡 海温趋势',
+              label: `🌡 ${t('ocean.tab.seatem')}`,
               children: <SeaTempTab marine={marine} marineData={marineData} />,
             },
             {
               key: 'cases',
-              label: '📚 真实案例',
+              label: `📚 ${t('ocean.tab.cases')}`,
               children: <CaseTab theme={theme} />,
             },
           ]}
@@ -295,10 +299,7 @@ export default function OceanBoard({ lockedTab = null } = {}) {
         <RelatedData board="ocean" tab={activeTab} theme={theme} health={health} />
 
         <footer className="o-foot">
-          全部数据来自公开免费接口（Open-Meteo Marine / NOAA CO-OPS / NOAA CPC / NOAA NHC / NOAA PSL /
-          NOAA NCEI / NOAA NDBC），仅用于科普与可视化展示。海况为网格模式预报而非站点实测；
-          潮汐时间为站点当地时间；气候振荡分级依据 NOAA 官方阈值；活跃气旋仅覆盖 NHC 责任区
-          （北大西洋与东北太平洋）；浮标为整点后回传的实测值，各站时钟略有先后，缺测以 MM 标记。
+          {t('ocean.footer')}
         </footer>
       </div>
     </ConfigProvider>

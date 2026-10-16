@@ -1,0 +1,22 @@
+{
+  "page": {
+    "title": "Open-Source Template Library Templates",
+    "descLead": "{count} pure upstream open-source templates identified from the local Front-End archive (previously classified as D, not ported).",
+    "descTail": "Only metadata such as tech stack and capability points is collected; all are public projects with no internal code or sensitive data."
+  },
+  "empty": "No templates in this category",
+  "card": {
+    "upstream": "View upstream repository",
+    "derivedTip": "Local derived project, no independent public repository",
+    "templateTip": "Public open-source template, no independent repository address",
+    "derivedLocal": "Derived from the same base (local)",
+    "templateLocal": "Open-source template (local)"
+  },
+  "groups": {
+    "all": "All",
+    "react": "React",
+    "vue": "Vue",
+    "mobile": "Mobile",
+    "libs": "Libraries · Tools"
+  }
+}

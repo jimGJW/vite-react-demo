@@ -13,16 +13,18 @@ import { memo, useMemo, useState } from 'react'
 import { Button, Empty, Segmented, Space, Table } from 'antd'
 import LineChart from './LineChart.jsx'
 import { FIELD_LABELS } from '../config.js'
+import { useI18n, pickLang } from '../../../i18n/index.js'
 import { buildColumns, downloadCSV, normalizeRows, toCSV } from './utils.js'
 
 export default memo(function DataTable({ data, title, shareState = false }) {
+  const { t, lang } = useI18n()
   /* 预生成行唯一键：antd 的 rowKey 函数第二参（index）已弃用且顺序不保证，
      改为数据自带 _key（下划线前缀由 buildColumns 排除，不会多出一列） */
   const rows = useMemo(
     () => normalizeRows(data).map((r, i) => ({ ...r, _key: r.id ?? `r-${i}` })),
     [data],
   )
-  const columns = useMemo(() => buildColumns(rows), [rows])
+  const columns = useMemo(() => buildColumns(rows, lang), [rows, lang])
   const [view, setView] = useState('table')
 
   /* 含 time + 至少一个数值列 → 可切图表（全部数值列作为多序列） */
@@ -35,20 +37,20 @@ export default memo(function DataTable({ data, title, shareState = false }) {
     return {
       x: rows.map((r) => r.time),
       list: numericKeys.map((key) => ({
-        name: FIELD_LABELS[key] || key,
+        name: pickLang(FIELD_LABELS[key], lang) || key,
         values: rows.map((r) => r[key]),
       })),
     }
-  }, [rows])
+  }, [rows, lang])
 
-  if (!rows.length) return <div className="cb-empty">暂无数据</div>
+  if (!rows.length) return <div className="cb-empty">{t('chatbot.cards.noData')}</div>
 
   const exportCSV = () => downloadCSV(`${title || 'data'}.csv`, toCSV(rows, columns))
 
   return (
     <div className="cb-table">
       <div className="cb-card__head">
-        <span className="cb-card__title">{title || '数据明细'}</span>
+        <span className="cb-card__title">{title || t('chatbot.cards.defaultTableTitle')}</span>
         {!shareState && (
           <Space size={4}>
             {chartModel && (
@@ -57,20 +59,20 @@ export default memo(function DataTable({ data, title, shareState = false }) {
                 value={view}
                 onChange={setView}
                 options={[
-                  { label: '表格', value: 'table' },
-                  { label: '图表', value: 'chart' },
+                  { label: t('chatbot.cards.viewTable'), value: 'table' },
+                  { label: t('chatbot.cards.viewChart'), value: 'chart' },
                 ]}
               />
             )}
-            <Button size="small" type="text" aria-label="导出 CSV" onClick={exportCSV}>
-              导出 CSV
+            <Button size="small" type="text" aria-label={t('chatbot.cards.exportCsvAria')} onClick={exportCSV}>
+              {t('chatbot.cards.exportCsv')}
             </Button>
           </Space>
         )}
       </div>
 
       {view === 'chart' && chartModel && !shareState ? (
-        <LineChart series={chartModel} title={title || '数据明细'} />
+        <LineChart series={chartModel} title={title || t('chatbot.cards.defaultTableTitle')} />
       ) : (
         <Table
           size="small"
@@ -79,7 +81,7 @@ export default memo(function DataTable({ data, title, shareState = false }) {
           dataSource={rows}
           pagination={rows.length > 10 ? { pageSize: 10, size: 'small' } : false}
           scroll={{ x: 'max-content' }}
-          locale={{ emptyText: <Empty description="暂无数据" /> }}
+          locale={{ emptyText: <Empty description={t('chatbot.cards.noData')} /> }}
         />
       )}
     </div>

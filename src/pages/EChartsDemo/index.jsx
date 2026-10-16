@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState, useMemo } from 'react'
 import * as echarts from 'echarts/core'
 import { BarChart, LineChart, PieChart, RadarChart, ScatterChart } from 'echarts/charts'
 import {
@@ -6,7 +5,7 @@ import {
   RadarComponent, DataZoomComponent, ToolboxComponent, MarkLineComponent,
 } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
-import { Card, Segmented, Space, Tag, Typography } from 'antd'
+import {  Space, Tag, Typography } from 'antd'
 import './index.scss'
 
 echarts.use([
@@ -20,7 +19,7 @@ const { Title, Paragraph } = Typography
 
 // 散点图演示数据：模块级生成一次，避免在 render 期调用 Math.random（React Compiler 纯度规则禁止）
 
-import { SCATTER_DATA, useChart, BarChartCard, LineChartCard, PieChartCard, RadarChartCard, ScatterChartCard } from './components/echartsParts.jsx'
+import {  BarChartCard, LineChartCard, PieChartCard, RadarChartCard, ScatterChartCard } from './components/echartsParts.jsx'
 
 export default function EChartsDemo() {
   return (

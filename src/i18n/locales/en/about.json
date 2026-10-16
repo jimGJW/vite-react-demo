@@ -1,0 +1,11 @@
+{
+  "title": "About",
+  "desc": "A standard React project scaffold with routing, layout and a multi-page structure — a starting point for your own development.",
+  "stackTitle": "Tech Stack",
+  "react19": "Core UI library",
+  "router7": "Front-end routing",
+  "vite8": "Build tool",
+  "eslint": "Code standards",
+  "structureTitle": "Directory Structure",
+  "structure": "src/\n├── layouts/     # Layout components\n├── pages/       # Page components (one folder per page)\n├── App.jsx      # Route entry\n├── main.jsx     # App entry\n└── index.scss    # Global styles"
+}

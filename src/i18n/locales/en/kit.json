@@ -1,0 +1,165 @@
+{
+  "page": {
+    "title": "Component Toolkit Kit",
+    "descLead": "General-purpose capabilities picked from two local legacy projects (old mobile / old tablet), decoupled from business logic and rewritten as React 19 + antd 5 components.",
+    "descTail": "The full research list (what was chosen, why, and what was skipped) is in",
+    "tabInteraction": "Mobile interaction ({count})",
+    "tabDisplay": "Data display ({count})",
+    "tabForm": "Form controls ({count})"
+  },
+  "display": {
+    "ellipsisTitle": "Text Ellipsis",
+    "switchData": "Switch data",
+    "ellipsisDesc": "Single line uses nowrap + ellipsis, multi-line uses -webkit-line-clamp. The original binary-search, character-by-character measurement is unnecessary on browsers that support line-clamp, so it was removed entirely.",
+    "singleTooltip": "Single line + Tooltip",
+    "twoLines": "Two-line clamp",
+    "twoLinesExpand": "Two lines + expandable",
+    "countdownTitle": "Countdown",
+    "countdownDesc": "The original decremented once per second, so a throttled background tab accumulated drift; here each tick recomputes with Date.now(), correcting immediately when the tab returns to the foreground.",
+    "countdownCardLabel": "Card style (target: 2 hours 45 minutes from now)",
+    "countdownPlainLabel": "Plain style DD days HH:mm:ss",
+    "statTitle": "Stat card (red for up, green for down)",
+    "statDesc": "Merges the original project's NumberInfo + Trend. Colors follow the domestic convention — up in red, down in green; pass colorMode=\"us\" when you need Western colors.",
+    "timelineTitle": "Timeline trend chart",
+    "timelineDesc": "The original depended on G2 + g2-plugin-slider (and generated domId with Math.random(), which is inconsistent under React 19 strict mode double-invocation); ECharts' dataZoom is built in, so the bottom zoom bar + wheel zoom are configured once.",
+    "noticeTitle": "Notice panel",
+    "noticeDesc": "Merges the original project's NoticeIcon and Cart (90% duplicated). The clear button supports a second confirmation — just make onClear return a Promise.",
+    "markAllRead": "Mark all read",
+    "noticeHint": "Click the bell to expand"
+  },
+  "stat": {
+    "completionTitle": "Work order completion this month",
+    "completionFooter": "+4.8 percentage points vs. last month",
+    "goalLabel": "Target 95%",
+    "inspectTitle": "Daily inspections",
+    "inspectSub": "7-day average",
+    "assetTitle": "Assets per group",
+    "assetFooter": "Data center has the highest share",
+    "onlineTitle": "Device online rate",
+    "onlineWave": "Online"
+  },
+  "demo": {
+    "inbound": "Inbound",
+    "outbound": "Outbound"
+  },
+  "form": {
+    "tagTitle": "Tag input",
+    "tagDesc": "Space / Enter / comma (half- or full-width) all submit; pressing Backspace with an empty input removes the previous tag; pasting \"A, B C\" splits into three tags at once. Up to 6.",
+    "currentTags": "Current tags: {tags}",
+    "emptyValue": "(none)",
+    "asyncTitle": "Async select",
+    "asyncDesc": "Requests only on first expand or when typing a keyword (lazy loading) + 300ms debounce + request race protection. Supports field mapping via fields and custom option rendering.",
+    "asyncPlaceholder": "Search asset name / pinyin / group",
+    "asyncMultiPlaceholder": "Multi-select + load on mount",
+    "selected": "Selected: {value}",
+    "notSelected": "(not selected)",
+    "timerangeTitle": "Time range input",
+    "timerangeDesc": "Keeps the original three validations (end after start / single segment within limit / no overlap between segments) and adds a hint for incomplete start-end input; total hours are computed in real time.",
+    "fillOverlap": "Fill overlapping ranges",
+    "reset": "Reset"
+  },
+  "inter": {
+    "signTitle": "E-signature",
+    "signDesc": "Canvas handwriting + high-DPI + undo / clear / export PNG. Drops the react-canvas-draw dependency, and lays down a white background on export (otherwise a transparent PNG turns black in image viewers).",
+    "pullTitle": "Pull to refresh",
+    "pullDesc": "Damping factor 2.5, threshold 56px. Triggers only when every scrollable ancestor is at the top, using overscroll-behavior: contain instead of preventDefault.",
+    "infiniteTitle": "Infinite scroll",
+    "infiniteDesc": "Uses IntersectionObserver instead of hand-written scroll listeners; the sentinel node stays mounted, and while loading only one extra line of text is rendered below. Loaded {loaded}/36 items.",
+    "infiniteEnd": "All 36 loaded",
+    "sortTitle": "Sortable list",
+    "sortDesc": "Zero-dependency (the original react-sortable-hoc is incompatible with React 19). Drag by the handle; once the handle is focused, ↑ / ↓ keys also move the item.",
+    "dragging": "Dragging",
+    "marqueeTitle": "Auto-scroll text",
+    "marqueeDesc": "Starts only when the content really exceeds the container width; animation duration = overflow pixels / speed, so long text does not scroll faster.",
+    "marqueeShort": "Short text does not scroll",
+    "ballTitle": "Floating ball",
+    "ballDesc": "Position persists as the **ratio** of \"left / (screen width - ball width)\", so it stays sensible after rotation or window resize. Snaps to the nearest edge on release; click to return to the top of the page.",
+    "ballShow": "Show",
+    "ballHide": "Hide"
+  },
+  "sign": {
+    "generated": "Signature generated ({bytes}-byte dataURL)",
+    "empty": "Not signed yet"
+  },
+  "ball": {
+    "position": "Current position: left {left}px / top {top}px",
+    "hint": "The snapped position will be shown here after dragging",
+    "backTop": "Back to top"
+  },
+  "pull": {
+    "tipDrag": "Pull down to try (mouse drag works too)",
+    "tipRefresh": "Refresh inserts a new record at the top",
+    "refreshedAt": "Refreshed at {time}"
+  },
+  "data": {
+    "longText": "The asset lifecycle management platform covers procurement review, installation acceptance, routine inspection, preventive maintenance, metrology calibration, fault repair, benefit analysis and disposal. A missing record at any stage affects asset status judgment and compliance auditing, so every operation must be settled into a traceable electronic archive.",
+    "rowTitle": "Inspection record #{no}",
+    "tagInspection": "Inspection",
+    "tagPreventive": "Preventive maintenance",
+    "tagMetrology": "Metrology verification"
+  },
+  "ellipsis": {
+    "expand": "Expand",
+    "collapse": "Collapse"
+  },
+  "countdown": {
+    "day": "d",
+    "hour": "h",
+    "minute": "m",
+    "second": "s"
+  },
+  "notice": {
+    "empty": "No messages",
+    "clear": "Clear",
+    "aria": "Notifications"
+  },
+  "miniProgress": {
+    "target": "Target"
+  },
+  "timeline": {
+    "seriesA": "Series A",
+    "seriesB": "Series B",
+    "seriesFallback": "Series {index}"
+  },
+  "async": {
+    "placeholder": "Please select",
+    "empty": "No data"
+  },
+  "tagInput": {
+    "placeholder": "Press Enter to add"
+  },
+  "timeRange": {
+    "add": "Add range",
+    "summary": "Total hours",
+    "start": "Start",
+    "end": "End",
+    "remove": "Remove this range",
+    "duration": "{hours} h {minutes} min",
+    "durationHint": "({time})",
+    "errIncomplete": "Segment {index}: start and end times are incomplete",
+    "errOrder": "Segment {index}: end time must be later than start time",
+    "errExceed": "Segment {index}: duration exceeds {maxHours} hours",
+    "errOverlap": "Segment {first} overlaps with segment {second}"
+  },
+  "ballAria": "Floating ball",
+  "infinite": {
+    "loading": "Loading…",
+    "end": "No more items"
+  },
+  "ptr": {
+    "pull": "Pull down to refresh",
+    "release": "Release to refresh",
+    "refreshing": "Refreshing…"
+  },
+  "kitSign": {
+    "placeholder": "Sign here by hand",
+    "penColor": "Pen color {color}",
+    "undo": "Undo",
+    "clear": "Clear",
+    "download": "Export",
+    "downloadTip": "Export as PNG (white background applied)"
+  },
+  "sort": {
+    "aria": "Drag to sort, or use the up/down arrow keys"
+  }
+}

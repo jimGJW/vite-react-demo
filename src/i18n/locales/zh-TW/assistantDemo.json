@@ -1,0 +1,38 @@
+{
+  "demo": {
+    "title": "⚡ 快捷助手",
+    "leadBefore": "語音助手與 AI Agent 都已經元件化，可以在任意頁面喚起彈窗。右下角的 ",
+    "leadKey": " 快捷助手鍵 ",
+    "leadAfter": " 可自由拖曳，點擊展開選單即可開關兩個助手、或一鍵跳轉到指定頁面。",
+    "statusLabel": "目前狀態：",
+    "voiceLabel": "語音助手",
+    "agentLabel": "AI Agent",
+    "on": "已開啟",
+    "off": "已關閉",
+    "openVoice": "🎙️ 開啟語音助手",
+    "agentPrefix": "🤖 ",
+    "closeBtn": "關閉",
+    "openBtn": "開啟",
+    "agentSuffix": " AI Agent",
+    "sendToAgent": "➡️ 指令交給 Agent",
+    "closeAll": "全部關閉",
+    "fillAgentBtn": "Agent 填入「{text}」",
+    "scrollBottom": "滾動到頁面底部",
+    "analyzeButtons": "幫我分析目前頁面有哪些按鈕",
+    "dispatchOpen": "dispatchEvent → 開啟語音助手",
+    "dispatchToggle": "dispatchEvent → 開關 AI Agent",
+    "standaloneBtn": "開啟獨立語音助手面板",
+    "standaloneTitle": "語音助手（獨立實例）"
+  },
+  "method": {
+    "tag": "方式",
+    "m1Title": "useAssistants Hook（React 元件內推薦）",
+    "m1Desc": "在 Layout 掛載 <Assistants /> 後，任意頁面元件都可以透過 Hook 讀取並控制助手面板。",
+    "m2Title": "命令式 API（任意 JS / Vue 頁面可用）",
+    "m2Desc": "不依賴 React 上下文，Vue SFC、原生 JS、瀏覽器控制台裡都能直接調用。",
+    "m3Title": "window 原生事件（跨框架 / 跨技術棧）",
+    "m3Desc": "Vue、Angular 頁面或 iframe 內都可以用這條事件喚起助手，與專案裡已有的 app:navigate 用法一致。",
+    "m4Title": "元件內嵌（脫離助手中心獨立受控）",
+    "m4Desc": "語音助手面板本身就是一個普通受控元件，也可以只在某個頁面裡單獨使用，配合自己的 state。"
+  }
+}

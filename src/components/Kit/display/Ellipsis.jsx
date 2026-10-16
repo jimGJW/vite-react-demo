@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { Tooltip } from 'antd'
 import { useOverflow } from '../hooks.js'
+import { useI18n } from '../../../i18n'
 
 /**
  * Ellipsis · 文本省略
@@ -26,11 +27,12 @@ export default function Ellipsis({
   lines = 1,
   tooltip = true,
   expandable = false,
-  expandText = '展开',
-  collapseText = '收起',
+  expandText,
+  collapseText,
   className = '',
   style,
 }) {
+  const { t } = useI18n()
   const textRef = useRef(null)
   const [expanded, setExpanded] = useState(false)
 
@@ -62,7 +64,7 @@ export default function Ellipsis({
           className="kit-ellipsis__more"
           onClick={() => setExpanded((v) => !v)}
         >
-          {expanded ? collapseText : expandText}
+          {expanded ? (collapseText ?? t('kit.ellipsis.collapse')) : (expandText ?? t('kit.ellipsis.expand'))}
         </button>
       )}
     </div>

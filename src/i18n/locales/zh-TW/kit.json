@@ -1,0 +1,165 @@
+{
+  "page": {
+    "title": "元件工具箱 Kit",
+    "descLead": "從本地兩個存量專案（舊移動端 / 舊平板端）裡挑選出的通用能力，去掉業務耦合後重寫為 React 19 + antd 5 元件。",
+    "descTail": "完整調研清單（選了什麼、為什麼、跳過了什麼）見",
+    "tabInteraction": "移動互動（{count}）",
+    "tabDisplay": "數據展示（{count}）",
+    "tabForm": "表單控件（{count}）"
+  },
+  "display": {
+    "ellipsisTitle": "文本省略 Ellipsis",
+    "switchData": "切換數據",
+    "ellipsisDesc": "單行用 nowrap + ellipsis，多行用 -webkit-line-clamp。原實現的「二分法逐字測量」在支援 line-clamp 的瀏覽器上已無必要，整段刪除。",
+    "singleTooltip": "單行 + Tooltip",
+    "twoLines": "兩行省略",
+    "twoLinesExpand": "兩行 + 可展開",
+    "countdownTitle": "倒計時 Countdown",
+    "countdownDesc": "原實現每秒自減，後台標籤頁被節流後會累積漂移；這裡每 tick 用 Date.now() 重算，回到前台立即校正。",
+    "countdownCardLabel": "卡片樣式（目標：2 小時 45 分鐘後）",
+    "countdownPlainLabel": "純文本樣式 DD 天 HH:mm:ss",
+    "statTitle": "指標卡 StatCard（漲紅跌綠）",
+    "statDesc": "合併了原專案的 NumberInfo + Trend。顏色遵循國內習慣—— 上漲紅色、下跌綠色，需要歐美配色時傳 colorMode=\"us\"。",
+    "timelineTitle": "時間趨勢 TimelineChart",
+    "timelineDesc": "原實現依賴 G2 + g2-plugin-slider（且 domId 用 Math.random() 生成，React 19 嚴格模式下雙調用會不一致）；ECharts 的 dataZoom 是內建能力，底部縮放條 + 滾輪縮放一次配好。",
+    "noticeTitle": "通知面板 NoticePanel",
+    "noticeDesc": "合併了原專案的 NoticeIcon 與 Cart（兩者 90% 重複）。清空按鈕支援二次確認 —— 把 onClear 寫成返回 Promise 即可。",
+    "markAllRead": "全部已讀",
+    "noticeHint": "點鈴鐺展開"
+  },
+  "stat": {
+    "completionTitle": "本月工單完成率",
+    "completionFooter": "較上月 +4.8 個百分點",
+    "goalLabel": "目標 95%",
+    "inspectTitle": "日均巡檢量",
+    "inspectSub": "近 7 日均值",
+    "assetTitle": "各組資產數",
+    "assetFooter": "機房佔比最高",
+    "onlineTitle": "設備在線率",
+    "onlineWave": "在線"
+  },
+  "demo": {
+    "inbound": "入庫",
+    "outbound": "出庫"
+  },
+  "form": {
+    "tagTitle": "標籤輸入 TagInput",
+    "tagDesc": "空白 / 回車 / 中英文逗號都能提交；輸入框為空時退格刪除上一個； 貼上「甲, 乙 丙」會一次拆成三個標籤。最多 6 個。",
+    "currentTags": "當前標籤：{tags}",
+    "emptyValue": "（空）",
+    "asyncTitle": "異步選擇器 AsyncSelect",
+    "asyncDesc": "首次展開或輸入關鍵字時才請求（惰性載入）+ 300ms 防抖 + 請求競態保護。 支援按 fields 對映字段、自定義選項渲染。",
+    "asyncPlaceholder": "搜尋資產名稱 / 拼音 / 分組",
+    "asyncMultiPlaceholder": "多選 + 掛載即載入",
+    "selected": "已選：{value}",
+    "notSelected": "（未選擇）",
+    "timerangeTitle": "時段錄入 TimeRangeInput",
+    "timerangeDesc": "保留原實現的三條校驗（結束晚於開始 / 單段不超上限 / 兩段不重疊）並補了 「起止未填完整」的提示；合計工時實時計算。",
+    "fillOverlap": "填入重疊時段",
+    "reset": "恢復"
+  },
+  "inter": {
+    "signTitle": "電子簽名 SignaturePad",
+    "signDesc": "Canvas 手寫 + DPR 高清 + 撤銷 / 清空 / 導出 PNG。去掉 react-canvas-draw 依賴， 導出時鋪白底（否則透明 PNG 在看圖軟件裡會變黑）。",
+    "pullTitle": "下拉刷新 PullToRefresh",
+    "pullDesc": "阻尼係數 2.5、閾值 56px。只在「所有可滾動祖先都到頂」時才觸發， 用 overscroll-behavior: contain 替代 preventDefault。",
+    "infiniteTitle": "觸底載入 InfiniteScroll",
+    "infiniteDesc": "用 IntersectionObserver 替代手寫滾動監聽；哨兵節點始終掛載， 載入中只在下方多渲染一行文案。已載入 {loaded}/36 條。",
+    "infiniteEnd": "共 36 條，已全部載入",
+    "sortTitle": "拖拽排序 SortableList",
+    "sortDesc": "零依賴（原實現用的 react-sortable-hoc 已不相容 React 19）。 拖手柄排序，手柄聚焦後也可用 ↑ / ↓ 鍵移動。",
+    "dragging": "拖動中",
+    "marqueeTitle": "跑馬燈 AutoScrollText",
+    "marqueeDesc": "只有內容真的超出容器寬度才啟動；動畫時長 = 超出像素 / speed， 長文本不會滾得更快。",
+    "marqueeShort": "短文本不會滾動",
+    "ballTitle": "懸浮球 FloatingBall",
+    "ballDesc": "位置按「left / (屏寬 - 球寬)」的**比例**持久化，轉屏或縮放窗口後依然合理。 鬆手吸附左右最近邊，點擊回到頁面頂部。",
+    "ballShow": "顯示",
+    "ballHide": "隱藏"
+  },
+  "sign": {
+    "generated": "已生成簽名（{bytes} 位元組 dataURL）",
+    "empty": "尚未簽名"
+  },
+  "ball": {
+    "position": "當前座標：left {left}px / top {top}px",
+    "hint": "拖動後這裡會顯示吸附後的座標",
+    "backTop": "回到頂部"
+  },
+  "pull": {
+    "tipDrag": "下拉試試（鼠標拖拽同樣有效）",
+    "tipRefresh": "刷新會在頂部插入一條新記錄",
+    "refreshedAt": "刷新於 {time}"
+  },
+  "data": {
+    "longText": "資產全生命週期管理平臺覆蓋採購論證、安裝驗收、日常巡檢、預防性維護、計量校準、故障維修、效益分析與報廢處置等環節，任一環節的記錄缺失都會影響資產狀態判斷與合規審計，因此需要把每一次操作都沉澱為可追溯的電子檔案。",
+    "rowTitle": "巡檢記錄 #{no}",
+    "tagInspection": "巡檢",
+    "tagPreventive": "預防性維護",
+    "tagMetrology": "計量檢定"
+  },
+  "ellipsis": {
+    "expand": "展開",
+    "collapse": "收起"
+  },
+  "countdown": {
+    "day": "天",
+    "hour": "時",
+    "minute": "分",
+    "second": "秒"
+  },
+  "notice": {
+    "empty": "暫無消息",
+    "clear": "清空",
+    "aria": "通知"
+  },
+  "miniProgress": {
+    "target": "目標值"
+  },
+  "timeline": {
+    "seriesA": "系列 A",
+    "seriesB": "系列 B",
+    "seriesFallback": "系列 {index}"
+  },
+  "async": {
+    "placeholder": "請選擇",
+    "empty": "暫無數據"
+  },
+  "tagInput": {
+    "placeholder": "輸入後回車添加"
+  },
+  "timeRange": {
+    "add": "添加時段",
+    "summary": "合計工時",
+    "start": "開始",
+    "end": "結束",
+    "remove": "刪除該時段",
+    "duration": "{hours} 小時 {minutes} 分",
+    "durationHint": "（{time}）",
+    "errIncomplete": "第 {index} 段的起止時間未填寫完整",
+    "errOrder": "第 {index} 段的結束時間需晚於開始時間",
+    "errExceed": "第 {index} 段時長超過 {maxHours} 小時",
+    "errOverlap": "第 {first} 段與第 {second} 段時間重疊"
+  },
+  "ballAria": "懸浮球",
+  "infinite": {
+    "loading": "載入中…",
+    "end": "沒有更多了"
+  },
+  "ptr": {
+    "pull": "下拉刷新",
+    "release": "鬆手刷新",
+    "refreshing": "正在刷新…"
+  },
+  "kitSign": {
+    "placeholder": "在此手寫簽名",
+    "penColor": "畫筆顏色 {color}",
+    "undo": "撤銷",
+    "clear": "清空",
+    "download": "導出",
+    "downloadTip": "導出為 PNG（已鋪白底）"
+  },
+  "sort": {
+    "aria": "拖拽排序，或用上下方向鍵移動"
+  }
+}

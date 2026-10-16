@@ -15,6 +15,7 @@ import { ExperimentOutlined } from '@ant-design/icons'
 import { Empty, Table, Tag, Tooltip } from 'antd'
 import { Panel, aqiLevel } from './ui.jsx'
 import { uvLevel } from '../../../lib/earth/glossary.js'
+import { useI18n } from '../../../i18n/index.js'
 
 /** AQI 数值 → 带底色的胶囊（颜色与等级名都来自词典，不在组件里重复定义阈值） */
 function AqiPill({ v }) {
@@ -41,6 +42,7 @@ function Cell({ v, digits = 1, unit }) {
 }
 
 export default function AirTab({ air, airData }) {
+  const { t } = useI18n()
   const items = airData?.items || []
   const worst = items[0]
   const avgPm25 = (() => {
@@ -49,11 +51,11 @@ export default function AirTab({ air, airData }) {
   })()
 
   const columns = [
-    { title: '城市', dataIndex: 'name', width: 90, render: (v) => <b>{v}</b> },
+    { title: t('geo.air.colCity'), dataIndex: 'name', width: 90, render: (v) => <b>{v}</b> },
     {
       title: (
-        <Tooltip title="欧洲环境署（EAQI）标准。与国内 AQI 断点不同，但与词典分档同源">
-          <span className="geo-air-th">AQI (欧标)</span>
+        <Tooltip title={t('geo.air.aqiHeaderTip')}>
+          <span className="geo-air-th">{t('geo.air.aqiHeader')}</span>
         </Tooltip>
       ),
       dataIndex: 'aqi',
@@ -62,10 +64,10 @@ export default function AirTab({ air, airData }) {
       sorter: (a, b) => (a.aqi ?? -1) - (b.aqi ?? -1),
       render: (v) => <AqiPill v={v} />,
     },
-    { title: 'PM2.5', dataIndex: 'pm25', width: 100, render: (v) => <Cell v={v} unit=" μg/m³" /> },
-    { title: 'PM10', dataIndex: 'pm10', width: 100, render: (v) => <Cell v={v} unit=" μg/m³" /> },
+    { title: t('geo.air.colPm25'), dataIndex: 'pm25', width: 100, render: (v) => <Cell v={v} unit=" μg/m³" /> },
+    { title: t('geo.air.colPm10'), dataIndex: 'pm10', width: 100, render: (v) => <Cell v={v} unit=" μg/m³" /> },
     {
-      title: '紫外线',
+      title: t('geo.air.colUv'),
       dataIndex: 'uv',
       width: 110,
       render: (v) => {
@@ -79,28 +81,27 @@ export default function AirTab({ air, airData }) {
         )
       },
     },
-    { title: '臭氧', dataIndex: 'ozone', width: 100, render: (v) => <Cell v={v} unit=" μg/m³" /> },
-    { title: 'NO₂', dataIndex: 'no2', width: 100, render: (v) => <Cell v={v} unit=" μg/m³" /> },
+    { title: t('geo.air.colOzone'), dataIndex: 'ozone', width: 100, render: (v) => <Cell v={v} unit=" μg/m³" /> },
+    { title: t('geo.air.colNo2'), dataIndex: 'no2', width: 100, render: (v) => <Cell v={v} unit=" μg/m³" /> },
   ]
 
   return (
     <div className="geo-tab-content">
       <Panel
-        title="🌫 城市空气质量"
-        source="Open-Meteo Air Quality（欧洲 CAMS 模式输出，欧标 AQI 口径）"
+        title={'🌫 ' + t('geo.air.title')}
+        source={t('geo.air.source')}
         icon={<ExperimentOutlined />}
         loading={air.loading}
         error={air.error}
-        extra={worst ? <Tag bordered={false} color="volcano">最差：{worst.name} AQI {Math.round(worst.aqi)}</Tag> : null}
+        extra={worst ? <Tag bordered={false} color="volcano">{t('geo.air.worst', { name: worst.name, aqi: Math.round(worst.aqi) })}</Tag> : null}
       >
         {!air.loading && !items.length ? (
-          <Empty description="未取到空气质量数据" />
+          <Empty description={t('geo.air.empty')} />
         ) : (
           <>
             <p className="geo-air-lead">
-              PM2.5 是粒径 ≤2.5 微米的颗粒物，能深入肺泡并进入血液，是各国空气质量标准的首要指标；
-              PM10 包含扬尘等较粗颗粒，主要影响上呼吸道。
-              {avgPm25 != null ? ` 当前 ${items.length} 城平均 PM2.5 约 ${avgPm25.toFixed(0)} μg/m³。` : ''}
+              {t('geo.air.lead')}
+              {avgPm25 != null ? t('geo.air.leadAvg', { count: items.length, val: avgPm25.toFixed(0) }) : ''}
             </p>
             <Table size="small" rowKey="key" pagination={false} columns={columns} dataSource={items} scroll={{ x: 780 }} />
           </>

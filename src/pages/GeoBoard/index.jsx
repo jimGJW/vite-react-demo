@@ -38,6 +38,7 @@ import Clock from '../../components/Clock.jsx'
 import RelatedData from '../../components/RelatedData/index.jsx'
 import { TAB_KEYS } from '../../lib/boards/relations.js'
 import { healthOf } from '../../lib/boards/health.js'
+import { useI18n } from '../../i18n/index.js'
 import './index.scss'
 
 export default function GeoBoard({ lockedTab = null } = {}) {
@@ -45,6 +46,7 @@ export default function GeoBoard({ lockedTab = null } = {}) {
     quakes, epic, env, eonet, ghg, seaIce, tempAnomaly, bigQuakes, volcanoes, tsunami, air, weather, archive, reloadAll,
   } = useGeoData()
   const [theme, setTheme] = useState(readTheme)
+  const { t } = useI18n()
 
   /* 页签与 URL 同步：别处「关联数据」跳 ?tab=xxx 过来时要能直接落到目标页签，
      否则读完关联理由点进去却停在默认页，等于白跳。非法参数回落到默认页签。 */
@@ -131,26 +133,25 @@ export default function GeoBoard({ lockedTab = null } = {}) {
         {/* 顶部概览 */}
         <div className="geo-hero">
           <div className="geo-hero__main">
-            <h1><GlobalOutlined /> 地球数据看板</h1>
+            <h1><GlobalOutlined /> {t('geo.hero.title')}</h1>
             <p className="geo-hero__sub">
-              「天上一个地下」的第二块拼图——<Link to="/astro">深空看板</Link>看天，这里看地：
-              地下的大地脉动、地表的城市环境、以及拍自日地 L1 点的整圆盘地球。
+              {t('geo.hero.sub1')}<Link to="/astro">{t('geo.hero.deepSpace')}</Link>{t('geo.hero.sub2')}
             </p>
           </div>
           <div className="geo-hero__side">
             <Clock prefix="geo" />
-            <Tooltip title={theme === 'dark' ? '切换到白昼' : '切换到夜航'}>
+            <Tooltip title={theme === 'dark' ? t('geo.theme.toLight') : t('geo.theme.toDark')}>
               <Button
                 icon={theme === 'dark' ? <BulbOutlined /> : <MoonOutlined />}
                 onClick={toggleTheme}
                 size="small"
                 className="geo-theme-btn"
               >
-                {theme === 'dark' ? '白昼' : '夜航'}
+                {theme === 'dark' ? t('geo.theme.light') : t('geo.theme.dark')}
               </Button>
             </Tooltip>
             <Button icon={<ReloadOutlined />} onClick={reloadAll} loading={quakes.loading} size="small">
-              刷新
+              {t('geo.refresh')}
             </Button>
           </div>
         </div>
@@ -158,73 +159,73 @@ export default function GeoBoard({ lockedTab = null } = {}) {
         {/* 关键指标条 */}
         <div className="geo-strip">
           <Metric
-            label="24h 地震（M2.5+）"
+            label={t('geo.m.quake24h')}
             value={quakeData?.count ?? '—'}
-            unit={quakeData ? '次' : ''}
+            unit={quakeData ? t('geo.unit.times') : ''}
             tone="var(--g-accent)"
-            info="过去 24 小时全球震级 2.5 以上的地震次数（USGS 全球台网测定，含微震以下的未计入）"
+            info={t('geo.m.quake24hInfo')}
           />
           <Metric
-            label="最大震级"
+            label={t('geo.m.maxMag')}
             value={quakeStats ? `M${quakeStats.strongest.mag?.toFixed(1)}` : '—'}
             tone={quakeStats ? magColor(quakeStats.strongest.mag) : undefined}
-            info="24h 内震级最大的一次地震；M5 以上可能造成破坏，M6 以上为强震"
+            info={t('geo.m.maxMagInfo')}
           />
           <Metric
-            label="最深震源"
+            label={t('geo.m.maxDepth')}
             value={quakeStats ? `${quakeStats.deepest.depth?.toFixed(0)}` : '—'}
             unit={quakeStats ? 'km' : ''}
             tone={quakeStats ? depthClass(quakeStats.deepest.depth).color : undefined}
-            info="24h 内震源最深的地震；深源地震发生在俯冲板片内，地表震感通常较弱"
+            info={t('geo.m.maxDepthInfo')}
           />
           <Metric
-            label="全球 CO₂ 浓度"
+            label={t('geo.m.co2')}
             value={ghgData?.gases?.co2?.latest?.value?.toFixed(2) ?? '—'}
             unit={ghgData ? 'ppm' : ''}
             tone="#d97706"
-            info="NOAA 全球月均二氧化碳浓度（百万分之一体积比）；工业化前约 278 ppm"
+            info={t('geo.m.co2Info')}
           />
           <Metric
-            label="全球 CH₄ 浓度"
+            label={t('geo.m.ch4')}
             value={ghgData?.gases?.ch4?.latest?.value?.toFixed(1) ?? '—'}
             unit={ghgData ? 'ppb' : ''}
             tone="#8b5cf6"
-            info="全球月均甲烷浓度（十亿分之一体积比）；工业化前约 722 ppb，百年增温潜势是 CO₂ 的 28 倍"
+            info={t('geo.m.ch4Info')}
           />
           <Metric
-            label="温度距平（近 12 月）"
+            label={t('geo.m.tempAnomaly')}
             value={tempData?.latest12 != null ? `+${tempData.latest12.toFixed(2)}` : '—'}
             unit={tempData ? '°C' : ''}
             tone="#ef4444"
-            info="NASA GISTEMP 全球陆海综合温度相对 1951–1980 年基准的偏差；《巴黎协定》努力控制在 +1.5 °C 以内"
+            info={t('geo.m.tempAnomalyInfo')}
           />
           <Metric
-            label="北极 9 月海冰"
+            label={t('geo.m.arcticIce')}
             value={iceData?.north?.latest?.extent?.toFixed(2) ?? '—'}
-            unit={iceData ? '百万km²' : ''}
+            unit={iceData ? t('geo.unit.millionKm2') : ''}
             tone="#3b82f6"
-            info="NSIDC 北极海冰范围（每年 9 月为最小值月份），是气候变化经典指标"
+            info={t('geo.m.arcticIceInfo')}
           />
           <Metric
-            label="城市平均 PM2.5"
+            label={t('geo.m.pm25')}
             value={avgPm25 ? avgPm25.toFixed(1) : '—'}
             unit={avgPm25 ? 'μg/m³' : ''}
             tone={avgPm25 ? (avgPm25 <= 35 ? '#0e9f6e' : avgPm25 <= 75 ? '#f59e0b' : '#ef4444') : undefined}
-            info="本页 5 个样本城市（北京/上海/广州/成都/拉萨）PM2.5 的算术平均，非全国均值"
+            info={t('geo.m.pm25Info')}
           />
           <Metric
-            label="火山警报"
+            label={t('geo.m.volcano')}
             value={volcanoData ? `${volcanoData.count}` : '—'}
-            unit={volcanoData ? `座（${volcanoData.elevated} 橙+）` : ''}
+            unit={volcanoData ? t('geo.unit.volcanoElevated', { n: volcanoData.elevated }) : ''}
             tone={volcanoData ? (volcanoData.elevated > 0 ? '#f97316' : '#0e9f6e') : undefined}
-            info="USGS HANS 当前处于「正常」级以上的美国火山数；括号为橙色及以上（真正活动的）数量"
+            info={t('geo.m.volcanoInfo')}
           />
           <Metric
-            label="海啸公告"
+            label={t('geo.m.tsunami')}
             value={tsunamiThreat ?? '—'}
-            unit={tsunamiThreat != null ? `条威胁 / ${tsunamiData.count}` : ''}
+            unit={tsunamiThreat != null ? t('geo.unit.tsunamiThreat', { n: tsunamiData.count }) : ''}
             tone={tsunamiThreat != null ? (tsunamiThreat > 0 ? '#dc2626' : '#0e9f6e') : undefined}
-            info="NOAA 两个海啸预警中心当前「注意」及以上级别的公告数；其余多为排除威胁的信息声明"
+            info={t('geo.m.tsunamiInfo')}
           />
         </div>
 
@@ -237,7 +238,7 @@ export default function GeoBoard({ lockedTab = null } = {}) {
           items={[
             {
               key: 'quake',
-              label: '🪨 大地脉动',
+              label: `🪨 ${t('geo.tab.quake')}`,
               children: (
                 <QuakeTab
                   quakes={quakes}
@@ -249,17 +250,17 @@ export default function GeoBoard({ lockedTab = null } = {}) {
             },
             {
               key: 'epic',
-              label: '🖼 地球影像',
+              label: `🖼 ${t('geo.tab.epic')}`,
               children: <EpicTab epic={epic} epicData={epicData} />,
             },
             {
               key: 'eonet',
-              label: '🛰 自然事件',
+              label: `🛰 ${t('geo.tab.eonet')}`,
               children: <EonetTab eonet={eonet} eonetData={eonetData} />,
             },
             {
               key: 'volcano',
-              label: '🌋 火山与海啸',
+              label: `🌋 ${t('geo.tab.volcano')}`,
               children: (
                 <VolcanoTab
                   volcanoes={volcanoes}
@@ -271,7 +272,7 @@ export default function GeoBoard({ lockedTab = null } = {}) {
             },
             {
               key: 'climate',
-              label: '🌏 地表与气候',
+              label: `🌏 ${t('geo.tab.climate')}`,
               children: (
                 <ClimateTab
                   env={env}
@@ -287,22 +288,22 @@ export default function GeoBoard({ lockedTab = null } = {}) {
             },
             {
               key: 'air',
-              label: '🌫 空气质量',
+              label: `🌫 ${t('geo.tab.air')}`,
               children: <AirTab air={air} airData={airData} />,
             },
             {
               key: 'weather',
-              label: '🌤 城市天气',
+              label: `🌤 ${t('geo.tab.weather')}`,
               children: <WeatherTab weather={weather} weatherData={weatherData} />,
             },
             {
               key: 'archive',
-              label: '📈 气候档案',
+              label: `📈 ${t('geo.tab.archive')}`,
               children: <ArchiveTab archive={archive} archiveData={archiveData} />,
             },
             {
               key: 'cases',
-              label: '📚 真实案例',
+              label: `📚 ${t('geo.tab.cases')}`,
               children: <CaseTab theme={theme} />,
             },
           ]}
@@ -312,11 +313,7 @@ export default function GeoBoard({ lockedTab = null } = {}) {
         <RelatedData board="geo" tab={activeTab} theme={theme} health={health} />
 
         <footer className="geo-foot">
-          全部数据来自公开免费接口（EMSC / NASA EPIC / NASA EONET / Open-Meteo / NOAA GML / NASA GISTEMP /
-          NSIDC / USGS HANS / NOAA tsunami.gov），仅用于科普与可视化展示。
-          地震参数为自动测定初值，以中国地震台网或 USGS 人工修订为准；
-          环境数据为模型插值，不代表监测站实测；温室气体与温度距平为上游月更数据。
-          火山与海啸等级为官方业务判定，紧急情况下请以当地政府与应急管理部门的指令为准。
+          {t('geo.footer')}
         </footer>
       </div>
     </ConfigProvider>

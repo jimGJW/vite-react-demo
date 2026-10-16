@@ -46,6 +46,7 @@ import {
   stargazingWindow,
 } from '../../lib/astro/orbital.js'
 import { useSearchParams } from 'react-router-dom'
+import { useI18n } from '../../i18n/index.js'
 import './index.scss'
 
 import { useNow, useTheme, fmtUTC, Metric } from './components/ui.jsx'
@@ -71,6 +72,7 @@ export default function AstroBoard({ lockedTab = null } = {}) {
   const [galaxyView, setGalaxyView] = useState('结构')
   const [passCity, setPassCity] = useState('北京')
   const [theme, setTheme] = useTheme()
+  const { t } = useI18n()
 
   /* 页签与 URL 同步：别处「关联数据」跳 ?tab=xxx 过来时要能直接落到目标页签，
      否则读完关联理由点进去却停在默认页，等于白跳。非法参数回落到默认页签。 */
@@ -239,18 +241,18 @@ export default function AstroBoard({ lockedTab = null } = {}) {
     const kpForScore = kp ?? 0
     const geoScore = Math.max(0, 1 - kpForScore / 9)
     const total = Math.round((moonScore * 0.4 + darkScore * 0.35 + geoScore * 0.25) * 100)
-    let grade, tone, advice
-    if (total >= 80) { grade = '极佳'; tone = '#52c41a'; advice = '今晚条件非常好，抓紧观测或拍摄' }
-    else if (total >= 60) { grade = '良好'; tone = '#a0d911'; advice = '条件不错，适合目视观测' }
-    else if (total >= 40) { grade = '一般'; tone = '#faad14'; advice = '月光或扰动偏强，建议选择暗天体' }
-    else if (total >= 20) { grade = '较差'; tone = '#fa8c16'; advice = '条件不利，观测效果会打折扣' }
-    else { grade = '糟糕'; tone = '#ff4d4f'; advice = '月光/黑夜条件太差，改天再看吧' }
+    let grade, tone, adviceKey
+    if (total >= 80) { grade = 'excellent'; tone = '#52c41a'; adviceKey = 'excellent' }
+    else if (total >= 60) { grade = 'good'; tone = '#a0d911'; adviceKey = 'good' }
+    else if (total >= 40) { grade = 'fair'; tone = '#faad14'; adviceKey = 'fair' }
+    else if (total >= 20) { grade = 'poor'; tone = '#fa8c16'; adviceKey = 'poor' }
+    else { grade = 'bad'; tone = '#ff4d4f'; adviceKey = 'bad' }
     return {
-      total, grade, tone, advice,
+      total, grade, tone, adviceKey,
       factors: [
-        { name: '月光', score: Math.round(moonScore * 100), detail: moon ? `照亮度 ${(moon.illumination * 100).toFixed(0)}%（${moon.phaseName}）` : '—', weight: 40 },
-        { name: '黑夜时长', score: Math.round(darkScore * 100), detail: `${(stargazing.darknessMin / 60).toFixed(1)} 小时天文黑夜`, weight: 35 },
-        { name: '地磁环境', score: Math.round(geoScore * 100), detail: kp != null ? `Kp ${kp.toFixed(1)}（${kpInfo.label}）` : '数据缺失', weight: 25 },
+        { name: 'moon', score: Math.round(moonScore * 100), detail: moon ? `照亮度 ${(moon.illumination * 100).toFixed(0)}%（${moon.phaseName}）` : '—', weight: 40 },
+        { name: 'dark', score: Math.round(darkScore * 100), detail: `${(stargazing.darknessMin / 60).toFixed(1)} 小时天文黑夜`, weight: 35 },
+        { name: 'geo', score: Math.round(geoScore * 100), detail: kp != null ? `Kp ${kp.toFixed(1)}（${kpInfo.label}）` : '数据缺失', weight: 25 },
       ],
     }
   }, [moon, stargazing, kp, kpInfo])
@@ -312,7 +314,7 @@ export default function AstroBoard({ lockedTab = null } = {}) {
       {/* 顶部概览 */}
       <div className="astro-hero">
         <div className="astro-hero__main">
-          <h1><RocketOutlined /> 深空数据看板</h1>
+          <h1><RocketOutlined /> {t('astro.heroTitle')}</h1>
         </div>
         <div className="astro-hero__side">
           <div className="astro-clock">
@@ -320,69 +322,69 @@ export default function AstroBoard({ lockedTab = null } = {}) {
             <span className="astro-clock__val">{fmtUTC(now)}</span>
           </div>
           <div className="astro-clock">
-            <span className="astro-clock__label">北京</span>
+            <span className="astro-clock__label">{t('astro.clockBeijing')}</span>
             <span className="astro-clock__val">
               {fmtUTC(new Date(now.getTime() + 8 * 3600 * 1000))}
             </span>
           </div>
-          <Tooltip title={theme === 'dark' ? '切换到白昼（浅色）' : '切换到深空（深色）'}>
+          <Tooltip title={theme === 'dark' ? t('astro.themeTipLight') : t('astro.themeTipDark')}>
             <Button
               icon={theme === 'dark' ? <BulbOutlined /> : <MoonOutlined />}
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
               size="small"
               className="astro-theme-btn"
             >
-              {theme === 'dark' ? '白昼' : '深空'}
+              {theme === 'dark' ? t('astro.themeDay') : t('astro.themeDark')}
             </Button>
           </Tooltip>
           <Button icon={<ReloadOutlined />} onClick={reloadAll} loading={iss.loading} size="small">
-            刷新
+            {t('astro.refresh')}
           </Button>
         </div>
       </div>
 
       {/* 关键指标条 */}
       <div className="astro-strip">
-        <Metric label="在轨目标" value={positions.length} unit="个" />
-        <Metric label="中国空间站舱段" value={Chinese.length} unit="个" />
-        <Metric label="当前月相" value={moon.phaseName} tone="var(--a-track)" info="moonPhase" />
+        <Metric label={t('astro.metricOrbiting')} value={positions.length} unit={t('astro.unitGe')} />
+        <Metric label={t('astro.metricChinaStation')} value={Chinese.length} unit={t('astro.unitGe')} />
+        <Metric label={t('astro.metricMoonPhase')} value={moon.phaseName} tone="var(--a-track)" info="moonPhase" />
         <Metric
-          label="月球照亮度"
+          label={t('astro.metricMoonIllum')}
           value={(moon.illumination * 100).toFixed(0)}
           unit="%"
           tone="var(--a-track)"
           info="moonPhase"
         />
-        <Metric label="空间天气等级" value={kpInfo.level} tone={kpInfo.color} info="gscale" />
+        <Metric label={t('astro.metricSpaceWeather')} value={kpInfo.level} tone={kpInfo.color} info="gscale" />
         <Metric
-          label="太阳风速度"
+          label={t('astro.metricSolarWind')}
           value={sw?.wind?.ok ? sw.wind.speedKmS : '—'}
           unit={sw?.wind?.ok ? 'km/s' : ''}
           tone={solarWindLevel(sw?.wind?.ok ? sw.wind.speedKmS : null).color}
           info="wind"
         />
         <Metric
-          label="近地小行星(7天)"
+          label={t('astro.metricNeo')}
           value={neoData?.count ?? '—'}
-          unit={neoData?.count ? '颗' : ''}
+          unit={neoData?.count ? t('astro.unitStar') : ''}
           tone={neoData?.hazardous ? '#ff7a45' : 'var(--a-accent)'}
           info="hz"
         />
         <Metric
-          label="已确认系外行星"
+          label={t('astro.metricExoplanet')}
           value={exoplanets.data?.total ? exoplanets.data.total.toLocaleString() : '—'}
-          unit={exoplanets.data?.total ? '颗' : ''}
+          unit={exoplanets.data?.total ? t('astro.unitStar') : ''}
         />
         <Metric
-          label="太阳 F10.7 流量"
+          label={t('astro.metricF107')}
           value={sw?.f107?.ok ? sw.f107.flux : '—'}
           tone={f107Level(sw?.f107?.ok ? sw.f107.flux : null).color}
           info="f107"
         />
         <Metric
-          label="待发射任务"
+          label={t('astro.metricLaunches')}
           value={launchData?.items?.length ?? '—'}
-          unit={launchData?.items?.length ? '项' : ''}
+          unit={launchData?.items?.length ? t('astro.unitItem') : ''}
           tone="var(--a-ok)"
         />
       </div>
@@ -394,17 +396,17 @@ export default function AstroBoard({ lockedTab = null } = {}) {
         tabBarStyle={lockedTab ? { display: 'none' } : undefined}
         size="large"
         items={[
-          { key: 'earth', label: '🌍 地球附近', children: <EarthTab iss={iss} stations={stations} selected={selected} setSelected={setSelected} positions={positions} active={active} track={track} sun={sun} moon={moon} visibleTo={visibleTo} passes={passes} passCity={passCity} setPassCity={setPassCity} /> },
-          { key: 'solar', label: '🪐 太阳系', children: <SolarTab iss={iss} stations={stations} selected={selected} setSelected={setSelected} neo={neo} neoData={neoData} planets={planets} solar={solar} active={active} /> },
-          { key: 'sun', label: '☀️ 太阳活动', children: <SunTab spaceWeather={spaceWeather} solarActivity={solarActivity} aurora={aurora} solarCycle={solarCycle} sw={sw} kp={kp} kpInfo={kpInfo} solar={solar} xr={xr} proton={proton} alertData={alertData} auroraData={auroraData} cycleData={cycleData} active={active} track={track} sun={sun} /> },
-          { key: 'sky', label: '✨ 今晚星空', children: <SkyTab skyCity={skyCity} setSkyCity={setSkyCity} magLimit={magLimit} setMagLimit={setMagLimit} showLines={showLines} setShowLines={setShowLines} showDso={showDso} setShowDso={setShowDso} showLabels={showLabels} setShowLabels={setShowLabels} catalog={catalog} catalogError={catalogError} now={now} planets={planets} moon={moon} sun={sun} active={active} skyObs={skyObs} skyNow={skyNow} sunHorizon={sunHorizon} moonHorizon={moonHorizon} planetHorizon={planetHorizon} visibleConsts={visibleConsts} stargazing={stargazing} stargazingScore={stargazingScore} showers={showers} /> },
-          { key: 'apod', label: '🖼 天文一图', children: <ApodTab apod={apod} apodData={apodData} /> },
-          { key: 'deep', label: '🌌 深空', children: <DeepTab exoplanets={exoplanets} galaxyView={galaxyView} setGalaxyView={setGalaxyView} /> },
-          { key: 'launch', label: '🚀 航天发射', children: <LaunchTab launches={launches} launchData={launchData} /> },
-          { key: 'comet', label: '☄️ 小天体档案', children: <CometTab comet={comet} cometData={cometData} /> },
-          { key: 'approach', label: '🛰 近地交会', children: <ApproachTab approach={approach} approachData={approachData} /> },
-          { key: 'observe', label: '🔭 观测条件', children: <ObserveTab observe={observe} observeData={observeData} /> },
-          { key: 'cases', label: '📚 真实案例', children: <CaseTab theme={theme} /> },
+          { key: 'earth', label: `🌍 ${t('astro.tabEarth')}`, children: <EarthTab iss={iss} stations={stations} selected={selected} setSelected={setSelected} positions={positions} active={active} track={track} sun={sun} moon={moon} visibleTo={visibleTo} passes={passes} passCity={passCity} setPassCity={setPassCity} /> },
+          { key: 'solar', label: `🪐 ${t('astro.tabSolar')}`, children: <SolarTab iss={iss} stations={stations} selected={selected} setSelected={setSelected} neo={neo} neoData={neoData} planets={planets} solar={solar} active={active} /> },
+          { key: 'sun', label: `☀️ ${t('astro.tabSun')}`, children: <SunTab spaceWeather={spaceWeather} solarActivity={solarActivity} aurora={aurora} solarCycle={solarCycle} sw={sw} kp={kp} kpInfo={kpInfo} solar={solar} xr={xr} proton={proton} alertData={alertData} auroraData={auroraData} cycleData={cycleData} active={active} track={track} sun={sun} /> },
+          { key: 'sky', label: `✨ ${t('astro.tabSky')}`, children: <SkyTab skyCity={skyCity} setSkyCity={setSkyCity} magLimit={magLimit} setMagLimit={setMagLimit} showLines={showLines} setShowLines={setShowLines} showDso={showDso} setShowDso={setShowDso} showLabels={showLabels} setShowLabels={setShowLabels} catalog={catalog} catalogError={catalogError} now={now} planets={planets} moon={moon} sun={sun} active={active} skyObs={skyObs} skyNow={skyNow} sunHorizon={sunHorizon} moonHorizon={moonHorizon} planetHorizon={planetHorizon} visibleConsts={visibleConsts} stargazing={stargazing} stargazingScore={stargazingScore} showers={showers} /> },
+          { key: 'apod', label: `🖼 ${t('astro.tabApod')}`, children: <ApodTab apod={apod} apodData={apodData} /> },
+          { key: 'deep', label: `🌌 ${t('astro.tabDeep')}`, children: <DeepTab exoplanets={exoplanets} galaxyView={galaxyView} setGalaxyView={setGalaxyView} /> },
+          { key: 'launch', label: `🚀 ${t('astro.tabLaunch')}`, children: <LaunchTab launches={launches} launchData={launchData} /> },
+          { key: 'comet', label: `☄️ ${t('astro.tabComet')}`, children: <CometTab comet={comet} cometData={cometData} /> },
+          { key: 'approach', label: `🛰 ${t('astro.tabApproach')}`, children: <ApproachTab approach={approach} approachData={approachData} /> },
+          { key: 'observe', label: `🔭 ${t('astro.tabObserve')}`, children: <ObserveTab observe={observe} observeData={observeData} /> },
+          { key: 'cases', label: `📚 ${t('astro.tabCases')}`, children: <CaseTab theme={theme} /> },
         ]}
       />
 
@@ -412,8 +414,7 @@ export default function AstroBoard({ lockedTab = null } = {}) {
       <RelatedData board="astro" tab={activeTab} theme={theme} health={health} />
 
       <footer className="astro-foot">
-        全部数据来自公开免费接口（wheretheiss / Celestrak / NOAA SWPC / NASA NEO / NASA Exoplanet Archive / Launch Library 2），仅用于科普与可视化展示，不适用于导航或工程用途。
-        空间站与卫星过境位置为 TLE + SGP4 推算值，与实测存在偏差；月相为本地天文算法计算。
+        {t('astro.footer')}
       </footer>
     </div>
     </ConfigProvider>

@@ -1,0 +1,62 @@
+{
+  "demo": {
+    "title": "コマンドパレット CommandPalette",
+    "leadBefore": "外部依存ゼロ（React のみ）のガラス風コマンドパレットコンポーネント。",
+    "leadMac": "（macOS）または ",
+    "leadWin": "（Windows / Linux）でパレットを起動し、コマンドを曖昧検索、",
+    "leadSelect": " で選択し ",
+    "leadRun": " で実行、",
+    "leadClose": " で閉じます。",
+    "hintText": "このキーの組合せでパレットを起動（本ページで有効）",
+    "placeholder": "コマンドを検索。「保存」「home」「フィードバック」も試せます…",
+    "feedbackTitle": "実行フィードバック",
+    "lastCommand": "最後に実行したコマンド",
+    "none": "— なし —",
+    "closeCount": "パネルを閉じた回数",
+    "usageTitle": "使い方",
+    "propsTitle": "Props",
+    "thProp": "プロパティ",
+    "thType": "型",
+    "thDesc": "説明",
+    "propCommands": "コマンドリスト。各項目は ",
+    "propPlaceholder": "検索ボックスのプレースホルダ。既定は「コマンドを検索…」",
+    "propOnClose": "パネル閉鎖後のコールバック（ESC / オーバーレイクリック / コマンド実行後）",
+    "cmdFieldsTitle": "コマンド項目のフィールド",
+    "thField": "フィールド",
+    "fieldId": "一意な識別子（key として使用）",
+    "fieldLabel": "表示名。曖昧検索の対象",
+    "fieldGroup": "グループ名。既定は「その他」",
+    "fieldIcon": "アイコン。任意の描画可能コンテンツ（絵文字 / 文字 / JSX）",
+    "fieldKeywords": "マッチキーワード。label と共に曖昧検索",
+    "fieldAction": "Enter またはクリックで実行。引数はコマンドオブジェクト"
+  },
+  "cmd": {
+    "navHome": "ホームへ",
+    "navDashboard": "ダッシュボードへ",
+    "navAbout": "プロジェクトについて",
+    "actNew": "新規ファイル",
+    "actSave": "保存",
+    "actExport": "データをエクスポート",
+    "actTheme": "テーマを切り替え",
+    "helpShortcut": "ショートカットを見る",
+    "helpDoc": "ドキュメントを読む",
+    "helpFeedback": "問題を報告"
+  },
+  "group": {
+    "nav": "ナビゲーション",
+    "action": "操作",
+    "help": "ヘルプ"
+  },
+  "component": {
+    "placeholder": "コマンドを検索…",
+    "dialogAria": "コマンドパレット",
+    "searchAria": "コマンドを検索",
+    "otherGroup": "その他",
+    "emptyTitle": "一致するコマンドはありません",
+    "emptyHint": "キーワードを変えるか、検索をクリアして全コマンドを表示",
+    "tipSelect": "選択",
+    "tipRun": "実行",
+    "tipClose": "閉じる",
+    "count": "{count} 件"
+  }
+}

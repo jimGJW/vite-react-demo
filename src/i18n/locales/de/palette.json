@@ -1,0 +1,62 @@
+{
+  "demo": {
+    "title": "Befehlspalette CommandPalette",
+    "leadBefore": "Eine gläserne Befehlspalette ohne externe Abhängigkeiten (nur React). Drücke",
+    "leadMac": " (macOS) oder ",
+    "leadWin": " (Windows / Linux), um die Palette zu öffnen und Befehle unscharf zu suchen,",
+    "leadSelect": " zur Auswahl ",
+    "leadRun": " zur Ausführung,",
+    "leadClose": " zum Schließen.",
+    "hintText": "Diese Tastenkombination öffnet die Palette (auf dieser Seite aktiv)",
+    "placeholder": "Befehle suchen — „Speichern“, „home“, „Feedback“…",
+    "feedbackTitle": "Ausführungs-Rückmeldung",
+    "lastCommand": "Zuletzt ausgeführter Befehl",
+    "none": "— Keiner —",
+    "closeCount": "Anzahl der Palettenschließungen",
+    "usageTitle": "Verwendung",
+    "propsTitle": "Props",
+    "thProp": "Eigenschaft",
+    "thType": "Typ",
+    "thDesc": "Beschreibung",
+    "propCommands": "Befehlsliste; jeder Eintrag enthält ",
+    "propPlaceholder": "Platzhalter des Suchfelds; Standard „Befehle suchen…“",
+    "propOnClose": "Callback nach dem Schließen der Palette (ESC / Overlay-Klick / nach Befehlsausführung)",
+    "cmdFieldsTitle": "Befehlsfelder",
+    "thField": "Feld",
+    "fieldId": "Eindeutige Kennung (als key verwendet)",
+    "fieldLabel": "Anzeigename; wird unscharf gematcht",
+    "fieldGroup": "Gruppenname; Standard „Sonstige“",
+    "fieldIcon": "Symbol; beliebiger renderbarer Inhalt (Emoji / Zeichen / JSX)",
+    "fieldKeywords": "Match-Schlüsselwörter; werden zusammen mit label unscharf gesucht",
+    "fieldAction": "Wird bei Enter oder Klick ausgeführt; Parameter ist das Befehlsobjekt"
+  },
+  "cmd": {
+    "navHome": "Zur Startseite",
+    "navDashboard": "Zur Konsole",
+    "navAbout": "Über das Projekt",
+    "actNew": "Neue Datei",
+    "actSave": "Speichern",
+    "actExport": "Daten exportieren",
+    "actTheme": "Theme wechseln",
+    "helpShortcut": "Tastenkürzel anzeigen",
+    "helpDoc": "Dokumentation lesen",
+    "helpFeedback": "Problem melden"
+  },
+  "group": {
+    "nav": "Navigation",
+    "action": "Aktionen",
+    "help": "Hilfe"
+  },
+  "component": {
+    "placeholder": "Befehle suchen…",
+    "dialogAria": "Befehlspalette",
+    "searchAria": "Befehle suchen",
+    "otherGroup": "Sonstige",
+    "emptyTitle": "Keine passenden Befehle",
+    "emptyHint": "Andere Schlüsselwörter versuchen oder Suche leeren, um alle Befehle zu sehen",
+    "tipSelect": "Auswahl",
+    "tipRun": "Ausführen",
+    "tipClose": "Schließen",
+    "count": "{count} Ergebnisse"
+  }
+}

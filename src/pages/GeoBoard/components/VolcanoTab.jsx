@@ -12,6 +12,7 @@
 import { BookOutlined, GlobalOutlined, WarningOutlined } from '@ant-design/icons'
 import { Empty, Table, Tag, Tooltip } from 'antd'
 import { Panel, fmtBJT } from './ui.jsx'
+import { useI18n } from '../../../i18n/index.js'
 import {
   AVIATION_CODES,
   TSUNAMI_CATEGORIES,
@@ -23,9 +24,10 @@ import {
 
 /** 航空色码 Tag：色即等级（绿/黄/橙/红），悬停给完整定义 */
 function ColorTag({ code }) {
+  const { t } = useI18n()
   const info = zhAviationCode(code)
   return (
-    <Tooltip title={info?.desc || '未收录的色码'}>
+    <Tooltip title={info?.desc || t('geo.volcano.unknownAviation')}>
       <Tag color={info?.color} bordered={false}>
         {info?.zh || code || '—'}
       </Tag>
@@ -35,9 +37,10 @@ function ColorTag({ code }) {
 
 /** 地面警报级 Tag */
 function AlertTag({ level }) {
+  const { t } = useI18n()
   const info = zhVolcanoAlert(level)
   return (
-    <Tooltip title={info?.desc || '未收录的警报级'}>
+    <Tooltip title={info?.desc || t('geo.volcano.unknownGround')}>
       <Tag color={info?.color} bordered={false}>
         {info?.zh || level || '—'}
       </Tag>
@@ -47,9 +50,10 @@ function AlertTag({ level }) {
 
 /** 海啸公告等级 Tag：等级的中译与颜色一律来自词典，服务端只给 Category 原文 */
 function TsunamiTag({ category }) {
+  const { t } = useI18n()
   const info = zhTsunamiCategory(category)
   return (
-    <Tooltip title={info?.desc || '未收录的类别'}>
+    <Tooltip title={info?.desc || t('geo.volcano.unknownTsu')}>
       <Tag color={info?.color} bordered={false}>
         {info?.zh || category || '—'}
       </Tag>
@@ -72,6 +76,7 @@ function StatRow({ items }) {
 }
 
 export default function VolcanoTab({ volcanoes, volcanoData, tsunami, tsunamiData }) {
+  const { t } = useI18n()
   const volList = volcanoData?.volcanoes || []
   // 服务端只给 Category 原文与发布时间，等级的中译/rank/颜色全部由词典补齐后再排序。
   // 这样「哪个更危险」只有一处定义（glossary.js），不会前后端各说一套。
@@ -84,8 +89,8 @@ export default function VolcanoTab({ volcanoes, volcanoData, tsunami, tsunamiDat
   return (
     <div className="geo-tab-content">
       <Panel
-        title="USGS 火山警报"
-        source="USGS HANS（火山灾害警报系统）"
+        title={t('geo.volcano.usgsTitle')}
+        source={t('geo.volcano.usgsSource')}
         icon={<WarningOutlined />}
         loading={volcanoes.loading}
         error={volcanoes.error}
@@ -95,31 +100,31 @@ export default function VolcanoTab({ volcanoes, volcanoData, tsunami, tsunamiDat
             <>
               <StatRow
                 items={[
-                  { label: '高于正常', value: `${volcanoData.count} 座` },
+                  { label: t('geo.volcano.statAbove'), value: t('geo.volcano.unitSeat', { n: volcanoData.count }) },
                   {
-                    label: '橙色及以上',
-                    value: `${volcanoData.elevated} 座`,
+                    label: t('geo.volcano.statOrange'),
+                    value: t('geo.volcano.unitSeat', { n: volcanoData.elevated }),
                     tone: '#f97316',
-                    suffix: '（真正“在动”的）',
+                    suffix: t('geo.volcano.suffixActive'),
                   },
                   {
-                    label: '最高级别',
+                    label: t('geo.volcano.statHighest'),
                     value: volcanoData.highest
                       ? `${volcanoData.highest.cn || volcanoData.highest.name} · ${zhAviationCode(volcanoData.highest.colorCode).zh}`
                       : '—',
                     tone: volcanoData.highest ? zhAviationCode(volcanoData.highest.colorCode).color : undefined,
                   },
                   {
-                    label: '最近通报',
+                    label: t('geo.volcano.statUpdated'),
                     value: volcanoData.latestUnix ? fmtBJT(volcanoData.latestUnix) : '—',
-                    suffix: '（北京时）',
+                    suffix: t('geo.volcano.suffixBJT'),
                   },
                 ]}
               />
               <div className="geo-alert-stat">
                 {volcanoData.byObs?.map((o) => (
                   <span key={o.abbr}>
-                    {o.cn} <b>{o.count}</b> 座
+                    {o.cn} <b>{o.count}</b> {t('geo.volcano.obsUnit')}
                   </span>
                 ))}
               </div>
@@ -131,7 +136,7 @@ export default function VolcanoTab({ volcanoes, volcanoData, tsunami, tsunamiDat
                 pagination={false}
                 columns={[
                   {
-                    title: '火山',
+                    title: t('geo.volcano.colName'),
                     dataIndex: 'name',
                     width: 170,
                     render: (v, r) => (
@@ -141,32 +146,32 @@ export default function VolcanoTab({ volcanoes, volcanoData, tsunami, tsunamiDat
                       </div>
                     ),
                   },
-                  { title: '观测台', dataIndex: 'obsCn', width: 170 },
+                  { title: t('geo.volcano.colObs'), dataIndex: 'obsCn', width: 170 },
                   {
-                    title: '航空色码',
+                    title: t('geo.volcano.colAviation'),
                     dataIndex: 'colorCode',
                     width: 100,
                     render: (v) => <ColorTag code={v} />,
                   },
                   {
-                    title: '地面警报',
+                    title: t('geo.volcano.colGround'),
                     dataIndex: 'alertLevel',
                     width: 100,
                     render: (v) => <AlertTag level={v} />,
                   },
                   {
-                    title: '最近通报',
+                    title: t('geo.volcano.colUpdated'),
                     dataIndex: 'sentUnix',
                     width: 150,
                     render: (v) => (v ? fmtBJT(v) : '—'),
                   },
                   {
-                    title: '通报原文',
+                    title: t('geo.volcano.colBulletin'),
                     dataIndex: 'url',
                     render: (v) =>
                       v ? (
                         <a href={v} target="_blank" rel="noreferrer">
-                          查看
+                          {t('geo.volcano.view')}
                         </a>
                       ) : (
                         '—'
@@ -175,22 +180,18 @@ export default function VolcanoTab({ volcanoes, volcanoData, tsunami, tsunamiDat
                 ]}
               />
               <div className="geo-prose" style={{ marginTop: 12 }}>
-                <p>
-                  <b>色码与警报级不是一回事</b>：色码只关心火山灰会不会打到飞机，
-                  警报级关心地面居民会不会遇到熔岩流与碎屑流。一次安静的溢流式喷发可以是「地面警告 + 绿色码」，
-                  反过来灰柱不高但持续的爆发也可能是「橙色码 + 地面警戒」。
-                </p>
+                <p>{t('geo.volcano.prose')}</p>
               </div>
             </>
           ) : (
-            <Empty description="USGS 三大观测台当前无火山处于「正常」以上——这是好事" />
+            <Empty description={t('geo.volcano.emptyVol')} />
           )
         ) : null}
       </Panel>
 
       <Panel
-        title="NOAA 海啸预警公告"
-        source="NOAA tsunami.gov（太平洋中心 PHEB + 国家中心 PAAQ）"
+        title={t('geo.volcano.noaaTitle')}
+        source={t('geo.volcano.noaaSource')}
         icon={<GlobalOutlined />}
         loading={tsunami.loading}
         error={tsunami.error}
@@ -199,17 +200,17 @@ export default function VolcanoTab({ volcanoes, volcanoData, tsunami, tsunamiDat
           <>
             <StatRow
               items={[
-                { label: '在册公告', value: `${tsunamiData.count} 条` },
+                { label: t('geo.volcano.statOnFile'), value: t('geo.volcano.unitNotice', { n: tsunamiData.count }) },
                 {
-                  label: '构成威胁',
-                  value: `${threatCount} 条`,
+                  label: t('geo.volcano.statThreat'),
+                  value: t('geo.volcano.unitThreat', { n: threatCount }),
                   tone: threatCount > 0 ? '#dc2626' : '#0e9f6e',
-                  suffix: '（注意及以上）',
+                  suffix: t('geo.volcano.suffixAbove'),
                 },
                 {
-                  label: '预警中心',
+                  label: t('geo.volcano.statCenter'),
                   value: `${tsunamiData.centers.filter((c) => c.ok).length}/${tsunamiData.centers.length}`,
-                  suffix: '在线',
+                  suffix: t('geo.volcano.suffixOnline'),
                 },
               ]}
             />
@@ -223,51 +224,39 @@ export default function VolcanoTab({ volcanoes, volcanoData, tsunami, tsunamiDat
                       <span className="geo-tsu-item__center">{e.centerCn}</span>
                     </div>
                     <div className="geo-tsu-item__meta">
-                      {e.magnitude && <span>震级 {e.magnitude}</span>}
-                      {e.depth && <span>深度 {e.depth}</span>}
+                      {e.magnitude && <span>{t('geo.volcano.magLabel', { mag: e.magnitude })}</span>}
+                      {e.depth && <span>{t('geo.volcano.depthLabel', { depth: e.depth })}</span>}
                       {e.lat != null && e.lon != null && (
                         <span>
-                          震中 {e.lat.toFixed(2)}°, {e.lon.toFixed(2)}°
+                          {t('geo.volcano.epicenter', { lat: e.lat.toFixed(2), lon: e.lon.toFixed(2) })}
                         </span>
                       )}
-                      {e.updatedUnix && <span>发布 {fmtBJT(e.updatedUnix)}</span>}
+                      {e.updatedUnix && <span>{t('geo.volcano.published', { time: fmtBJT(e.updatedUnix) })}</span>}
                       {e.bulletinUrl && (
                         <a href={e.bulletinUrl} target="_blank" rel="noreferrer">
-                          公报原文
+                          {t('geo.volcano.bulletin')}
                         </a>
                       )}
                     </div>
                     {e.note && <div className="geo-tsu-item__note">{e.note}</div>}
                     {e.definition && (
-                      <div className="geo-tsu-item__def">等级含义：{e.definition}</div>
+                      <div className="geo-tsu-item__def">{t('geo.volcano.levelMeaning', { def: e.definition })}</div>
                     )}
                   </div>
                 ))}
               </div>
             ) : (
-              <Empty description="两个预警中心当前均无有效公告" />
+              <Empty description={t('geo.volcano.emptyTsu')} />
             )}
           </>
         ) : null}
       </Panel>
 
-      <Panel title="为什么绝大多数公告都是「信息声明」" source="科普：预警是怎么工作的" icon={<BookOutlined />}>
+      <Panel title={t('geo.volcano.whyTitle')} source={t('geo.volcano.whySource')} icon={<BookOutlined />}>
         <div className="geo-prose">
-          <p>
-            海啸由<b>海底垂直错动</b>引发——走滑型地震（断层水平错开）几乎不推水，
-            因此一次 M7.5 的走滑地震可以是零海啸风险，而一次 M7.0 的逆冲型地震却能掀起数米水墙。
-            预警中心必须在震后几分钟内判断断层类型、震源深度与海底位移量，这个结论就是公告等级。
-          </p>
-          <p>
-            所以「信息声明」不是敷衍，而是<b>把虚惊提前消解掉</b>：它明确说「地震发生了，但不会推起海啸」。
-            真正升级到「警报」的，一年全球只有个位数。
-          </p>
-          <p>
-            另一个反直觉的点：深海海啸波长可达上百公里、波高却只有几十厘米，
-            船上的人常常毫无察觉。它以 <b>√(g·h)</b> 的速度传播——4000 m 水深约 700–800 km/h，
-            接近喷气客机巡航速度；进入浅水后骤降到几十 km/h，能量被迫向上挤压，
-            才变成岸边的那道水墙。<b>看到海水异常退去，就是它到达前几分钟的信号。</b>
-          </p>
+          <p>{t('geo.volcano.whyP1')}</p>
+          <p>{t('geo.volcano.whyP2')}</p>
+          <p>{t('geo.volcano.whyP3')}</p>
         </div>
         <div className="geo-alert-legend">
           {Object.entries(TSUNAMI_CATEGORIES).map(([k, v]) => (
@@ -281,14 +270,14 @@ export default function VolcanoTab({ volcanoes, volcanoData, tsunami, tsunamiDat
           {Object.entries(AVIATION_CODES).map(([k, v]) => (
             <span key={k}>
               <span className="geo-alert-legend__dot" style={{ background: v.color }} />
-              航空 {v.zh}
+              {t('geo.volcano.legendAviation')} {v.zh}
             </span>
           ))}
           <span className="geo-alert-legend__sep" />
           {Object.entries(VOLCANO_ALERTS).map(([k, v]) => (
             <span key={k}>
               <span className="geo-alert-legend__dot" style={{ background: v.color }} />
-              地面 {v.zh}
+              {t('geo.volcano.legendGround')} {v.zh}
             </span>
           ))}
         </div>

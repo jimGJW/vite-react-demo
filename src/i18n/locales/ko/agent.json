@@ -1,0 +1,80 @@
+{
+  "console": {
+    "title": "🤖 AI 에이전트 콘솔",
+    "online": "온라인",
+    "modeDirect": "직접 모드",
+    "modeIframe": "iframe 모드",
+    "toggleMode": "모드 전환"
+  },
+  "page": {
+    "desc": "자연어로 현재 페이지를 제어합니다. 클릭, 입력, 스크롤, 분석, 내비게이션을 지원하며 입력창, 빠른 명령, 마이크 음성 세 가지 상호작용 방식을 제공합니다.",
+    "execPre": "작업 실행 ",
+    "execPost": "회"
+  },
+  "stats": {
+    "execPre": "실행 ",
+    "execPost": "회",
+    "successPre": "성공 ",
+    "failPre": "실패 ",
+    "voicePre": "음성 ",
+    "ratePre": "성공률 ",
+    "ratePost": "%",
+    "clearTitle": "기록 지우기",
+    "clear": "🗑 지우기"
+  },
+  "history": {
+    "failBadge": "실패",
+    "copyTitle": "명령 복사",
+    "redoTitle": "다시 실행",
+    "success": "성공",
+    "emptyTitle": "첫 명령을 시작해 보세요",
+    "emptyLine1": "「로그인 버튼 클릭」「홈으로 이동」「아래로 스크롤」을 시도해 보세요",
+    "emptyLine2": "또는 「폼 작성: 이름 장삼, 이메일 a@b.com」「폼 제출」",
+    "emptyLine3": "아래 빠른 명령을 클릭하거나 🎤 음성 입력을 눌러도 됩니다"
+  },
+  "input": {
+    "micUnsupported": "현재 브라우저는 마이크 녹음을 지원하지 않습니다",
+    "micStopTip": "녹음을 중지하고 인식을 시작합니다",
+    "micTip": "🎤 음성으로 페이지 제어: 명령을 말하면 자동 실행됩니다(클릭/이동/스크롤/입력)",
+    "placeholder": "명령을 입력하거나 붙여넣기…Enter 실행 · Shift+Enter 줄바꿈 · 또는 🎤 음성 입력",
+    "executing": "실행 중",
+    "execute": "▶ 실행"
+  },
+  "shortcuts": {
+    "title": "⚡ 원클릭 실행",
+    "runTip": "「{label}」을 바로 실행"
+  },
+  "voice": {
+    "recording": "🎙️ 녹음 중… 다 말한 뒤 ⏹ 를 누르세요",
+    "recognizing": "⏳ 음성을 기기 내에서 인식하는 중(외부 전송 없음)",
+    "loadingModel": "⏬ 음성 모델 첫 로드(한 번만, 약 40MB)"
+  },
+  "status": {
+    "directMode": "직접 모드: 현재 페이지 DOM을 조작합니다",
+    "iframeWaiting": "iframe 모드: 연결 대기 중...",
+    "iframeConnected": "iframe이 연결되었습니다",
+    "parsing": "🔄 「{task}」을(를) 분석하는 중...",
+    "done": "✅ 완료: {summary}",
+    "failed": "❌ 실패: {summary}",
+    "partialDone": "⚠️ 완료: {summary}",
+    "error": "❌ 오류: {message}",
+    "recognized": "🎙️ 인식: {text}",
+    "corrected": "(수정됨: {text})",
+    "voiceFailed": "❌ 음성 인식 실패: {message}",
+    "copied": "📋 「{task}」을 복사했습니다",
+    "copyFailed": "❌ 복사 실패"
+  },
+  "summary": {
+    "allSuccess": "✓ 모두 성공 · {count}개 동작",
+    "allFail": "✗ 모두 실패 · {count}개 동작",
+    "partial": "부분 성공 · {success}/{total}"
+  },
+  "iframe": {
+    "placeholder": "삽입할 페이지 주소(iframe 모드)",
+    "hint": "iframe 모드에서는 대상 페이지 주소를 설정해야 합니다"
+  },
+  "errors": {
+    "iframeNotReady": "iframe이 준비되지 않았습니다",
+    "timeout": "시간 초과(5초)"
+  }
+}

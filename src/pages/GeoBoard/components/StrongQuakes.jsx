@@ -8,9 +8,11 @@
 import { Empty, Table, Tag, Tooltip } from 'antd'
 import { depthClass, fmtBJT } from './ui.jsx'
 import { magBand } from '../../../lib/earth/glossary.js'
+import { useI18n } from '../../../i18n/index.js'
 
 export default function StrongQuakes({ byDay, quakes, count, perDay, strongest, windowDays = 30 }) {
-  if (!byDay?.length) return <Empty description="暂无强震数据" />
+  const { t } = useI18n()
+  if (!byDay?.length) return <Empty description={t('geo.strong.empty')} />
   // 补齐 30 天日期轴（缺失日为 0），否则柱子会挤在一起看不出节奏
   const start = new Date(`${byDay[0].day}T00:00:00Z`).getTime()
   const days = Array.from({ length: windowDays }, (_, i) => {
@@ -28,19 +30,19 @@ export default function StrongQuakes({ byDay, quakes, count, perDay, strongest, 
   return (
     <div className="geo-strong">
       <div className="geo-strong__stats">
-        <Tooltip title="统计窗口内 EMSC 测定 M5.5 以上的地震总数">
+        <Tooltip title={t('geo.strong.countTip')}>
           <span className="geo-strong__stat is-info">
-            <b>{count}</b> 次 / {windowDays} 天
+            {t('geo.strong.count', { n: count, days: windowDays })}
           </span>
         </Tooltip>
-        <Tooltip title="全球 M5.5+ 长期平均约每天 1 次；短期波动属正常，不能据此预报">
+        <Tooltip title={t('geo.strong.perDayTip')}>
           <span className="geo-strong__stat is-info">
-            日均 <b>{perDay}</b> 次
+            {t('geo.strong.perDay', { n: perDay })}
           </span>
         </Tooltip>
         {strongest && (
           <span className="geo-strong__stat">
-            最强 <b style={{ color: magBand(strongest.mag).color }}>M{strongest.mag.toFixed(1)}</b>{' '}
+            {t('geo.strong.strongest')} <b style={{ color: magBand(strongest.mag).color }}>M{strongest.mag.toFixed(1)}</b>{' '}
             {strongest.place}
           </span>
         )}
@@ -58,7 +60,7 @@ export default function StrongQuakes({ byDay, quakes, count, perDay, strongest, 
               fill={d.count >= 3 ? '#ef4444' : d.count >= 2 ? '#f97316' : '#0ea5e9'}
               rx="1.5"
             >
-              <title>{`${d.day}：${d.count} 次`}</title>
+              <title>{t('geo.strong.barTitle', { day: d.day, n: d.count })}</title>
             </rect>
           ))}
           <line x1={PAD.l} y1={H - PAD.b} x2={W - PAD.r} y2={H - PAD.b} className="geo-chart__grid" />
@@ -68,7 +70,7 @@ export default function StrongQuakes({ byDay, quakes, count, perDay, strongest, 
           </text>
         </svg>
         <div className="geo-chart__caption">
-          近 {windowDays} 天 M5.5+ 地震按 UTC 自然日聚合（EMSC）· 颜色越红当天越强震越多
+          {t('geo.strong.caption', { days: windowDays })}
         </div>
       </div>
 
@@ -77,11 +79,11 @@ export default function StrongQuakes({ byDay, quakes, count, perDay, strongest, 
         size="small"
         rowKey="id"
         dataSource={quakes}
-        pagination={{ pageSize: 8, size: 'small', showTotal: (t) => `显示 ${t} 条` }}
+        pagination={{ pageSize: 8, size: 'small', showTotal: (total) => t('geo.strong.showTotal', { n: total }) }}
         columns={[
-          { title: '北京时间', dataIndex: 'time', width: 100, render: (t) => fmtBJT(t) },
+          { title: t('geo.strong.colBJT'), dataIndex: 'time', width: 100, render: (v) => fmtBJT(v) },
           {
-            title: '震级',
+            title: t('geo.strong.colMag'),
             dataIndex: 'mag',
             width: 96,
             sorter: (a, b) => a.mag - b.mag,
@@ -95,9 +97,9 @@ export default function StrongQuakes({ byDay, quakes, count, perDay, strongest, 
               )
             },
           },
-          { title: '地点', dataIndex: 'place', ellipsis: true },
+          { title: t('geo.strong.colPlace'), dataIndex: 'place', ellipsis: true },
           {
-            title: '深度',
+            title: t('geo.strong.colDepth'),
             dataIndex: 'depth',
             width: 120,
             align: 'right',

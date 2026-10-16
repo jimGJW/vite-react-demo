@@ -1,0 +1,68 @@
+{
+  "common": {
+    "expand": "Дэлгэх",
+    "collapse": "Хураах",
+    "close": "Хаах"
+  },
+  "quick": {
+    "voice": "Дуу хоолойн туслах",
+    "agent": "AI Agent",
+    "on": "Он",
+    "off": "Офф",
+    "navSep": "Түргэн шилжих",
+    "jump": "Шилжих",
+    "other": "Бусад",
+    "top": "Дээш буцах",
+    "hide": "Туслах товчийг нуух",
+    "assistant": "Туслах",
+    "fabTitle": "Туслах товч (чирэх боломжтой)",
+    "fabAria": "Туслах товч",
+    "restoreTitle": "Туслах товчийг харуулах",
+    "pages": {
+      "home": "Нүүр хуудас",
+      "agent": "AI агентын консол",
+      "voice": "Дуу хоолойн туслах",
+      "dashboard": "Хяналтын самбар",
+      "testCenter": "Туршилтын төв"
+    }
+  },
+  "voice": {
+    "title": "Дуу хоолойн туслах",
+    "subtitle": "Дууг текст болгох · онлайн / офлайн хоёр хөдөлгүүр",
+    "charCount": "{count} тэмдэгт",
+    "envOnline": "Онлайн",
+    "envOffline": "Офлайн",
+    "copy": "Бүгдийг хуулах",
+    "copied": "Хуулагдлаа ✓",
+    "clear": "Цэвэрлэх",
+    "sendToAgent": "AI агент руу дамжуулах →",
+    "sendToAgentTip": "Танигдсан текстийг AI агент руу дамжуулж гүйцэтгэх",
+    "historyTitle": "Танилтын түүх",
+    "historyEmpty": "Танилтын түүх байхгүй байна. Дээрх «Дуу хоолойн оруулга эхлүүлэх» эсвэл «Бичлэг эхлүүлэх» дээр товшино уу",
+    "diagnose": "Орчны оношилгоо",
+    "browserLabel": "Хөтөч",
+    "webSupport": "Онлайн танилт (Web Speech API)",
+    "localSupport": "Офлайн танилт (дотоодын Whisper)",
+    "supported": "Дэмждэг",
+    "unsupported": "Дэмждэггүй",
+    "webNote": "(Chrome-ийн хятад хэлний танилт Google-ийн үйлчилгээнд хамаарах тул дотоодын сүлжээнд ажиллахгүй байж болно)",
+    "localNote": "(загвар public/models/ дотор суурилагдсан бөгөөд бүрэн офлайн ажиллана)",
+    "currentStatus": "Одоогийн төлөв",
+    "statusListening": "Онлайнаар сонсож байна",
+    "statusRecording": "Бичиж байна",
+    "statusRecognizing": "Офлайн бичлэг хөрвүүлж байна",
+    "statusIdle": "Хоосон",
+    "browser": {
+      "none": "Тодорхойгүй",
+      "edge": "Microsoft Edge",
+      "chrome": "Google Chrome",
+      "firefox": "Mozilla Firefox",
+      "safari": "Apple Safari",
+      "unknown": "Тодорхойгүй хөтөч"
+    }
+  },
+  "globalAgent": {
+    "title": "AI Agent",
+    "hint": "🤖 Ctrl+Shift+A агентыг дуудах · Ctrl+↑↓ гүйлгэх · Ctrl+⌥+←→ урагш/буцах"
+  }
+}

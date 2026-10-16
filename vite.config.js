@@ -194,6 +194,40 @@ function dedupeOrtWasm() {
   }
 }
 
+/**
+ * 首屏瘦身：把 vendor-ai 从 index.html 的 modulepreload 里摘掉。
+ *
+ * 背景：vendor-ai（@huggingface/transformers + onnxruntime-web，构建后 828K /
+ * gzip 约 217K）只服务于语音转写，由 useWhisperRecorder 在用户按下麦克风时才
+ * 动态 import。但 rolldown 会把「入口 chunk 静态链可达」的 chunk 全部写进
+ * modulepreload，而 vendor-react 里恰有共享模块静态引用了它——于是每个访客
+ * 首屏都要为一个可能永远不会用的功能多下载 217K。
+ *
+ * 这里只删 <link rel="modulepreload">，不删 chunk 本身：
+ * 动态 import 时会按需拉取，功能不受影响。vendor-antd / vendor-react /
+ * 入口自身与样式表一律保留（那些是首屏真要用的）。
+ */
+function trimAiVendorPreload() {
+  return {
+    name: 'trim-ai-vendor-preload',
+    transformIndexHtml: {
+      // 必须 post：赶在内置 preload 注入之后再改，enforce 之前会被覆盖
+      order: 'post',
+      handler(html) {
+        const before = (html.match(/rel="modulepreload"/g) || []).length
+        const out = html.replace(/\s*<link[^>]*rel="modulepreload"[^>]*vendor-ai[^>]*>/g, '')
+        const after = (out.match(/rel="modulepreload"/g) || []).length
+        if (before !== after) {
+          console.log(
+            `[trim-ai-vendor-preload] 移除 vendor-ai 首屏预加载（modulepreload ${before} → ${after}，省约 217K gzip）`,
+          )
+        }
+        return out
+      },
+    },
+  }
+}
+
 export default defineConfig({
   resolve: {
     alias: {
@@ -226,6 +260,7 @@ export default defineConfig({
     serveGeoData(),
     serveOceanData(),
     dedupeOrtWasm(),
+    trimAiVendorPreload(),
   ],
   server: {
     host: true,
@@ -292,6 +327,12 @@ export default defineConfig({
          */
         manualChunks(id) {
           if (!id.includes('node_modules')) return undefined
+          // workspace 包（@myorg/*）虽经 node_modules 里的 symlink 解析，但它们是本项目源码。
+          // 必须排除：react-core-hooks 里的 useWhisperRecorder 动态依赖 @huggingface/transformers，
+          // 一旦这些源码被路径里的 'react' 字样归进 vendor-react，rolldown 就会在
+          // vendor-react 与 vendor-ai 之间拉一条静态依赖——首屏平白多下载 828K
+          //（gzip 约 217K）为一个「按麦克风才用」的功能。
+          if (id.includes('@myorg')) return undefined
           if (id.includes('@ant-design') || id.includes('/antd/') || id.includes('/rc-')) return 'vendor-antd'
           if (id.includes('echarts') || id.includes('zrender')) return 'vendor-echarts'
           if (id.includes('onnxruntime') || id.includes('@huggingface')) return 'vendor-ai'

@@ -1,0 +1,339 @@
+{
+  "layout": {
+    "reactColumn": "React · Ant Design",
+    "vueColumn": "Vue 3 · Element Plus (ซับแอป)",
+    "subappTitle": "ซับแอป vue-app (พอร์ต 7101)",
+    "subappDesc": "การ implement Vue ของกรณีนี้ (การใช้ Element Plus อย่างเป็นทางการ) ย้ายเป็นโปรเจกต์แยกและผสานระหว่างรันไทม์โดย qiankun",
+    "openLoaded": "เปิดกรณีนี้ในซับแอป Vue",
+    "openLoad": "โหลดซับแอป Vue และเปิดกรณีนี้",
+    "targetPre": "หน้าเป้าหมาย: ",
+    "targetPost": ". หลังจากโหลดแล้ว เมนูฟังก์ชันของซับแอปจะปรากฏในแถบด้านซ้าย สลับกรณีอื่นได้ทันที",
+    "diffTitle": "การเปรียบเทียบหลักการ",
+    "diffPoint": "จุดที่เปรียบเทียบ",
+    "diffAntd": "React · Ant Design",
+    "diffVue": "Vue 3 · Element Plus",
+    "codeTitle": "สัญญาณโค้ดหลัก",
+    "codeAntd": "Ant Design / React",
+    "codeVue": "Vue 3 / Element Plus"
+  },
+  "parentChild": {
+    "title": "การส่งค่าจากพ่อไปลูก",
+    "subtitle": "พ่อ→ลูก: props (React) vs defineProps (Vue); ลูก→พ่อ: callback vs emit event ที่กำหนดเอง",
+    "tagProps": "Props ไหลของข้อมูลแบบทางเดียว",
+    "tagEmit": "onChange / emit",
+    "tagLift": "การยกสถานะขึ้น",
+    "receiveProps": "Todo List (ลูก) · รับ props:",
+    "inputPlaceholder": "เพิ่มรายการ…",
+    "emptyWarn": "ห้ามว่าง",
+    "addButton": "เพิ่ม",
+    "emptyText": "ยังไม่มีรายการ — ลูกแจ้งพ่อผ่าน callback onAdd",
+    "demoTitle": "OKR ไตรมาสนี้",
+    "item1": "ทำเครื่องมือ React-Vue ให้เสร็จ",
+    "item2": "ลง组件重構",
+    "parentState": "state ของพ่อ: items.length =",
+    "diff": {
+      "fatherToChild": {
+        "title": "พ่อ → ลูก",
+        "antd": "function Child(props) {/* props.title */}",
+        "vue": "<script setup>const props = defineProps(['title'])</script>"
+      },
+      "childToFather": {
+        "title": "ลูก → พ่อ",
+        "antd": "<Child onAdd={(v)=>setList(l=>[...l,v])} />",
+        "vue": "<script setup>const emit = defineEmits(['add'])\nemit('add', v)</script>"
+      },
+      "defaultValue": {
+        "title": "ค่ามาตรฐาน",
+        "antd": "function Child({ title = '默认' }) {}",
+        "vue": "withDefaults(defineProps({ title: { type: String, default: '默认' } }), {})"
+      },
+      "propsModify": {
+        "title": "การแก้ props",
+        "antd": "เปลี่ยนโดยตรงไม่ได้; ให้พ่อเปลี่ยน state ผ่าน callback",
+        "vue": "เปลี่ยนโดยตรงไม่ได้; v-model:xxx คือ syntactic sugar ของ emit('update:xxx')"
+      },
+      "eventNaming": {
+        "title": "การตั้งชื่อ event",
+        "antd": "props callback onXxx camelCase",
+        "vue": "emit('add') kebab-case template @add"
+      }
+    }
+  },
+  "twoWay": {
+    "title": "การผูกสองทาง",
+    "subtitle": "React: 受控คอมโพเนนต์ (value + onChange); Vue: v-model syntactic sugar (:modelValue + @update:modelValue)",
+    "tagSugar": "การควบคุม vs syntactic sugar",
+    "tagMulti": "v-model:xxx หลายฟิลด์",
+    "tagState": "useState / ref",
+    "nameLabel": "ชื่อ: ",
+    "namePlaceholder": "กรอกชื่อ",
+    "demoName": "สมชาย",
+    "enableLabel": "เปิดใช้ฟีเจอร์: ",
+    "currentLabel": "ปัจจุบัน: ",
+    "enabledText": "เปิดใช้งาน",
+    "disabledText": "ปิดใช้งาน",
+    "volumeLabel": "ระดับเสียง: ",
+    "customLabel": "การผูกสองทางของคอมโพเนนต์ที่กำหนดเอง (value + onChange): ",
+    "customCounterLabel": "เคาน์เตอร์ที่กำหนดเอง",
+    "parentStateLabel": "state ของพ่อ",
+    "parentCount": "count ของพ่อ =",
+    "controlledNote": "(ลูกไม่มีสถานะของตัวเอง ถูกควบคุมทั้งหมด)",
+    "diff": {
+      "input": {
+        "title": "อินพุต",
+        "antd": "value={x} onChange={e=>setX(e.target.value)}",
+        "vue": "v-model=\"x\""
+      },
+      "switch": {
+        "title": "สวิตช์",
+        "antd": "checked={x} onChange={setX}",
+        "vue": "v-model=\"x\" (คอมโพเนนต์ใช้ checked ภายใน)"
+      },
+      "custom": {
+        "title": "คอมโพเนนต์ที่กำหนดเอง (ค่าเดียว)",
+        "antd": "value={n} onChange={setN}",
+        "vue": "<Counter v-model=\"n\" />  → props.modelValue + emit('update:modelValue')"
+      },
+      "multiField": {
+        "title": "การผูกสองทางหลาย字段",
+        "antd": "ทีละ字段 value/a/b/c + onChangeXxx",
+        "vue": "v-model:title / v-model:visible / v-model:count"
+      },
+      "modifier": {
+        "title": "ตัวแก้ไข",
+        "antd": "เขียน trim/lowercase เองใน onChange",
+        "vue": ".trim .number .lazy，defineModel({ trim: true })"
+      },
+      "essence": {
+        "title": "สาระสำคัญ",
+        "antd": "one-way data flow; ขับด้วย onChange เอง",
+        "vue": "one-way data flow (props อ่านอย่างเดียว + emit); v-model เป็น syntactic sugar"
+      }
+    }
+  },
+  "provide": {
+    "title": "การส่งค่าข้ามชั้น (Provide / Inject)",
+    "subtitle": "เลี่ยง drilling props ข้ามชั้น: React ใช้ createContext + Provider + useContext; Vue ใช้ provide / inject + readonly",
+    "tagDrilling": "Props drilling",
+    "tagContext": "Context / provide/inject",
+    "tagDi": "การฉีด dependency",
+    "childLayer": "ชั้นที่ 3 · Child",
+    "childDirect": "ใช้ useContext() ตรงๆ",
+    "themeLabel": "theme: ",
+    "userLabel": "ผู้ใช้: ",
+    "notLoggedIn": "ยังไม่ล็อกอิน",
+    "grandchildToggle": "หลานทำ「สลับ主题」",
+    "fatherLayer": "ชั้นที่ 2 · Father (ไม่มี props ผ่านต่อไป)",
+    "grandpaLayer": "ชั้นที่ 1 · GrandPa (Provider)",
+    "toggleTheme": "สลับ主题",
+    "diff": {
+      "injectPoint": {
+        "title": "ประกาศ「จุดฉีด」",
+        "antd": "const Ctx = createContext(defaultValue)",
+        "vue": "setup() ระดับบน: provide('key', value) หรือ app.provide() ที่ root"
+      },
+      "provide": {
+        "title": "จัด和价值",
+        "antd": "<Ctx.Provider value={...}>\n  {children}\n</Ctx.Provider>",
+        "vue": "provide('theme', { cur, setCur, user })"
+      },
+      "consume": {
+        "title": "รับ价值",
+        "antd": "const { theme } = useContext(Ctx)",
+        "vue": "const theme = inject('theme', defaultVal)"
+      },
+      "default": {
+        "title": "กลไกค่ามาตรฐาน",
+        "antd": "createContext(default); คืน default เมื่อไม่ถูก Provider ห่อ",
+        "vue": "inject(key, default) — อาร์กิวเมนต์ที่สองคือค่ามาตรฐาน"
+      },
+      "reactive": {
+        "title": "ปฏิบัต",
+        "antd": "การเปลี่ยน reference ของ Provider value (setState) → consumer ทุกตัว re-render",
+        "vue": "ส่ง ref/reactive ให้ provide → inject ตอบสนอเอง"
+      },
+      "safe": {
+        "title": "ความปลอดภัยการแก้",
+        "antd": "ค่า Context เป็นโครงสร้างอะไรก็ได้; กำหนดให้แก้ผ่าน callback เท่านั้น",
+        "vue": "provide(key, readonly(state)) ห้ามลูกแก้โดยตรง"
+      }
+    }
+  },
+  "ref": {
+    "title": "Ref / การทำงาน DOM",
+    "subtitle": "React: useRef (DOM/ตัวแปร) + forwardRef + useImperativeHandle; Vue: ref=\"x\" + defineExpose",
+    "tagRef": "useRef vs ref",
+    "tagImperative": "API แบบคำสั่ง",
+    "tagForward": "forwardRef / defineExpose",
+    "videoTitle": "วีดีโอ \"React vs Vue\"",
+    "inputPlaceholder": "คลิก「โฟกัส」เพื่อเลือกข้อความ…",
+    "focusSelect": "โฟกัส + เลือก",
+    "reverseText": "กลับข้อความ",
+    "reverseLog": "กลับข้อความในอินพุต → ",
+    "logEmpty": "พื้นที่ล็อกด้านล่าง: คลิกปุ่มด้านขวาเพื่อเลื่อนลงล่างอัตโนมัติ (scrollBox.current.scrollTo)",
+    "appendScroll": "เพิ่ม (เลื่อนขึ้นบน)",
+    "appendLog": "เพิ่มล็อก: ",
+    "clear": "ล้าง",
+    "domRefCard": "① DOM Ref: ควบคุม input / div ดั้งเดิม",
+    "imperativeCard": "② forwardRef + useImperativeHandle: 命令式คอมโพเนนต์ API",
+    "playing": "▶ กำลังเล่น",
+    "paused": "⏸ หยุดชั่วคราว",
+    "playBtn": "▶ play()",
+    "pauseBtn": "⏸ pause()",
+    "seekBtn": "⏭ seek(30s)",
+    "jumpEnd": "⏩ ไปตอนจบ",
+    "resetBtn": "⟲ reset()",
+    "getStateBtn": "getState() → พิมพ์",
+    "imperativeNote1": "พ่ออ่าน state ภายในของลูกโดยตรงไม่ได้ ต้องผ่าน",
+    "imperativeNote2": "เปิดเผยเมธอดอย่างชัดเจน ตรงกับ Vue 3",
+    "imperativeNote3": "ตามลำดับ",
+    "diff": {
+      "domRef": {
+        "title": "การประกาศ DOM ref",
+        "antd": "const r = useRef(null); <input ref={r}/>",
+        "vue": "const r = ref(null); <input ref=\"r\" /> (ชื่อเดียวกันก็ผูกได้)"
+      },
+      "crossRef": {
+        "title": "ส่ง ref ข้ามคอมโพเนนต์",
+        "antd": "forwardRef(MyComp(props, ref))",
+        "vue": "ref ของลูกชี้ root DOM โดยค่าเริ่มต้น; หรือ $refs (options API)"
+      },
+      "exposeApi": {
+        "title": "เปิดเผย API แบบคำสั่ง",
+        "antd": "useImperativeHandle(ref, () => ({ play, ... }), deps)",
+        "vue": "defineExpose({ play, pause, getState })"
+      },
+      "readWrite": {
+        "title": "อ่าน / เขียนค่า ref",
+        "antd": "อ่าน/เขียน r.current; เปลี่ยน .current ไม่ trigger เรนเดอร์",
+        "vue": "อ่าน/เขียน r.value; ref(reactive) ตอบสนองเอง"
+      },
+      "multiRef": {
+        "title": "หลาย ref: รายการ",
+        "antd": "ref={el => arr[i] = el} (callback ref) หรือ useRef([])",
+        "vue": "<div v-for=\"i in 5\" :ref=\"el => list[i]=el\" /> 或 :ref=\"keyed\""
+      },
+      "sideEffect": {
+        "title": "การทำงาน DOM แบบ「side effect」",
+        "antd": "ทำงานใน useEffect (หลัง mount / หลัง deps เปลี่ยน)",
+        "vue": "ใน hook onMounted"
+      }
+    }
+  },
+  "slot": {
+    "title": "สล็อต / การกระจาย Children",
+    "subtitle": "React: children / หลาย ReactNode props (named) / renderItem render-prop (scoped); Vue: default / named / scoped slot",
+    "tagChildren": "children · named · scoped",
+    "tagRender": "renderItem = scoped slot",
+    "tagDistribute": "การกระจายเนื้อหา",
+    "defaultSlot": "① สล็อตเริ่มต้น: children",
+    "welcome": "🎯 ยินดีต้อนรับสู่เวิร์กสเปซ",
+    "todayText": "วันนี้อากาศดี ลูกเรนเดอร์ทั้งบล็อกนี้ผ่าน props.children โดยตรง",
+    "startWork": "เริ่มงาน",
+    "viewNotify": "ดูการแจ้งเตือน 3",
+    "namedSlot": "② named slots: หลาย ReactNode props (title / extra / footer / children)",
+    "subtitle2": "วิศวกร前端 · 5 ปี",
+    "setting": "ตั้งค่า",
+    "followed": "ติดตามแล้ว",
+    "follow": "ติดตาม",
+    "comment": "💬 ความคิดเห็น: 128",
+    "repost": "🔁 แชร์ต่อ: 54",
+    "view": "👀 การดู: 2.3k",
+    "bodyPre": "กำลังสร้าง",
+    "bodyMid1": "โปรเจกต์ไฮบริด,",
+    "bodyUse": "ใช้",
+    "bodyMid2": "named slots กระจายเนื้อหา,",
+    "bodyVue": "ตรงกับ Vue",
+    "bodyEnd": "ตามนี้",
+    "scopedSlot": "③ scoped slot: renderItem (render-prop)",
+    "soldOut": "สินค้าหมด",
+    "noData": "ไม่มีข้อมูล",
+    "productKeyboard": "คีย์บอร์ด",
+    "productMouse": "เมาส์",
+    "productMonitor": "จอแสดงผล",
+    "diff": {
+      "default": {
+        "title": "สล็อตเริ่มต้น",
+        "antd": "props.children",
+        "vue": "<slot />"
+      },
+      "named": {
+        "title": "named slots",
+        "antd": "หลาย props: title / header / footer เป็น ReactNode ทั้งหมด",
+        "vue": "<slot name=\"header\" />\n<template #header>...</template>"
+      },
+      "scoped": {
+        "title": "scoped slot (เรนเดอร์รายการ)",
+        "antd": "renderItem={(row, idx) => <Item />} หรือ itemRender prop",
+        "vue": "<template #default=\"{ row, $index }\">\n  直接使用 row / $index\n</template>"
+      },
+      "fallback": {
+        "title": "เนื้อหาสำรอง",
+        "antd": "เขียนในคอนเทนเนอร์: children || โหนดเริ่มต้น",
+        "vue": "<slot>默认内容</slot>"
+      },
+      "multiSlot": {
+        "title": "หลาย slot + ข้อมูล",
+        "antd": "แต่ละ slot prop รับ (scope) => ReactNode (function slot)",
+        "vue": "<slot name=\"foot\" :total=\"total\" :count=\"count\" />\n<template #foot=\"{ total, count }\">"
+      },
+      "scenario": {
+        "title": "กรณีการใช้งาน",
+        "antd": "Card / Modal / Table column / List itemRender ทั่วไป",
+        "vue": "เช่นเดียวกับด้านซ้าย + v-slot"
+      }
+    }
+  },
+  "state": {
+    "title": "การแชร์ state ทั่วไป",
+    "subtitle": "React: createContext + useReducer หรือ useMemo ห่อ store; Vue: reactive + provide/inject หรือ Pinia หน้านี้เปรียบเทียบเฉพาะ「native」ไม่เอา Redux/Zustand/Pinia",
+    "tagContext": "Context vs provide+reactive",
+    "tagCart": "ตัวอย่างตะกร้าสินค้า",
+    "tagShare": "แชร์ state ข้ามคอมโพเนนต์",
+    "cartTitle": "ตะกร้า (state ที่แชร์)",
+    "wallet": "กระเป๋าเงิน: ¥",
+    "qtyLabel": "จำนวน: ",
+    "amtLabel": "ยอด: ",
+    "checkout": "ชำระตอนนี้",
+    "productList": "รายการสินค้า (consumer อิสระ)",
+    "namePlaceholder": "ชื่อสินค้า",
+    "pricePlaceholder": "ราคา",
+    "addButton": "เพิ่ม",
+    "emptyCart": "ตะกร้าว่าง",
+    "subtotal": "ยอดรวม: ¥",
+    "book1": "Vue 3 实战",
+    "book2": "React 设计模式",
+    "diff": {
+      "native": {
+        "title": "แนวทาง (native)",
+        "antd": "createContext + Provider + useContext; เก็บ state ใน Provider",
+        "vue": "reactive หรือ ref object + provide(key, store); หรือ Pinia (store ทางการ)"
+      },
+      "reference": {
+        "title": "การอ้าง state",
+        "antd": "value ของ Provider เป็น object ใหม่ทุก setState; เปลี่ยน reference ทำให้ consumer ทุกตัว re-render",
+        "vue": "reference ของ reactive object ไม่เปลี่ยน; เปลี่ยน property จะ trigger ผู้subscribe นั้นอย่างแม่นยำ"
+      },
+      "perf": {
+        "title": "การปรับประสิทธิภาพ",
+        "antd": "แยกเป็นหลาย Context / memo + useCallback / useMemo / selector lib",
+        "vue": "computed cache อัตโนมัติ; ระดับคอมโพเนนต์แม่นยำ"
+      },
+      "async": {
+        "title": "การแก้แบบ async",
+        "antd": "เขียน useCallback(async ()=> {...setState}) ใน Provider",
+        "vue": "action คือ async ฟังก์ชันธรรมดาที่แก้ reactive property โดยตรง"
+      },
+      "devtools": {
+        "title": "Devtools",
+        "antd": "React DevTools Components ดู Context; Redux/Zustand มี panel เฉพาะ",
+        "vue": "Vue DevTools → panel Pinia หรือ Setup state tree"
+      },
+      "prod": {
+        "title": "wrapper ที่ใช้ในโปรดักชัน",
+        "antd": "Zustand / Redux Toolkit / Jotai",
+        "vue": "Pinia (แทน Vuex)"
+      }
+    }
+  }
+}

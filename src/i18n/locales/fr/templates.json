@@ -1,0 +1,22 @@
+{
+  "page": {
+    "title": "Bibliothèque de modèles open source Templates",
+    "descLead": "{count} modèles open source purement upstream, identifiés dans l'archive Front-End locale (anciennement classés D, non portés).",
+    "descTail": "Seules les métadonnées telles que la pile technique et les capacités sont collectées ; tous sont des projets publics sans code interne ni données sensibles."
+  },
+  "empty": "Aucun modèle dans cette catégorie",
+  "card": {
+    "upstream": "Voir le dépôt amont",
+    "derivedTip": "Projet dérivé local, sans dépôt public indépendant",
+    "templateTip": "Modèle open source public, sans adresse de dépôt indépendante",
+    "derivedLocal": "Dérivé de la même base (local)",
+    "templateLocal": "Modèle open source (local)"
+  },
+  "groups": {
+    "all": "全部",
+    "react": "React",
+    "vue": "Vue",
+    "mobile": "移动端",
+    "libs": "组件库·工具"
+  }
+}

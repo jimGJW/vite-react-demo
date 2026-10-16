@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Input, Switch, Slider, Space, Tag, Divider, Typography } from 'antd'
 import CompareLayout from '../../../utils/CompareLayout.jsx'
+import { useI18n } from '../../../i18n/index.js'
 
 
 const { Text } = Typography
@@ -12,7 +13,8 @@ const { Text } = Typography
    - 滑块
    - 自定义组件：实现类似 v-model 的 value/onChange 约定
    ===================================================================== */
-function CustomCounter({ value, onChange, label = '自定义计数器' }) {
+function CustomCounter({ value, onChange, label }) {
+  const { t } = useI18n()
   const dec = () => onChange?.(value - 1)
   const inc = () => onChange?.(value + 1)
   return (
@@ -20,13 +22,14 @@ function CustomCounter({ value, onChange, label = '自定义计数器' }) {
       <button className="btn-mini" onClick={dec}>-</button>
       <div className="input-mini">{value}</div>
       <button className="btn-mini" onClick={inc}>+</button>
-      <Tag style={{ marginLeft: 8 }}>{label}</Tag>
+      <Tag style={{ marginLeft: 8 }}>{label || t('compare.twoWay.customCounterLabel')}</Tag>
     </Space.Compact>
   )
 }
 
 function ReactDemo() {
-  const [name, setName] = useState('张三')
+  const { t } = useI18n()
+  const [name, setName] = useState(t('compare.twoWay.demoName'))
   const [enabled, setEnabled] = useState(true)
   const [volume, setVolume] = useState(60)
   const [count, setCount] = useState(3)
@@ -34,29 +37,29 @@ function ReactDemo() {
   return (
     <Space direction="vertical" style={{ width: '100%' }} size="middle">
       <div>
-        <Text strong>姓名：</Text>
+        <Text strong>{t('compare.twoWay.nameLabel')}</Text>
         <Input
           value={name}
           onChange={e => setName(e.target.value)}
           allowClear
-          placeholder="请输入姓名"
+          placeholder={t('compare.twoWay.namePlaceholder')}
           style={{ width: 200, marginLeft: 8 }}
         />
         <Tag color="blue" style={{ marginLeft: 8 }}>Hello, {name}!</Tag>
       </div>
       <div>
-        <Text strong>启用功能：</Text>
+        <Text strong>{t('compare.twoWay.enableLabel')}</Text>
         <Switch
           checked={enabled}
           onChange={v => setEnabled(v)}
           style={{ marginLeft: 8 }}
         />
         <Tag color={enabled ? 'green' : 'default'} style={{ marginLeft: 8 }}>
-          当前：{enabled ? '已启用' : '已禁用'}
+          {t('compare.twoWay.currentLabel')}{enabled ? t('compare.twoWay.enabledText') : t('compare.twoWay.disabledText')}
         </Tag>
       </div>
       <div>
-        <Text strong>音量：</Text>
+        <Text strong>{t('compare.twoWay.volumeLabel')}</Text>
         <Slider
           value={volume}
           onChange={v => setVolume(v)}
@@ -68,12 +71,12 @@ function ReactDemo() {
       <Divider style={{ margin: '6px 0' }} />
 
       <div>
-        <Text strong>自定义组件双向绑定（value + onChange）：</Text>
+        <Text strong>{t('compare.twoWay.customLabel')}</Text>
       </div>
-      <CustomCounter value={count} onChange={setCount} label="父组件 state" />
+      <CustomCounter value={count} onChange={setCount} label={t('compare.twoWay.parentStateLabel')} />
       <div style={{ fontSize: 12, color: '#666' }}>
-        父组件 count = <Tag color="purple">{count}</Tag>
-        &nbsp;（子组件内部没有自己的状态，完全受控）
+        {t('compare.twoWay.parentCount')} <Tag color="purple">{count}</Tag>
+        &nbsp;{t('compare.twoWay.controlledNote')}
       </div>
     </Space>
   )
@@ -81,24 +84,25 @@ function ReactDemo() {
 
 /* ========== 页面 ========== */
 export default function CompareTwoWay() {
+  const { t } = useI18n()
   return (
     <CompareLayout
-      title="双向绑定"
-      subtitle="React：受控组件（value + onChange）显式绑定；Vue：v-model 语法糖（:modelValue + @update:modelValue）。"
+      title={t('compare.twoWay.title')}
+      subtitle={t('compare.twoWay.subtitle')}
       tags={[
-        { label: '受控 vs 语法糖', color: 'magenta' },
-        { label: 'v-model:xxx 多字段' },
-        { label: 'useState / ref' },
+        { label: t('compare.twoWay.tagSugar'), color: 'magenta' },
+        { label: t('compare.twoWay.tagMulti') },
+        { label: t('compare.twoWay.tagState') },
       ]}
       reactDemo={<ReactDemo />}
       vueAppPath="/pattern/two-way"
       diffRows={[
-        { title: '输入框', antd: 'value={x} onChange={e=>setX(e.target.value)}', vue: 'v-model="x"' },
-        { title: '开关', antd: 'checked={x} onChange={setX}', vue: 'v-model="x" (组件内部约定 checked)' },
-        { title: '自定义组件 (单值)', antd: 'value={n} onChange={setN}', vue: '<Counter v-model="n" />  → props.modelValue + emit(\'update:modelValue\')' },
-        { title: '多字段双向绑定', antd: '逐字段 value/a/b/c + onChangeXxx', vue: 'v-model:title / v-model:visible / v-model:count' },
-        { title: '修改修饰符', antd: 'onChange 里 trim/lowercase 自己写', vue: '.trim .number .lazy，defineModel({ trim: true })' },
-        { title: '本质', antd: '单向数据流；手动 onChange 驱动', vue: '单向数据流（props只读 + emit）；v-model 是语法糖' },
+        { title: t('compare.twoWay.diff.input.title'), antd: t('compare.twoWay.diff.input.antd'), vue: t('compare.twoWay.diff.input.vue') },
+        { title: t('compare.twoWay.diff.switch.title'), antd: t('compare.twoWay.diff.switch.antd'), vue: t('compare.twoWay.diff.switch.vue') },
+        { title: t('compare.twoWay.diff.custom.title'), antd: t('compare.twoWay.diff.custom.antd'), vue: t('compare.twoWay.diff.custom.vue') },
+        { title: t('compare.twoWay.diff.multiField.title'), antd: t('compare.twoWay.diff.multiField.antd'), vue: t('compare.twoWay.diff.multiField.vue') },
+        { title: t('compare.twoWay.diff.modifier.title'), antd: t('compare.twoWay.diff.modifier.antd'), vue: t('compare.twoWay.diff.modifier.vue') },
+        { title: t('compare.twoWay.diff.essence.title'), antd: t('compare.twoWay.diff.essence.antd'), vue: t('compare.twoWay.diff.essence.vue') },
       ]}
       code={{
         antdCode:

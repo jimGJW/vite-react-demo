@@ -13,13 +13,16 @@
  *   <ScanEmpty text="暂无告警" subText="最近 24 小时无异常" height={220} />
  */
 
+import { useI18n } from '../../../i18n/index.js'
+
 export default function ScanEmpty({
-  text = '暂无数据',
+  text,
   subText,
   height = 180,
   icon = true,
   className = '',
 }) {
+  const { t } = useI18n()
   return (
     <div className={`st-scanempty ${className}`} style={{ height }} role="status">
       {/* 网格底纹 + 扫描光带 */}
@@ -37,7 +40,7 @@ export default function ScanEmpty({
       )}
 
       <div className="st-scanempty__text">
-        <div className="st-scanempty__title">{text}</div>
+        <div className="st-scanempty__title">{text ?? t('studio.comp.empty')}</div>
         {subText != null && <div className="st-scanempty__sub">{subText}</div>}
       </div>
     </div>

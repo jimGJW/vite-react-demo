@@ -1,0 +1,11 @@
+{
+  "title": "關於頁面",
+  "desc": "這是一個標準的 React 專案腳手架示例，整合了路由、佈局和多頁面結構，可以作為你後續開發的起點。",
+  "stackTitle": "技術棧",
+  "react19": "核心 UI 庫",
+  "router7": "前端路由",
+  "vite8": "建置工具",
+  "eslint": "程式碼規範",
+  "structureTitle": "目錄結構",
+  "structure": "src/\n├── layouts/     # 版面元件\n├── pages/       # 頁面元件（每個頁面獨立資料夾）\n├── App.jsx      # 路由入口\n├── main.jsx     # 應用程式入口\n└── index.scss    # 全域樣式"
+}

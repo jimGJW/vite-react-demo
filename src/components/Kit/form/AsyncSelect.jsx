@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Select, Spin } from 'antd'
+import { useI18n } from '../../../i18n'
 
 /**
  * AsyncSelect · 异步选择器
@@ -36,8 +37,8 @@ export default function AsyncSelect({
   multiple = false,
   labelInValue = false,
   debounce = 300,
-  placeholder = '请选择',
-  emptyText = '暂无数据',
+  placeholder,
+  emptyText,
   renderOption,
   allowClear = true,
   showSearch = true,
@@ -47,6 +48,9 @@ export default function AsyncSelect({
   style,
   className = '',
 }) {
+  const { t } = useI18n()
+  const placeholderMsg = placeholder ?? t('kit.async.placeholder')
+  const emptyMsg = emptyText ?? t('kit.async.empty')
   const isAsync = typeof load === 'function'
   const [asyncOptions, setAsyncOptions] = useState([])
   const [loading, setLoading] = useState(false)
@@ -142,10 +146,10 @@ export default function AsyncSelect({
       allowClear={allowClear}
       showSearch={showSearch}
       filterOption={false} // 异步模式下由服务端过滤
-      placeholder={placeholder}
+      placeholder={placeholderMsg}
       onOpenChange={handleOpenChange}
       onSearch={handleSearch}
-      notFoundContent={loading ? <Spin size="small" /> : <div className="kit-async-select__empty">{emptyText}</div>}
+      notFoundContent={loading ? <Spin size="small" /> : <div className="kit-async-select__empty">{emptyMsg}</div>}
     />
   )
 }

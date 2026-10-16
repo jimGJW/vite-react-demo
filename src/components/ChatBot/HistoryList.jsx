@@ -8,17 +8,18 @@
 import { memo } from 'react'
 import { Button, Drawer, Empty, List, Popconfirm, Space, Spin, Typography } from 'antd'
 import { ClearOutlined, DeleteOutlined, MessageOutlined, PlusOutlined } from '@ant-design/icons'
+import { useI18n } from '../../i18n/index.js'
 
 const { Text } = Typography
 
-function formatTime(ts) {
+function formatTime(ts, t) {
   if (!ts) return ''
   const d = new Date(ts)
   const diff = Date.now() - d.getTime()
-  if (diff < 60_000) return '刚刚'
-  if (diff < 3600_000) return `${Math.floor(diff / 60_000)} 分钟前`
-  if (diff < 86_400_000) return `${Math.floor(diff / 3600_000)} 小时前`
-  return `${d.getMonth() + 1}月${d.getDate()}日`
+  if (diff < 60_000) return t('chatbot.history.justNow')
+  if (diff < 3600_000) return t('chatbot.history.minutesAgo', { count: Math.floor(diff / 60_000) })
+  if (diff < 86_400_000) return t('chatbot.history.hoursAgo', { count: Math.floor(diff / 3600_000) })
+  return t('chatbot.history.date', { month: d.getMonth() + 1, day: d.getDate() })
 }
 
 export default memo(function HistoryList({
@@ -34,11 +35,12 @@ export default memo(function HistoryList({
   onClear,
   onNewChat,
 }) {
+  const { t } = useI18n()
   const hasMore = history.length < historyTotal
 
   return (
     <Drawer
-      title="历史会话"
+      title={t('chatbot.history.title')}
       placement="right"
       width={360}
       open={open}
@@ -46,14 +48,14 @@ export default memo(function HistoryList({
       extra={
         <Space size={4}>
           <Button size="small" icon={<PlusOutlined />} onClick={onNewChat}>
-            新对话
+            {t('chatbot.history.newChat')}
           </Button>
-          <Popconfirm title="确定清空全部历史会话？" onConfirm={onClear} disabled={!history.length}>
+          <Popconfirm title={t('chatbot.history.clearAll')} onConfirm={onClear} disabled={!history.length}>
             <Button
               size="small"
               danger
               type="text"
-              aria-label="清空全部历史会话"
+              aria-label={t('chatbot.history.clearAllAria')}
               icon={<ClearOutlined />}
               disabled={!history.length}
             />
@@ -63,7 +65,7 @@ export default memo(function HistoryList({
     >
       <Spin spinning={loading}>
         {history.length === 0 && !loading ? (
-          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无历史会话" />
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('chatbot.history.empty')} />
         ) : (
           <List
             size="small"
@@ -75,7 +77,7 @@ export default memo(function HistoryList({
                 actions={[
                   <Popconfirm
                     key="del"
-                    title="删除该会话？"
+                    title={t('chatbot.history.delete')}
                     onConfirm={(e) => {
                       e?.stopPropagation?.()
                       onDelete?.(item.sessionId)
@@ -86,7 +88,7 @@ export default memo(function HistoryList({
                       type="text"
                       size="small"
                       danger
-                      aria-label={`删除会话 ${item.title || ''}`}
+                      aria-label={t('chatbot.history.deleteAria', { title: item.title || '' })}
                       icon={<DeleteOutlined />}
                       onClick={(e) => e.stopPropagation()}
                     />
@@ -95,8 +97,8 @@ export default memo(function HistoryList({
               >
                 <List.Item.Meta
                   avatar={<MessageOutlined className="cb-history__icon" />}
-                  title={<Text ellipsis>{item.title || '未命名会话'}</Text>}
-                  description={<Text type="secondary" className="cb-history__time">{formatTime(item.updateTime)}</Text>}
+                  title={<Text ellipsis>{item.title || t('chatbot.history.unnamed')}</Text>}
+                  description={<Text type="secondary" className="cb-history__time">{formatTime(item.updateTime, t)}</Text>}
                 />
               </List.Item>
             )}
@@ -106,7 +108,7 @@ export default memo(function HistoryList({
         {hasMore && (
           <div className="cb-history__more">
             <Button size="small" type="link" loading={loading} onClick={() => onLoadMore?.()}>
-              加载更多
+              {t('chatbot.history.loadMore')}
             </Button>
           </div>
         )}

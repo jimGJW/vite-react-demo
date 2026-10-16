@@ -1,5 +1,6 @@
 import { useCountdown } from '../hooks.js'
 import { formatDuration } from '../utils.js'
+import { useI18n } from '../../../i18n'
 
 /**
  * Countdown · 倒计时
@@ -17,18 +18,19 @@ import { formatDuration } from '../utils.js'
  */
 
 function Cells({ days, hours, minutes, seconds }) {
+  const { t } = useI18n()
   const showDays = days > 0
   const items = showDays
     ? [
-        { value: days, unit: '天' },
-        { value: hours, unit: '时' },
-        { value: minutes, unit: '分' },
-        { value: seconds, unit: '秒' },
+        { value: days, unit: t('kit.countdown.day') },
+        { value: hours, unit: t('kit.countdown.hour') },
+        { value: minutes, unit: t('kit.countdown.minute') },
+        { value: seconds, unit: t('kit.countdown.second') },
       ]
     : [
-        { value: hours * 1, unit: '时' },
-        { value: minutes, unit: '分' },
-        { value: seconds, unit: '秒' },
+        { value: hours * 1, unit: t('kit.countdown.hour') },
+        { value: minutes, unit: t('kit.countdown.minute') },
+        { value: seconds, unit: t('kit.countdown.second') },
       ]
 
   return (

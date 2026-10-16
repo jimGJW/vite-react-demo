@@ -1,0 +1,68 @@
+{
+  "common": {
+    "expand": "Expand",
+    "collapse": "Collapse",
+    "close": "Close"
+  },
+  "quick": {
+    "voice": "Voice Assistant",
+    "agent": "AI Agent",
+    "on": "On",
+    "off": "Off",
+    "navSep": "Quick jump",
+    "jump": "Jump",
+    "other": "Other",
+    "top": "Back to top",
+    "hide": "Hide assistant button",
+    "assistant": "Assistant",
+    "fabTitle": "Assistant button (draggable)",
+    "fabAria": "Assistant button",
+    "restoreTitle": "Show assistant button",
+    "pages": {
+      "home": "Home",
+      "agent": "AI Agent Console",
+      "voice": "Voice Assistant",
+      "dashboard": "Dashboard",
+      "testCenter": "Test Center"
+    }
+  },
+  "voice": {
+    "title": "Voice Assistant",
+    "subtitle": "Speech to text · online / offline dual engines",
+    "charCount": "{count} chars",
+    "envOnline": "Online",
+    "envOffline": "Offline",
+    "copy": "Copy all",
+    "copied": "Copied ✓",
+    "clear": "Clear",
+    "sendToAgent": "Send to AI Agent →",
+    "sendToAgentTip": "Send the recognized text to the AI Agent for execution",
+    "historyTitle": "Recognition history",
+    "historyEmpty": "No recognition history yet. Click \"Start voice input\" or \"Start recording\" above to try",
+    "diagnose": "Environment diagnostics",
+    "browserLabel": "Browser",
+    "webSupport": "Online recognition (Web Speech API)",
+    "localSupport": "Offline recognition (local Whisper)",
+    "supported": "Supported",
+    "unsupported": "Not supported",
+    "webNote": "(Chrome Chinese recognition relies on Google services; may be unavailable on domestic networks)",
+    "localNote": "(the model is bundled in public/models/, fully offline)",
+    "currentStatus": "Current status",
+    "statusListening": "Listening online",
+    "statusRecording": "Recording",
+    "statusRecognizing": "Transcribing offline",
+    "statusIdle": "Idle",
+    "browser": {
+      "none": "Unknown",
+      "edge": "Microsoft Edge",
+      "chrome": "Google Chrome",
+      "firefox": "Mozilla Firefox",
+      "safari": "Apple Safari",
+      "unknown": "Unknown browser"
+    }
+  },
+  "globalAgent": {
+    "title": "AI Agent",
+    "hint": "🤖 Ctrl+Shift+A to open the Agent · Ctrl+↑↓ to scroll · Ctrl+⌥+←→ to go back/forward"
+  }
+}

@@ -8,7 +8,7 @@
     <!-- 明暗主题色：地址栏 / 原生控件跟随应用主题，避免暗色模式下白底闪烁 -->
     <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" content="#6366f1" />
-    <title>vite-react-demo</title>
+    <title>星际控制台 · 深空 / 地球 / 海洋数据看板</title>
     <style>
       /* 首屏骨架：入口 chunk 加载前避免白屏；React 挂载时会替换 #root 内容 */
       #boot-skeleton {
@@ -47,7 +47,7 @@
     <div id="root">
       <div id="boot-skeleton">
         <div class="spinner"></div>
-        <div>正在加载应用…</div>
+        <div id="boot-text">正在加载应用…</div>
       </div>
     </div>
     <noscript>
@@ -55,6 +55,31 @@
         本应用需要启用 JavaScript 才能运行，请在浏览器设置中开启后刷新页面。
       </div>
     </noscript>
+    <script>
+      /* 首屏骨架文案跟随持久化语种（React 挂载前就跑，与 I18nProvider 读同一个 key） */
+      ;(function () {
+        try {
+          var lang = localStorage.getItem('app.lang.v1') || 'zh-CN'
+          var text = {
+            'zh-CN': '正在加载应用…',
+            'zh-TW': '正在載入應用…',
+            en: 'Loading…',
+            ja: '読み込み中…',
+            ko: '불러오는 중…',
+            de: 'Wird geladen…',
+            fr: 'Chargement…',
+            th: 'กำลังโหลด…',
+            mn: 'Ачаалж байна…',
+            bo: 'ཞུགས་བཞིན་པ…',
+          }[lang]
+          if (text) {
+            var el = document.getElementById('boot-text')
+            if (el) el.textContent = text
+            document.documentElement.lang = lang
+          }
+        } catch (e) { /* 隐私模式等场景保持默认中文 */ }
+      })()
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

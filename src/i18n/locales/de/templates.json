@@ -1,0 +1,22 @@
+{
+  "page": {
+    "title": "Open-Source-Template-Bibliothek Templates",
+    "descLead": "{count} reine Upstream-Open-Source-Templates, identifiziert aus dem lokalen Front-End-Archiv (zuvor als D eingestuft, nicht portiert).",
+    "descTail": "Es werden nur Metadaten wie Tech-Stack und Fähigkeiten erfasst; alle sind öffentliche Projekte ohne internen Code oder sensible Daten."
+  },
+  "empty": "Keine Vorlagen in dieser Kategorie",
+  "card": {
+    "upstream": "Upstream-Repository ansehen",
+    "derivedTip": "Lokales Derivat, kein eigenständiges öffentliches Repository",
+    "templateTip": "Öffentliches Open-Source-Template, keine eigenständige Repository-Adresse",
+    "derivedLocal": "Abgeleitet von derselben Basis (lokal)",
+    "templateLocal": "Open-Source-Template (lokal)"
+  },
+  "groups": {
+    "all": "全部",
+    "react": "React",
+    "vue": "Vue",
+    "mobile": "移动端",
+    "libs": "组件库·工具"
+  }
+}

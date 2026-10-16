@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Button, Space, Tooltip } from 'antd'
 import { ClearOutlined, DownloadOutlined, UndoOutlined } from '@ant-design/icons'
+import { useI18n } from '../../../i18n'
 
 /**
  * SignaturePad · 电子签名板
@@ -33,11 +34,13 @@ export default function SignaturePad({
   defaultPenColor = DEFAULT_PEN_COLORS[0],
   showToolbar = true,
   showBaseline = true,
-  placeholder = '在此手写签名',
+  placeholder,
   downloadName = 'signature.png',
   disabled = false,
   className = '',
 }) {
+  const { t } = useI18n()
+  const placeholderMsg = placeholder ?? t('kit.kitSign.placeholder')
   const wrapRef = useRef(null)
   const canvasRef = useRef(null)
   const strokesRef = useRef([])
@@ -232,7 +235,7 @@ export default function SignaturePad({
           ref={canvasRef}
           className="kit-sign__canvas"
           role="img"
-          aria-label={placeholder}
+          aria-label={placeholderMsg}
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={handlePointerUp}
@@ -240,7 +243,7 @@ export default function SignaturePad({
           onPointerLeave={handlePointerUp}
         />
         {showBaseline && <div className="kit-sign__baseline" />}
-        {!hasInk && <div className="kit-sign__placeholder">{placeholder}</div>}
+        {!hasInk && <div className="kit-sign__placeholder">{placeholderMsg}</div>}
       </div>
 
       {showToolbar && (

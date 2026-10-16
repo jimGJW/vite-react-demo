@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { Tag } from 'antd'
+import { useI18n } from '../../../i18n'
 
 /**
  * TagInput · 标签输入
@@ -22,12 +23,14 @@ import { Tag } from 'antd'
 export default function TagInput({
   value = [],
   onChange,
-  placeholder = '输入后回车添加',
+  placeholder,
   max,
   disabled = false,
   allowDuplicates = false,
   className = '',
 }) {
+  const { t } = useI18n()
+  const placeholderMsg = placeholder ?? t('kit.tagInput.placeholder')
   const [input, setInput] = useState('')
   const [focused, setFocused] = useState(false)
   const inputRef = useRef(null)
@@ -99,7 +102,7 @@ export default function TagInput({
           ref={inputRef}
           className="kit-taginput__field"
           value={input}
-          placeholder={value.length ? '' : placeholder}
+          placeholder={value.length ? '' : placeholderMsg}
           onChange={(event) => setInput(event.target.value)}
           onKeyDown={handleKeyDown}
           onPaste={handlePaste}

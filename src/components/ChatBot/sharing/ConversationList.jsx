@@ -20,12 +20,11 @@ import { Avatar, Divider, Empty } from 'antd'
 import { RobotOutlined, UserOutlined } from '@ant-design/icons'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { useI18n } from '../../../i18n/index.js'
 import { isNewChatItem } from './shareProtocol.js'
 
 /* 插件数组是常量，提到模块级避免每次渲染新建数组、让 markdown 内部缓存失效 */
 const REMARK_PLUGINS = [remarkGfm]
-
-const DEFAULT_ANSWER_TIPS = '本答案由 AI 生成，仅供参考。'
 
 /* ---------------------------------------------------------------- 正文 */
 
@@ -103,12 +102,14 @@ export const ConversationItem = memo(function ConversationItem({
   renderers,
   renderContent,
   answerTips,
-  dividerText = '全新的开始',
+  dividerText,
 }) {
+  const { t } = useI18n()
+  const resolvedDividerText = dividerText ?? t('chatbot.divider.newStart')
   if (isNewChatItem(item)) {
     return (
       <Divider plain className="qa-divider">
-        {dividerText}
+        {resolvedDividerText}
       </Divider>
     )
   }
@@ -141,18 +142,22 @@ const ConversationList = memo(function ConversationList({
   data,
   renderers,
   renderContent,
-  emptyText = '暂无可展示的对话',
-  endText = '以上为分享内容',
+  emptyText,
+  endText,
   dividerText,
-  answerTips = DEFAULT_ANSWER_TIPS,
+  answerTips,
   className = '',
 }) {
+  const { t } = useI18n()
   const items = Array.isArray(data) ? data : []
+  const resolvedEmptyText = emptyText ?? t('chatbot.share.emptyConversation')
+  const resolvedEndText = endText ?? t('chatbot.share.endText')
+  const resolvedAnswerTips = answerTips ?? t('chatbot.answer.tips')
 
   if (!items.length) {
     return (
       <div className="qa-empty">
-        <Empty description={emptyText} image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        <Empty description={resolvedEmptyText} image={Empty.PRESENTED_IMAGE_SIMPLE} />
       </div>
     )
   }
@@ -165,11 +170,11 @@ const ConversationList = memo(function ConversationList({
           item={item}
           renderers={renderers}
           renderContent={renderContent}
-          answerTips={answerTips}
+          answerTips={resolvedAnswerTips}
           dividerText={dividerText}
         />
       ))}
-      {endText ? <div className="qa-list__end">{endText}</div> : null}
+      {resolvedEndText ? <div className="qa-list__end">{resolvedEndText}</div> : null}
     </div>
   )
 })

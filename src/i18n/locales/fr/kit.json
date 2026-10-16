@@ -1,0 +1,165 @@
+{
+  "page": {
+    "title": "Boîte à outils de composants Kit",
+    "descLead": "Des capacités transversales issues de deux projets locaux existants (ancien mobile / ancienne tablette), débarrassées du couplage métier et réécrites en composants React 19 + antd 5.",
+    "descTail": "La liste complète de l'étude (ce qui a été choisi, pourquoi, ce qui a été écarté) se trouve dans",
+    "tabInteraction": "Interaction mobile ({count})",
+    "tabDisplay": "Affichage de données ({count})",
+    "tabForm": "Contrôles de formulaire ({count})"
+  },
+  "display": {
+    "ellipsisTitle": "Ellipsis de texte",
+    "switchData": "Changer les données",
+    "ellipsisDesc": "Une seule ligne utilise nowrap + ellipsis, plusieurs lignes utilisent -webkit-line-clamp. La mesure caractère par caractère par dichotomie de l'original n'est plus nécessaire sur les navigateurs qui prennent en charge line-clamp ; elle a été entièrement supprimée.",
+    "singleTooltip": "Une ligne + infobulle",
+    "twoLines": "Deux lignes tronquées",
+    "twoLinesExpand": "Deux lignes + dépliable",
+    "countdownTitle": "Compte à rebours",
+    "countdownDesc": "L'original se décrémentait chaque seconde, si bien qu'un onglet d'arrière-plan bridé accumulait de la dérive ; ici chaque tick recalcule avec Date.now(), ce qui corrige dès le retour au premier plan.",
+    "countdownCardLabel": "Style carte (cible : dans 2 h 45 min)",
+    "countdownPlainLabel": "Style texte brut DD jours HH:mm:ss",
+    "statTitle": "Carte de statistiques (rouge à la hausse, vert à la baisse)",
+    "statDesc": "Fusionne le NumberInfo + Trend du projet d'origine. Les couleurs suivent la convention nationale—— hausse en rouge, baisse en vert ; passez colorMode=\"us\" pour la palette européenne/américaine.",
+    "timelineTitle": "Tendance temporelle TimelineChart",
+    "timelineDesc": "L'original dépendait de G2 + g2-plugin-slider (et générait domId avec Math.random(), incohérent en mode strict React 19 à double invocation) ; le dataZoom d'ECharts est intégré, donc la barre de zoom du bas + le zoom à la molette se configurent une seule fois.",
+    "noticeTitle": "Panneau de notifications",
+    "noticeDesc": "Fusionne le NoticeIcon et le Cart du projet d'origine (90 % de doublon). Le bouton d'effacement accepte une seconde confirmation—— il suffit de faire renvoyer une Promise à onClear.",
+    "markAllRead": "Tout marquer comme lu",
+    "noticeHint": "Cliquez sur la cloche pour déployer"
+  },
+  "stat": {
+    "completionTitle": "Taux de clôture des tickets ce mois",
+    "completionFooter": "+4,8 points de pourcentage vs. mois dernier",
+    "goalLabel": "Cible 95 %",
+    "inspectTitle": "Inspections quotidiennes",
+    "inspectSub": "Moyenne sur 7 jours",
+    "assetTitle": "Actifs par groupe",
+    "assetFooter": "Le centre de données a la part la plus élevée",
+    "onlineTitle": "Taux de disponibilité des équipements",
+    "onlineWave": "En ligne"
+  },
+  "demo": {
+    "inbound": "Entrée",
+    "outbound": "Sortie"
+  },
+  "form": {
+    "tagTitle": "Saisie d'étiquettes",
+    "tagDesc": "Espace / Entrée / virgule (demie ou pleine chasse) valident chacun ; quand le champ est vide, Retour arrière supprime l'étiquette précédente ; coller « 甲, 乙 丙 » se scinde d'un coup en trois étiquettes. 6 maximum.",
+    "currentTags": "Étiquettes actuelles : {tags}",
+    "emptyValue": "(vide)",
+    "asyncTitle": "Sélecteur asynchrone",
+    "asyncDesc": "La requête n'est lancée qu'au premier déploiement ou à la saisie d'un mot-clé (chargement paresseux) + anti-rebond de 300 ms + protection contre les requêtes concurrentes. Prend en charge le mappage des champs via fields et le rendu d'options personnalisé.",
+    "asyncPlaceholder": "Rechercher un actif / pinyin / groupe",
+    "asyncMultiPlaceholder": "Multi-sélection + chargement au montage",
+    "selected": "Sélectionné : {value}",
+    "notSelected": "(non sélectionné)",
+    "timerangeTitle": "Saisie de plage horaire",
+    "timerangeDesc": "Conserve les trois validations de l'original (fin après début / un segment sous la limite / pas de chevauchement) et ajoute l'indication de début-fin incomplets ; le total des heures est calculé en temps réel.",
+    "fillOverlap": "Remplir des plages qui se chevauchent",
+    "reset": "Rétablir"
+  },
+  "inter": {
+    "signTitle": "Signature électronique",
+    "signDesc": "Écriture Canvas + haute résolution DPR + annuler / effacer / export PNG. Supprime la dépendance react-canvas-draw et pose un fond blanc à l'export (sinon un PNG transparent devient noir dans les visionneuses).",
+    "pullTitle": "Tirer pour rafraîchir",
+    "pullDesc": "Coefficient d'amortissement 2,5, seuil 56 px. Ne se déclenche que lorsque tous les ancêtres défilables sont en haut, en utilisant overscroll-behavior: contain au lieu de preventDefault.",
+    "infiniteTitle": "Défilement infini",
+    "infiniteDesc": "Utilise IntersectionObserver au lieu d'écouteurs de défilement maison ; le nœud sentinelle reste monté et pendant le chargement une seule ligne de texte supplémentaire est rendue en dessous. {loaded}/36 éléments chargés.",
+    "infiniteEnd": "Les 36 éléments sont chargés",
+    "sortTitle": "Liste triable par glisser",
+    "sortDesc": "Zéro dépendance (le react-sortable-hoc de l'original est incompatible avec React 19). Tri par la poignée ; une fois la poignée focalisée, les touches ↑ / ↓ fonctionnent aussi.",
+    "dragging": "En cours de glissement",
+    "marqueeTitle": "Texte à défilement automatique",
+    "marqueeDesc": "Ne démarre que si le contenu dépasse réellement la largeur du conteneur ; durée d'animation = pixels de dépassement / speed, un texte long ne défile donc pas plus vite.",
+    "marqueeShort": "Un texte court ne défile pas",
+    "ballTitle": "Boule flottante",
+    "ballDesc": "La position est persistée comme le **rapport** de « left / (largeur d'écran − largeur de la boule) », donc elle reste pertinente après rotation ou redimensionnement. En relâchant, elle se colle au bord le plus proche ; un clic ramène en haut de la page.",
+    "ballShow": "Afficher",
+    "ballHide": "Masquer"
+  },
+  "sign": {
+    "generated": "Signature générée (dataURL de {bytes} octets)",
+    "empty": "Pas encore signé"
+  },
+  "ball": {
+    "position": "Coordonnées actuelles : left {left}px / top {top}px",
+    "hint": "La coordonnée après aimantation s'affichera ici après le glissement",
+    "backTop": "Retour en haut"
+  },
+  "pull": {
+    "tipDrag": "Tirez vers le bas pour essayer (le glisser à la souris fonctionne aussi)",
+    "tipRefresh": "L'actualisation insère un nouvel élément en haut",
+    "refreshedAt": "Actualisé à {time}"
+  },
+  "data": {
+    "longText": "La plateforme de gestion du cycle de vie des actifs couvre l'argumentation d'achat, la réception d'installation, l'inspection routinière, la maintenance préventive, la calibration métrologique, la réparation des pannes, l'analyse des bénéfices et la mise au rebut. L'absence d'enregistrement à une étape affecte le jugement sur l'état de l'actif et l'audit de conformité : chaque opération doit donc être conservée dans une archive électronique traçable.",
+    "rowTitle": "Fiche d'inspection n° {no}",
+    "tagInspection": "Inspection",
+    "tagPreventive": "Maintenance préventive",
+    "tagMetrology": "Vérification métrologique"
+  },
+  "ellipsis": {
+    "expand": "Déplier",
+    "collapse": "Replier"
+  },
+  "countdown": {
+    "day": "j",
+    "hour": "h",
+    "minute": "min",
+    "second": "s"
+  },
+  "notice": {
+    "empty": "Aucun message",
+    "clear": "Effacer",
+    "aria": "Notifications"
+  },
+  "miniProgress": {
+    "target": "Valeur cible"
+  },
+  "timeline": {
+    "seriesA": "Série A",
+    "seriesB": "Série B",
+    "seriesFallback": "Série {index}"
+  },
+  "async": {
+    "placeholder": "Veuillez sélectionner",
+    "empty": "Aucune donnée"
+  },
+  "tagInput": {
+    "placeholder": "Saisir puis Entrée pour ajouter"
+  },
+  "timeRange": {
+    "add": "Ajouter une plage",
+    "summary": "Total des heures",
+    "start": "Début",
+    "end": "Fin",
+    "remove": "Supprimer cette plage",
+    "duration": "{hours} h {minutes} min",
+    "durationHint": "({time})",
+    "errIncomplete": "Segment {index} : les heures de début et de fin sont incomplètes",
+    "errOrder": "Segment {index} : l'heure de fin doit être postérieure à l'heure de début",
+    "errExceed": "Segment {index} : la durée dépasse {maxHours} heures",
+    "errOverlap": "Le segment {first} chevauche le segment {second}"
+  },
+  "ballAria": "Boule flottante",
+  "infinite": {
+    "loading": "Chargement…",
+    "end": "Il n'y en a plus"
+  },
+  "ptr": {
+    "pull": "Tirer pour actualiser",
+    "release": "Relâcher pour actualiser",
+    "refreshing": "Actualisation…"
+  },
+  "kitSign": {
+    "placeholder": "Signez ici à la main",
+    "penColor": "Couleur du stylo {color}",
+    "undo": "Annuler",
+    "clear": "Effacer",
+    "download": "Exporter",
+    "downloadTip": "Exporter en PNG (fond blanc appliqué)"
+  },
+  "sort": {
+    "aria": "Glisser pour trier, ou utiliser les flèches haut/bas"
+  }
+}

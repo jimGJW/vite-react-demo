@@ -1,0 +1,17 @@
+{
+  "title": "Interstellare Konsole",
+  "welcome": "Willkommen zurück, Captain. Bestätige deine Identität, um das Hauptkontrollsystem zu betreten.",
+  "backHint": "Nach der Bestätigung kehrst du automatisch zu {path} zurück",
+  "username": "Konto",
+  "password": "Zugangsschlüssel",
+  "remember": "Angemeldet bleiben",
+  "forgot": "Schlüssel vergessen?",
+  "modeLabel": "Oberflächenstil",
+  "modeAntd": "Ant Design",
+  "modeVue": "Vue-Stil",
+  "submit": "Raumschiff betreten",
+  "verifying": "Identität wird geprüft…",
+  "warping": "Warp wird ausgeführt…",
+  "newCrew": "Neues Besatzungsmitglied?",
+  "apply": "Beitritt beantragen"
+}

@@ -10,16 +10,19 @@ import {
   detectCapabilities, networkTier, formatCoords, describePermission,
 } from '../../components/WebApi/device.js'
 import './index.scss'
+import { useI18n } from '../../i18n/index.js'
 
 const { Title, Paragraph, Text } = Typography
 
 
-import { CAPABILITY_COLUMNS, readEnv } from './components/webApiUtils.jsx'
+import { makeCapabilityColumns, readEnv } from './components/webApiUtils.jsx'
 
 export default function WebApiDemo() {
+  const { t } = useI18n()
   const capabilities = useMemo(() => detectCapabilities(readEnv()), [])
   const stageRef = useRef(null)
-  const [copyTextValue, setCopyTextValue] = useState('复制我试试')
+  const [copyTextValue, setCopyTextValue] = useState(t('webApi.copyDemo'))
+  const capColumns = useMemo(() => makeCapabilityColumns(t), [t])
 
   const { isFullscreen, toggle: toggleFullscreen, supported: fsSupported } = useFullscreen(stageRef)
   const wake = useWakeLock()
@@ -34,45 +37,42 @@ export default function WebApiDemo() {
     <div className="wad">
       <header className="wad__header">
         <Title level={4} className="wad__title">
-          <ApiOutlined /> 浏览器原生能力实验室
+          <ApiOutlined /> {t('webApi.title')}
         </Title>
         <Paragraph type="secondary" className="wad__lead">
-          很多需求根本不用装库：全屏、屏幕常亮、定位、通知、分享、网络探测都是浏览器自带的。
-          这里把它们收敛成 Hooks，统一带 <code>supported</code> 字段 —— 不支持时给出明确说明，
-          而不是点了没反应。能力探测逻辑在 <code>device.js</code> 里是纯函数，有单测覆盖。
+          {t('webApi.lead1')}<code>supported</code>{t('webApi.lead2')}<code>device.js</code>{t('webApi.lead3')}
         </Paragraph>
       </header>
 
       <div className="wad__grid">
         {/* ===== 能力探测 ===== */}
-        <Card size="small" className="wad__card" title="当前浏览器的能力探测">
+        <Card size="small" className="wad__card" title={t('webApi.capTitle')}>
           <div className="wad__stage">
             <Table
               size="small"
               rowKey="key"
               pagination={false}
-              columns={CAPABILITY_COLUMNS}
+              columns={capColumns}
               dataSource={capabilities}
             />
             <Text type="secondary" className="wad__hint">
-              结果随浏览器而异：Safari 的 Wake Lock 支持较晚，Network Information 主要是 Chromium 系，
-              定位与剪贴板要求安全上下文（HTTPS 或 localhost）。
+              {t('webApi.capHint')}
             </Text>
           </div>
         </Card>
 
         {/* ===== 全屏 ===== */}
-        <Card size="small" className="wad__card" title="① 全屏：把任意元素切到全屏">
+        <Card size="small" className="wad__card" title={t('webApi.fsTitle')}>
           <div className="wad__stage">
             <div ref={stageRef} className="wad__screen">
-              <b>{isFullscreen ? '已进入全屏' : '演示舞台'}</b>
-              <span>{isFullscreen ? '按 Esc 或再点一次按钮退出' : '点下方按钮把这个区域全屏'}</span>
+              <b>{isFullscreen ? t('webApi.fsEntered') : t('webApi.fsStage')}</b>
+              <span>{isFullscreen ? t('webApi.fsExitHint') : t('webApi.fsEnterHint')}</span>
             </div>
             <Space>
               <Button type="primary" disabled={!fsSupported} onClick={toggleFullscreen}>
-                {isFullscreen ? '退出全屏' : '进入全屏'}
+                {isFullscreen ? t('webApi.fsExit') : t('webApi.fsEnter')}
               </Button>
-              {!fsSupported && <Tag color="default">当前环境不支持</Tag>}
+              {!fsSupported && <Tag color="default">{t('webApi.unsupported')}</Tag>}
             </Space>
             <pre className="wad__code">{`const stageRef = useRef(null)
 const { isFullscreen, toggle, supported } = useFullscreen(stageRef)`}</pre>
@@ -80,127 +80,125 @@ const { isFullscreen, toggle, supported } = useFullscreen(stageRef)`}</pre>
         </Card>
 
         {/* ===== 屏幕常亮 ===== */}
-        <Card size="small" className="wad__card" title="② 屏幕常亮：Wake Lock">
+        <Card size="small" className="wad__card" title={t('webApi.wakeTitle')}>
           <div className="wad__stage">
             <Text type="secondary" className="wad__hint">
-              适用于演示大屏、监控看板、录制过程。切到别的标签页时浏览器会自动释放锁，
-              回到前台需要重新申请。
+              {t('webApi.wakeHint')}
             </Text>
             <Space>
               <Button type="primary" disabled={!wake.supported || wake.active} onClick={wake.request}>
-                申请常亮
+                {t('webApi.wakeRequest')}
               </Button>
-              <Button disabled={!wake.active} onClick={wake.release}>释放</Button>
-              <Tag color={wake.active ? 'green' : 'default'}>{wake.active ? '常亮中' : '未启用'}</Tag>
+              <Button disabled={!wake.active} onClick={wake.release}>{t('webApi.wakeRelease')}</Button>
+              <Tag color={wake.active ? 'green' : 'default'}>{wake.active ? t('webApi.wakeActive') : t('webApi.wakeInactive')}</Tag>
             </Space>
             {wake.error && <Text type="danger" style={{ fontSize: '0.78rem' }}>{wake.error}</Text>}
           </div>
         </Card>
 
         {/* ===== 定位 ===== */}
-        <Card size="small" className="wad__card" title="③ 地理定位">
+        <Card size="small" className="wad__card" title={t('webApi.geoTitle')}>
           <div className="wad__stage">
             <Space>
               <Button disabled={!geo.supported} loading={geo.loading} onClick={geo.locate}>
-                获取当前位置
+                {t('webApi.geoLocate')}
               </Button>
-              {!geo.supported && <Tag color="default">当前环境不支持</Tag>}
+              {!geo.supported && <Tag color="default">{t('webApi.unsupported')}</Tag>}
             </Space>
             <div className="wad__zone">
               <Text style={{ fontSize: '0.85rem' }}>{formatCoords(geo.coords)}</Text>
             </div>
             {geo.error && <Text type="warning" style={{ fontSize: '0.78rem' }}>{geo.error}</Text>}
             <Text type="secondary" className="wad__hint">
-              浏览器会弹授权框；拒绝或在非 HTTPS 环境下都会失败。失败信息直接回传，不做静默吞掉。
+              {t('webApi.geoHint')}
             </Text>
           </div>
         </Card>
 
         {/* ===== 通知 ===== */}
-        <Card size="small" className="wad__card" title="④ 系统通知">
+        <Card size="small" className="wad__card" title={t('webApi.notifyTitle')}>
           <div className="wad__stage">
             <Space>
               <Button
                 disabled={!notify.supported || notify.permission === 'granted'}
                 onClick={notify.request}
               >
-                申请授权
+                {t('webApi.notifyRequest')}
               </Button>
               <Button
                 type="primary"
                 disabled={notify.permission !== 'granted'}
-                onClick={() => notify.notify('来自性能实验室', { body: '这是一条浏览器原生通知' })}
+                onClick={() => notify.notify(t('webApi.notifyTitle2'), { body: t('webApi.notifyBody') })}
               >
-                发一条通知
+                {t('webApi.notifySend')}
               </Button>
               <Tag color={notify.permission === 'granted' ? 'green' : 'default'}>
                 {describePermission(notify.permission)}
               </Tag>
             </Space>
             <Text type="secondary" className="wad__hint">
-              授权状态分三档：已授权 / 已拒绝 / 待询问。被拒绝后只能引导用户在浏览器设置里改，
-              代码层面无法再弹窗。
+              {t('webApi.notifyHint')}
             </Text>
           </div>
         </Card>
 
         {/* ===== 分享 / 震动 / 剪贴板 ===== */}
-        <Card size="small" className="wad__card" title="⑤ 分享 · 震动 · 剪贴板">
+        <Card size="small" className="wad__card" title={t('webApi.shareTitle')}>
           <div className="wad__stage">
             <Space wrap>
               <Button
                 disabled={!share.supported}
-                onClick={() => share.share({ title: '星际控制台', text: '浏览器原生分享', url: location.href })}
+                onClick={() => share.share({ title: t('webApi.shareTitle2'), text: t('webApi.shareText'), url: location.href })}
               >
-                调起系统分享
+                {t('webApi.shareInvoke')}
               </Button>
               <Button disabled={!vibrate.supported} onClick={() => vibrate.vibrate([80, 40, 80])}>
-                震动一下
+                {t('webApi.vibrateOnce')}
               </Button>
             </Space>
 
             <Space.Compact style={{ width: '100%' }}>
               <Input value={copyTextValue} onChange={(e) => setCopyTextValue(e.target.value)} />
               <Button type="primary" onClick={() => copy(copyTextValue)}>
-                {copied ? '已复制' : '复制'}
+                {copied ? t('webApi.copied') : t('webApi.copy')}
               </Button>
             </Space.Compact>
 
             <Text type="secondary" className="wad__hint">
-              分享与震动在桌面端大多不可用（<code>supported</code> 会是 false），移动端效果最好。
+              {t('webApi.shareVibHint1')}<code>supported</code>{t('webApi.shareVibHint2')}
             </Text>
           </div>
         </Card>
 
         {/* ===== 网络信息 ===== */}
-        <Card size="small" className="wad__card" title="⑥ 网络信息：按网速降级加载">
+        <Card size="small" className="wad__card" title={t('webApi.netTitle')}>
           <div className="wad__stage">
             {net ? (
               <dl className="wad__kv">
                 <div className="wad__row">
-                  <dt>网络档位</dt>
-                  <dd>{net.effectiveType || '未知'}（{networkTier(net.effectiveType)}）</dd>
+                  <dt>{t('webApi.netTier')}</dt>
+                  <dd>{net.effectiveType || t('webApi.netUnknown')}（{networkTier(net.effectiveType)}）</dd>
                 </div>
                 <div className="wad__row">
-                  <dt>下行带宽</dt>
+                  <dt>{t('webApi.netDownlink')}</dt>
                   <dd>{net.downlink} Mb/s</dd>
                 </div>
                 <div className="wad__row">
-                  <dt>往返时延</dt>
+                  <dt>{t('webApi.netRtt')}</dt>
                   <dd>{net.rtt} ms</dd>
                 </div>
                 <div className="wad__row">
-                  <dt>省流量模式</dt>
-                  <dd>{net.saveData ? '已开启' : '未开启'}</dd>
+                  <dt>{t('webApi.netSaveData')}</dt>
+                  <dd>{net.saveData ? t('webApi.netOn') : t('webApi.netOff')}</dd>
                 </div>
               </dl>
             ) : (
               <Text type="secondary" className="wad__hint">
-                当前浏览器不支持 Network Information API（主要是 Chromium 系可用）。
+                {t('webApi.netUnsupportedHint')}
               </Text>
             )}
             <Text type="secondary" className="wad__hint">
-              实用场景：弱网（2g / saveData）时自动降级为低清图、关闭自动播放、延后非关键请求。
+              {t('webApi.netScenario')}
             </Text>
             <pre className="wad__code">{`const net = useNetworkInfo()
 if (net && net.saveData) loadLiteAssets()`}</pre>

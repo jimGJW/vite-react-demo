@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import useWhisperRecorder from '../../hooks/useWhisperRecorder.jsx'
+import { useI18n } from '../../i18n/index.js'
 import './index.scss'
 
 /** 获取浏览器 SpeechRecognition 构造器（Chrome / Edge / Safari 等） */
@@ -82,7 +83,7 @@ export default function VoiceInput({
   engine = 'auto',
   lang = 'zh-CN',
   rows = 5,
-  placeholder = '点击麦克风开始语音输入，识别结果会自动填入此处，可直接编辑修改…',
+  placeholder,
   disabled = false,
   className = '',
 }) {
@@ -98,6 +99,8 @@ export default function VoiceInput({
   const [error, setError] = useState(null)
   const [copied, setCopied] = useState(false)
   const [webUnavailable, setWebUnavailable] = useState(false)
+  const { t } = useI18n()
+  const resolvedPlaceholder = placeholder ?? t('voice.input.placeholder')
 
   const value = isControlled ? externalValue : innerValue
 
@@ -185,14 +188,14 @@ export default function VoiceInput({
 
     rec.onerror = (event) => {
       if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
-        setError('未获得麦克风权限，请在浏览器地址栏允许本页面使用麦克风后重试')
+        setError(t('voice.micPermission'))
       } else if (event.error === 'no-speech') {
-        setError('没有检测到声音，请靠近麦克风再试')
+        setError(t('voice.errors.noSpeech'))
       } else if (event.error === 'network') {
-        setError('在线语音服务连接失败（可能是网络原因），建议切换到「离线识别」')
+        setError(t('voice.errors.network'))
         setWebUnavailable(true)
       } else if (event.error !== 'aborted') {
-        setError(`识别出错（${event.error}），请重试`)
+        setError(t('voice.errors.recognize', { code: event.error }))
       }
     }
 
@@ -218,7 +221,7 @@ export default function VoiceInput({
     try {
       rec.start()
     } catch {
-      setError('无法启动在线语音识别，请刷新页面后重试')
+      setError(t('voice.errors.startFailed'))
       keepGoingRef.current = false
     }
   }
@@ -241,7 +244,7 @@ export default function VoiceInput({
     const timer = window.setTimeout(() => {
       if (listening && !hasAnyResultRef.current && Date.now() - (firstStartRef.current || 0) > 5000) {
         setWebUnavailable(true)
-        setError('在线识别长时间无响应（通常是网络无法连接识别服务），建议切换到「离线识别」')
+        setError(t('voice.errors.noResponse'))
       }
     }, 6000)
     return () => window.clearTimeout(timer)
@@ -301,46 +304,46 @@ export default function VoiceInput({
           className={`voice-input-engine ${!isLocal ? 'active' : ''}`}
           onClick={() => switchEngine('web')}
           disabled={!webSupported || disabled}
-          title="使用浏览器原生语音识别，实时连续转写"
+          title={t('voice.input.webEngineTip')}
         >
-          <MicIcon /> 在线识别
-          {!webSupported && <span className="voice-input-engine-flag">不支持</span>}
+          <MicIcon /> {t('voice.input.webEngine')}
+          {!webSupported && <span className="voice-input-engine-flag">{t('voice.input.unsupportedFlag')}</span>}
         </button>
         <button
           type="button"
           className={`voice-input-engine ${isLocal ? 'active' : ''}`}
           onClick={() => switchEngine('local')}
           disabled={!local.supported || disabled}
-          title="本地运行 Whisper 模型，语音不出本机，离线可用"
+          title={t('voice.input.localEngineTip')}
         >
-          <ChipIcon /> 离线识别
-          {local.modelState === 'loading' && <span className="voice-input-engine-flag">加载中</span>}
-          {local.modelState === 'ready' && <span className="voice-input-engine-flag ok">就绪</span>}
+          <ChipIcon /> {t('voice.input.localEngine')}
+          {local.modelState === 'loading' && <span className="voice-input-engine-flag">{t('voice.input.loadingFlag')}</span>}
+          {local.modelState === 'ready' && <span className="voice-input-engine-flag ok">{t('voice.input.readyFlag')}</span>}
         </button>
       </div>
 
       {/* 自动降级提示 */}
       {webUnavailable && !isLocal && (
         <div className="voice-input-fallback">
-          <span>在线识别疑似不可用（国内网络常无法连接 Chrome 识别服务），可一键切换：</span>
+          <span>{t('voice.input.fallbackHint')}</span>
           <button type="button" className="voice-input-btn mic small" onClick={() => switchEngine('local')}>
-            <ChipIcon /> 切换到离线识别
+            <ChipIcon /> {t('voice.input.switchLocal')}
           </button>
         </div>
       )}
 
       {!isLocal && !webSupported && (
         <div className="voice-input-unsupported">
-          当前浏览器不支持在线语音识别（需 Chrome / Edge / Safari）。
+          {t('voice.input.webUnsupported')}
           <button type="button" className="voice-input-link-btn" onClick={() => switchEngine('local')}>
-            点此切换到离线识别
+            {t('voice.input.clickSwitchLocal')}
           </button>
         </div>
       )}
 
       {isLocal && !local.supported && (
         <div className="voice-input-unsupported">
-          当前浏览器不支持录音（需要支持 MediaRecorder 的现代浏览器）。
+          {t('voice.input.recordUnsupported')}
         </div>
       )}
 
@@ -348,7 +351,7 @@ export default function VoiceInput({
       {isLocal && local.modelState === 'loading' && (
         <div className="voice-input-model">
           <div className="voice-input-model-info">
-            正在加载本地识别模型…
+            {t('voice.input.modelLoading')}
             {local.modelProgress != null && <strong>{local.modelProgress}%</strong>}
           </div>
           <div className="voice-input-model-bar">
@@ -362,11 +365,11 @@ export default function VoiceInput({
           className="voice-input-textarea"
           value={value}
           rows={rows}
-          placeholder={placeholder}
+          placeholder={resolvedPlaceholder}
           disabled={disabled}
           onChange={(e) => updateValue(e.target.value)}
         />
-        {interim && !isLocal && <div className="voice-input-interim">正在识别：{interim}</div>}
+        {interim && !isLocal && <div className="voice-input-interim">{t('voice.input.recognizing', { text: interim })}</div>}
       </div>
 
       {activeError && <div className="voice-input-error">{activeError}</div>}
@@ -375,11 +378,11 @@ export default function VoiceInput({
         {isLocal ? (
           local.recognizing ? (
             <button type="button" className="voice-input-btn stop" disabled>
-              <StopIcon /> 正在本地识别…
+              <StopIcon /> {t('voice.input.localRecognizing')}
             </button>
           ) : local.recording ? (
             <button type="button" className="voice-input-btn stop" onClick={local.stop} disabled={disabled}>
-              <StopIcon /> 停止并识别
+              <StopIcon /> {t('voice.input.stopAndRecognize')}
             </button>
           ) : (
             <button
@@ -388,12 +391,12 @@ export default function VoiceInput({
               onClick={local.start}
               disabled={!local.supported || disabled}
             >
-              <MicIcon /> 开始录音
+              <MicIcon /> {t('voice.input.startRecord')}
             </button>
           )
         ) : listening ? (
           <button type="button" className="voice-input-btn stop" onClick={stopWebListening} disabled={disabled}>
-            <StopIcon /> 停止识别
+            <StopIcon /> {t('voice.input.stopRecognize')}
           </button>
         ) : (
           <button
@@ -402,18 +405,18 @@ export default function VoiceInput({
             onClick={startWebListening}
             disabled={!webSupported || disabled}
           >
-            <MicIcon /> 开始语音输入
+            <MicIcon /> {t('voice.input.startVoice')}
           </button>
         )}
 
         {isLocal && local.recording && (
-          <span className="voice-input-status">正在录音… 点击「停止并识别」结束</span>
+          <span className="voice-input-status">{t('voice.input.recordingHint')}</span>
         )}
         {isLocal && local.recognizing && (
-          <span className="voice-input-status recognizing">正在本地转写文字，请稍候…</span>
+          <span className="voice-input-status recognizing">{t('voice.input.transcribing')}</span>
         )}
         {!isLocal && listening && (
-          <span className="voice-input-status">正在聆听… 请开始说话</span>
+          <span className="voice-input-status">{t('voice.input.listening')}</span>
         )}
 
         <button
@@ -422,7 +425,7 @@ export default function VoiceInput({
           onClick={() => updateValue('')}
           disabled={!value || disabled}
         >
-          清空
+          {t('voice.input.clear')}
         </button>
         <button
           type="button"
@@ -430,7 +433,7 @@ export default function VoiceInput({
           onClick={handleCopy}
           disabled={!value || disabled}
         >
-          {copied ? '已复制 ✓' : '复制全文'}
+          {copied ? t('voice.input.copied') : t('voice.input.copyAll')}
         </button>
       </div>
     </div>

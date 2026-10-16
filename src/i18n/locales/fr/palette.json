@@ -1,0 +1,62 @@
+{
+  "demo": {
+    "title": "Palette de commandes CommandPalette",
+    "leadBefore": "Une palette de commandes en verre sans aucune dépendance externe (React uniquement). Appuyez sur",
+    "leadMac": " (macOS) ou ",
+    "leadWin": " (Windows / Linux) pour ouvrir la palette et rechercher des commandes en flou,",
+    "leadSelect": " pour sélectionner ",
+    "leadRun": " pour exécuter,",
+    "leadClose": " pour fermer.",
+    "hintText": "Cette combinaison de touches ouvre la palette (activée sur cette page)",
+    "placeholder": "Rechercher des commandes — « enregistrer », « home », « feedback »…",
+    "feedbackTitle": "Retour d'exécution",
+    "lastCommand": "Dernière commande exécutée",
+    "none": "— Aucune —",
+    "closeCount": "Nombre de fermetures de la palette",
+    "usageTitle": "Utilisation",
+    "propsTitle": "Props",
+    "thProp": "Propriété",
+    "thType": "Type",
+    "thDesc": "Description",
+    "propCommands": "Liste de commandes ; chaque élément contient ",
+    "propPlaceholder": "Placeholder du champ de recherche ; par défaut « Rechercher des commandes… »",
+    "propOnClose": "Callback après la fermeture de la palette (ESC / clic sur l'overlay / après exécution d'une commande)",
+    "cmdFieldsTitle": "Champs de commande",
+    "thField": "Champ",
+    "fieldId": "Identifiant unique (utilisé comme key)",
+    "fieldLabel": "Nom d'affichage ; participe à la recherche floue",
+    "fieldGroup": "Nom du groupe ; par défaut « Autres »",
+    "fieldIcon": "Icône ; tout contenu rendable (emoji / caractère / JSX)",
+    "fieldKeywords": "Mots-clés de correspondance ; recherchés en flou avec label",
+    "fieldAction": "Exécuté sur Entrée ou clic ; le paramètre est l'objet commande"
+  },
+  "cmd": {
+    "navHome": "Aller à l'accueil",
+    "navDashboard": "Aller à la console",
+    "navAbout": "À propos du projet",
+    "actNew": "Nouveau fichier",
+    "actSave": "Enregistrer",
+    "actExport": "Exporter les données",
+    "actTheme": "Changer de thème",
+    "helpShortcut": "Voir les raccourcis",
+    "helpDoc": "Lire la documentation",
+    "helpFeedback": "Signaler un problème"
+  },
+  "group": {
+    "nav": "Navigation",
+    "action": "Actions",
+    "help": "Aide"
+  },
+  "component": {
+    "placeholder": "Rechercher des commandes…",
+    "dialogAria": "Palette de commandes",
+    "searchAria": "Rechercher des commandes",
+    "otherGroup": "Autres",
+    "emptyTitle": "Aucune commande correspondante",
+    "emptyHint": "Essayez d'autres mots-clés ou videz la recherche pour voir toutes les commandes",
+    "tipSelect": "sélectionner",
+    "tipRun": "exécuter",
+    "tipClose": "fermer",
+    "count": "{count} résultats"
+  }
+}

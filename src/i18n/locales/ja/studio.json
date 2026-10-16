@@ -1,0 +1,414 @@
+{
+  "page": {
+    "title": "コンポーネント工房 Studio",
+    "descLead": "ローカルの 80+ レガシーフロントエンドプロジェクトから選別・業務結合の除去・ゼロ依存での書き直しを経て生まれた {count} 個の再利用可能コンポーネントを、能力ごとに {groups} グループに分類しています。",
+    "descTail": "すべてのデモデータは中立的な架空のプレースホルダであり、元の機密情報は含みません。"
+  },
+  "cat": {
+    "screen": "可視化ダッシュボード",
+    "builder": "ルールとオーケストレーション",
+    "media": "画像と注釈",
+    "form": "フォームとツリー",
+    "report": "レポートとトレース",
+    "interact": "インタラクション・応用"
+  },
+  "demo": {
+    "scanempty": {
+      "name": "ScanEmpty",
+      "title": "スキャン式空状態",
+      "desc": "純粋な CSS/SVG で実装した大画面向け空状態スキャンアニメーション。チャートライブラリに依存せず、任意のコンテナで使えます。",
+      "text": "アラートなし",
+      "subText": "直近 24 時間に異常イベントはありません"
+    },
+    "autoscroll": {
+      "name": "AutoScrollList",
+      "title": "シームレススクロールリスト",
+      "desc": "コンテナより長い内容は自動で垂直ループスクロールし、ホバーで一時停止。変位は CSS 変数で駆動し、状態のちらつきはありません。"
+    },
+    "board": {
+      "name": "DraggableBoard",
+      "title": "編成可能なダッシュボード",
+      "desc": "百分率配置 + 衝突検出 + ポインタイベント統一。編集モードを有効にするとカードのドラッグ・リサイズができ、不正な配置は跳ね返ります。"
+    },
+    "axisbreak": {
+      "name": "AxisBreakBar",
+      "title": "断軸棒グラフ",
+      "desc": "高低値の差が大きいとき空白区間を折りたたみます。図上を横にドラッグして折りたたむ Y 区間を選択できます。",
+      "unit": "万",
+      "chartTitle": "月次指標"
+    },
+    "regionmap": {
+      "name": "SvgRegionMap",
+      "title": "データ駆動の区域図",
+      "desc": "viewBox による純 SVG の等比スケーリング、層別打点（底図・区域ブロック・バブル）、区域クリックのコールバック。"
+    },
+    "adapttable": {
+      "name": "AdaptTable",
+      "title": "大画面適応テーブル",
+      "desc": "列幅は百分率で均等分割、ドラッグで列幅・行高を調整、セル内容が長すぎると自動でマーキー表示。"
+    },
+    "rulebuilder": {
+      "name": "RuleBuilder",
+      "title": "ビジュアル条件編成",
+      "desc": "AND/OR の入れ子グループ + リーフ条件の再帰ツリー。フィールド型に応じて演算子が自動切替され、構造化 JSON を出力します。"
+    },
+    "jsondiff": {
+      "name": "JsonDiff",
+      "title": "構造化オブジェクト比較",
+      "desc": "テキスト diff ではなく構造 diff：追加・削除・変更・未変を正確に示し、パスも一目瞭然です。"
+    },
+    "annotator": {
+      "name": "ImageAnnotator",
+      "title": "画像注釈とズーム・パン",
+      "desc": "ホイールでズーム、ドラッグでパン。注釈のアンカーは正規化座標で保存されるため、ズーム・パン後も漂移しません。"
+    },
+    "dynform": {
+      "name": "DynamicForm",
+      "title": "schema 駆動の動的フォーム",
+      "desc": "一件のフィールド schema が一件の UI。多様な汎用フィールド型と必須バリデーションに対応します。"
+    },
+    "orgtree": {
+      "name": "OrgTree",
+      "title": "階層組織ツリー",
+      "desc": "任意の深さまで段階的に展開・折りたたみでき、単一選択で検索できる階層ツリー。"
+    },
+    "scanreport": {
+      "name": "ScanReport",
+      "title": "セキュリティスキャンレポートカード",
+      "desc": "構造化された検査レポートを重大度分布 + 明細リストとして描画。脆弱性・審査・点検など任意のリストを載せられます。"
+    },
+    "anchornav": {
+      "name": "AnchorNav",
+      "title": "アンカースクロールナビゲーション",
+      "desc": "左側に吸着する目次 + 右側のコンテンツ領域。クリックでスムーズスクロールし、スクロール中は現在のセクションを自動ハイライト（rAF スロットリング）。"
+    },
+    "pagetabs": {
+      "name": "PageTabs",
+      "title": "マルチタブワークスペース",
+      "desc": "ルーティング式のタブバー：切替・閉じる・新規作成が可能。コンテンツ領域は現在のタブの render が提供します。"
+    },
+    "treetable": {
+      "name": "TreeTable",
+      "title": "ツリーテーブル + 祖先保持検索",
+      "desc": "段階的に展開可能。名前で検索すると命中した子孫の親ノードを自動的に保持して展開するため、コンテキストを失いません。"
+    },
+    "highlighter": {
+      "name": "Highlighter",
+      "title": "キーワードハイライト",
+      "desc": "キーワードに命中したテキストフラグメントを <mark> で囲みます。純関数による分割で、任意のリストや表のセルに埋め込めます。"
+    },
+    "editabletable": {
+      "name": "EditableTable",
+      "title": "行内編集テーブル",
+      "desc": "「編集」をクリックすると行全体が入力・ドロップダウンに切り替わり、保存で書き戻し、キャンセルでは初期値に復元します。"
+    },
+    "draglayout": {
+      "name": "DragLayout",
+      "title": "自由ドラッグ・リサイズレイアウト",
+      "desc": "カードは百分率で配置し、ドラッグで移動・角ドラッグでリサイズ、配置はコンテナ内に自動制限。軽量ローコードダッシュボードに最適です。"
+    },
+    "gauge": {
+      "name": "CanvasGauge",
+      "title": "Canvas ゲージ",
+      "desc": "ゼロ依存の Canvas ゲージ：rAF で目標値までイージング、DPR 高精細、コンテナ適応。"
+    },
+    "carousel3d": {
+      "name": "CardCarousel3D",
+      "title": "3D カードカルーセル",
+      "desc": "ジェスチャー方向判定（>45° で縦スクロールを優先）。カードは相対位置に応じて Z 軸の奥行きと回転で切り替わります。"
+    },
+    "frameplayer": {
+      "name": "FramePlayer",
+      "title": "フレーム連続再生プレイヤー",
+      "desc": "fps に応じて複数の「フレーム」を循環再生。再生・一時停止、コマ送り、進捗ドラッグに対応し、フレームは任意のノードにできます。"
+    },
+    "contextmenu": {
+      "name": "ContextMenu",
+      "title": "右クリックメニュー",
+      "desc": "ラップした領域内で右クリックするとメニューが表示され、任意の場所のクリックやスクロールで閉じます。"
+    },
+    "errorboundary": {
+      "name": "ErrorBoundary",
+      "title": "エラーバウンダリ",
+      "desc": "サブツリーのレンダリング期例外をキャッチし、フォールバック UI を表示してリトライをサポートします。"
+    },
+    "fullscreen": {
+      "name": "Fullscreen",
+      "title": "全画面コンテナ",
+      "desc": "指定領域に対して Fullscreen API を呼び出し、現在の全画面状態を同期します。"
+    }
+  },
+  "data": {
+    "rank": {
+      "node": "サービスノード {letter}{no}"
+    },
+    "board": {
+      "visits": "訪問数",
+      "errors": "エラー率",
+      "latency": "応答時間",
+      "online": "オンラインノード"
+    },
+    "axis": {
+      "unit": "万",
+      "title": "月次指標",
+      "m1": "1月",
+      "m2": "2月",
+      "m3": "3月",
+      "m4": "4月",
+      "m5": "5月",
+      "m6": "6月",
+      "m7": "7月",
+      "m8": "8月",
+      "m9": "9月",
+      "m10": "10月",
+      "m11": "11月",
+      "m12": "12月"
+    },
+    "region": {
+      "datacenter": "機械室",
+      "office": "オフィス",
+      "storage": "倉庫",
+      "entrance": "出入口"
+    },
+    "nodeType": {
+      "server": "サーバー",
+      "gateway": "ゲートウェイ",
+      "terminal": "端末",
+      "sensor": "センサー"
+    },
+    "nodeLabel": {
+      "rackA": "ラック A",
+      "coreSwitch": "コアスイッチ",
+      "officeTerminal": "オフィス端末",
+      "envSensor": "環境センサー",
+      "accessControl": "入退管理",
+      "edge": "エッジ"
+    },
+    "table": {
+      "name": "リソース名",
+      "ip": "アドレス",
+      "group": "グループ",
+      "status": "状態"
+    },
+    "group": {
+      "net": "ネットワークグループ",
+      "room": "機械室グループ",
+      "iot": "IoT グループ",
+      "terminal": "端末グループ",
+      "sec": "セキュリティグループ"
+    },
+    "status": {
+      "online": "オンライン",
+      "offline": "オフライン",
+      "maintaining": "メンテナンス中"
+    },
+    "rule": {
+      "name": "名前",
+      "count": "数",
+      "status": "状態",
+      "enabled": "有効"
+    },
+    "form": {
+      "project": "プロジェクト名",
+      "desc": "説明",
+      "count": "数",
+      "category": "カテゴリ",
+      "enabled": "有効にする",
+      "date": "開始日",
+      "required": "入力してください",
+      "optional": "任意",
+      "catA": "A 類",
+      "catB": "B 類"
+    },
+    "org": {
+      "root": "ルートノード",
+      "group1": "グループ 1",
+      "group2": "グループ 2",
+      "child1": "子項目 1",
+      "child2": "子項目 2",
+      "child3": "子項目 3",
+      "child4": "子項目 4",
+      "child41": "子項目 4-1"
+    },
+    "report": {
+      "title": "依存構成・設定の点検レポート",
+      "f1Title": "既知の高リスク脆弱性を持つ依存",
+      "f1Detail": "一部の依存バージョンがセキュリティ基準を下回っています。アップグレードを推奨します。",
+      "f2Title": "平文の認証情報が設定に出現",
+      "f2Detail": "環境変数またはシークレット管理の利用を推奨します。",
+      "f3Title": "期限切れの TLS プロトコル",
+      "f3Detail": "TLS1.0/1.1 の無効化を推奨します。",
+      "f4Title": "デバッグポートが外部公開",
+      "f4Detail": "イントラネットのみに開放することを推奨します。",
+      "f5Title": "LICENSE 宣言の欠如",
+      "f5Detail": "オープンソースライセンス宣言を補完してください。",
+      "f6Title": "依存バージョンが未固定",
+      "f6Detail": "パッチバージョンの固定を推奨します。"
+    },
+    "anchor": {
+      "overview": "概要",
+      "overviewText": "この領域はアンカースクロールのデモです。左の目次をクリックすると、コンテンツ領域が対応するセクションまでスムーズにスクロールします。",
+      "metric": "指標の説明",
+      "metricText": "スクロール時、左の目次は現在可視中のセクションに応じて自動ハイライトされます（毎フレーム 1 回にスロットリング）。",
+      "usage": "利用シーン",
+      "usageText": "長文ドキュメント、ヘルプセンター、設定説明など目次ナビゲーションが必要なページに適しています。",
+      "faq": "よくある質問",
+      "faqText": "目次とコンテンツは id でアンカーされ、追加の状態同期は不要です。"
+    },
+    "tree": {
+      "clusterA": "クラスタ A",
+      "clusterB": "クラスタ B",
+      "nodeA1": "ノード a-1",
+      "nodeA2": "ノード a-2",
+      "nodeB1": "ノード b-1",
+      "nodeB2": "ノード b-2",
+      "podA21": "コンテナ a-2-1"
+    },
+    "drag": {
+      "card1": "カード 1",
+      "card1Text": "タイトルをドラッグして移動、右下をドラッグしてリサイズ",
+      "card2": "カード 2",
+      "card2Text": "配置は自動的にコンテナ内に制限",
+      "card3": "カード 3",
+      "card3Text": "百分率配置、適応スケーリング",
+      "card4": "カード 4",
+      "card4Text": "任意の内容を載せられます"
+    },
+    "carousel": {
+      "item": "コンテンツカード {no}"
+    },
+    "ctx": {
+      "copy": "コピー",
+      "rename": "名前の変更",
+      "delete": "削除"
+    },
+    "json": {
+      "sampleName": "サンプルサービス"
+    },
+    "plan": {
+      "zoneA": "A 区",
+      "zoneB": "B 区",
+      "zoneC": "C 区",
+      "zoneD": "D 区"
+    }
+  },
+  "ui": {
+    "editMode": "編集モード",
+    "regionSelected": "選択された区域：{name}",
+    "show": "表示",
+    "hide": "非表示",
+    "liveValues": "リアルタイム値",
+    "tabHome": "ホーム",
+    "tabDoc": "ドキュメント",
+    "tabLog": "ログ",
+    "homeContent": "ホームのコンテンツ領域",
+    "docContent": "ドキュメントのコンテンツ領域",
+    "logContent": "ログのコンテンツ領域",
+    "newTab": "新しいタブ",
+    "newTabContent": "新しく開いたタブ（デモ）",
+    "searchPlaceholder": "キーワードを入力してハイライト",
+    "hlKeyword": "サービス",
+    "hlText1": "コアスイッチ-01 サービスノードの状態は正常",
+    "hlText2": "アプリサーバー-A サービスの応答時間 12ms",
+    "hlText3": "エッジゲートウェイ-03 はオフライン、人的対応が必要",
+    "randomValue": "ランダム値",
+    "zero": "ゼロに戻す",
+    "autoPlay": "自動再生",
+    "ctxHint": "この領域で右クリックするとメニューが表示されます",
+    "boomBtn": "レンダリング例外を発生",
+    "boomHint": "ボタンをクリックしてサブツリーにエラーを発生させると、エラーバウンダリがフォールバック表示してリトライをサポートします。",
+    "fullscreenHint": "右上の「全画面」ボタンをクリック（サンドボックス内では制限される場合があります）",
+    "gaugeTitle": "完成度"
+  },
+  "code": {
+    "copied": "用法をコピーしました",
+    "clipUnsupported": "現在の環境はクリップボードに非対応です",
+    "collapse": "用法を折りたたむ",
+    "expand": "用法を表示",
+    "copy": "コピー"
+  },
+  "comp": {
+    "empty": "データなし",
+    "rowResizeTitle": "ドラッグして行高を調整",
+    "noCards": "カードなし",
+    "drag": "ドラッグ",
+    "highRange": "高値区間",
+    "lowRange": "低値区間",
+    "lowValue": "低値",
+    "highValue": "高値",
+    "breaks": "断軸 {count}",
+    "resetBreaks": "断軸をリセット",
+    "axisHint": "図上を横にドラッグして折りたたむ数値区間を選択",
+    "opGt": "より大きい",
+    "opGe": "以上",
+    "opLt": "より小さい",
+    "opLe": "以下",
+    "opEq": "等しい",
+    "opRange": "区間",
+    "opNe": "等しくない",
+    "opContains": "含む",
+    "opStarts": "で始まる",
+    "opIn": "のいずれか",
+    "opAnd": "かつ AND",
+    "opOr": "または OR",
+    "selectFieldFirst": "先にフィールドを選択",
+    "boolYes": "はい",
+    "boolNo": "いいえ",
+    "valuePlaceholder": "値",
+    "fieldPlaceholder": "フィールド",
+    "addCondition": "条件",
+    "addGroup": "グループ",
+    "noConditions": "条件なし",
+    "noFields": "fields が渡されていないためフィールドを選択できません",
+    "diffAdded": "追加",
+    "diffRemoved": "削除",
+    "diffChanged": "変更",
+    "diffSame": "未変",
+    "diffChanges": "変化 ({added}+{removed}+{changed})",
+    "diffAll": "すべて",
+    "diffIdentical": "2 つのデータは完全に一致",
+    "formRequired": "{label} を入力してください",
+    "formEmptySchema": "schema が空です",
+    "orgSearch": "ノードを検索",
+    "orgExpand": "展開",
+    "orgCollapse": "折りたたみ",
+    "orgNoMatch": "一致するノードなし",
+    "sevCritical": "重大",
+    "sevHigh": "高",
+    "sevMedium": "中",
+    "sevLow": "低",
+    "sevInfo": "情報",
+    "reportTitle": "スキャンレポート",
+    "reportSub": "{total} 件の発見 · スコア {score}/100",
+    "reportAll": "すべて {total}",
+    "reportEmpty": "発見項目なし",
+    "annoLabel": "注釈 {no}",
+    "annoReset": "リセット",
+    "annoActive": "注釈中（画像をクリックして追加）",
+    "annoStart": "注釈",
+    "annoPlaceholder": "注釈のラベル",
+    "annoNeedSrc": "src を渡すと底図が表示されます",
+    "annoRemove": "注釈「{label}」を削除しますか？",
+    "annoList": "注釈 ({count})",
+    "annoClear": "クリア",
+    "annoEmpty": "注釈なし",
+    "tabAdd": "新しいタブ",
+    "treeValue": "数値",
+    "treeSearch": "名前で検索（親を自動保持）",
+    "treeName": "名前",
+    "treeNoMatch": "一致なし",
+    "editActions": "操作",
+    "editSave": "保存",
+    "editCancel": "キャンセル",
+    "editStart": "編集",
+    "framePause": "一時停止",
+    "framePlay": "再生",
+    "framePrev": "前のフレーム",
+    "frameNext": "次のフレーム",
+    "frameTip": "フレーム {no}",
+    "fsEnter": "全画面",
+    "fsExit": "全画面を終了",
+    "errMessage": "レンダリングエラー",
+    "errRetry": "リトライ"
+  }
+}

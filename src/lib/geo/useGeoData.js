@@ -53,7 +53,7 @@ function usePolling(path, interval) {
     } finally {
       if (aliveRef.current) setLoading(false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [path])
 
   useEffect(() => {

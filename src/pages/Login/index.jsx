@@ -2,11 +2,13 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/useAuth.js'
 import { useStyleMode } from '../../contexts/StyleModeContext.jsx'
+import { useI18n } from '../../i18n/index.js'
 import './index.scss'
 
 function Login() {
   const { login } = useAuth()
   const { mode, setMode } = useStyleMode()
+  const { t } = useI18n()
   const navigate = useNavigate()
   const location = useLocation()
   const from = location.state?.from?.pathname || '/'
@@ -94,20 +96,20 @@ function Login() {
           <div className="login-logo">
             <span className="login-logo-emoji">🚀</span>
           </div>
-          <h1>星际控制台</h1>
-          <p>欢迎归来，舰长。请验证身份以进入主控系统。</p>
+          <h1>{t('login.title')}</h1>
+          <p>{t('login.welcome')}</p>
           {/* 守卫跳转来源提示：未登录直接访问受保护页（如 /not-videos）会被带到这里，
               不说明的话用户会以为页面坏了——「什么反应都没有」就是这么来的 */}
           {from && from !== '/' ? (
             <p className="login-back">
-              验证通过后将自动返回 <b>{from}</b>
+              {t('login.backHint', { path: from })}
             </p>
           ) : null}
         </div>
 
         <form className="login-form" onSubmit={onSubmit}>
           <label className="login-field">
-            <span className="login-label">账号</span>
+            <span className="login-label">{t('login.username')}</span>
             <input
               type="text"
               placeholder="captain@starfleet.io"
@@ -119,7 +121,7 @@ function Login() {
           </label>
 
           <label className="login-field">
-            <span className="login-label">访问密钥</span>
+            <span className="login-label">{t('login.password')}</span>
             <input
               type="password"
               placeholder="••••••••"
@@ -138,14 +140,14 @@ function Login() {
                 onChange={(e) => setForm({ ...form, remember: e.target.checked })}
                 disabled={status !== 'idle'}
               />
-              <span>保持登录</span>
+              <span>{t('login.remember')}</span>
             </label>
-            <a className="login-link" href="#forgot">忘记密钥？</a>
+            <a className="login-link" href="#forgot">{t('login.forgot')}</a>
           </div>
 
           {/* 样式模式选择器 */}
           <div className="login-mode-select">
-            <span className="login-label">界面风格</span>
+            <span className="login-label">{t('login.modeLabel')}</span>
             <div className="mode-toggle">
               <button
                 type="button"
@@ -154,7 +156,7 @@ function Login() {
                 disabled={status !== 'idle'}
               >
                 <span className="mode-badge antd">A</span>
-                Ant Design
+                {t('login.modeAntd')}
               </button>
               <button
                 type="button"
@@ -163,26 +165,26 @@ function Login() {
                 disabled={status !== 'idle'}
               >
                 <span className="mode-badge vue">V</span>
-                Vue 风格
+                {t('login.modeVue')}
               </button>
             </div>
           </div>
 
           <button type="submit" className="login-submit" disabled={status !== 'idle'}>
             {status === 'idle' ? (
-              '进入星舰'
+              t('login.submit')
             ) : (
               <>
                 <span className="login-spinner" />
-                <span>{status === 'warping' ? '跃迁中…' : '身份核验中…'}</span>
+                <span>{status === 'warping' ? t('login.warping') : t('login.verifying')}</span>
               </>
             )}
           </button>
         </form>
 
         <footer className="login-foot">
-          <span>新舰员？</span>
-          <Link to="/" className="login-link">申请入驻</Link>
+          <span>{t('login.newCrew')}</span>
+          <Link to="/" className="login-link">{t('login.apply')}</Link>
         </footer>
       </main>
     </div>

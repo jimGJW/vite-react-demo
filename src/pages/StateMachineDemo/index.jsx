@@ -2,9 +2,10 @@ import { useMemo, useReducer } from 'react'
 import { Button, Card, Slider, Space, Tag, Timeline, Tooltip, Typography } from 'antd'
 import { NodeIndexOutlined } from '@ant-design/icons'
 import {
-  createMachine, createHistory, commit, undo, redo,
+   createHistory, commit, undo, redo,
   current, canUndo, canRedo, jumpTo,
 } from '../../components/StateMachine/machine.js'
+import { useI18n, pickLang } from '../../i18n/index.js'
 import './index.scss'
 
 const { Title, Paragraph, Text } = Typography
@@ -46,6 +47,7 @@ function reducer(history, action) {
 }
 
 export default function StateMachineDemo() {
+  const { t, lang } = useI18n()
   const [history, dispatch] = useReducer(
     reducer,
     undefined,
@@ -60,20 +62,18 @@ export default function StateMachineDemo() {
     <div className="smd">
       <header className="smd__header">
         <Title level={4} className="smd__title">
-          <NodeIndexOutlined /> 状态机与时间旅行
+          <NodeIndexOutlined /> {t('stateMachine.title')}
         </Title>
         <Paragraph type="secondary" className="smd__lead">
-          把「谁能流转到哪」从组件里抽成一张状态表，非法流转在
-          <code> transition()</code> 里就被拦掉，不用在业务代码里到处写 if。
-          再配一个撤销栈，就免费得到时间旅行（撤销 / 重做 / 任意跳转）。
+          {t('stateMachine.lead1')}<code> transition()</code>{t('stateMachine.lead2')}
         </Paragraph>
       </header>
 
       <div className="smd__grid">
         {/* ===== 状态图 ===== */}
-        <Card size="small" className="smd__card" title="工单流转图（当前状态高亮）">
+        <Card size="small" className="smd__card" title={t('stateMachine.flowTitle')}>
           <div className="smd__stage">
-            <svg className="smd__flow" viewBox="0 0 560 190" role="img" aria-label="工单状态流转图">
+            <svg className="smd__flow" viewBox="0 0 560 190" role="img" aria-label={t('stateMachine.flowAria')}>
               <defs>
                 <marker id="smd-arrow" viewBox="0 0 10 10" refX="9" refY="5"
                   markerWidth="6" markerHeight="6" orient="auto-start-reverse">
@@ -116,7 +116,7 @@ export default function StateMachineDemo() {
                       fill={active ? '#fff' : 'var(--c-text-1, #000000e0)'}
                       fontWeight={active ? 700 : 400}
                     >
-                      {TICKET.metaOf(id).label}
+                      {pickLang(TICKET.metaOf(id).label, lang)}
                     </text>
                   </g>
                 )
@@ -124,27 +124,28 @@ export default function StateMachineDemo() {
             </svg>
 
             <div className="smd__now">
-              <b>{meta.label}</b>
-              <Text type="secondary" style={{ fontSize: '0.8rem' }}>{meta.desc}</Text>
-              <Tag color="blue" style={{ marginLeft: 'auto' }}>第 {history.cursor + 1} / {history.entries.length} 步</Tag>
+              <b>{pickLang(meta.label, lang)}</b>
+              <Text type="secondary" style={{ fontSize: '0.8rem' }}>{pickLang(meta.desc, lang)}</Text>
+              <Tag color="blue" style={{ marginLeft: 'auto' }}>{t('stateMachine.step', { current: history.cursor + 1, total: history.entries.length })}</Tag>
             </div>
 
             <Text type="secondary" className="smd__hint">
-              灰色按钮表示当前状态下不允许该操作 —— 状态机直接返回 ok:false，
-              业务代码不需要再写一遍判断。
+              {t('stateMachine.grayHint')}
             </Text>
             <Space wrap>
               {ALL_EVENTS.map((ev) => {
                 const enabled = available.includes(ev)
-                const reason = TICKET.transition(now, ev).reason
                 return (
-                  <Tooltip key={ev} title={enabled ? `触发 ${ev}` : reason}>
+                  <Tooltip
+                    key={ev}
+                    title={enabled ? t('stateMachine.triggerTip', { event: ev }) : t('stateMachine.disableReason', { label: pickLang(meta.label, lang), event: ev })}
+                  >
                     <Button
                       type={enabled ? 'primary' : 'default'}
                       disabled={!enabled}
                       onClick={() => dispatch({ type: ev })}
                     >
-                      {EVENT_LABEL[ev]}
+                      {pickLang(EVENT_LABEL[ev], lang)}
                     </Button>
                   </Tooltip>
                 )
@@ -154,28 +155,27 @@ export default function StateMachineDemo() {
         </Card>
 
         {/* ===== 时间旅行 ===== */}
-        <Card size="small" className="smd__card" title="时间旅行：撤销 / 重做 / 任意跳转">
+        <Card size="small" className="smd__card" title={t('stateMachine.travelTitle')}>
           <div className="smd__stage">
             <Text type="secondary" className="smd__hint">
-              历史栈存的是「状态快照序列」。提交新状态时若不在末尾，
-              后面的 redo 分支会被丢弃 —— 这是所有撤销栈的标准行为。
+              {t('stateMachine.travelHint')}
             </Text>
 
             <Space wrap>
-              <Button disabled={!canUndo(history)} onClick={() => dispatch({ type: 'UNDO' })}>撤销</Button>
-              <Button disabled={!canRedo(history)} onClick={() => dispatch({ type: 'REDO' })}>重做</Button>
-              <Button onClick={() => dispatch({ type: 'JUMP', index: 0 })}>回到最初</Button>
+              <Button disabled={!canUndo(history)} onClick={() => dispatch({ type: 'UNDO' })}>{t('stateMachine.undo')}</Button>
+              <Button disabled={!canRedo(history)} onClick={() => dispatch({ type: 'REDO' })}>{t('stateMachine.redo')}</Button>
+              <Button onClick={() => dispatch({ type: 'JUMP', index: 0 })}>{t('stateMachine.jumpStart')}</Button>
             </Space>
 
             <div className="smd__row">
-              <Text style={{ fontSize: '0.78rem', minWidth: 76 }}>时间轴</Text>
+              <Text style={{ fontSize: '0.78rem', minWidth: 76 }}>{t('stateMachine.timelineLabel')}</Text>
               <Slider
                 style={{ flex: '1 1 200px', minWidth: 180 }}
                 min={0}
                 max={Math.max(0, history.entries.length - 1)}
                 value={history.cursor}
                 onChange={(v) => dispatch({ type: 'JUMP', index: v })}
-                tooltip={{ formatter: (v) => `第 ${v + 1} 步：${TICKET.metaOf(history.entries[v]).label}` }}
+                tooltip={{ formatter: (v) => t('stateMachine.sliderTip', { step: v + 1, label: pickLang(TICKET.metaOf(history.entries[v]).label, lang) }) }}
               />
             </div>
 
@@ -188,8 +188,8 @@ export default function StateMachineDemo() {
                       style={{ fontSize: '0.8rem', cursor: 'pointer', fontWeight: i === history.cursor ? 700 : 400 }}
                       onClick={() => dispatch({ type: 'JUMP', index: i })}
                     >
-                      第 {i + 1} 步 · {TICKET.metaOf(s).label}
-                      {i === history.cursor ? '（当前）' : ''}
+                      {t('stateMachine.stepItem', { step: i + 1, label: pickLang(TICKET.metaOf(s).label, lang) })}
+                      {i === history.cursor ? t('stateMachine.currentMark') : ''}
                     </span>
                   ),
                 }))}

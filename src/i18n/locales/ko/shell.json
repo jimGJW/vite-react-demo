@@ -1,0 +1,16 @@
+{
+  "brand": "성간 콘솔",
+  "sidebarCollapse": "클릭하여 접기",
+  "sidebarHide": "클릭하여 숨기기",
+  "sidebarExpand": "클릭하여 펼치기",
+  "hideHeader": "상단 내비게이션 숨기기",
+  "showHeader": "상단 내비게이션 표시",
+  "logout": "로그아웃",
+  "sidebarAria": "사이드 내비게이션",
+  "hiddenEntryTitle": "로컬 미디어 센터 (숨겨진 페이지)",
+  "sidebarFoot": "왼쪽 위 버튼으로 전환: 접기 / 숨기기",
+  "footer": "© {year} 성간 콘솔 · Built with Ant Design",
+  "userFallback": "U",
+  "docTitle": "인터스텔라 콘솔 · 우주 / 지구 / 해양 데이터 보드",
+  "metaDesc": "React 19 + Vue 3 + Angular 22 멀티 프레임워크 컴포넌트 데모: 차트, 데이터 테이블, 명령 팔레트, 음성·스캔, AI Agent 콘솔."
+}

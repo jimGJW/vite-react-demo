@@ -1,0 +1,17 @@
+{
+  "title": "성간 콘솔",
+  "welcome": "다시 돌아온 것을 환영합니다, 함장님. 메인 제어 시스템에 들어가려면 신원을 확인하세요.",
+  "backHint": "확인 후 {path} 페이지로 자동 복귀합니다",
+  "username": "계정",
+  "password": "접근 키",
+  "remember": "로그인 유지",
+  "forgot": "키를 잊으셨나요?",
+  "modeLabel": "인터페이스 스타일",
+  "modeAntd": "Ant Design",
+  "modeVue": "Vue 스타일",
+  "submit": "성선에 탑승",
+  "verifying": "신원 확인 중…",
+  "warping": "워프 중…",
+  "newCrew": "새로운 승무원인가요?",
+  "apply": "입주 신청"
+}

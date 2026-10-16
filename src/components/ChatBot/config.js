@@ -45,21 +45,24 @@ export const CONTENT_TYPE = {
   CHART: 'echart',
 }
 
-/** 表格字段 → 列标题（命中即用，未命中按 key 生成） */
+/**
+ * 表格字段 → 列标题（命中即用，未命中按 key 生成）。
+ * 数据字典：值为 { '<lang>': text }，消费方用 pickLang() 取当前语种，避免写死的列名。
+ */
 export const FIELD_LABELS = {
-  time: '时间',
-  name: '名称',
-  type: '类型',
-  status: '状态',
-  value: '数值',
-  temperature: '温度(℃)',
-  humidity: '湿度(%)',
-  pressure: '压力(kPa)',
-  flow: '流量(m³/h)',
-  current: '电流(A)',
-  voltage: '电压(V)',
-  report: '报告',
-  note: '备注',
+  time: { 'zh-CN': '时间', 'zh-TW': '時間', en: 'Time', ja: '時間', ko: '시간', de: 'Zeit', fr: 'Temps', th: 'เวลา', mn: 'Хугацаа', bo: 'དུས་ཚོད།' },
+  name: { 'zh-CN': '名称', 'zh-TW': '名稱', en: 'Name', ja: '名前', ko: '이름', de: 'Name', fr: 'Nom', th: 'ชื่อ', mn: 'Нэр', bo: 'མིང་།' },
+  type: { 'zh-CN': '类型', 'zh-TW': '類型', en: 'Type', ja: '種類', ko: '유형', de: 'Typ', fr: 'Type', th: 'ประเภท', mn: 'Төрөл', bo: 'འདྲ་བ།' },
+  status: { 'zh-CN': '状态', 'zh-TW': '狀態', en: 'Status', ja: 'ステータス', ko: '상태', de: 'Status', fr: 'Statut', th: 'สถานะ', mn: 'Төлөв', bo: 'གནས་ཚུལ།' },
+  value: { 'zh-CN': '数值', 'zh-TW': '數值', en: 'Value', ja: '値', ko: '값', de: 'Wert', fr: 'Valeur', th: 'ค่า', mn: 'Утга', bo: 'རིན་ཐང་།' },
+  temperature: { 'zh-CN': '温度(℃)', 'zh-TW': '溫度(℃)', en: 'Temperature(℃)', ja: '温度(℃)', ko: '온도(℃)', de: 'Temperatur(℃)', fr: 'Température(℃)', th: 'อุณหภูมิ(℃)', mn: 'Температур(℃)', bo: 'དྲོད་ཚད།(℃)' },
+  humidity: { 'zh-CN': '湿度(%)', 'zh-TW': '濕度(%)', en: 'Humidity(%)', ja: '湿度(%)', ko: '습도(%)', de: 'Luftfeuchtigkeit(%)', fr: 'Humidité(%)', th: 'ความชื้น(%)', mn: 'Чийгшил(%)', bo: 'རླན་པ།(%)' },
+  pressure: { 'zh-CN': '压力(kPa)', 'zh-TW': '壓力(kPa)', en: 'Pressure(kPa)', ja: '圧力(kPa)', ko: '압력(kPa)', de: 'Druck(kPa)', fr: 'Pression(kPa)', th: 'ความดัน(kPa)', mn: 'Даралт(kPa)', bo: 'ཁམས་གནོན།(kPa)' },
+  flow: { 'zh-CN': '流量(m³/h)', 'zh-TW': '流量(m³/h)', en: 'Flow(m³/h)', ja: '流量(m³/h)', ko: '유량(m³/h)', de: 'Durchfluss(m³/h)', fr: 'Débit(m³/h)', th: 'อัตราการไหล(m³/h)', mn: 'Урсгал(m³/h)', bo: 'འགྲོ་ཚད།(m³/h)' },
+  current: { 'zh-CN': '电流(A)', 'zh-TW': '電流(A)', en: 'Current(A)', ja: '電流(A)', ko: '전류(A)', de: 'Strom(A)', fr: 'Courant(A)', th: 'กระแส(A)', mn: 'Гүйдэл(A)', bo: 'གློག་རྒྱུན།(A)' },
+  voltage: { 'zh-CN': '电压(V)', 'zh-TW': '電壓(V)', en: 'Voltage(V)', ja: '電圧(V)', ko: '전압(V)', de: 'Spannung(V)', fr: 'Tension(V)', th: 'แรงดัน(V)', mn: 'Хүчдэл(V)', bo: 'གློག་ཤུགས།(V)' },
+  report: { 'zh-CN': '报告', 'zh-TW': '報告', en: 'Report', ja: 'レポート', ko: '보고', de: 'Bericht', fr: 'Rapport', th: 'รายงาน', mn: 'Тайлан', bo: 'སྙན་ཞུ།' },
+  note: { 'zh-CN': '备注', 'zh-TW': '備註', en: 'Note', ja: '備考', ko: '비고', de: 'Notiz', fr: 'Note', th: 'หมายเหตุ', mn: 'Тэмдэглэл', bo: 'དྲན་གསོ།' },
 }
 
 /** 历史列表分页大小 */

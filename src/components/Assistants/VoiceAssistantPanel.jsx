@@ -1,6 +1,7 @@
 import { clamp } from '../Utils/index.js'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import VoiceInput from '../VoiceInput/index.jsx'
+import { useI18n } from '../../i18n/index.js'
 import './VoiceAssistantPanel.scss'
 
 const PERSIST_PREFIX = 'assistant.voice.pos'
@@ -11,21 +12,21 @@ const getSpeechRecognition = () => {
   return window.SpeechRecognition || window.webkitSpeechRecognition || null
 }
 
-const getBrowserName = () => {
-  if (typeof navigator === 'undefined') return '未知'
+const getBrowserName = (t) => {
+  if (typeof navigator === 'undefined') return t('voice.unknown')
   const ua = navigator.userAgent
   if (ua.includes('Edg/')) return 'Microsoft Edge'
   if (ua.includes('Chrome/')) return 'Google Chrome'
   if (ua.includes('Firefox/')) return 'Mozilla Firefox'
   if (ua.includes('Safari/')) return 'Apple Safari'
-  return '未知浏览器'
+  return t('voice.unknownBrowser')
 }
 
-const STATUS_TEXT = {
-  listening: { text: '在线聆听中', tone: 'busy' },
-  recording: { text: '录音中', tone: 'busy' },
-  recognizing: { text: '离线转写中', tone: 'busy' },
-  idle: { text: '空闲', tone: 'idle' },
+const STATUS_TONE = {
+  listening: 'busy',
+  recording: 'busy',
+  recognizing: 'busy',
+  idle: 'idle',
 }
 
 function loadPos(key) {
@@ -79,8 +80,8 @@ export default function VoiceAssistantPanel({
   onOpenChange,
   onCommit,
   onSendToAgent,
-  title = '语音助手',
-  subtitle = '语音转文字 · 在线 / 离线双引擎',
+  title,
+  subtitle,
   engine = 'auto',
   lang = 'zh-CN',
   rows = 4,
@@ -124,6 +125,10 @@ export default function VoiceAssistantPanel({
   const dragOffset = useRef({ x: 0, y: 0 })
   const panelRef = useRef(null)
   const posRef = useRef(pos)
+
+  const { t } = useI18n()
+  const resolvedTitle = title ?? t('assistants.voice.title')
+  const resolvedSubtitle = subtitle ?? t('assistants.voice.subtitle')
 
   useEffect(() => {
     posRef.current = pos
@@ -203,11 +208,21 @@ export default function VoiceAssistantPanel({
         !!navigator.mediaDevices?.getUserMedia &&
         typeof MediaRecorder !== 'undefined' &&
         typeof AudioContext !== 'undefined',
-      browser: getBrowserName(),
+      browser: getBrowserName(t),
     }
-  }, [])
+  }, [t])
 
-  const statusMeta = STATUS_TEXT[status] || STATUS_TEXT.idle
+  const statusMeta = {
+    tone: STATUS_TONE[status] || STATUS_TONE.idle,
+    text:
+      status === 'listening'
+        ? t('voice.statusListening')
+        : status === 'recording'
+          ? t('voice.statusRecording')
+          : status === 'recognizing'
+            ? t('voice.statusRecognizing')
+            : t('voice.statusIdle'),
+  }
 
   // 默认吸附右下角；底部留 88px 避开快捷助手键
   const panelStyle = pos
@@ -240,8 +255,8 @@ export default function VoiceAssistantPanel({
           <div className="vap-title">
             <span className="vap-title-icon">🎙️</span>
             <span className="vap-title-text">
-              {title}
-              {subtitle && <em className="vap-title-sub">{subtitle}</em>}
+              {resolvedTitle}
+              {resolvedSubtitle && <em className="vap-title-sub">{resolvedSubtitle}</em>}
             </span>
             {shortcutText && !embedded && <span className="vap-shortcut">{shortcutText}</span>}
           </div>
@@ -250,12 +265,12 @@ export default function VoiceAssistantPanel({
               type="button"
               className="vap-btn-icon"
               onClick={() => setCollapsed((c) => !c)}
-              title={collapsed ? '展开' : '折叠'}
+              title={collapsed ? t('assistants.common.expand') : t('assistants.common.collapse')}
             >
               {collapsed ? '▢' : '—'}
             </button>
             {!embedded && (
-              <button type="button" className="vap-btn-icon" onClick={close} title="关闭">
+              <button type="button" className="vap-btn-icon" onClick={close} title={t('assistants.common.close')}>
                 ✕
               </button>
             )}
@@ -268,9 +283,9 @@ export default function VoiceAssistantPanel({
               <span className={`vap-dot ${statusMeta.tone}`} />
               <span className="vap-status-text">{statusMeta.text}</span>
               <span className="vap-status-sep">·</span>
-              <span className="vap-status-count">{text.length} 字</span>
+              <span className="vap-status-count">{t('voice.charCount', { count: text.length })}</span>
               <span className="vap-status-env">
-                在线 {envInfo.web ? '✓' : '✗'} / 离线 {envInfo.local ? '✓' : '✗'}
+                {t('voice.envOnline')} {envInfo.web ? '✓' : '✗'} / {t('voice.envOffline')} {envInfo.local ? '✓' : '✗'}
               </span>
             </div>
 
@@ -287,7 +302,7 @@ export default function VoiceAssistantPanel({
 
             <div className="vap-toolbar">
               <button type="button" className="vap-btn ghost" onClick={handleCopy} disabled={!text}>
-                {copied ? '已复制 ✓' : '复制全文'}
+                {copied ? t('voice.input.copied') : t('voice.input.copyAll')}
               </button>
               <button
                 type="button"
@@ -295,7 +310,7 @@ export default function VoiceAssistantPanel({
                 onClick={() => setText('')}
                 disabled={!text}
               >
-                清空
+                {t('voice.input.clear')}
               </button>
               {onSendToAgent && (
                 <button
@@ -303,17 +318,17 @@ export default function VoiceAssistantPanel({
                   className="vap-btn primary"
                   onClick={() => onSendToAgent(text)}
                   disabled={!text.trim()}
-                  title="把识别出的文字交给 AI Agent 执行"
+                  title={t('voice.sendToAgentTip')}
                 >
-                  交给 AI Agent →
+                  {t('voice.sendToAgent')}
                 </button>
               )}
             </div>
 
             <div className="vap-section">
-              <div className="vap-section-title">识别记录</div>
+              <div className="vap-section-title">{t('voice.historyTitle')}</div>
               {history.length === 0 ? (
-                <p className="vap-empty">还没有识别记录，点击上方「开始语音输入」或「开始录音」试试</p>
+                <p className="vap-empty">{t('voice.historyEmpty')}</p>
               ) : (
                 <ul className="vap-history">
                   {history.map((item, idx) => (
@@ -328,22 +343,22 @@ export default function VoiceAssistantPanel({
 
             {showDiagnose && (
               <details className="vap-diagnose">
-                <summary>环境诊断</summary>
+                <summary>{t('voice.diagnose')}</summary>
                 <ul>
                   <li>
-                    浏览器：<strong>{envInfo.browser}</strong>
+                    {t('voice.browserLabel')}<strong>{envInfo.browser}</strong>
                   </li>
                   <li>
-                    在线识别（Web Speech API）：
-                    <strong>{envInfo.web ? '支持' : '不支持'}</strong>
-                    {envInfo.web && '（Chrome 中文识别依赖 Google 服务，国内网络可能无法使用）'}
+                    {t('voice.webSupport')}：
+                    <strong>{envInfo.web ? t('voice.supported') : t('voice.unsupported')}</strong>
+                    {envInfo.web && t('voice.webNote')}
                   </li>
                   <li>
-                    离线识别（本地 Whisper）：
-                    <strong>{envInfo.local ? '支持' : '不支持'}</strong>
-                    {envInfo.local && '（模型已内置在 public/models/，完全离线）'}
+                    {t('voice.localSupport')}：
+                    <strong>{envInfo.local ? t('voice.supported') : t('voice.unsupported')}</strong>
+                    {envInfo.local && t('voice.localNote')}
                   </li>
-                  <li>当前状态：{status}</li>
+                  <li>{t('voice.currentStatus')}：{statusMeta.text}</li>
                 </ul>
               </details>
             )}

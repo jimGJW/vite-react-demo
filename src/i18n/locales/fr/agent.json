@@ -1,0 +1,80 @@
+{
+  "console": {
+    "title": "🤖 Console d'agent IA",
+    "online": "En ligne",
+    "modeDirect": "Mode direct",
+    "modeIframe": "Mode iframe",
+    "toggleMode": "Changer de mode"
+  },
+  "page": {
+    "desc": "Contrôlez la page actuelle en langage naturel : clic, saisie, défilement, analyse, navigation. Trois modes d'interaction : champ de saisie, commandes rapides et voix au microphone.",
+    "execPre": "Exécuté : ",
+    "execPost": " opérations"
+  },
+  "stats": {
+    "execPre": "Exécuté ",
+    "execPost": " fois",
+    "successPre": "Succès ",
+    "failPre": "Échec ",
+    "voicePre": "Voix ",
+    "ratePre": "Taux de réussite ",
+    "ratePost": "%",
+    "clearTitle": "Effacer l'historique",
+    "clear": "🗑 Effacer"
+  },
+  "history": {
+    "failBadge": "Échec",
+    "copyTitle": "Copier la commande",
+    "redoTitle": "Réexécuter",
+    "success": "Succès",
+    "emptyTitle": "Lancez votre première commande",
+    "emptyLine1": "Essayez « cliquer sur le bouton de connexion », « aller à l'accueil », « faire défiler vers le bas »",
+    "emptyLine2": "ou « remplir le formulaire : nom Zhang San, e-mail a@b.com », « soumettre le formulaire »",
+    "emptyLine3": "Vous pouvez aussi cliquer sur une commande rapide ci-dessous, ou sur 🎤 pour la saisie vocale"
+  },
+  "input": {
+    "micUnsupported": "Le navigateur actuel ne prend pas en charge l'enregistrement micro",
+    "micStopTip": "Arrêter l'enregistrement et lancer la reconnaissance",
+    "micTip": "🎤 Contrôle vocal de la page : dictez une commande, elle s'exécute automatiquement (clic/navigation/défilement/saisie)",
+    "placeholder": "Saisissez ou collez une commande… Entrée = exécuter · Maj+Entrée = nouvelle ligne · ou 🎤 pour la voix",
+    "executing": "En cours",
+    "execute": "▶ Exécuter"
+  },
+  "shortcuts": {
+    "title": "⚡ Exécution en un clic",
+    "runTip": "Exécuter directement « {label} »"
+  },
+  "voice": {
+    "recording": "🎙️ Enregistrement… dites votre commande puis appuyez sur ⏹",
+    "recognizing": "⏳ Reconnaissance vocale locale en cours (ne quitte pas l'appareil)",
+    "loadingModel": "⏬ Premier chargement du modèle vocal (une seule fois, environ 40 Mo)"
+  },
+  "status": {
+    "directMode": "Mode direct : agit sur le DOM de la page actuelle",
+    "iframeWaiting": "Mode iframe : en attente de connexion...",
+    "iframeConnected": "iframe connecté",
+    "parsing": "🔄 Analyse de « {task} »...",
+    "done": "✅ Terminé : {summary}",
+    "failed": "❌ Échec : {summary}",
+    "partialDone": "⚠️ Terminé : {summary}",
+    "error": "❌ Erreur : {message}",
+    "recognized": "🎙️ Reconnu : {text}",
+    "corrected": "(corrigé : {text})",
+    "voiceFailed": "❌ Échec de la reconnaissance vocale : {message}",
+    "copied": "📋 « {task} » copié",
+    "copyFailed": "❌ Échec de la copie"
+  },
+  "summary": {
+    "allSuccess": "✓ Tout réussi · {count} actions",
+    "allFail": "✗ Tout échoué · {count} actions",
+    "partial": "Réussite partielle · {success}/{total}"
+  },
+  "iframe": {
+    "placeholder": "Adresse de la page intégrée (mode iframe)",
+    "hint": "En mode iframe, l'adresse de la page cible doit être configurée"
+  },
+  "errors": {
+    "iframeNotReady": "iframe non prêt",
+    "timeout": "Délai dépassé (5 s)"
+  }
+}

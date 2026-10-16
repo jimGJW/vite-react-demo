@@ -14,6 +14,7 @@
 import { ExperimentOutlined } from '@ant-design/icons'
 import { Empty, Table, Tag, Tooltip } from 'antd'
 import { Panel } from './ui.jsx'
+import { useI18n } from '../../../i18n/index.js'
 
 /** 周期(天) → 人类可读：超过 2 年用「年」，否则保留「天」更精确 */
 function perText(per) {
@@ -34,6 +35,7 @@ function Cell({ value, digits = 2, unit }) {
 }
 
 export default function CometTab({ comet, cometData }) {
+  const { t } = useI18n()
   const items = (cometData?.items || []).filter((i) => i.ok)
   const failed = (cometData?.items || []).filter((i) => !i.ok)
 
@@ -42,7 +44,7 @@ export default function CometTab({ comet, cometData }) {
 
   const columns = [
     {
-      title: '天体',
+      title: t('astro.cometBody'),
       dataIndex: 'zh',
       width: 190,
       render: (zh, r) => (
@@ -53,7 +55,7 @@ export default function CometTab({ comet, cometData }) {
       ),
     },
     {
-      title: '分类',
+      title: t('astro.cometClass'),
       dataIndex: 'cls',
       width: 150,
       render: (cls) => <span className="astro-comet-cls">{cls || '—'}</span>,
@@ -61,21 +63,21 @@ export default function CometTab({ comet, cometData }) {
     {
       // 表头挂气泡解释，避免「周期几万年」这种数字没人看得懂
       title: (
-        <Tooltip title="绕太阳一周的时间。彗星常为数十年至数千年，小行星多为 3–6 年">
-          <span className="astro-comet-th">公转周期</span>
+        <Tooltip title={t('astro.cometPerTip')}>
+          <span className="astro-comet-th">{t('astro.cometPeriod')}</span>
         </Tooltip>
       ),
       dataIndex: 'per',
       width: 110,
       render: (per) => perText(per),
     },
-    { title: '近日距 (AU)', dataIndex: 'q', width: 110, render: (v) => <Cell value={v} /> },
-    { title: '远日距 (AU)', dataIndex: 'ad', width: 110, render: (v) => <Cell value={v} /> },
-    { title: '偏心率', dataIndex: 'e', width: 90, render: (v) => <Cell value={v} digits={3} /> },
-    { title: '倾角 (°)', dataIndex: 'i', width: 90, render: (v) => <Cell value={v} digits={1} /> },
-    { title: '直径 (km)', dataIndex: 'diameter', width: 100, render: (v) => <Cell value={v} digits={1} /> },
+    { title: t('astro.cometPeriDist'), dataIndex: 'q', width: 110, render: (v) => <Cell value={v} /> },
+    { title: t('astro.cometApoDist'), dataIndex: 'ad', width: 110, render: (v) => <Cell value={v} /> },
+    { title: t('astro.cometEcc'), dataIndex: 'e', width: 90, render: (v) => <Cell value={v} digits={3} /> },
+    { title: t('astro.cometIncl'), dataIndex: 'i', width: 90, render: (v) => <Cell value={v} digits={1} /> },
+    { title: t('astro.cometDiameter'), dataIndex: 'diameter', width: 100, render: (v) => <Cell value={v} digits={1} /> },
     {
-      title: '看点',
+      title: t('astro.cometHighlight'),
       dataIndex: 'note',
       render: (note) => <span className="astro-comet-note">{note || '—'}</span>,
     },
@@ -84,8 +86,8 @@ export default function CometTab({ comet, cometData }) {
   if (!comet.loading && !items.length) {
     return (
       <div className="astro-tab-content">
-        <Panel title="小天体档案" source="NASA JPL Small-Body Database" icon={<ExperimentOutlined />} error={comet.error || '暂无数据'}>
-          <Empty description="未取到小天体数据" />
+        <Panel title={t('astro.cometArchiveTitle')} source={t('astro.cometAsteroidSource')} icon={<ExperimentOutlined />} error={comet.error || t('astro.cometNoData')}>
+          <Empty description={t('astro.cometEmpty')} />
         </Panel>
       </div>
     )
@@ -94,15 +96,14 @@ export default function CometTab({ comet, cometData }) {
   return (
     <div className="astro-tab-content">
       <Panel
-        title="☄️ 彗星（肉眼可见 / 周期彗星）"
-        source="NASA JPL Small-Body Database（精选清单，轨道要素 24 小时更新一次）"
+        title={t('astro.cometCometTitle')}
+        source={t('astro.cometCometSource')}
         icon={<ExperimentOutlined />}
         loading={comet.loading}
         error={comet.error}
       >
         <p className="astro-comet-lead">
-          彗星的偏心率普遍接近 1（轨道极扁），近日距很小而远日距极大——
-          这就是为什么它们只在靠近太阳的短短几个月里长出彗尾，其余时间只是一个暗淡的脏雪球。
+          {t('astro.cometCometLead')}
         </p>
         <Table
           size="small"
@@ -115,15 +116,14 @@ export default function CometTab({ comet, cometData }) {
       </Panel>
 
       <Panel
-        title="🪨 小行星（探测器到访过 / 著名目标）"
-        source="NASA JPL Small-Body Database"
+        title={t('astro.cometAsteroidTitle')}
+        source={t('astro.cometAsteroidSource')}
         icon={<ExperimentOutlined />}
         loading={comet.loading}
         error={comet.error}
       >
         <p className="astro-comet-lead">
-          与彗星相反，小行星的偏心率普遍较小、轨道接近圆。表里这些是少量被人类探测器
-          近距离探测甚至采样返回的目标——它们的直径与反照率是实测而非估算。
+          {t('astro.cometAsteroidLead')}
         </p>
         <Table
           size="small"
@@ -135,7 +135,7 @@ export default function CometTab({ comet, cometData }) {
         />
         {failed.length ? (
           <div className="astro-comet-failed">
-            {failed.length} 个天体本次未取到（上游瞬时不可用，下次刷新会自动补上）：
+            {t('astro.cometFailed', { n: failed.length })}
             {failed.map((f) => (
               <Tag key={f.key} bordered={false}>
                 {f.zh}

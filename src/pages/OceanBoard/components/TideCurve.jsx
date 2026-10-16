@@ -1,6 +1,8 @@
+import { useI18n } from '../../../i18n/index.js'
 import { fmtSiteDay, fmtSiteTime } from './ui.jsx'
 
 export function TideCurve({ series, latest, station }) {
+  const { t } = useI18n()
   if (!series?.length) return null
   const W = 640
   const H = 220
@@ -13,13 +15,14 @@ export function TideCurve({ series, latest, station }) {
   const path = series.map((p, i) => `${i === 0 ? 'M' : 'L'}${x(i).toFixed(1)},${y(p.v).toFixed(1)}`).join(' ')
   const areaPath = `${path} L${x(series.length - 1).toFixed(1)},${H - PAD.b} L${PAD.l},${H - PAD.b} Z`
   const ticks = [min, (min + max) / 2, max].map((v) => Number(v.toFixed(2)))
+  const stName = station?.name || t('ocean.station.sf')
   return (
     <div className="o-chart">
-      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="过去 24 小时实测潮位">
-        {ticks.map((t) => (
-          <g key={t}>
-            <line x1={PAD.l} y1={y(t)} x2={W - PAD.r} y2={y(t)} className="o-chart__grid" />
-            <text x={PAD.l - 6} y={y(t) + 3.5} textAnchor="end" className="o-chart__tick">{t}</text>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t('ocean.chart.tideAria')}>
+        {ticks.map((tick) => (
+          <g key={tick}>
+            <line x1={PAD.l} y1={y(tick)} x2={W - PAD.r} y2={y(tick)} className="o-chart__grid" />
+            <text x={PAD.l - 6} y={y(tick) + 3.5} textAnchor="end" className="o-chart__tick">{tick}</text>
           </g>
         ))}
         {/* MLLW 零潮位基准线（平均较低低潮面，美国潮位站通用基准） */}
@@ -39,12 +42,11 @@ export function TideCurve({ series, latest, station }) {
         </text>
         <text x={PAD.l} y={H - 8} className="o-chart__tick">{fmtSiteDay(series[0].t)}</text>
         <text x={W - PAD.r} y={H - 8} textAnchor="end" className="o-chart__tick">
-          {fmtSiteDay(latest.t)}（站点时间）
+          {`${fmtSiteDay(latest.t)}${t('ocean.time.site')}`}
         </text>
       </svg>
       <div className="o-chart__caption">
-        {station?.name || '旧金山'}站过去 24 小时实测潮位（米，MLLW 基准，NOAA CO-OPS 6 分钟采样）——
-        半日潮约 12h25m 一个周期，旧金山潮差可达 1.8 m
+        {t('ocean.chart.tideCaption', { station: stName })}
       </div>
     </div>
   )

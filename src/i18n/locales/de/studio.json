@@ -1,0 +1,414 @@
+{
+  "page": {
+    "title": "Komponenten-Werkstatt Studio",
+    "descLead": "{count} wiederverwendbare Komponenten, aus 80+ lokalen Legacy-Frontend-Projekten ausgewählt, von Geschäftslogik entkoppelt und mit null Abhängigkeiten neu geschrieben, in {groups} Fähigkeitsgruppen eingeteilt.",
+    "descTail": "Alle Demodaten sind neutrale, fiktive Platzhalter ohne originale sensible Informationen."
+  },
+  "cat": {
+    "screen": "Visualisierung",
+    "builder": "Regeln & Orchestrierung",
+    "media": "Bild & Annotation",
+    "form": "Formulare & Bäume",
+    "report": "Berichte & Nachverfolgung",
+    "interact": "Interaktion · Fortgeschritten"
+  },
+  "demo": {
+    "scanempty": {
+      "name": "ScanEmpty",
+      "title": "Scan-Leerzustand",
+      "desc": "Ein Leerzustand-Scan-Effekt für große Bildschirme, rein mit CSS/SVG umgesetzt – keine Chart-Bibliothek nötig, in jedem Container verwendbar.",
+      "text": "Keine Alarme",
+      "subText": "Keine anormalen Ereignisse in den letzten 24 Stunden"
+    },
+    "autoscroll": {
+      "name": "AutoScrollList",
+      "title": "Nahtlose Scroll-Liste",
+      "desc": "Inhalte, die höher als der Container sind, scrollen automatisch vertikal in Schleife und pausieren beim Hovern; die Verschiebung wird von einer CSS-Variable angetrieben, ohne State-Flackern."
+    },
+    "board": {
+      "name": "DraggableBoard",
+      "title": "Orchestrierbares Board",
+      "desc": "Prozentuale Positionierung + Kollisionserkennung + vereinheitlichte Pointer-Events; mit aktiviertem Bearbeitungsmodus können Karten verschoben/skaliert werden, ungültige Positionen federn zurück."
+    },
+    "axisbreak": {
+      "name": "AxisBreakBar",
+      "title": "Achsenbruch-Balkendiagramm",
+      "desc": "Faltet Leerbereiche zusammen, wenn hohe und niedrige Werte stark auseinanderliegen; horizontal im Diagramm ziehen, um den zu faltenden Y-Bereich zu wählen.",
+      "unit": "Tsd.",
+      "chartTitle": "Monatlicher Kennwert"
+    },
+    "regionmap": {
+      "name": "SvgRegionMap",
+      "title": "Datengesteuerte Bereichskarte",
+      "desc": "Reines SVG mit viewBox und proportionaler Skalierung, geschichtete Punkte (Basiskarte/Bereichsblöcke/Blasen), Klick-Callback für Bereiche."
+    },
+    "adapttable": {
+      "name": "AdaptTable",
+      "title": "Adaptive Großbild-Tabelle",
+      "desc": "Spaltenbreiten gleichmäßig prozentual aufgeteilt, Spaltenbreite/Zeilenhöhe per Drag anpassbar, automatisches Laufband für überlange Zelleninhalte."
+    },
+    "rulebuilder": {
+      "name": "RuleBuilder",
+      "title": "Visueller Condition-Builder",
+      "desc": "AND/OR-Verschachtelung + rekursiver Baum von Blattbedingungen; Operatoren wechseln automatisch nach Feldtyp; Ausgabe als strukturiertes JSON."
+    },
+    "jsondiff": {
+      "name": "JsonDiff",
+      "title": "Strukturierter Objektvergleich",
+      "desc": "Struktureller Diff statt Textdiff: markiert präzise hinzugefügt/entfernt/geändert/unverändert, Pfade auf einen Blick."
+    },
+    "annotator": {
+      "name": "ImageAnnotator",
+      "title": "Bildannotation mit Zoom & Pan",
+      "desc": "Mausrad-Zoom, Drag-Pan; Annotationsanker werden in normierten Koordinaten gespeichert und driften nach Zoom/Pan nicht."
+    },
+    "dynform": {
+      "name": "DynamicForm",
+      "title": "Schema-gesteuertes dynamisches Formular",
+      "desc": "Ein Feld-Schema ist eine UI; unterstützt viele gängige Feldtypen und Pflichtfeld-Validierung."
+    },
+    "orgtree": {
+      "name": "OrgTree",
+      "title": "Hierarchischer Organisationsbaum",
+      "desc": "Hierarchischer Baum beliebiger Tiefe, stufenweise auf-/zuklappbar, mit Einzelauswahl-Suche."
+    },
+    "scanreport": {
+      "name": "ScanReport",
+      "title": "Sicherheits-Scan-Berichtskarte",
+      "desc": "Rendert einen strukturierten Prüfbericht als Schweregrad-Verteilung + Detailliste und kann beliebige Checklisten tragen: Schwachstellen, Reviews, Inspektionen usw."
+    },
+    "anchornav": {
+      "name": "AnchorNav",
+      "title": "Anker-Scroll-Navigation",
+      "desc": "Klebriges linkes Inhaltsverzeichnis + rechter Inhaltsbereich; Klick für sanftes Scrollen, aktueller Abschnitt wird beim Scrollen automatisch hervorgehoben (rAF-gedrosselt)."
+    },
+    "pagetabs": {
+      "name": "PageTabs",
+      "title": "Multi-Tab-Arbeitsbereich",
+      "desc": "Router-artige Tableiste: wechselbar, schließbar, neu anlegbar; der Inhaltsbereich kommt vom render des aktuellen Tabs."
+    },
+    "treetable": {
+      "name": "TreeTable",
+      "title": "Baumtabelle + Ahnen-erhaltende Suche",
+      "desc": "Stufenweise aufklappbar; bei Suche nach Name werden Eltern passender Nachfahren automatisch behalten und aufgeklappt – kein Kontextverlust."
+    },
+    "highlighter": {
+      "name": "Highlighter",
+      "title": "Schlüsselwort-Hervorhebung",
+      "desc": "Umgibt Textfragmente, die auf das Schlüsselwort passen, mit <mark>; reine Funktionsaufteilung, einbettbar in jede Liste oder Tabellenzelle."
+    },
+    "editabletable": {
+      "name": "EditableTable",
+      "title": "Inline-bearbeitbare Tabelle",
+      "desc": "Klick auf „Bearbeiten“ schaltet die ganze Zeile auf Eingaben/Dropdowns um; Speichern schreibt zurück, Abbrechen stellt die Anfangswerte wieder her."
+    },
+    "draglayout": {
+      "name": "DragLayout",
+      "title": "Freies Drag-and-Resize-Layout",
+      "desc": "Karten werden prozentual positioniert, per Drag verschiebbar und per Eck-Drag skalierbar, immer im Container begrenzt; ideal für leichte Low-Code-Dashboards."
+    },
+    "gauge": {
+      "name": "CanvasGauge",
+      "title": "Canvas-Messinstrument",
+      "desc": "Null-Abhängigkeiten-Canvas-Messinstrument: rAF-Easing zum Zielwert, High-DPI, container-adaptiv."
+    },
+    "carousel3d": {
+      "name": "CardCarousel3D",
+      "title": "3D-Kartenkarussell",
+      "desc": "Gesten-Richtungserkennung (>45° weicht dem vertikalen Scrollen); Karten wechseln mit Z-Achsen-Tiefe und Rotation nach relativer Position."
+    },
+    "frameplayer": {
+      "name": "FramePlayer",
+      "title": "Frame-Sequenz-Player",
+      "desc": "Loop durch mehrere „Frames“ nach fps, mit Play/Pause, Frame-Stepping und Fortschritts-Drag; ein Frame kann ein beliebiger Node sein."
+    },
+    "contextmenu": {
+      "name": "ContextMenu",
+      "title": "Kontextmenü",
+      "desc": "Rechtsklick im umschlossenen Bereich öffnet das Menü; Klick irgendwo oder Scrollen schließt es."
+    },
+    "errorboundary": {
+      "name": "ErrorBoundary",
+      "title": "Fehlergrenze",
+      "desc": "Fängt Render-Phase-Ausnahmen im Teilbaum ab, zeigt eine Fallback-UI und unterstützt Wiederholung."
+    },
+    "fullscreen": {
+      "name": "Fullscreen",
+      "title": "Vollbild-Container",
+      "desc": "Ruft die Fullscreen-API für einen Bereich auf und synchronisiert den aktuellen Vollbildstatus."
+    }
+  },
+  "data": {
+    "rank": {
+      "node": "Dienstknoten {letter}{no}"
+    },
+    "board": {
+      "visits": "Besuche",
+      "errors": "Fehlerrate",
+      "latency": "Antwortzeit",
+      "online": "Online-Knoten"
+    },
+    "axis": {
+      "unit": "Tsd.",
+      "title": "Monatlicher Kennwert",
+      "m1": "Jan",
+      "m2": "Feb",
+      "m3": "Mär",
+      "m4": "Apr",
+      "m5": "Mai",
+      "m6": "Jun",
+      "m7": "Jul",
+      "m8": "Aug",
+      "m9": "Sep",
+      "m10": "Okt",
+      "m11": "Nov",
+      "m12": "Dez"
+    },
+    "region": {
+      "datacenter": "Serverraum",
+      "office": "Büro",
+      "storage": "Lager",
+      "entrance": "Eingang"
+    },
+    "nodeType": {
+      "server": "Server",
+      "gateway": "Gateway",
+      "terminal": "Terminal",
+      "sensor": "Sensor"
+    },
+    "nodeLabel": {
+      "rackA": "Rack A",
+      "coreSwitch": "Core-Switch",
+      "officeTerminal": "Büro-Terminal",
+      "envSensor": "Umwelt-Sensor",
+      "accessControl": "Zutrittskontrolle",
+      "edge": "Rand"
+    },
+    "table": {
+      "name": "Ressourcenname",
+      "ip": "Adresse",
+      "group": "Gruppe",
+      "status": "Status"
+    },
+    "group": {
+      "net": "Netzwerk",
+      "room": "Serverraum",
+      "iot": "IoT",
+      "terminal": "Terminal",
+      "sec": "Sicherheit"
+    },
+    "status": {
+      "online": "Online",
+      "offline": "Offline",
+      "maintaining": "Wartung"
+    },
+    "rule": {
+      "name": "Name",
+      "count": "Anzahl",
+      "status": "Status",
+      "enabled": "Aktiviert"
+    },
+    "form": {
+      "project": "Projektname",
+      "desc": "Beschreibung",
+      "count": "Anzahl",
+      "category": "Kategorie",
+      "enabled": "Aktivieren",
+      "date": "Startdatum",
+      "required": "Bitte eingeben",
+      "optional": "Optional",
+      "catA": "Typ A",
+      "catB": "Typ B"
+    },
+    "org": {
+      "root": "Wurzelknoten",
+      "group1": "Gruppe 1",
+      "group2": "Gruppe 2",
+      "child1": "Unterpunkt 1",
+      "child2": "Unterpunkt 2",
+      "child3": "Unterpunkt 3",
+      "child4": "Unterpunkt 4",
+      "child41": "Unterpunkt 4-1"
+    },
+    "report": {
+      "title": "Abhängigkeits- & Konfigurationsprüfbericht",
+      "f1Title": "Abhängigkeit mit bekannter Hochrisiko-Schwachstelle",
+      "f1Detail": "Eine Abhängigkeitsversion liegt unter der Sicherheitsbasislinie; ein Upgrade wird empfohlen.",
+      "f2Title": "Klartext-Zugangsdaten in der Konfiguration",
+      "f2Detail": "Es wird empfohlen, Umgebungsvariablen oder Secret-Management zu verwenden.",
+      "f3Title": "Veraltetes TLS-Protokoll",
+      "f3Detail": "Es wird empfohlen, TLS1.0/1.1 zu deaktivieren.",
+      "f4Title": "Debug-Port nach außen exponiert",
+      "f4Detail": "Es wird empfohlen, nur im Intranet zu öffnen.",
+      "f5Title": "Fehlende LICENSE-Angabe",
+      "f5Detail": "Ergänzen Sie eine Open-Source-Lizenzangabe.",
+      "f6Title": "Abhängigkeitsversionen nicht gesperrt",
+      "f6Detail": "Es wird empfohlen, Patch-Versionen zu sperren."
+    },
+    "anchor": {
+      "overview": "Überblick",
+      "overviewText": "Dieser Bereich demonstriert Anker-Scrollen: Klick auf einen Eintrag im linken Verzeichnis scrollt den Inhaltsbereich sanft zum passenden Abschnitt.",
+      "metric": "Kennwert-Erklärung",
+      "metricText": "Beim Scrollen hebt das linke Verzeichnis automatisch den aktuell sichtbaren Abschnitt hervor (auf einmal pro Frame gedrosselt).",
+      "usage": "Anwendungsfälle",
+      "usageText": "Geeignet für lange Dokumente, Hilfezentren, Konfigurationshinweise und andere Seiten mit Verzeichnis-Navigation.",
+      "faq": "Häufige Fragen",
+      "faqText": "Verzeichnis und Inhalt sind per id verankert, keine zusätzliche Status-Synchronisation nötig."
+    },
+    "tree": {
+      "clusterA": "Cluster A",
+      "clusterB": "Cluster B",
+      "nodeA1": "Knoten a-1",
+      "nodeA2": "Knoten a-2",
+      "nodeB1": "Knoten b-1",
+      "nodeB2": "Knoten b-2",
+      "podA21": "Container a-2-1"
+    },
+    "drag": {
+      "card1": "Karte 1",
+      "card1Text": "Titel ziehen zum Verschieben, rechte untere Ecke ziehen zum Skalieren",
+      "card2": "Karte 2",
+      "card2Text": "Positionen werden automatisch auf den Container begrenzt",
+      "card3": "Karte 3",
+      "card3Text": "Prozentuale Positionierung, adaptive Skalierung",
+      "card4": "Karte 4",
+      "card4Text": "Kann beliebige Inhalte tragen"
+    },
+    "carousel": {
+      "item": "Inhaltskarte {no}"
+    },
+    "ctx": {
+      "copy": "Kopieren",
+      "rename": "Umbenennen",
+      "delete": "Löschen"
+    },
+    "json": {
+      "sampleName": "Beispieldienst"
+    },
+    "plan": {
+      "zoneA": "Zone A",
+      "zoneB": "Zone B",
+      "zoneC": "Zone C",
+      "zoneD": "Zone D"
+    }
+  },
+  "ui": {
+    "editMode": "Bearbeitungsmodus",
+    "regionSelected": "Ausgewählter Bereich: {name}",
+    "show": "Anzeigen",
+    "hide": "Ausblenden",
+    "liveValues": "Live-Werte",
+    "tabHome": "Startseite",
+    "tabDoc": "Dokumente",
+    "tabLog": "Protokolle",
+    "homeContent": "Startseiten-Inhaltsbereich",
+    "docContent": "Dokumente-Inhaltsbereich",
+    "logContent": "Protokoll-Inhaltsbereich",
+    "newTab": "Neuer Tab",
+    "newTabContent": "Neu geöffneter Tab (Demo)",
+    "searchPlaceholder": "Schlüsselwort eingeben zum Hervorheben",
+    "hlKeyword": "Dienst",
+    "hlText1": "Core-Switch-01 Dienstknoten-Status normal",
+    "hlText2": "App-Server-A Dienstantwort 12ms",
+    "hlText3": "Edge-Gateway-03 offline, manueller Eingriff nötig",
+    "randomValue": "Zufallswert",
+    "zero": "Auf null",
+    "autoPlay": "Autoplay",
+    "ctxHint": "Rechtsklick in diesen Bereich öffnet das Menü",
+    "boomBtn": "Render-Ausnahme auslösen",
+    "boomHint": "Klick auf die Schaltfläche lässt den Teilbaum werfen; die Fehlergrenze fängt es ab und unterstützt Wiederholung.",
+    "fullscreenHint": "Klicken Sie die „Vollbild“-Schaltfläche oben rechts (in einer Sandbox möglicherweise eingeschränkt)",
+    "gaugeTitle": "完成度"
+  },
+  "code": {
+    "copied": "Verwendung kopiert",
+    "clipUnsupported": "Die aktuelle Umgebung unterstützt die Zwischenablage nicht",
+    "collapse": "Verwendung einklappen",
+    "expand": "Verwendung anzeigen",
+    "copy": "Kopieren"
+  },
+  "comp": {
+    "empty": "Keine Daten",
+    "rowResizeTitle": "Ziehen zur Zeilenhöhenanpassung",
+    "noCards": "Keine Karten",
+    "drag": "Ziehen",
+    "highRange": "Hochwertbereich",
+    "lowRange": "Niedrigwertbereich",
+    "lowValue": "Niedrig",
+    "highValue": "Hoch",
+    "breaks": "{count} Achsenbrüche",
+    "resetBreaks": "Achsenbrüche zurücksetzen",
+    "axisHint": "Horizontal im Diagramm ziehen, um den zu faltenden Wertebereich zu wählen",
+    "opGt": "Größer als",
+    "opGe": "Nicht kleiner als",
+    "opLt": "Kleiner als",
+    "opLe": "Nicht größer als",
+    "opEq": "Gleich",
+    "opRange": "Bereich",
+    "opNe": "Ungleich",
+    "opContains": "Enthält",
+    "opStarts": "Beginnt mit",
+    "opIn": "In",
+    "opAnd": "Und AND",
+    "opOr": "Oder OR",
+    "selectFieldFirst": "Erst Feld wählen",
+    "boolYes": "Ja",
+    "boolNo": "Nein",
+    "valuePlaceholder": "Wert",
+    "fieldPlaceholder": "Feld",
+    "addCondition": "Bedingung",
+    "addGroup": "Gruppe",
+    "noConditions": "Noch keine Bedingungen",
+    "noFields": "Keine fields übergeben, Felder können nicht gewählt werden",
+    "diffAdded": "Hinzugefügt",
+    "diffRemoved": "Entfernt",
+    "diffChanged": "Geändert",
+    "diffSame": "Unverändert",
+    "diffChanges": "Änderungen ({added}+{removed}+{changed})",
+    "diffAll": "Alle",
+    "diffIdentical": "Die beiden Datensätze sind vollkommen identisch",
+    "formRequired": "Bitte {label} ausfüllen",
+    "formEmptySchema": "Schema ist leer",
+    "orgSearch": "Knoten suchen",
+    "orgExpand": "Aufklappen",
+    "orgCollapse": "Zuklappen",
+    "orgNoMatch": "Keine passenden Knoten",
+    "sevCritical": "Kritisch",
+    "sevHigh": "Hoch",
+    "sevMedium": "Mittel",
+    "sevLow": "Niedrig",
+    "sevInfo": "Hinweis",
+    "reportTitle": "Scan-Bericht",
+    "reportSub": "{total} Fundstellen · Bewertung {score}/100",
+    "reportAll": "Alle {total}",
+    "reportEmpty": "Keine Fundstellen",
+    "annoLabel": "Annotation {no}",
+    "annoReset": "Zurücksetzen",
+    "annoActive": "Annotieren (Bild klicken zum Hinzufügen)",
+    "annoStart": "Annotation",
+    "annoPlaceholder": "Annotations-Label",
+    "annoNeedSrc": "src übergeben, um das Basisbild anzuzeigen",
+    "annoRemove": "Annotation „{label}“ löschen?",
+    "annoList": "Annotationen ({count})",
+    "annoClear": "Leeren",
+    "annoEmpty": "Keine Annotationen",
+    "tabAdd": "Neuer Tab",
+    "treeValue": "Wert",
+    "treeSearch": "Name suchen (Eltern auto-behalten)",
+    "treeName": "Name",
+    "treeNoMatch": "Keine Übereinstimmung",
+    "editActions": "Aktionen",
+    "editSave": "Speichern",
+    "editCancel": "Abbrechen",
+    "editStart": "Bearbeiten",
+    "framePause": "Pause",
+    "framePlay": "Wiedergabe",
+    "framePrev": "Vorheriger Frame",
+    "frameNext": "Nächster Frame",
+    "frameTip": "Frame {no}",
+    "fsEnter": "Vollbild",
+    "fsExit": "Vollbild beenden",
+    "errMessage": "Render-Fehler",
+    "errRetry": "Wiederholen"
+  }
+}

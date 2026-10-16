@@ -1,4 +1,5 @@
 import { Tooltip } from 'antd'
+import { useI18n } from '../../../../i18n'
 
 /**
  * MiniProgress · 细进度条（带目标值刻度）
@@ -19,9 +20,11 @@ export default function MiniProgress({
   height = 8,
   showTarget = true,
   label,
-  targetText = '目标值',
+  targetText,
   className = '',
 }) {
+  const { t } = useI18n()
+  const targetMsg = targetText ?? t('kit.miniProgress.target')
   const safe = Math.max(0, Math.min(Number(percent) || 0, 100))
   const targetSafe = target == null ? null : Math.max(0, Math.min(Number(target) || 0, 100))
 
@@ -33,7 +36,7 @@ export default function MiniProgress({
           style={{ width: `${safe}%`, background: color }}
         />
         {showTarget && targetSafe != null && (
-          <Tooltip title={`${targetText}: ${targetSafe}%`}>
+          <Tooltip title={`${targetMsg}: ${targetSafe}%`}>
             <div className="kit-mini-progress__target" style={{ left: `${targetSafe}%` }} />
           </Tooltip>
         )}

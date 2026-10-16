@@ -1,0 +1,68 @@
+{
+  "common": {
+    "expand": "Erweitern",
+    "collapse": "Einklappen",
+    "close": "Schließen"
+  },
+  "quick": {
+    "voice": "Sprachassistent",
+    "agent": "AI Agent",
+    "on": "Ein",
+    "off": "Aus",
+    "navSep": "Schneller Sprung",
+    "jump": "Springen",
+    "other": "Sonstiges",
+    "top": "Nach oben",
+    "hide": "Assistententaste ausblenden",
+    "assistant": "Assistent",
+    "fabTitle": "Assistententaste (ziehbar)",
+    "fabAria": "Assistententaste",
+    "restoreTitle": "Assistententaste einblenden",
+    "pages": {
+      "home": "Startseite",
+      "agent": "KI-Agent-Konsole",
+      "voice": "Sprachassistent",
+      "dashboard": "Dashboard",
+      "testCenter": "Testcenter"
+    }
+  },
+  "voice": {
+    "title": "Sprachassistent",
+    "subtitle": "Sprache zu Text · Doppel-Engine online / offline",
+    "charCount": "{count} Zeichen",
+    "envOnline": "Online",
+    "envOffline": "Offline",
+    "copy": "Alles kopieren",
+    "copied": "Kopiert ✓",
+    "clear": "Leeren",
+    "sendToAgent": "An KI-Agent übergeben →",
+    "sendToAgentTip": "Erkannten Text zur Ausführung an den KI-Agent übergeben",
+    "historyTitle": "Erkennungsverlauf",
+    "historyEmpty": "Noch kein Erkennungsverlauf. Klicken Sie oben auf „Spracheingabe starten“ oder „Aufnahme starten“",
+    "diagnose": "Umgebungsdiagnose",
+    "browserLabel": "Browser",
+    "webSupport": "Online-Erkennung (Web Speech API)",
+    "localSupport": "Offline-Erkennung (lokales Whisper)",
+    "supported": "Unterstützt",
+    "unsupported": "Nicht unterstützt",
+    "webNote": "(Die chinesische Erkennung in Chrome nutzt Google-Dienste und ist in lokalen Netzwerken möglicherweise nicht verfügbar)",
+    "localNote": "(Das Modell ist in public/models/ eingebaut und läuft vollständig offline)",
+    "currentStatus": "Aktueller Status",
+    "statusListening": "Online am Hören",
+    "statusRecording": "Aufnahme läuft",
+    "statusRecognizing": "Offline-Transkription",
+    "statusIdle": "Leerlauf",
+    "browser": {
+      "none": "Unbekannt",
+      "edge": "Microsoft Edge",
+      "chrome": "Google Chrome",
+      "firefox": "Mozilla Firefox",
+      "safari": "Apple Safari",
+      "unknown": "Unbekannter Browser"
+    }
+  },
+  "globalAgent": {
+    "title": "AI Agent",
+    "hint": "🤖 Ctrl+Shift+A öffnet den Agenten · Ctrl+↑↓ scrollen · Ctrl+⌥+←→ vor/zurück"
+  }
+}

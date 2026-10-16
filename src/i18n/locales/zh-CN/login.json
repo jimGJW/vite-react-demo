@@ -1,0 +1,17 @@
+{
+  "title": "星际控制台",
+  "welcome": "欢迎归来，舰长。请验证身份以进入主控系统。",
+  "backHint": "验证通过后将自动返回 {path}",
+  "username": "账号",
+  "password": "访问密钥",
+  "remember": "保持登录",
+  "forgot": "忘记密钥？",
+  "modeLabel": "界面风格",
+  "modeAntd": "Ant Design",
+  "modeVue": "Vue 风格",
+  "submit": "进入星舰",
+  "verifying": "身份核验中…",
+  "warping": "跃迁中…",
+  "newCrew": "新舰员？",
+  "apply": "申请入驻"
+}

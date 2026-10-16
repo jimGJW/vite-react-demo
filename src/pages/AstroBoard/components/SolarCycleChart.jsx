@@ -10,7 +10,10 @@
  * X 轴是「距今月数」而非真实日期：观测（近 60 个月）与预测（未来 57 个月）
  * 在时间轴上首尾相接，用相对月数才能让两段共用一个刻度。
  */
+import { useI18n } from '../../../i18n/index.js'
+
 export function SolarCycleChart({ data }) {
+  const { t } = useI18n()
   const W = 720
   const H = 200
   const PAD = { l: 34, r: 12, t: 12, b: 26 }
@@ -67,7 +70,7 @@ export function SolarCycleChart({ data }) {
       {predD && <path d={predD} className="astro-cycle-pred" />}
       {/* 现在 */}
       <line x1={nowX} y1={PAD.t} x2={nowX} y2={H - PAD.b} className="astro-cycle-now" />
-      <text x={nowX + 4} y={PAD.t + 10} className="astro-cycle-now__label">现在</text>
+      <text x={nowX + 4} y={PAD.t + 10} className="astro-cycle-now__label">{t('astro.cycleNow')}</text>
       {/* X 轴标签 */}
       {ticks.map((m) => (
         <text key={m} x={x(m)} y={H - 8} className="astro-cycle-tick" textAnchor="middle">
@@ -77,11 +80,11 @@ export function SolarCycleChart({ data }) {
       {/* 图例 */}
       <g className="astro-cycle-legend">
         <rect x={W - 168} y={PAD.t + 2} width="12" height="3" className="astro-cycle-obs" />
-        <text x={W - 152} y={PAD.t + 7}>实测（平滑）</text>
+        <text x={W - 152} y={PAD.t + 7}>{t('astro.cycleObserved')}</text>
         <rect x={W - 168} y={PAD.t + 15} width="12" height="3" className="astro-cycle-pred" />
-        <text x={W - 152} y={PAD.t + 20}>官方预测</text>
+        <text x={W - 152} y={PAD.t + 20}>{t('astro.cyclePrediction')}</text>
         <rect x={W - 168} y={PAD.t + 28} width="12" height="8" className="astro-cycle-band" />
-        <text x={W - 152} y={PAD.t + 36}>预测区间</text>
+        <text x={W - 152} y={PAD.t + 36}>{t('astro.cycleBand')}</text>
       </g>
     </svg>
   )

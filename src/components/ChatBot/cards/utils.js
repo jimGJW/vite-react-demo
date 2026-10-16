@@ -5,6 +5,7 @@
  */
 
 import { FIELD_LABELS } from '../config.js'
+import { pickLang } from '../../../i18n/index.js'
 
 const MAX_COLUMNS = 8
 
@@ -31,7 +32,7 @@ export function normalizeRows(data) {
 }
 
 /** 依据数据 key + 白名单，推导列定义（未命中的字段按 key 自动生成列） */
-export function buildColumns(rows) {
+export function buildColumns(rows, lang) {
   const keys = []
   rows.forEach((row) => {
     Object.keys(row).forEach((k) => {
@@ -43,7 +44,7 @@ export function buildColumns(rows) {
   const preferred = Object.keys(FIELD_LABELS).filter((k) => keys.includes(k))
   const rest = keys.filter((k) => !preferred.includes(k))
   return [...preferred, ...rest].slice(0, MAX_COLUMNS).map((key) => ({
-    title: FIELD_LABELS[key] || key,
+    title: pickLang(FIELD_LABELS[key], lang) || key,
     dataIndex: key,
     key,
     ellipsis: true,

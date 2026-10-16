@@ -7,9 +7,11 @@
  */
 import { Tooltip } from 'antd'
 import { GREENHOUSE_GASES } from '../../../lib/earth/glossary.js'
+import { useI18n } from '../../../i18n/index.js'
 
 /** 单气体的迷你折线（纯 SVG，无依赖） */
 function Spark({ history, color }) {
+  const { t } = useI18n()
   if (!history?.length) return null
   const W = 300
   const H = 74
@@ -22,7 +24,7 @@ function Spark({ history, color }) {
   const line = history.map((h, i) => `${i === 0 ? 'M' : 'L'}${x(i).toFixed(1)},${y(h.value).toFixed(1)}`).join(' ')
   const area = `${line} L${W},${H} L0,${H} Z`
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="geo-ghg__spark" role="img" aria-label="浓度趋势">
+    <svg viewBox={`0 0 ${W} ${H}`} className="geo-ghg__spark" role="img" aria-label={t('geo.ghg.aria')}>
       <path d={area} fill={color} opacity="0.12" />
       <path d={line} fill="none" stroke={color} strokeWidth="1.6" />
       <circle cx={W} cy={y(vals[vals.length - 1])} r="2.6" fill={color} />
@@ -31,6 +33,7 @@ function Spark({ history, color }) {
 }
 
 function GasCard({ gas }) {
+  const { t } = useI18n()
   const dict = GREENHOUSE_GASES[gas.key]
   return (
     <div className="geo-ghg-card">
@@ -47,27 +50,27 @@ function GasCard({ gas }) {
         {gas.latest.value.toFixed(gas.digits)}
         <span className="geo-ghg-card__unit">{gas.unit}</span>
       </div>
-      <div className="geo-ghg-card__ym">{gas.latest.ym} · 全球月均</div>
+      <div className="geo-ghg-card__ym">{gas.latest.ym} · {t('geo.ghg.monthly')}</div>
 
       <Spark history={gas.history} color={gas.color} />
 
       <dl className="geo-ghg-card__stats">
-        <dt>年增幅</dt>
+        <dt>{t('geo.ghg.colGrowth')}</dt>
         <dd>
           <span style={{ color: gas.color }}>
             {gas.growthPerYear != null ? `+${gas.growthPerYear}` : '—'}
           </span>
-          <span className="geo-ghg-card__dim"> {gas.unit}/年</span>
+          <span className="geo-ghg-card__dim"> {gas.unit}{t('geo.ghg.perYear')}</span>
         </dd>
-        <dt>相对工业化前</dt>
+        <dt>{t('geo.ghg.colPre')}</dt>
         <dd>
           <b>{gas.vsPreIndustrial}×</b>
-          <span className="geo-ghg-card__dim"> （{[gas.preIndustrial]} {gas.unit}）</span>
+          <span className="geo-ghg-card__dim"> {t('geo.ghg.preIndustrial', { pre: gas.preIndustrial, unit: gas.unit })}</span>
         </dd>
-        <dt>百年增温潜势</dt>
+        <dt>{t('geo.ghg.colGwp')}</dt>
         <dd>
           <b>{dict?.gwp100 ?? '—'}×</b>
-          <span className="geo-ghg-card__dim"> （以 CO₂ 为 1）</span>
+          <span className="geo-ghg-card__dim"> {t('geo.ghg.gwpRef')}</span>
         </dd>
       </dl>
 

@@ -8,6 +8,7 @@
  */
 import { CompassOutlined, LineChartOutlined } from '@ant-design/icons'
 import { Empty, Tooltip } from 'antd'
+import { useI18n } from '../../../i18n/index.js'
 import { Panel } from './ui.jsx'
 import OniChart from './OniChart.jsx'
 import AnomalyBars from './AnomalyBars.jsx'
@@ -15,6 +16,7 @@ import { zhOscillation } from '../../../lib/earth/glossary.js'
 
 /** 一条振荡指数的概况条 */
 function OscHead({ osc }) {
+  const { t } = useI18n()
   const dict = zhOscillation(osc.key)
   const positive = osc.last12 > 0
   return (
@@ -26,26 +28,27 @@ function OscHead({ osc }) {
         <span className="o-osc-head__en is-info">{osc.en}</span>
       </Tooltip>
       <span className="o-osc-head__region">{osc.region}</span>
-      <span className="o-osc-head__period">周期 {osc.period}</span>
+      <span className="o-osc-head__period">{t('ocean.oni.oscPeriod', { period: osc.period })}</span>
       <span
         className="o-osc-head__val"
         style={{ color: positive ? '#ef4444' : '#3b82f6' }}
       >
-        近 12 月 {positive ? '+' : ''}
-        {osc.last12} · {positive ? '暖位相' : '冷位相'}
+        {t('ocean.oni.oscLast12')} {positive ? '+' : ''}
+        {osc.last12} · {positive ? t('ocean.oni.oscWarm') : t('ocean.oni.oscCold')}
       </span>
     </div>
   )
 }
 
 export default function OniTab({ oni, oniData, oscillations, oscData, ssta, sstaData }) {
+  const { t } = useI18n()
   const pdo = oscData?.pdo
   const amo = oscData?.amo
   return (
     <div className="o-tab-content">
       <Panel
-        title="ONI 厄尔尼诺指数（近 5 年）"
-        source="NOAA CPC（cpc.ncep.noaa.gov），Niño 3.4 区 3 月滑动海温距平，12 小时刷新"
+        title={t('ocean.oni.panelOni')}
+        source={t('ocean.oni.srcOni')}
         icon={<LineChartOutlined />}
         loading={oni.loading}
         error={oni.error}
@@ -53,13 +56,13 @@ export default function OniTab({ oni, oniData, oscillations, oscData, ssta, ssta
         {oniData ? (
           <OniChart history={oniData.history} latest={oniData.latest} state={oniData.state} />
         ) : (
-          <Empty description="暂无 ONI 数据" />
+          <Empty description={t('ocean.oni.emptyOni')} />
         )}
       </Panel>
 
       <Panel
-        title="全球海洋温度距平（1850 → 今）"
-        source="NOAA NCEI Climate at a Glance，全球海洋年均温距平，基准 1901–2000 年"
+        title={t('ocean.oni.panelSsta')}
+        source={t('ocean.oni.srcSsta')}
         icon={<LineChartOutlined />}
         loading={ssta.loading}
         error={ssta.error}
@@ -68,37 +71,36 @@ export default function OniTab({ oni, oniData, oscillations, oscData, ssta, ssta
           <>
             <div className="o-ssta-kpi">
               <span>
-                {sstaData.latest.year} 年{' '}
+                {t('ocean.oni.sstaYear', { year: sstaData.latest.year })}{' '}
                 <b style={{ color: '#ef4444' }}>+{sstaData.latest.anom.toFixed(2)} °C</b>
               </span>
               <span>
-                最暖年份 <b>{sstaData.warmest.year}</b>（+{sstaData.warmest.anom.toFixed(2)} °C）
+                {t('ocean.oni.sstaWarmest')} <b>{sstaData.warmest.year}</b>（+{sstaData.warmest.anom.toFixed(2)} °C）
               </span>
-              <Tooltip title="1981–2010 是现代气候学常用的参照期；近 10 年与它的差距就是「加速」的量">
+              <Tooltip title={t('ocean.oni.sstaTip')}>
                 <span className="is-info">
-                  近 10 年均值 <b>+{sstaData.last10.toFixed(2)}</b> vs 1981–2010 均值{' '}
+                  {t('ocean.oni.sstaLast10')} <b>+{sstaData.last10.toFixed(2)}</b> {t('ocean.oni.sstaVs')}{' '}
                   <b>+{sstaData.ref1981?.toFixed(2)}</b>
                 </span>
               </Tooltip>
             </div>
             <AnomalyBars
               series={sstaData.recent.map((r) => ({ key: r.year, value: r.anom }))}
-              ariaLabel="全球海洋温度距平年际变化"
+              ariaLabel={t('ocean.oni.sstaAria')}
               height={190}
             />
             <div className="o-chart__caption">
-              地球因温室气体滞留的多余热量，九成以上进了海洋。这条曲线是「地球能量失衡」最直接的体温计——
-              比气温距平更少受年际噪声干扰，也因此更难被短期波动「洗白」。
+              {t('ocean.oni.captionSsta')}
             </div>
           </>
         ) : (
-          <Empty description="暂无海洋温度距平数据" />
+          <Empty description={t('ocean.oni.emptySsta')} />
         )}
       </Panel>
 
       <Panel
-        title="年代际振荡：PDO 与 AMO"
-        source="NOAA PSL（psl.noaa.gov）月值序列，缺测占位（PDO −9.90 / AMO −99.99）已剔除"
+        title={t('ocean.oni.panelOsc')}
+        source={t('ocean.oni.srcOsc')}
         icon={<LineChartOutlined />}
         loading={oscillations.loading}
         error={oscillations.error}
@@ -110,7 +112,7 @@ export default function OniTab({ oni, oniData, oscillations, oscData, ssta, ssta
                 <OscHead osc={osc} />
                 <AnomalyBars
                   series={osc.annual.map((r) => ({ key: r.year, value: r.value }))}
-                  ariaLabel={`${osc.zh}年际变化`}
+                  ariaLabel={t('ocean.oni.oscAria', { name: osc.zh })}
                   height={170}
                   digits={3}
                   unit=""
@@ -118,38 +120,30 @@ export default function OniTab({ oni, oniData, oscillations, oscData, ssta, ssta
                   negColor="#3b82f6"
                 />
                 <div className="o-chart__caption">
-                  {osc.zh}年均值（近 60 年）· 最新有效月 {osc.latest.ym}（{osc.latest.value}）·
-                  持续同号数年才有位相意义，单月跳动不必解读
+                  {t('ocean.oni.oscCaption', { name: osc.zh, ym: osc.latest.ym, value: osc.latest.value })}
                 </div>
               </div>
             ))}
           </div>
         ) : (
-          <Empty description="暂无振荡指数数据" />
+          <Empty description={t('ocean.oni.emptyOsc')} />
         )}
       </Panel>
 
       <Panel
-        title="为什么全球都盯着 Niño 3.4"
-        source="科普说明（静态）"
+        title={t('ocean.oni.panelWhy')}
+        source={t('ocean.srcIntro')}
         icon={<CompassOutlined />}
       >
         <div className="o-prose">
           <p>
-            赤道中东太平洋一片巴掌大的海域（5°N–5°S, 170°W–120°W），被称为
-            <b> Niño 3.4</b>。这里海温比常年偏高 0.5 °C 以上并持续数月，就是
-            <b>厄尔尼诺</b>（El Niño，圣婴）；偏低则是<b>拉尼娜</b>（La Niña，圣女）。
+            {t('ocean.oni.prose1')}
           </p>
           <p>
-            别看它只是海温差了零点几度——海洋是地球最大的热量库，这片海一「发烧」，
-            全球大气环流都会被改写：我国容易出现<strong>暖冬与南涝北旱</strong>，
-            澳大利亚与东南亚易发干旱，大西洋飓风反而被抑制。
-            NOAA 每个季度更新的 ONI 指数，就是全球气候预测最重要的「体温计」。
+            {t('ocean.oni.prose2')}
           </p>
           <p>
-            而 PDO 与 AMO 是更慢的<b>背景音量旋钮</b>：同样强度的厄尔尼诺，
-            在 PDO 暖位相下对北美的影响会更强。所以判断一次事件的实际影响，
-            要把它放在年代际背景上看，而不是只看 ONI 的绝对值。
+            {t('ocean.oni.prose3')}
           </p>
         </div>
       </Panel>

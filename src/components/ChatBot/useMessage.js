@@ -22,6 +22,7 @@ import {
   NEW_CHAT_MARK,
 } from './chatStream.js'
 import { useAutoScroll } from './useAutoScroll.js'
+import { useI18n } from '../../i18n/index.js'
 
 /** 一条助手消息的初始形态 */
 function blankAssistant() {
@@ -118,6 +119,8 @@ export function useMessage({
   const innerContDom = useRef(null)
   /* 优先使用外部传入的 ref（避免把 ref 混进 hook 返回对象，便于 React Compiler 静态分析） */
   const contDom = externalContDom || innerContDom
+
+  const { t } = useI18n()
 
   /* 回调收进 ref：调用方即使传内联函数，也不会让 postMessage 每次换引用，
      从而保住下游 useContext / React.memo 的稳定性（流式期间不整屏重渲染） */
@@ -240,7 +243,7 @@ export function useMessage({
               }
 
               if (c.kind === 'error') {
-                const msg = resolveErrorMessage(c.code)
+                const msg = resolveErrorMessage(c.code, t)
                 setStatusLine('')
                 setErrorText(msg)
                 onErrorRef.current?.(msg, c.code)
@@ -290,10 +293,10 @@ export function useMessage({
         )
       } catch (err) {
         if (err?.name !== 'AbortError') {
-          const msg = err?.name === 'TimeoutError' ? '请求超时，请稍后重试' : '请求失败，请稍后重试'
+          const msg = err?.name === 'TimeoutError' ? t('chatbot.error.timeout') : t('chatbot.error.failed')
           setErrorText(msg)
           onErrorRef.current?.(msg, err)
-          patch((m) => (m.message ? {} : { message: streamed || '（回答中断，请重试）' }))
+          patch((m) => (m.message ? {} : { message: streamed || t('chatbot.error.interrupted') }))
         }
       } finally {
         if (seq === seqRef.current) {
@@ -302,7 +305,7 @@ export function useMessage({
         }
       }
     },
-    [api, appendAssistant, patchAssistant, pinToBottom],
+    [api, appendAssistant, patchAssistant, pinToBottom, t],
   )
 
   /* ------------------------------------------------------------ 停止 / 重生成 */

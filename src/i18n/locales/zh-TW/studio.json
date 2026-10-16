@@ -1,0 +1,414 @@
+{
+  "page": {
+    "title": "元件工坊 Studio",
+    "descLead": "從本地 80+ 存量前端專案裡篩選、去業務化、零依賴重寫而成的 {count} 個可複用元件，按能力分為 {groups} 組。",
+    "descTail": "所有示範數據均為中性虛構佔位，不含任何原始敏感資訊。"
+  },
+  "cat": {
+    "screen": "可視化大屏",
+    "builder": "規則與編排",
+    "media": "圖像與標註",
+    "form": "表單與樹",
+    "report": "報告與溯源",
+    "interact": "互動·進階"
+  },
+  "demo": {
+    "scanempty": {
+      "name": "ScanEmpty",
+      "title": "掃描式空態",
+      "desc": "用純 CSS/SVG 實現的大屏空態掃描動效，不依賴圖表庫，任意容器可用。",
+      "text": "暫無告警",
+      "subText": "最近 24 小時無異常事件"
+    },
+    "autoscroll": {
+      "name": "AutoScrollList",
+      "title": "無縫滾動榜單",
+      "desc": "內容超出容器自動垂直循環滾動，懸停暫停；位移由 CSS 變數驅動，無狀態抖動。"
+    },
+    "board": {
+      "name": "DraggableBoard",
+      "title": "可編排看板",
+      "desc": "百分比定位 + 碰撞檢測 + 指標事件統一；開啟編輯後可拖動/縮放卡片，非法落位回彈。"
+    },
+    "axisbreak": {
+      "name": "AxisBreakBar",
+      "title": "斷軸柱狀圖",
+      "desc": "高低值懸殊時摺疊空白區間；在圖上橫向拖拽可選則要摺疊的 Y 區間。",
+      "unit": "萬",
+      "chartTitle": "月度指標"
+    },
+    "regionmap": {
+      "name": "SvgRegionMap",
+      "title": "數據驅動區域圖",
+      "desc": "viewBox 純 SVG 等比縮放，分層打點（底圖/區塊/氣泡），點擊區域回調。"
+    },
+    "adapttable": {
+      "name": "AdaptTable",
+      "title": "大屏自適應表格",
+      "desc": "列寬百分比平分、可拖拽調列寬/行高、儲存格內容超長自動跑馬燈。"
+    },
+    "rulebuilder": {
+      "name": "RuleBuilder",
+      "title": "可視化條件編排",
+      "desc": "AND/OR 嵌套組 + 葉子條件遞迴樹，按字段類型自動切換運算符；輸出結構化 JSON。"
+    },
+    "jsondiff": {
+      "name": "JsonDiff",
+      "title": "結構化物件對比",
+      "desc": "結構 diff 而非文本 diff：準確標出新增/刪除/修改/未變，路徑一目了然。"
+    },
+    "annotator": {
+      "name": "ImageAnnotator",
+      "title": "圖像標註與縮放平移",
+      "desc": "滾輪縮放、拖拽平移；標註錨點用歸一化座標存儲，縮放/平移後不漂移。"
+    },
+    "dynform": {
+      "name": "DynamicForm",
+      "title": "schema 驅動動態表單",
+      "desc": "一份字段 schema 即一份 UI；支援多種通用字段類型與必填校驗。"
+    },
+    "orgtree": {
+      "name": "OrgTree",
+      "title": "層級組織樹",
+      "desc": "任意深度可逐級展開/收起、可單選檢索的層級樹。"
+    },
+    "scanreport": {
+      "name": "ScanReport",
+      "title": "安全掃描報告卡片",
+      "desc": "把結構化檢測報告渲染為嚴重度分佈 + 明細列表，可承載漏洞/審查/巡檢等任意清單。"
+    },
+    "anchornav": {
+      "name": "AnchorNav",
+      "title": "錨點滾動導航",
+      "desc": "左側目錄吸頂 + 右側內容區，點擊平滑滾動，滾動時自動高亮當前版塊（rAF 節流）。"
+    },
+    "pagetabs": {
+      "name": "PageTabs",
+      "title": "多標籤頁工作區",
+      "desc": "路由式標籤欄：可切換、可關閉、可新建；內容區由當前標籤的 render 提供。"
+    },
+    "treetable": {
+      "name": "TreeTable",
+      "title": "樹表 + 祖先保留搜尋",
+      "desc": "可逐級展開；按名稱檢索時自動保留命中子孫的父節點並展開，不丟上下文。"
+    },
+    "highlighter": {
+      "name": "Highlighter",
+      "title": "關鍵詞高亮",
+      "desc": "把命中關鍵詞的文本片段用 <mark> 包裹，純函式拆分、可嵌入任意列表或表格儲存格。"
+    },
+    "editabletable": {
+      "name": "EditableTable",
+      "title": "行內編輯表格",
+      "desc": "點擊「編輯」整行切換為輸入/下拉，保存即寫回；取消則還原初值。"
+    },
+    "draglayout": {
+      "name": "DragLayout",
+      "title": "自由拖拽縮放佈局",
+      "desc": "卡片以百分比定位，可拖動移動、拖角縮放，落位自動限制在容器內；適合輕量低代碼儀表板。"
+    },
+    "gauge": {
+      "name": "CanvasGauge",
+      "title": "Canvas 儀表板",
+      "desc": "零依賴 Canvas 儀表板：rAF 緩動到目標值、DPR 高清、容器自適應。"
+    },
+    "carousel3d": {
+      "name": "CardCarousel3D",
+      "title": "3D 卡片輪播",
+      "desc": "手勢方向判定（>45° 讓位縱向滾動），卡片按相對位置做 Z 軸景深與旋轉切換。"
+    },
+    "frameplayer": {
+      "name": "FramePlayer",
+      "title": "幀序列播放器",
+      "desc": "按 fps 在若干「幀」間循環播放，支援播放/暫停、逐幀、進度拖動；幀可為任意節點。"
+    },
+    "contextmenu": {
+      "name": "ContextMenu",
+      "title": "右鍵菜單",
+      "desc": "在包裹區域右鍵彈出菜單，點擊任意處或滾動即關閉。"
+    },
+    "errorboundary": {
+      "name": "ErrorBoundary",
+      "title": "錯誤邊界",
+      "desc": "捕獲子樹渲染期異常，展示兜底 UI 並支援重試。"
+    },
+    "fullscreen": {
+      "name": "Fullscreen",
+      "title": "全屏容器",
+      "desc": "對指定區域調用 Fullscreen API，並同步當前全屏狀態。"
+    }
+  },
+  "data": {
+    "rank": {
+      "node": "服務節點 {letter}{no}"
+    },
+    "board": {
+      "visits": "訪問量",
+      "errors": "錯誤率",
+      "latency": "響應耗時",
+      "online": "在線節點"
+    },
+    "axis": {
+      "unit": "萬",
+      "title": "月度指標",
+      "m1": "1月",
+      "m2": "2月",
+      "m3": "3月",
+      "m4": "4月",
+      "m5": "5月",
+      "m6": "6月",
+      "m7": "7月",
+      "m8": "8月",
+      "m9": "9月",
+      "m10": "10月",
+      "m11": "11月",
+      "m12": "12月"
+    },
+    "region": {
+      "datacenter": "機房區",
+      "office": "辦公區",
+      "storage": "倉儲區",
+      "entrance": "出入口"
+    },
+    "nodeType": {
+      "server": "伺服器",
+      "gateway": "網關",
+      "terminal": "終端",
+      "sensor": "感測"
+    },
+    "nodeLabel": {
+      "rackA": "機架 A",
+      "coreSwitch": "核心交換",
+      "officeTerminal": "辦公終端",
+      "envSensor": "環境感測",
+      "accessControl": "門禁",
+      "edge": "邊界"
+    },
+    "table": {
+      "name": "資源名稱",
+      "ip": "位址",
+      "group": "分組",
+      "status": "狀態"
+    },
+    "group": {
+      "net": "網路組",
+      "room": "機房組",
+      "iot": "物聯網組",
+      "terminal": "終端組",
+      "sec": "安全組"
+    },
+    "status": {
+      "online": "在線",
+      "offline": "離線",
+      "maintaining": "維護"
+    },
+    "rule": {
+      "name": "名稱",
+      "count": "數量",
+      "status": "狀態",
+      "enabled": "啟用"
+    },
+    "form": {
+      "project": "專案名稱",
+      "desc": "說明",
+      "count": "數量",
+      "category": "類別",
+      "enabled": "是否啟用",
+      "date": "開始日期",
+      "required": "請輸入",
+      "optional": "可選",
+      "catA": "A 類",
+      "catB": "B 類"
+    },
+    "org": {
+      "root": "根節點",
+      "group1": "分組一",
+      "group2": "分組二",
+      "child1": "子項 1",
+      "child2": "子項 2",
+      "child3": "子項 3",
+      "child4": "子項 4",
+      "child41": "子項 4-1"
+    },
+    "report": {
+      "title": "依賴與配置巡檢報告",
+      "f1Title": "存在已知高危漏洞的依賴",
+      "f1Detail": "某依賴版本低於安全基線，建議升級。",
+      "f2Title": "明文憑證出現在配置中",
+      "f2Detail": "建議改用環境變數或金鑰管理。",
+      "f3Title": "過期的 TLS 協定",
+      "f3Detail": "建議禁用 TLS1.0/1.1。",
+      "f4Title": "除錯埠對外暴露",
+      "f4Detail": "建議僅內網開放。",
+      "f5Title": "缺少 LICENSE 聲明",
+      "f5Detail": "補充開源協定聲明。",
+      "f6Title": "依賴版本未鎖定",
+      "f6Detail": "建議鎖定補丁版本。"
+    },
+    "anchor": {
+      "overview": "概覽",
+      "overviewText": "該區域演示錨點滾動：左側目錄點擊後，內容區平滑滾動到對應版塊。",
+      "metric": "指標說明",
+      "metricText": "滾動時左側目錄會隨當前可視版塊自動高亮（節流到每幀一次）。",
+      "usage": "使用場景",
+      "usageText": "適合長文件、幫助中心、配置說明等需要目錄導航的頁面。",
+      "faq": "常見問題",
+      "faqText": "目錄與內容通過 id 錨定，無需額外狀態同步。"
+    },
+    "tree": {
+      "clusterA": "叢集 A",
+      "clusterB": "叢集 B",
+      "nodeA1": "節點 a-1",
+      "nodeA2": "節點 a-2",
+      "nodeB1": "節點 b-1",
+      "nodeB2": "節點 b-2",
+      "podA21": "容器 a-2-1"
+    },
+    "drag": {
+      "card1": "卡片一",
+      "card1Text": "拖動標題移動，拖右下角縮放",
+      "card2": "卡片二",
+      "card2Text": "落位自動限制在容器內",
+      "card3": "卡片三",
+      "card3Text": "百分比定位，自適應縮放",
+      "card4": "卡片四",
+      "card4Text": "可承載任意內容"
+    },
+    "carousel": {
+      "item": "內容卡片 {no}"
+    },
+    "ctx": {
+      "copy": "複製",
+      "rename": "重新命名",
+      "delete": "刪除"
+    },
+    "json": {
+      "sampleName": "範例服務"
+    },
+    "plan": {
+      "zoneA": "A 區",
+      "zoneB": "B 區",
+      "zoneC": "C 區",
+      "zoneD": "D 區"
+    }
+  },
+  "ui": {
+    "editMode": "編輯模式",
+    "regionSelected": "已選擇區域：{name}",
+    "show": "查看",
+    "hide": "隱藏",
+    "liveValues": "即時值",
+    "tabHome": "首頁",
+    "tabDoc": "文件",
+    "tabLog": "日誌",
+    "homeContent": "首頁內容區",
+    "docContent": "文件內容區",
+    "logContent": "日誌內容區",
+    "newTab": "新標籤",
+    "newTabContent": "新打開的標籤頁（示範）",
+    "searchPlaceholder": "輸入關鍵詞高亮",
+    "hlKeyword": "服務",
+    "hlText1": "核心交換機-01 服務節點狀態正常",
+    "hlText2": "應用伺服器-A 服務響應耗時 12ms",
+    "hlText3": "邊界網關-03 離線，需人工介入",
+    "randomValue": "隨機值",
+    "zero": "歸零",
+    "autoPlay": "自動播放",
+    "ctxHint": "在此區域右鍵，彈出菜單",
+    "boomBtn": "觸發渲染異常",
+    "boomHint": "點擊按鈕讓子樹拋錯，錯誤邊界會兜底顯示並支援重試。",
+    "fullscreenHint": "點擊右上角「全屏」按鈕（沙箱內可能受限）",
+    "gaugeTitle": "完成度"
+  },
+  "code": {
+    "copied": "用法已複製",
+    "clipUnsupported": "當前環境不支援剪貼簿",
+    "collapse": "收起用法",
+    "expand": "查看用法",
+    "copy": "複製"
+  },
+  "comp": {
+    "empty": "暫無數據",
+    "rowResizeTitle": "拖動調整行高",
+    "noCards": "暫無卡片",
+    "drag": "拖動",
+    "highRange": "高值區間",
+    "lowRange": "低值區間",
+    "lowValue": "低值",
+    "highValue": "高值",
+    "breaks": "斷軸 {count}",
+    "resetBreaks": "重置斷軸",
+    "axisHint": "在圖上橫向拖拽可選擇要摺疊的數值區間",
+    "opGt": "大於",
+    "opGe": "不小於",
+    "opLt": "小於",
+    "opLe": "不大於",
+    "opEq": "等於",
+    "opRange": "區間",
+    "opNe": "不等於",
+    "opContains": "包含",
+    "opStarts": "開頭是",
+    "opIn": "屬於",
+    "opAnd": "且 AND",
+    "opOr": "或 OR",
+    "selectFieldFirst": "先選字段",
+    "boolYes": "是",
+    "boolNo": "否",
+    "valuePlaceholder": "值",
+    "fieldPlaceholder": "字段",
+    "addCondition": "條件",
+    "addGroup": "分組",
+    "noConditions": "暫無條件",
+    "noFields": "未傳入 fields，無法選擇字段",
+    "diffAdded": "新增",
+    "diffRemoved": "刪除",
+    "diffChanged": "修改",
+    "diffSame": "未變",
+    "diffChanges": "變化 ({added}+{removed}+{changed})",
+    "diffAll": "全部",
+    "diffIdentical": "兩份數據完全一致",
+    "formRequired": "請填寫{label}",
+    "formEmptySchema": "schema 為空",
+    "orgSearch": "搜尋節點",
+    "orgExpand": "展開",
+    "orgCollapse": "收起",
+    "orgNoMatch": "無匹配節點",
+    "sevCritical": "嚴重",
+    "sevHigh": "高危",
+    "sevMedium": "中危",
+    "sevLow": "低危",
+    "sevInfo": "提示",
+    "reportTitle": "掃描報告",
+    "reportSub": "{total} 項發現 · 評分 {score}/100",
+    "reportAll": "全部 {total}",
+    "reportEmpty": "無發現項",
+    "annoLabel": "標註 {no}",
+    "annoReset": "復位",
+    "annoActive": "標註中(點圖添加)",
+    "annoStart": "標註",
+    "annoPlaceholder": "標註文案",
+    "annoNeedSrc": "放入 src 以顯示底圖",
+    "annoRemove": "刪除標註「{label}」？",
+    "annoList": "標註 ({count})",
+    "annoClear": "清空",
+    "annoEmpty": "暫無標註",
+    "tabAdd": "新建標籤",
+    "treeValue": "數值",
+    "treeSearch": "檢索名稱（自動保留父級）",
+    "treeName": "名稱",
+    "treeNoMatch": "無匹配",
+    "editActions": "操作",
+    "editSave": "保存",
+    "editCancel": "取消",
+    "editStart": "編輯",
+    "framePause": "暫停",
+    "framePlay": "播放",
+    "framePrev": "上一幀",
+    "frameNext": "下一幀",
+    "frameTip": "幀 {no}",
+    "fsEnter": "全屏",
+    "fsExit": "退出全屏",
+    "errMessage": "渲染出錯",
+    "errRetry": "重試"
+  }
+}

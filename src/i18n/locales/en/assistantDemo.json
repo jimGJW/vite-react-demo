@@ -1,0 +1,38 @@
+{
+  "demo": {
+    "title": "⚡ Quick Assistants",
+    "leadBefore": "The voice assistant and AI Agent are already componentized and can be invoked as popups on any page. The ",
+    "leadKey": " Quick Assistant key ",
+    "leadAfter": " in the bottom-right corner is freely draggable; click it to expand the menu, toggle both assistants, or jump straight to a given page.",
+    "statusLabel": "Current status: ",
+    "voiceLabel": "Voice Assistant",
+    "agentLabel": "AI Agent",
+    "on": "On",
+    "off": "Off",
+    "openVoice": "🎙️ Open Voice Assistant",
+    "agentPrefix": "🤖 ",
+    "closeBtn": "Close",
+    "openBtn": "Open",
+    "agentSuffix": " AI Agent",
+    "sendToAgent": "➡️ Send command to Agent",
+    "closeAll": "Close All",
+    "fillAgentBtn": "Agent fills in \"{text}\"",
+    "scrollBottom": "Scroll to page bottom",
+    "analyzeButtons": "Analyze which buttons the current page has",
+    "dispatchOpen": "dispatchEvent → Open Voice Assistant",
+    "dispatchToggle": "dispatchEvent → Toggle AI Agent",
+    "standaloneBtn": "Open Standalone Voice Assistant Panel",
+    "standaloneTitle": "Voice Assistant (Standalone Instance)"
+  },
+  "method": {
+    "tag": "Method",
+    "m1Title": "useAssistants Hook (recommended inside React components)",
+    "m1Desc": "After mounting <Assistants /> in the Layout, any page component can read and control the assistant panels through the Hook.",
+    "m2Title": "Imperative API (usable from any JS / Vue page)",
+    "m2Desc": "No React context required; callable directly from Vue SFCs, vanilla JS, or the browser console.",
+    "m3Title": "window native events (cross-framework / cross-stack)",
+    "m3Desc": "Vue, Angular pages, or iframes can all wake the assistants with this event, consistent with the existing app:navigate usage in the project.",
+    "m4Title": "Embedded component (independently controlled outside the assistant hub)",
+    "m4Desc": "The voice assistant panel is itself an ordinary controlled component and can also be used alone in a single page with its own state."
+  }
+}

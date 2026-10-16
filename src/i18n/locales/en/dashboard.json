@@ -1,0 +1,11 @@
+{
+  "title": "Console",
+  "lead": "Here are some sample statistics:",
+  "loading": "Loading...",
+  "stat": {
+    "users": "Users",
+    "posts": "Posts",
+    "views": "Views",
+    "revenue": "Revenue"
+  }
+}

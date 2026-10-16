@@ -1,8 +1,10 @@
 /* ---------- 银河系示意图 ---------- */
 import { GALAXY } from "../../../lib/astro/orbital.js"
 import { zhGalaxyType } from "../../../lib/astro/glossary"
+import { useI18n } from '../../../i18n/index.js'
 
 export function GalaxyDiagram() {
+  const { t } = useI18n()
   // 旋臂用对数螺线近似，符合真实旋臂的「越外越松」形态。
   // 螺旋色取自主题变量，浅色主题下自动换成同色相的深色版。
   const arms = [
@@ -29,7 +31,7 @@ export function GalaxyDiagram() {
   }
   const gType = zhGalaxyType(GALAXY.type)
   return (
-    <svg className="astro-galaxy" viewBox="0 0 680 420" role="img" aria-label="银河系结构示意">
+    <svg className="astro-galaxy" viewBox="0 0 680 420" role="img" aria-label={t('astro.galaxyAria')}>
       <defs>
         <radialGradient id="astro-core">
           <stop offset="0%" stopColor="#fff3c4" />
@@ -54,27 +56,27 @@ export function GalaxyDiagram() {
       <circle cx={CX} cy={CY} r="46" fill="url(#astro-core)" />
       <circle cx={CX} cy={CY} r="12" fill="#fff8dc" />
       <text x={CX} y={CY + 70} className="astro-galaxy__label" textAnchor="middle">
-        银心 {GALAXY.center}
+        {t('astro.galaxyCenter', { center: GALAXY.center })}
       </text>
 
       {/* 太阳位置 */}
       <g className="astro-galaxy__sun">
         <circle cx={CX + 148} cy={CY - 52} r="7" fill="var(--a-track)" />
         <circle cx={CX + 148} cy={CY - 52} r="14" fill="none" stroke="var(--a-track)" opacity="0.5" />
-        <text x={CX + 162} y={CY - 48} className="astro-galaxy__label">太阳</text>
+        <text x={CX + 162} y={CY - 48} className="astro-galaxy__label">{t('astro.galaxySun')}</text>
         <text x={CX + 162} y={CY - 32} className="astro-galaxy__sub">
-          距银心 {GALAXY.sunDistance.toLocaleString()} 光年
+          {t('astro.galaxyDistance', { n: GALAXY.sunDistance.toLocaleString() })}
         </text>
       </g>
 
       <text x={CX} y={22} className="astro-galaxy__title" textAnchor="middle">
-        {GALAXY.name} · {gType.zh}（{gType.en}） · 盘径约 {GALAXY.diameter.toLocaleString()} 光年
+        {GALAXY.name} · {gType.zh}（{gType.en}） · {t('astro.galaxyDiameter', { n: GALAXY.diameter.toLocaleString() })}
       </text>
       <text x={CX} y={400} className="astro-galaxy__sub" textAnchor="middle">
         {gType.desc}
       </text>
       <text x={CX} y={416} className="astro-galaxy__sub" textAnchor="middle">
-        示意图，非按比例绘制 · 太阳绕银心一周约需 {GALAXY.sunOrbitalPeriod.toLocaleString()} 年
+        {t('astro.galaxyNote', { n: GALAXY.sunOrbitalPeriod.toLocaleString() })}
       </text>
     </svg>
   )

@@ -1,0 +1,165 @@
+{
+  "page": {
+    "title": "Komponenten-Toolkit Kit",
+    "descLead": "Allgemeine Fähigkeiten aus zwei lokalen Legacy-Projekten (altes Mobil-/Tablet-Frontend), von Geschäftslogik getrennt und als React 19 + antd 5 Komponenten neu geschrieben.",
+    "descTail": "Die vollständige Recherche-Liste (was ausgewählt wurde, warum und was übersprungen wurde) findet sich in",
+    "tabInteraction": "Mobile Interaktion ({count})",
+    "tabDisplay": "Datenanzeige ({count})",
+    "tabForm": "Formular-Steuerelemente ({count})"
+  },
+  "display": {
+    "ellipsisTitle": "Text-Ellipsis",
+    "switchData": "Daten wechseln",
+    "ellipsisDesc": "Eine Zeile nutzt nowrap + ellipsis, mehrere Zeilen nutzen -webkit-line-clamp. Die binäre Einzelzeichen-Messung des Originals ist auf Browsern mit line-clamp unnötig und wurde komplett entfernt.",
+    "singleTooltip": "Eine Zeile + Tooltip",
+    "twoLines": "Zwei Zeilen gekürzt",
+    "twoLinesExpand": "Zwei Zeilen + aufklappbar",
+    "countdownTitle": "Countdown",
+    "countdownDesc": "Das Original dekrementierte jede Sekunde selbst, sodass ein gedrosselter Hintergrund-Tab Drift aufbaute; hier rechnet jeder Tick mit Date.now() neu und korrigiert sofort beim Zurückkommen in den Vordergrund.",
+    "countdownCardLabel": "Kartenstil (Ziel: in 2 Stunden 45 Minuten)",
+    "countdownPlainLabel": "Schlichter Stil DD Tage HH:mm:ss",
+    "statTitle": "Metrik-Karte (rot für steigend, grün für fallend)",
+    "statDesc": "Führt NumberInfo + Trend des Originalprojekts zusammen. Farben folgen der nationalen Konvention—— steigend rot, fallend grün; für europäisch/US-amerikanische Farben colorMode=\"us\" übergeben.",
+    "timelineTitle": "Zeit-Trend TimelineChart",
+    "timelineDesc": "Das Original hing an G2 + g2-plugin-slider (und erzeugte domId mit Math.random(), was unter React 19 Strict Mode bei doppeltem Aufruf inkonsistent ist); dataZoom ist in ECharts eingebaut, deshalb genügt eine einmalige Konfiguration von Zoom-Leiste + Mausrad-Zoom.",
+    "noticeTitle": "Benachrichtigungs-Panel",
+    "noticeDesc": "Führt NoticeIcon und Cart des Originalprojekts zusammen (90 % Doppelung). Die Leeren-Schaltfläche unterstützt zweite Bestätigung—— onClear einfach ein Promise zurückgeben lassen.",
+    "markAllRead": "Alle gelesen",
+    "noticeHint": "Glocke anklicken zum Aufklappen"
+  },
+  "stat": {
+    "completionTitle": "Abgeschlossene Tickets diesen Monat",
+    "completionFooter": "+4,8 Prozentpunkte gegenüber Vormonat",
+    "goalLabel": "Ziel 95 %",
+    "inspectTitle": "Tägliche Inspektionen",
+    "inspectSub": "7-Tage-Durchschnitt",
+    "assetTitle": "Assets pro Gruppe",
+    "assetFooter": "Rechenzentrum hat den höchsten Anteil",
+    "onlineTitle": "Geräte-Online-Rate",
+    "onlineWave": "Online"
+  },
+  "demo": {
+    "inbound": "Eingang",
+    "outbound": "Ausgang"
+  },
+  "form": {
+    "tagTitle": "Tag-Eingabe",
+    "tagDesc": "Leerzeichen / Enter / Komma (halb- oder vollbreit) bestätigen jeweils; bei leerem Eingabefeld löscht Backspace den vorherigen Tag; das Einfügen von „甲, 乙 丙“ wird auf einmal in drei Tags zerlegt. Maximal 6.",
+    "currentTags": "Aktuelle Tags: {tags}",
+    "emptyValue": "(leer)",
+    "asyncTitle": "Async-Auswahl",
+    "asyncDesc": "Erst beim ersten Aufklappen oder bei Eingabe eines Stichworts wird angefordert (Lazy Loading) + 300 ms Entprellung + Schutz gegen Request-Rennen. Unterstützt Feldzuordnung über fields und benutzerdefiniertes Optionen-Rendering.",
+    "asyncPlaceholder": "Asset-Name / Pinyin / Gruppe suchen",
+    "asyncMultiPlaceholder": "Mehrfachauswahl + Laden beim Mounten",
+    "selected": "Ausgewählt: {value}",
+    "notSelected": "(nichts ausgewählt)",
+    "timerangeTitle": "Zeitraum-Eingabe",
+    "timerangeDesc": "Behält die drei Prüfungen des Originals (Ende nach Start / ein Abschnitt innerhalb des Limits / keine Überlappung) und ergänzt den Hinweis auf unvollständige Start-/Endzeiten; die Gesamtstunden werden in Echtzeit berechnet.",
+    "fillOverlap": "Überlappende Zeiträume eintragen",
+    "reset": "Zurücksetzen"
+  },
+  "inter": {
+    "signTitle": "Elektronische Unterschrift",
+    "signDesc": "Canvas-Handschrift + DPR-Hochauflösung + Rückgängig / Leeren / PNG-Export. Entfernt die react-canvas-draw-Abhängigkeit und legt beim Export einen weißen Hintergrund darunter (sonst wird ein transparentes PNG in Bildbetrachtern schwarz).",
+    "pullTitle": "Pull-to-Refresh",
+    "pullDesc": "Dämpfungsfaktor 2,5, Schwelle 56 px. Löst nur aus, wenn alle scrollbaren Vorfahren oben sind, und nutzt overscroll-behavior: contain statt preventDefault.",
+    "infiniteTitle": "Endloses Scrollen",
+    "infiniteDesc": "Nutzt IntersectionObserver statt selbst geschriebener Scroll-Listener; der Sentinel-Knoten bleibt gemountet, und während des Ladens wird nur eine zusätzliche Textzeile darunter gerendert. {loaded}/36 Einträge geladen.",
+    "infiniteEnd": "Alle 36 geladen",
+    "sortTitle": "Sortierbare Liste",
+    "sortDesc": "Null Abhängigkeiten (das react-sortable-hoc des Originals ist nicht mit React 19 kompatibel). Sortierung per Griff; nach dem Fokussieren des Griffs geht auch ↑ / ↓.",
+    "dragging": "Wird gezogen",
+    "marqueeTitle": "Auto-Scroll-Text",
+    "marqueeDesc": "Startet nur, wenn der Inhalt die Containerbreite wirklich übersteigt; Animationsdauer = überstehende Pixel / speed, langer Text rollt also nicht schneller.",
+    "marqueeShort": "Kurzer Text rollt nicht",
+    "ballTitle": "Schwebeball",
+    "ballDesc": "Die Position wird als **Verhältnis** aus „left / (Bildschirmbreite − Ballbreite)“ persistiert und bleibt nach Drehung oder Fensterskalierung sinnvoll. Beim Loslassen rastet er an der nächsten Kante ein; Klick kehrt zum Seitenanfang zurück.",
+    "ballShow": "Anzeigen",
+    "ballHide": "Ausblenden"
+  },
+  "sign": {
+    "generated": "Unterschrift erzeugt ({bytes} Byte dataURL)",
+    "empty": "Noch nicht unterschrieben"
+  },
+  "ball": {
+    "position": "Aktuelle Koordinaten: left {left}px / top {top}px",
+    "hint": "Nach dem Ziehen erscheint hier die eingerastete Koordinate",
+    "backTop": "Nach oben"
+  },
+  "pull": {
+    "tipDrag": "Zum Ausprobieren nach unten ziehen (Maus-Drag geht auch)",
+    "tipRefresh": "Aktualisieren fügt oben einen neuen Eintrag ein",
+    "refreshedAt": "Aktualisiert um {time}"
+  },
+  "data": {
+    "longText": "Die Asset-Lebenszyklus-Plattform deckt Beschaffungsprüfung, Installationsabnahme, Routineinspektion, präventive Wartung, Mess-Kalibrierung, Störungsreparatur, Nutzenanalyse und Entsorgung ab. Fehlt ein Datensatz in einer Phase, beeinträchtigt das die Asset-Statusbewertung und Compliance-Prüfung – daher muss jede Operation in einem nachvollziehbaren elektronischen Archiv festgehalten werden.",
+    "rowTitle": "Inspektionsdatensatz #{no}",
+    "tagInspection": "Inspektion",
+    "tagPreventive": "Präventive Wartung",
+    "tagMetrology": "Mess-Prüfung"
+  },
+  "ellipsis": {
+    "expand": "Aufklappen",
+    "collapse": "Zuklappen"
+  },
+  "countdown": {
+    "day": "T",
+    "hour": "Std",
+    "minute": "Min",
+    "second": "Sek"
+  },
+  "notice": {
+    "empty": "Keine Nachrichten",
+    "clear": "Leeren",
+    "aria": "Benachrichtigungen"
+  },
+  "miniProgress": {
+    "target": "Zielwert"
+  },
+  "timeline": {
+    "seriesA": "Serie A",
+    "seriesB": "Serie B",
+    "seriesFallback": "Serie {index}"
+  },
+  "async": {
+    "placeholder": "Bitte wählen",
+    "empty": "Keine Daten"
+  },
+  "tagInput": {
+    "placeholder": "Eingabe mit Enter hinzufügen"
+  },
+  "timeRange": {
+    "add": "Zeitraum hinzufügen",
+    "summary": "Gesamtstunden",
+    "start": "Start",
+    "end": "Ende",
+    "remove": "Diesen Zeitraum entfernen",
+    "duration": "{hours} Std. {minutes} Min.",
+    "durationHint": "({time})",
+    "errIncomplete": "Abschnitt {index}: Start- und Endzeit unvollständig",
+    "errOrder": "Abschnitt {index}: Endzeit muss nach der Startzeit liegen",
+    "errExceed": "Abschnitt {index}: Dauer überschreitet {maxHours} Stunden",
+    "errOverlap": "Abschnitt {first} und Abschnitt {second} überlappen sich"
+  },
+  "ballAria": "Schwebeball",
+  "infinite": {
+    "loading": "Wird geladen…",
+    "end": "Keine weiteren Einträge"
+  },
+  "ptr": {
+    "pull": "Zum Aktualisieren ziehen",
+    "release": "Loslassen zum Aktualisieren",
+    "refreshing": "Wird aktualisiert…"
+  },
+  "kitSign": {
+    "placeholder": "Hier handschriftlich unterschreiben",
+    "penColor": "Stiftfarbe {color}",
+    "undo": "Rückgängig",
+    "clear": "Leeren",
+    "download": "Export",
+    "downloadTip": "Als PNG exportieren (mit weißem Hintergrund)"
+  },
+  "sort": {
+    "aria": "Zum Sortieren ziehen oder mit den Auf-/Ab-Pfeiltasten verschieben"
+  }
+}

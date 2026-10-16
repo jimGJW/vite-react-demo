@@ -13,6 +13,7 @@
 import { ExperimentOutlined } from '@ant-design/icons'
 import { Empty, Table, Tooltip } from 'antd'
 import { Panel } from './ui.jsx'
+import { useI18n } from '../../../i18n/index.js'
 
 /** CAD 的日期形如 "2026-Oct-15 00:01"，转成中文短格式 */
 function dateText(cd) {
@@ -40,20 +41,21 @@ function distColor(lunarDist) {
 }
 
 export default function ApproachTab({ approach, approachData }) {
+  const { t } = useI18n()
   const items = approachData?.items || []
   const total = approachData?.count || 0
 
   const columns = [
-    { title: '编号', dataIndex: 'des', width: 110, render: (v) => <b>{v || '—'}</b> },
-    { title: '最近时刻', dataIndex: 'date', width: 140, render: (v) => dateText(v) },
+    { title: t('astro.apprId'), dataIndex: 'des', width: 110, render: (v) => <b>{v || '—'}</b> },
+    { title: t('astro.apprTime'), dataIndex: 'date', width: 140, render: (v) => dateText(v) },
     {
-      title: '距离 (月距)',
+      title: t('astro.apprDist'),
       dataIndex: 'lunarDist',
       width: 120,
       sorter: (a, b) => (a.lunarDist ?? 9e9) - (b.lunarDist ?? 9e9),
       defaultSortOrder: 'ascend',
       render: (v, r) => (
-        <Tooltip title={r.distAu == null ? '无数据' : `${r.distAu.toFixed(6)} AU · ${Math.round(r.distKm).toLocaleString()} km`}>
+        <Tooltip title={r.distAu == null ? t('astro.apprNoData') : `${r.distAu.toFixed(6)} AU · ${Math.round(r.distKm).toLocaleString()} km`}>
           <span style={{ color: distColor(v), fontWeight: 600 }}>
             {v == null ? '—' : v.toFixed(2)}
           </span>
@@ -61,21 +63,21 @@ export default function ApproachTab({ approach, approachData }) {
       ),
     },
     {
-      title: '相对速度 (km/s)',
+      title: t('astro.apprVel'),
       dataIndex: 'vRel',
       width: 130,
       render: (v) => (v == null ? '—' : v.toFixed(2)),
     },
     {
-      title: '绝对星等 H',
+      title: t('astro.apprH'),
       dataIndex: 'h',
       width: 110,
       render: (v) => (v == null ? '—' : v.toFixed(1)),
     },
     {
       title: (
-        <Tooltip title="由绝对星等 H 按反照率 0.14 反推的量级估算，非实测直径">
-          <span className="astro-approach-th">估算直径</span>
+        <Tooltip title={t('astro.apprDiamTip')}>
+          <span className="astro-approach-th">{t('astro.apprDiam')}</span>
         </Tooltip>
       ),
       dataIndex: 'dKm',
@@ -83,7 +85,7 @@ export default function ApproachTab({ approach, approachData }) {
       render: (v) => sizeText(v),
     },
     {
-      title: '时刻不确定度',
+      title: t('astro.apprUncertainty'),
       dataIndex: 'uncertainty',
       width: 130,
       render: (v) => <span className="astro-approach-dim">{v || '—'}</span>,
@@ -93,21 +95,19 @@ export default function ApproachTab({ approach, approachData }) {
   return (
     <div className="astro-tab-content">
       <Panel
-        title="🛰 未来近地交会"
-        source="NASA JPL Close Approach Data（0.05 AU 内，按距离升序）"
+        title={`🛰 ${t('astro.apprTitle')}`}
+        source={t('astro.apprSource')}
         icon={<ExperimentOutlined />}
         loading={approach.loading}
         error={approach.error}
-        extra={total ? <span className="astro-approach-count">共 {total} 次</span> : null}
+        extra={total ? <span className="astro-approach-count">{t('astro.apprCount', { n: total })}</span> : null}
       >
         {!approach.loading && !items.length ? (
-          <Empty description="当前没有近地交会事件" />
+          <Empty description={t('astro.apprEmpty')} />
         ) : (
           <>
             <p className="astro-approach-lead">
-              这张表里的天体都在<b>月球轨道以内或附近</b>掠过地球。绝大多数直径只有十几米——
-              即便真进入大气，也会在高层烧蚀殆尽，不构成地面威胁；
-              真正需要警惕的是百米级以上、且轨道不确定度收敛到很小的那类。
+              {t('astro.apprLead1')}<b>{t('astro.apprLeadBold1')}</b>{t('astro.apprLead2')}<b>{t('astro.apprLeadBold2')}</b>{t('astro.apprLead3')}
             </p>
             <Table size="small" rowKey={(r) => `${r.des}-${r.date}`} pagination={{ pageSize: 12, size: 'small' }} columns={columns} dataSource={items} scroll={{ x: 860 }} />
           </>

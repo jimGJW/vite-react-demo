@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { useI18n } from '../../i18n/index.js'
 import './CommandPalette.scss'
 
 const SearchIcon = () => (
@@ -92,14 +93,16 @@ function matchCommand(query, command) {
  */
 export default function CommandPalette({
   commands = [],
-  placeholder = '搜索命令…',
+  placeholder,
   onClose,
 }) {
+  const { t } = useI18n()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [activeIndex, setActiveIndex] = useState(0)
   const inputRef = useRef(null)
   const listRef = useRef(null)
+  const searchPlaceholder = placeholder ?? t('palette.component.placeholder')
 
   // 用 ref 保存最新的 onClose，避免键盘 effect 因回调引用变化频繁重建
   const onCloseRef = useRef(onClose)
@@ -151,7 +154,7 @@ export default function CommandPalette({
     const groups = []
     const map = new Map()
     filtered.forEach((cmd, i) => {
-      const g = cmd.group || '其他'
+      const g = cmd.group || t('palette.component.otherGroup')
       if (!map.has(g)) {
         const item = { group: g, items: [] }
         map.set(g, item)
@@ -160,7 +163,7 @@ export default function CommandPalette({
       map.get(g).items.push({ cmd, i })
     })
     return groups
-  }, [filtered])
+  }, [filtered, t])
 
   // activeIndex 越界时在渲染期钳制（过滤结果变少时保持最近的有效项）
   const activeIdx = filtered.length ? Math.min(activeIndex, filtered.length - 1) : 0
@@ -214,7 +217,7 @@ export default function CommandPalette({
         className="cp-panel"
         role="dialog"
         aria-modal="true"
-        aria-label="命令面板"
+        aria-label={t('palette.component.dialogAria')}
         onMouseDown={(e) => e.stopPropagation()}
       >
         <div className="cp-search">
@@ -226,14 +229,14 @@ export default function CommandPalette({
             className="cp-input"
             type="text"
             value={query}
-            placeholder={placeholder}
+            placeholder={searchPlaceholder}
             onChange={(e) => {
               setQuery(e.target.value)
               setActiveIndex(0)
             }}
             autoComplete="off"
             spellCheck={false}
-            aria-label="搜索命令"
+            aria-label={t('palette.component.searchAria')}
           />
           <kbd className="cp-kbd">ESC</kbd>
         </div>
@@ -242,8 +245,8 @@ export default function CommandPalette({
           {filtered.length === 0 ? (
             <div className="cp-empty">
               <div className="cp-empty-icon">⌘</div>
-              <div className="cp-empty-text">没有匹配的命令</div>
-              <div className="cp-empty-hint">试试更换关键词，或清空搜索查看全部命令</div>
+              <div className="cp-empty-text">{t('palette.component.emptyTitle')}</div>
+              <div className="cp-empty-hint">{t('palette.component.emptyHint')}</div>
             </div>
           ) : (
             grouped.map((group) => (
@@ -285,18 +288,18 @@ export default function CommandPalette({
           <span className="cp-tip">
             <kbd>↑</kbd>
             <kbd>↓</kbd>
-            选择
+            {t('palette.component.tipSelect')}
           </span>
           <span className="cp-tip">
             <kbd>↵</kbd>
-            执行
+            {t('palette.component.tipRun')}
           </span>
           <span className="cp-tip">
             <kbd>ESC</kbd>
-            关闭
+            {t('palette.component.tipClose')}
           </span>
           <span className="cp-spacer" />
-          <span className="cp-count">{filtered.length} 条结果</span>
+          <span className="cp-count">{t('palette.component.count', { count: filtered.length })}</span>
         </div>
       </div>
     </div>,

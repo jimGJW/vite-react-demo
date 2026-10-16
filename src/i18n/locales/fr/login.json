@@ -1,0 +1,17 @@
+{
+  "title": "Console interstellaire",
+  "welcome": "Bon retour, commandant. Vérifiez votre identité pour entrer dans le système de contrôle principal.",
+  "backHint": "Vous serez automatiquement renvoyé vers {path} après vérification",
+  "username": "Compte",
+  "password": "Clé d'accès",
+  "remember": "Rester connecté",
+  "forgot": "Clé oubliée ?",
+  "modeLabel": "Style d'interface",
+  "modeAntd": "Ant Design",
+  "modeVue": "Style Vue",
+  "submit": "Entrer dans le vaisseau",
+  "verifying": "Vérification d'identité…",
+  "warping": "Distorsion en cours…",
+  "newCrew": "Nouveau membre d'équipage ?",
+  "apply": "Demander l'accès"
+}

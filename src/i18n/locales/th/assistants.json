@@ -1,0 +1,68 @@
+{
+  "common": {
+    "expand": "ขยาย",
+    "collapse": "ย่อ",
+    "close": "ปิด"
+  },
+  "quick": {
+    "voice": "ผู้ช่วยเสียง",
+    "agent": "AI Agent",
+    "on": "เปิด",
+    "off": "ปิดอยู่",
+    "navSep": "ไปยังด่วน",
+    "jump": "ไปที่",
+    "other": "อื่น ๆ",
+    "top": "กลับขึ้นด้านบน",
+    "hide": "ซ่อนปุ่มผู้ช่วย",
+    "assistant": "ผู้ช่วย",
+    "fabTitle": "ปุ่มผู้ช่วย (ลากได้)",
+    "fabAria": "ปุ่มผู้ช่วย",
+    "restoreTitle": "แสดงปุ่มผู้ช่วย",
+    "pages": {
+      "home": "หน้าแรก",
+      "agent": "คอนโซลเอเจนต์ AI",
+      "voice": "ผู้ช่วยเสียง",
+      "dashboard": "แผงควบคุม",
+      "testCenter": "ศูนย์ทดสอบ"
+    }
+  },
+  "voice": {
+    "title": "ผู้ช่วยเสียง",
+    "subtitle": "แปลงเสียงเป็นข้อความ · กลไกคู่ ออนไลน์ / ออฟไลน์",
+    "charCount": "{count} ตัวอักษร",
+    "envOnline": "ออนไลน์",
+    "envOffline": "ออฟไลน์",
+    "copy": "คัดลอกทั้งหมด",
+    "copied": "คัดลอกแล้ว ✓",
+    "clear": "ล้าง",
+    "sendToAgent": "ส่งต่อไปยังเอเจนต์ AI →",
+    "sendToAgentTip": "ส่งข้อความที่รู้เสียงได้ไปให้เอเจนต์ AI ดำเนินการ",
+    "historyTitle": "ประวัติการรู้เสียง",
+    "historyEmpty": "ยังไม่มีประวัติการรู้เสียง ลองกด «เริ่มการป้อนเสียง» หรือ «เริ่มบันทึกเสียง» ด้านบน",
+    "diagnose": "การตรวจสภาพแวดล้อม",
+    "browserLabel": "เบราว์เซอร์",
+    "webSupport": "การรู้เสียงออนไลน์ (Web Speech API)",
+    "localSupport": "การรู้เสียงออฟไลน์ (Whisper ในเครื่อง)",
+    "supported": "รองรับ",
+    "unsupported": "ไม่รองรับ",
+    "webNote": "(การรู้เสียงภาษาจีนของ Chrome ใช้บริการของ Google อาจใช้งานไม่ได้บนเครือข่ายภายในประเทศ)",
+    "localNote": "(โมเดลถูกฝังไว้ใน public/models/ ทำงานแบบออฟไลน์ได้ทั้งหมด)",
+    "currentStatus": "สถานะปัจจุบัน",
+    "statusListening": "กำลังฟังออนไลน์",
+    "statusRecording": "กำลังบันทึกเสียง",
+    "statusRecognizing": "กำลังถอดเสียงออฟไลน์",
+    "statusIdle": "ว่าง",
+    "browser": {
+      "none": "ไม่ทราบ",
+      "edge": "Microsoft Edge",
+      "chrome": "Google Chrome",
+      "firefox": "Mozilla Firefox",
+      "safari": "Apple Safari",
+      "unknown": "เบราว์เซอร์ที่ไม่ทราบ"
+    }
+  },
+  "globalAgent": {
+    "title": "AI Agent",
+    "hint": "🤖 กด Ctrl+Shift+A เพื่อเรียกเอเจนต์ · Ctrl+↑↓ เลื่อนหน้าจอ · Ctrl+⌥+←→ ย้อน/เดินหน้า"
+  }
+}

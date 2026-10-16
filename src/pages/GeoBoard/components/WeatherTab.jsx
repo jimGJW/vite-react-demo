@@ -11,12 +11,13 @@
 import { ExperimentOutlined } from '@ant-design/icons'
 import { Empty, Tooltip } from 'antd'
 import { Panel } from './ui.jsx'
+import { useI18n } from '../../../i18n/index.js'
 
-/** 风向度数 → 八方位中文 */
-function dirText(deg) {
-  if (deg == null) return '—'
-  const names = ['北', '东北', '东', '东南', '南', '西南', '西', '西北']
-  return names[Math.round(deg / 45) % 8]
+/** 风向度数 → 八方位 i18n 键 */
+const DIR_KEYS = ['geo.wx.dir.n', 'geo.wx.dir.ne', 'geo.wx.dir.e', 'geo.wx.dir.se', 'geo.wx.dir.s', 'geo.wx.dir.sw', 'geo.wx.dir.w', 'geo.wx.dir.nw']
+function dirKeyOf(deg) {
+  if (deg == null) return null
+  return DIR_KEYS[Math.round(deg / 45) % 8]
 }
 
 /** "2026-10-13T18:12" → "18:12" */
@@ -37,6 +38,7 @@ function tempColor(t) {
 }
 
 export default function WeatherTab({ weather, weatherData }) {
+  const { t } = useI18n()
   const items = weatherData?.items || []
   const hottest = items[0]
   const coldest = items.length ? items[items.length - 1] : null
@@ -44,20 +46,26 @@ export default function WeatherTab({ weather, weatherData }) {
   return (
     <div className="geo-tab-content">
       <Panel
-        title="🌤 城市天气实况"
-        source="Open-Meteo Forecast（WMO 4677 天气码），每 10 分钟刷新"
+        title={'🌤 ' + t('geo.wx.title')}
+        source={t('geo.wx.source')}
         icon={<ExperimentOutlined />}
         loading={weather.loading}
         error={weather.error}
       >
         {!weather.loading && !items.length ? (
-          <Empty description="未取到城市天气数据" />
+          <Empty description={t('geo.wx.empty')} />
         ) : (
           <>
             <p className="geo-wx-lead">
-              按当前气温从高到低排列。
-              {hottest && coldest ? ` 此刻南北温差约 ${(hottest.temp - coldest.temp).toFixed(1)}°C（${hottest.name} ${hottest.temp?.toFixed(1)}°C vs ${coldest.name} ${coldest.temp?.toFixed(1)}°C）。` : ''}
-              「体感温度」综合了湿度与风速，比干球温度更接近人的实际感受。
+              {t('geo.wx.lead')}
+              {hottest && coldest ? t('geo.wx.leadTemp', {
+                delta: (hottest.temp - coldest.temp).toFixed(1),
+                hot: hottest.name,
+                hott: hottest.temp?.toFixed(1),
+                cold: coldest.name,
+                coldt: coldest.temp?.toFixed(1),
+              }) : ''}
+              {t('geo.wx.leadFeel')}
             </p>
             <div className="geo-wx-grid">
               {items.map((c) => (
@@ -71,23 +79,23 @@ export default function WeatherTab({ weather, weatherData }) {
                     <em>°C</em>
                   </div>
                   <dl className="geo-wx-rows">
-                    <dt>体感</dt>
+                    <dt>{t('geo.wx.dtFeels')}</dt>
                     <dd>{c.feels == null ? '—' : `${c.feels.toFixed(1)}°C`}</dd>
-                    <dt>今日区间</dt>
+                    <dt>{t('geo.wx.dtRange')}</dt>
                     <dd>
                       {c.tMin == null || c.tMax == null
                         ? '—'
                         : `${c.tMin.toFixed(0)}° ~ ${c.tMax.toFixed(0)}°`}
                     </dd>
-                    <dt>风</dt>
+                    <dt>{t('geo.wx.dtWind')}</dt>
                     <dd>
                       <Tooltip title={c.windDir == null ? '' : `${Math.round(c.windDir)}°`}>
-                        {c.wind == null ? '—' : `${dirText(c.windDir)} ${c.wind.toFixed(0)} km/h`}
+                        {c.wind == null ? '—' : `${t(dirKeyOf(c.windDir))} ${c.wind.toFixed(0)} km/h`}
                       </Tooltip>
                     </dd>
-                    <dt>湿度</dt>
+                    <dt>{t('geo.wx.dtHumidity')}</dt>
                     <dd>{c.humidity == null ? '—' : `${c.humidity}%`}</dd>
-                    <dt>日出 / 日落</dt>
+                    <dt>{t('geo.wx.dtSun')}</dt>
                     <dd>
                       {hhmm(c.sunrise)} / {hhmm(c.sunset)}
                     </dd>

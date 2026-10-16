@@ -1,0 +1,414 @@
+{
+  "page": {
+    "title": "组件工坊 Studio",
+    "descLead": "从本地 80+ 存量前端项目里筛选、去业务化、零依赖重写而成的 {count} 个可复用组件，按能力分为 {groups} 组。",
+    "descTail": "所有演示数据均为中性虚构占位，不含任何原始敏感信息。"
+  },
+  "cat": {
+    "screen": "可视化大屏",
+    "builder": "规则与编排",
+    "media": "图像与标注",
+    "form": "表单与树",
+    "report": "报告与溯源",
+    "interact": "交互·进阶"
+  },
+  "demo": {
+    "scanempty": {
+      "name": "ScanEmpty",
+      "title": "扫描式空态",
+      "desc": "用纯 CSS/SVG 实现的大屏空态扫描动效，不依赖图表库，任意容器可用。",
+      "text": "暂无告警",
+      "subText": "最近 24 小时无异常事件"
+    },
+    "autoscroll": {
+      "name": "AutoScrollList",
+      "title": "无缝滚动榜单",
+      "desc": "内容超出容器自动垂直循环滚动，悬停暂停；位移由 CSS 变量驱动，无状态抖动。"
+    },
+    "board": {
+      "name": "DraggableBoard",
+      "title": "可编排看板",
+      "desc": "百分比定位 + 碰撞检测 + 指针事件统一；开启编辑后可拖动/缩放卡片，非法落位回弹。"
+    },
+    "axisbreak": {
+      "name": "AxisBreakBar",
+      "title": "断轴柱状图",
+      "desc": "高低值悬殊时折叠空白区间；在图上横向拖拽可选则要折叠的 Y 区间。",
+      "unit": "万",
+      "chartTitle": "月度指标"
+    },
+    "regionmap": {
+      "name": "SvgRegionMap",
+      "title": "数据驱动区域图",
+      "desc": "viewBox 纯 SVG 等比缩放，分层打点（底图/区域块/气泡），点击区域回调。"
+    },
+    "adapttable": {
+      "name": "AdaptTable",
+      "title": "大屏自适应表格",
+      "desc": "列宽百分比平分、可拖拽调列宽/行高、单元格内容超长自动跑马灯。"
+    },
+    "rulebuilder": {
+      "name": "RuleBuilder",
+      "title": "可视化条件编排",
+      "desc": "AND/OR 嵌套组 + 叶子条件递归树，按字段类型自动切换操作符；输出结构化 JSON。"
+    },
+    "jsondiff": {
+      "name": "JsonDiff",
+      "title": "结构化对象对比",
+      "desc": "结构 diff 而非文本 diff：准确标出新增/删除/修改/未变，路径一目了然。"
+    },
+    "annotator": {
+      "name": "ImageAnnotator",
+      "title": "图像标注与缩放平移",
+      "desc": "滚轮缩放、拖拽平移；标注锚点用归一化坐标存储，缩放/平移后不漂移。"
+    },
+    "dynform": {
+      "name": "DynamicForm",
+      "title": "schema 驱动动态表单",
+      "desc": "一份字段 schema 即一份 UI；支持多种通用字段类型与必填校验。"
+    },
+    "orgtree": {
+      "name": "OrgTree",
+      "title": "层级组织树",
+      "desc": "任意深度可逐级展开/收起、可单选检索的层级树。"
+    },
+    "scanreport": {
+      "name": "ScanReport",
+      "title": "安全扫描报告卡片",
+      "desc": "把结构化检测报告渲染为严重度分布 + 明细列表，可承载漏洞/审查/巡检等任意清单。"
+    },
+    "anchornav": {
+      "name": "AnchorNav",
+      "title": "锚点滚动导航",
+      "desc": "左侧目录吸顶 + 右侧内容区，点击平滑滚动，滚动时自动高亮当前版块（rAF 节流）。"
+    },
+    "pagetabs": {
+      "name": "PageTabs",
+      "title": "多标签页工作区",
+      "desc": "路由式标签栏：可切换、可关闭、可新建；内容区由当前标签的 render 提供。"
+    },
+    "treetable": {
+      "name": "TreeTable",
+      "title": "树表 + 祖先保留搜索",
+      "desc": "可逐级展开；按名称检索时自动保留命中子孙的父节点并展开，不丢上下文。"
+    },
+    "highlighter": {
+      "name": "Highlighter",
+      "title": "关键词高亮",
+      "desc": "把命中关键词的文本片段用 <mark> 包裹，纯函数拆分、可嵌入任意列表或表格单元格。"
+    },
+    "editabletable": {
+      "name": "EditableTable",
+      "title": "行内编辑表格",
+      "desc": "点击「编辑」整行切换为输入/下拉，保存即写回；取消则还原初值。"
+    },
+    "draglayout": {
+      "name": "DragLayout",
+      "title": "自由拖拽缩放布局",
+      "desc": "卡片以百分比定位，可拖动移动、拖角缩放，落位自动限制在容器内；适合轻量低代码仪表盘。"
+    },
+    "gauge": {
+      "name": "CanvasGauge",
+      "title": "Canvas 仪表盘",
+      "desc": "零依赖 Canvas 仪表盘：rAF 缓动到目标值、DPR 高清、容器自适应。"
+    },
+    "carousel3d": {
+      "name": "CardCarousel3D",
+      "title": "3D 卡片轮播",
+      "desc": "手势方向判定（>45° 让位纵向滚动），卡片按相对位置做 Z 轴景深与旋转切换。"
+    },
+    "frameplayer": {
+      "name": "FramePlayer",
+      "title": "帧序列播放器",
+      "desc": "按 fps 在若干「帧」间循环播放，支持播放/暂停、逐帧、进度拖动；帧可为任意节点。"
+    },
+    "contextmenu": {
+      "name": "ContextMenu",
+      "title": "右键菜单",
+      "desc": "在包裹区域右键弹出菜单，点击任意处或滚动即关闭。"
+    },
+    "errorboundary": {
+      "name": "ErrorBoundary",
+      "title": "错误边界",
+      "desc": "捕获子树渲染期异常，展示兜底 UI 并支持重试。"
+    },
+    "fullscreen": {
+      "name": "Fullscreen",
+      "title": "全屏容器",
+      "desc": "对指定区域调用 Fullscreen API，并同步当前全屏状态。"
+    }
+  },
+  "data": {
+    "rank": {
+      "node": "服务节点 {letter}{no}"
+    },
+    "board": {
+      "visits": "访问量",
+      "errors": "错误率",
+      "latency": "响应耗时",
+      "online": "在线节点"
+    },
+    "axis": {
+      "unit": "万",
+      "title": "月度指标",
+      "m1": "1月",
+      "m2": "2月",
+      "m3": "3月",
+      "m4": "4月",
+      "m5": "5月",
+      "m6": "6月",
+      "m7": "7月",
+      "m8": "8月",
+      "m9": "9月",
+      "m10": "10月",
+      "m11": "11月",
+      "m12": "12月"
+    },
+    "region": {
+      "datacenter": "机房区",
+      "office": "办公区",
+      "storage": "仓储区",
+      "entrance": "出入口"
+    },
+    "nodeType": {
+      "server": "服务器",
+      "gateway": "网关",
+      "terminal": "终端",
+      "sensor": "传感"
+    },
+    "nodeLabel": {
+      "rackA": "机架 A",
+      "coreSwitch": "核心交换",
+      "officeTerminal": "办公终端",
+      "envSensor": "环境传感",
+      "accessControl": "门禁",
+      "edge": "边界"
+    },
+    "table": {
+      "name": "资源名称",
+      "ip": "地址",
+      "group": "分组",
+      "status": "状态"
+    },
+    "group": {
+      "net": "网络组",
+      "room": "机房组",
+      "iot": "物联网组",
+      "terminal": "终端组",
+      "sec": "安全组"
+    },
+    "status": {
+      "online": "在线",
+      "offline": "离线",
+      "maintaining": "维护"
+    },
+    "rule": {
+      "name": "名称",
+      "count": "数量",
+      "status": "状态",
+      "enabled": "启用"
+    },
+    "form": {
+      "project": "项目名称",
+      "desc": "说明",
+      "count": "数量",
+      "category": "类别",
+      "enabled": "是否启用",
+      "date": "开始日期",
+      "required": "请输入",
+      "optional": "可选",
+      "catA": "A 类",
+      "catB": "B 类"
+    },
+    "org": {
+      "root": "根节点",
+      "group1": "分组一",
+      "group2": "分组二",
+      "child1": "子项 1",
+      "child2": "子项 2",
+      "child3": "子项 3",
+      "child4": "子项 4",
+      "child41": "子项 4-1"
+    },
+    "report": {
+      "title": "依赖与配置巡检报告",
+      "f1Title": "存在已知高危漏洞的依赖",
+      "f1Detail": "某依赖版本低于安全基线，建议升级。",
+      "f2Title": "明文凭证出现在配置中",
+      "f2Detail": "建议改用环境变量或密钥管理。",
+      "f3Title": "过期的 TLS 协议",
+      "f3Detail": "建议禁用 TLS1.0/1.1。",
+      "f4Title": "调试端口对外暴露",
+      "f4Detail": "建议仅内网开放。",
+      "f5Title": "缺少 LICENSE 声明",
+      "f5Detail": "补充开源协议声明。",
+      "f6Title": "依赖版本未锁定",
+      "f6Detail": "建议锁定补丁版本。"
+    },
+    "anchor": {
+      "overview": "概览",
+      "overviewText": "该区域演示锚点滚动：左侧目录点击后，内容区平滑滚动到对应版块。",
+      "metric": "指标说明",
+      "metricText": "滚动时左侧目录会随当前可视版块自动高亮（节流到每帧一次）。",
+      "usage": "使用场景",
+      "usageText": "适合长文档、帮助中心、配置说明等需要目录导航的页面。",
+      "faq": "常见问题",
+      "faqText": "目录与内容通过 id 锚定，无需额外状态同步。"
+    },
+    "tree": {
+      "clusterA": "集群 A",
+      "clusterB": "集群 B",
+      "nodeA1": "节点 a-1",
+      "nodeA2": "节点 a-2",
+      "nodeB1": "节点 b-1",
+      "nodeB2": "节点 b-2",
+      "podA21": "容器 a-2-1"
+    },
+    "drag": {
+      "card1": "卡片一",
+      "card1Text": "拖动标题移动，拖右下角缩放",
+      "card2": "卡片二",
+      "card2Text": "落位自动限制在容器内",
+      "card3": "卡片三",
+      "card3Text": "百分比定位，自适应缩放",
+      "card4": "卡片四",
+      "card4Text": "可承载任意内容"
+    },
+    "carousel": {
+      "item": "内容卡片 {no}"
+    },
+    "ctx": {
+      "copy": "复制",
+      "rename": "重命名",
+      "delete": "删除"
+    },
+    "json": {
+      "sampleName": "示例服务"
+    },
+    "plan": {
+      "zoneA": "A 区",
+      "zoneB": "B 区",
+      "zoneC": "C 区",
+      "zoneD": "D 区"
+    }
+  },
+  "ui": {
+    "editMode": "编辑模式",
+    "regionSelected": "已选择区域：{name}",
+    "show": "查看",
+    "hide": "隐藏",
+    "liveValues": "实时值",
+    "tabHome": "首页",
+    "tabDoc": "文档",
+    "tabLog": "日志",
+    "homeContent": "首页内容区",
+    "docContent": "文档内容区",
+    "logContent": "日志内容区",
+    "newTab": "新标签",
+    "newTabContent": "新打开的标签页（演示）",
+    "searchPlaceholder": "输入关键词高亮",
+    "hlKeyword": "服务",
+    "hlText1": "核心交换机-01 服务节点状态正常",
+    "hlText2": "应用服务器-A 服务响应耗时 12ms",
+    "hlText3": "边界网关-03 离线，需人工介入",
+    "randomValue": "随机值",
+    "zero": "归零",
+    "autoPlay": "自动播放",
+    "ctxHint": "在此区域右键，弹出菜单",
+    "boomBtn": "触发渲染异常",
+    "boomHint": "点击按钮让子树抛错，错误边界会兜底显示并支持重试。",
+    "fullscreenHint": "点击右上角「全屏」按钮（沙箱内可能受限）",
+    "gaugeTitle": "完成度"
+  },
+  "code": {
+    "copied": "用法已复制",
+    "clipUnsupported": "当前环境不支持剪贴板",
+    "collapse": "收起用法",
+    "expand": "查看用法",
+    "copy": "复制"
+  },
+  "comp": {
+    "empty": "暂无数据",
+    "rowResizeTitle": "拖动调整行高",
+    "noCards": "暂无卡片",
+    "drag": "拖动",
+    "highRange": "高值区间",
+    "lowRange": "低值区间",
+    "lowValue": "低值",
+    "highValue": "高值",
+    "breaks": "断轴 {count}",
+    "resetBreaks": "重置断轴",
+    "axisHint": "在图上横向拖拽可选择要折叠的数值区间",
+    "opGt": "大于",
+    "opGe": "不小于",
+    "opLt": "小于",
+    "opLe": "不大于",
+    "opEq": "等于",
+    "opRange": "区间",
+    "opNe": "不等于",
+    "opContains": "包含",
+    "opStarts": "开头是",
+    "opIn": "属于",
+    "opAnd": "且 AND",
+    "opOr": "或 OR",
+    "selectFieldFirst": "先选字段",
+    "boolYes": "是",
+    "boolNo": "否",
+    "valuePlaceholder": "值",
+    "fieldPlaceholder": "字段",
+    "addCondition": "条件",
+    "addGroup": "分组",
+    "noConditions": "暂无条件",
+    "noFields": "未传入 fields，无法选择字段",
+    "diffAdded": "新增",
+    "diffRemoved": "删除",
+    "diffChanged": "修改",
+    "diffSame": "未变",
+    "diffChanges": "变化 ({added}+{removed}+{changed})",
+    "diffAll": "全部",
+    "diffIdentical": "两份数据完全一致",
+    "formRequired": "请填写{label}",
+    "formEmptySchema": "schema 为空",
+    "orgSearch": "搜索节点",
+    "orgExpand": "展开",
+    "orgCollapse": "收起",
+    "orgNoMatch": "无匹配节点",
+    "sevCritical": "严重",
+    "sevHigh": "高危",
+    "sevMedium": "中危",
+    "sevLow": "低危",
+    "sevInfo": "提示",
+    "reportTitle": "扫描报告",
+    "reportSub": "{total} 项发现 · 评分 {score}/100",
+    "reportAll": "全部 {total}",
+    "reportEmpty": "无发现项",
+    "annoLabel": "标注 {no}",
+    "annoReset": "复位",
+    "annoActive": "标注中(点图添加)",
+    "annoStart": "标注",
+    "annoPlaceholder": "标注文案",
+    "annoNeedSrc": "放入 src 以显示底图",
+    "annoRemove": "删除标注「{label}」？",
+    "annoList": "标注 ({count})",
+    "annoClear": "清空",
+    "annoEmpty": "暂无标注",
+    "tabAdd": "新建标签",
+    "treeValue": "数值",
+    "treeSearch": "检索名称（自动保留父级）",
+    "treeName": "名称",
+    "treeNoMatch": "无匹配",
+    "editActions": "操作",
+    "editSave": "保存",
+    "editCancel": "取消",
+    "editStart": "编辑",
+    "framePause": "暂停",
+    "framePlay": "播放",
+    "framePrev": "上一帧",
+    "frameNext": "下一帧",
+    "frameTip": "帧 {no}",
+    "fsEnter": "全屏",
+    "fsExit": "退出全屏",
+    "errMessage": "渲染出错",
+    "errRetry": "重试"
+  }
+}

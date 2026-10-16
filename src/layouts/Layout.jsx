@@ -23,6 +23,8 @@ import {
 } from '@ant-design/icons'
 import { useAuth } from '../contexts/useAuth.js'
 import Assistants from '../components/Assistants/index.jsx'
+import LanguageSwitch from '../components/LanguageSwitch/index.jsx'
+import { useI18n } from '../i18n/index.js'
 import { PeriodTag } from '../components/Changelog/PeriodTag.jsx'
 import { ChangelogMenu } from '../components/Changelog/ChangelogMenu.jsx'
 import { ChangelogDrawer } from '../components/Changelog/ChangelogDrawer.jsx'
@@ -34,117 +36,125 @@ import './Layout.scss'
 
 const { Text } = Typography
 
-/* —— 导航配置：icon 全部用 antd 图标组件 —— */
-const navItems = [
-  { key: '/', icon: <HomeOutlined />, label: '首页' },
-  {
-    key: 'group-ai', icon: <RobotOutlined />, label: 'AI 助手',
-    children: [
-      { key: '/chatbot', icon: <MessageOutlined />, label: '对话助手 ChatBot' },
-      { key: '/share', icon: <ShareAltOutlined />, label: '对话分享 QASharing' },
-      { key: '/voice', icon: <AudioOutlined />, label: '语音助手' },
-      { key: '/agent', icon: <AimOutlined />, label: 'AI Agent 控制台' },
-    ],
-  },
-  {
-    key: 'group-toolbox', icon: <ToolOutlined />, label: '工具箱',
-    children: [
-      { key: '/scan', icon: <ScanOutlined />, label: '扫码' },
-      { key: '/kit', icon: <ThunderboltOutlined />, label: '组件工具箱 Kit' },
-      { key: '/studio', icon: <CodepenOutlined />, label: '组件工坊 Studio' },
-  { key: '/templates', icon: <AppstoreOutlined />, label: '开源模板库' },
-  { key: '/utils', icon: <ToolOutlined />, label: '小功能集 Utils' },
-      { key: '/react-hooks', icon: <BulbOutlined />, label: 'React 核心 API' },
-      { key: '/embed', icon: <DesktopOutlined />, label: '嵌套预览' },
-      { key: '/form-builder', icon: <FormOutlined />, label: '配置表单' },
-      { key: '/theme', icon: <BgColorsOutlined />, label: '主题切换' },
-      { key: '/charts', icon: <BarChartOutlined />, label: 'SVG 图表' },
-      { key: '/echarts', icon: <DashboardOutlined />, label: 'ECharts 仪表盘' },
-      { key: '/command-palette', icon: <CodeOutlined />, label: '命令面板' },
-      { key: '/notify', icon: <BellOutlined />, label: '通知中心' },
-      { key: '/data-table', icon: <TableOutlined />, label: '高级表格' },
-      { key: '/login', icon: <LockOutlined />, label: '星空登录' },
-      { key: '/assistant-demo', icon: <ThunderboltOutlined />, label: '快捷助手' },
-    ],
-  },
-  {
-    key: 'group-compare', icon: <FundProjectionScreenOutlined />, label: '组件对比中心',
-    children: [
-      { key: '/antd', icon: <AppstoreOutlined />, label: 'Ant Design 组件库' },
-      {
-        key: '__sep-compare__',
-        disabled: true,
-        className: 'menu-sep-title',
-        label: (
-          <span className="sep-title">
-            <span className="sep-title__line" />
-            <span className="sep-title__text">专题对比案例</span>
-            <span className="sep-title__line" />
-          </span>
-        ),
-      },
-      { key: '/compare-parent-child', icon: <ApiOutlined />, label: '父子组件传值' },
-      { key: '/compare-two-way', icon: <InteractionOutlined />, label: '双向绑定' },
-      { key: '/compare-provide', icon: <ShareAltOutlined />, label: '跨层传值 (Provide/Inject)' },
-      { key: '/compare-state', icon: <TeamOutlined />, label: '全局状态共享' },
-      { key: '/compare-slot', icon: <PartitionOutlined />, label: '插槽 / Children 分发' },
-      { key: '/compare-ref', icon: <AimO2 />, label: 'Ref / DOM 操作' },
-    ],
-  },
-  {
-    key: 'group-case', icon: <ExperimentOutlined />, label: '进阶案例',
-    children: [
-      { key: '/perf-lab', icon: <RocketOutlined />, label: '性能实验室' },
-      { key: '/error-boundary', icon: <SafetyCertificateOutlined />, label: '错误边界与容错' },
-      { key: '/state-machine', icon: <NodeIndexOutlined />, label: '状态机与时间旅行' },
-      { key: '/web-api', icon: <ApiOutlined />, label: '浏览器原生能力' },
-    ],
-  },
-  {
-    /* 创意分组：与两个子应用的「创意」分组一一对应（同一批 demo 三端各写一遍），
-       便于横向对照 React / Vue / Angular 三套框架的写法差异 */
-    key: 'group-creative', icon: <HighlightOutlined />, label: '创意',
-    children: [
-      { key: '/creative', icon: <StarOutlined />, label: '创意实验室' },
-      { key: '/data-viz', icon: <HeatMapOutlined />, label: '可视化实验室' },
-      { key: '/orbit', icon: <CompassOutlined />, label: '星际轨道' },
-      { key: '/playground', icon: <BlockOutlined />, label: '创意 Playground' },
-    ],
-  },
-  {
-    /* 数据看板分组：深空 / 地球 / 海洋 / 时间版本——「天上、地下、海洋、时间」四位一体。
-       与「控制台」同级的顶级分组（原先挤在「创意」分组尾部，现独立成组便于发现） */
-    key: 'group-databoards', icon: <BarChartOutlined />, label: '数据看板',
-    children: [
-      { key: '/astro', icon: <GlobalOutlined />, label: '深空数据看板' },
-      { key: '/geo', icon: <EnvironmentOutlined />, label: '地球数据看板' },
-      { key: '/ocean', icon: <RadarChartOutlined />, label: '海洋数据看板' },
-      /* 时空档案：三大看板 18 个数据源的时间档案 + 聚合名词库（模糊检索） */
-      { key: '/timeline', icon: <FieldTimeOutlined />, label: '时空档案' },
-    ],
-  },
-  {
-    /* 子应用固定入口：启动 npm run dev:all 后，点这两项直达独立宿主页，
-       进入即自动加载对应子应用；加载后子应用自身的功能菜单会动态追加到侧边栏 */
-    key: 'group-micro', icon: <DeploymentUnitOutlined />, label: '子应用 (qiankun)',
-    children: [
-      { key: '/micro-frontend', icon: <PartitionOutlined />, label: '微前端融合总览' },
-      {
-        key: '/micro-vue',
-        icon: <span className="micro-dot" style={{ background: '#42b883' }} />,
-        label: 'Vue 子应用',
-      },
-      {
-        key: '/micro-angular',
-        icon: <span className="micro-dot" style={{ background: '#dd0031' }} />,
-        label: 'Angular 子应用',
-      },
-    ],
-  },
-  { key: '/dashboard', icon: <DashboardOutlined />, label: '控制台' },
-  { key: '/test-center', icon: <ExperimentOutlined />, label: '测试中心' },
-  { key: '/about', icon: <InfoCircleOutlined />, label: '关于' },
+/* —— 分组 key 与语言无关（localStorage 迁移逻辑复用），单独抽出 —— */
+const NAV_GROUP_KEYS = [
+  'group-ai', 'group-toolbox', 'group-compare', 'group-case',
+  'group-creative', 'group-databoards', 'group-micro',
 ]
+
+/* —— 导航配置：icon 全部用 antd 图标组件，label 经 t() 取多语言文案 —— */
+function buildNavItems(t) {
+  return [
+    { key: '/', icon: <HomeOutlined />, label: t('nav.home') },
+    {
+      key: 'group-ai', icon: <RobotOutlined />, label: t('nav.groupAi'),
+      children: [
+        { key: '/chatbot', icon: <MessageOutlined />, label: t('nav.chatbot') },
+        { key: '/share', icon: <ShareAltOutlined />, label: t('nav.share') },
+        { key: '/voice', icon: <AudioOutlined />, label: t('nav.voice') },
+        { key: '/agent', icon: <AimOutlined />, label: t('nav.agent') },
+      ],
+    },
+    {
+      key: 'group-toolbox', icon: <ToolOutlined />, label: t('nav.groupToolbox'),
+      children: [
+        { key: '/scan', icon: <ScanOutlined />, label: t('nav.scan') },
+        { key: '/kit', icon: <ThunderboltOutlined />, label: t('nav.kit') },
+        { key: '/studio', icon: <CodepenOutlined />, label: t('nav.studio') },
+  { key: '/templates', icon: <AppstoreOutlined />, label: t('nav.templates') },
+  { key: '/utils', icon: <ToolOutlined />, label: t('nav.utils') },
+        { key: '/react-hooks', icon: <BulbOutlined />, label: t('nav.reactHooks') },
+        { key: '/embed', icon: <DesktopOutlined />, label: t('nav.embed') },
+        { key: '/form-builder', icon: <FormOutlined />, label: t('nav.formBuilder') },
+        { key: '/theme', icon: <BgColorsOutlined />, label: t('nav.theme') },
+        { key: '/charts', icon: <BarChartOutlined />, label: t('nav.charts') },
+        { key: '/echarts', icon: <DashboardOutlined />, label: t('nav.echarts') },
+        { key: '/command-palette', icon: <CodeOutlined />, label: t('nav.commandPalette') },
+        { key: '/notify', icon: <BellOutlined />, label: t('nav.notify') },
+        { key: '/data-table', icon: <TableOutlined />, label: t('nav.dataTable') },
+        { key: '/login', icon: <LockOutlined />, label: t('nav.login') },
+        { key: '/assistant-demo', icon: <ThunderboltOutlined />, label: t('nav.assistantDemo') },
+      ],
+    },
+    {
+      key: 'group-compare', icon: <FundProjectionScreenOutlined />, label: t('nav.groupCompare'),
+      children: [
+        { key: '/antd', icon: <AppstoreOutlined />, label: t('nav.antd') },
+        {
+          key: '__sep-compare__',
+          disabled: true,
+          className: 'menu-sep-title',
+          label: (
+            <span className="sep-title">
+              <span className="sep-title__line" />
+              <span className="sep-title__text">{t('nav.compareCases')}</span>
+              <span className="sep-title__line" />
+            </span>
+          ),
+        },
+        { key: '/compare-parent-child', icon: <ApiOutlined />, label: t('nav.parentChild') },
+        { key: '/compare-two-way', icon: <InteractionOutlined />, label: t('nav.twoWay') },
+        { key: '/compare-provide', icon: <ShareAltOutlined />, label: t('nav.provide') },
+        { key: '/compare-state', icon: <TeamOutlined />, label: t('nav.state') },
+        { key: '/compare-slot', icon: <PartitionOutlined />, label: t('nav.slot') },
+        { key: '/compare-ref', icon: <AimO2 />, label: t('nav.ref') },
+      ],
+    },
+    {
+      key: 'group-case', icon: <ExperimentOutlined />, label: t('nav.groupCase'),
+      children: [
+        { key: '/perf-lab', icon: <RocketOutlined />, label: t('nav.perfLab') },
+        { key: '/error-boundary', icon: <SafetyCertificateOutlined />, label: t('nav.errorBoundary') },
+        { key: '/state-machine', icon: <NodeIndexOutlined />, label: t('nav.stateMachine') },
+        { key: '/web-api', icon: <ApiOutlined />, label: t('nav.webApi') },
+      ],
+    },
+    {
+      /* 创意分组：与两个子应用的「创意」分组一一对应（同一批 demo 三端各写一遍），
+         便于横向对照 React / Vue / Angular 三套框架的写法差异 */
+      key: 'group-creative', icon: <HighlightOutlined />, label: t('nav.groupCreative'),
+      children: [
+        { key: '/creative', icon: <StarOutlined />, label: t('nav.creative') },
+        { key: '/data-viz', icon: <HeatMapOutlined />, label: t('nav.dataViz') },
+        { key: '/orbit', icon: <CompassOutlined />, label: t('nav.orbit') },
+        { key: '/playground', icon: <BlockOutlined />, label: t('nav.playground') },
+      ],
+    },
+    {
+      /* 数据看板分组：深空 / 地球 / 海洋 / 时间版本——「天上、地下、海洋、时间」四位一体。
+         与「控制台」同级的顶级分组（原先挤在「创意」分组尾部，现独立成组便于发现） */
+      key: 'group-databoards', icon: <BarChartOutlined />, label: t('nav.groupDataboards'),
+      children: [
+        { key: '/astro', icon: <GlobalOutlined />, label: t('nav.astro') },
+        { key: '/geo', icon: <EnvironmentOutlined />, label: t('nav.geo') },
+        { key: '/ocean', icon: <RadarChartOutlined />, label: t('nav.ocean') },
+        /* 时空档案：三大看板 18 个数据源的时间档案 + 聚合名词库（模糊检索） */
+        { key: '/timeline', icon: <FieldTimeOutlined />, label: t('nav.timeline') },
+      ],
+    },
+    {
+      /* 子应用固定入口：启动 npm run dev:all 后，点这两项直达独立宿主页，
+         进入即自动加载对应子应用；加载后子应用自身的功能菜单会动态追加到侧边栏 */
+      key: 'group-micro', icon: <DeploymentUnitOutlined />, label: t('nav.groupMicro'),
+      children: [
+        { key: '/micro-frontend', icon: <PartitionOutlined />, label: t('nav.microFrontend') },
+        {
+          key: '/micro-vue',
+          icon: <span className="micro-dot" style={{ background: '#42b883' }} />,
+          label: t('nav.microVue'),
+        },
+        {
+          key: '/micro-angular',
+          icon: <span className="micro-dot" style={{ background: '#dd0031' }} />,
+          label: t('nav.microAngular'),
+        },
+      ],
+    },
+    { key: '/dashboard', icon: <DashboardOutlined />, label: t('nav.dashboard') },
+    { key: '/test-center', icon: <ExperimentOutlined />, label: t('nav.testCenter') },
+    { key: '/about', icon: <InfoCircleOutlined />, label: t('nav.about') },
+  ]
+}
 
 /* 给「路由项」追加时间段下标 icon（侧边栏文字右上角小徽标），并按当前选中的批次高亮。
    selected==='all'（默认全选）时不做额外高亮；
@@ -182,8 +192,7 @@ function decorateMenuItems(items, selected) {
 }
 
 /* 默认展开哪个分组：全展开 —— 不把任何入口藏在折叠里（用户手动折叠仍会被记住） */
-const ALL_GROUP_KEYS = navItems.filter((i) => i.children).map((i) => i.key)
-const DEFAULT_OPEN_KEYS = ALL_GROUP_KEYS
+const DEFAULT_OPEN_KEYS = NAV_GROUP_KEYS
 
 /**
  * 新加的分组（如「子应用 (qiankun)」「创意」）在老用户的 localStorage 里不存在，
@@ -197,7 +206,7 @@ function readSeenGroups() {
   try { return JSON.parse(localStorage.getItem(SEEN_GROUPS_KEY) || '[]') } catch { return [] }
 }
 function writeSeenGroups() {
-  try { localStorage.setItem(SEEN_GROUPS_KEY, JSON.stringify(ALL_GROUP_KEYS)) } catch { /* ignore */ }
+  try { localStorage.setItem(SEEN_GROUPS_KEY, JSON.stringify(NAV_GROUP_KEYS)) } catch { /* ignore */ }
 }
 
 const LS_KEY = 'app.layout.v1'
@@ -209,7 +218,7 @@ function readLayout() {
     if (!raw) return DEFAULT
     const parsed = JSON.parse(raw)
     const seen = readSeenGroups()
-    const fresh = ALL_GROUP_KEYS.filter((k) => !seen.includes(k))
+    const fresh = NAV_GROUP_KEYS.filter((k) => !seen.includes(k))
     return {
       ...DEFAULT,
       ...parsed,
@@ -238,7 +247,11 @@ export default function Layout() {
   const { user, logout } = useAuth()
   const { selected } = useChangelog()
   const { subApps, requestSubApp } = useSubApps()
+  const { t } = useI18n()
   const navigate = useNavigate()
+
+  /* 导航项随语言重建（label 全部走 i18n 文案） */
+  const navItems = useMemo(() => buildNavItems(t), [t])
 
   const initial = useMemo(() => readLayout(), [])
   const [sidebarMode, setSidebarMode] = useState(initial.sidebarMode)
@@ -279,7 +292,7 @@ export default function Layout() {
 
   /* —— 用户下拉菜单 —— */
   const userMenuItems = [
-    { key: 'logout', icon: <LogoutOutlined />, label: '退出登录', danger: true },
+    { key: 'logout', icon: <LogoutOutlined />, label: t('shell.logout'), danger: true },
   ]
   const onUserMenu = ({ key }) => {
     if (key === 'logout') { logout(); navigate('/login', { replace: true }) }
@@ -305,7 +318,7 @@ export default function Layout() {
       if (internal && host === pathname) keys = [...keys, `micro:${appKey}:${internal}`]
     }
     return keys
-  }, [pathname, subApps])
+  }, [pathname, subApps, navItems])
 
   const isCollapsed = sidebarMode === 'collapsed'
 
@@ -350,15 +363,22 @@ export default function Layout() {
   // 注入时间段下标 icon 并按选中批次高亮的菜单项（仅 antd Menu 使用），末尾拼接子应用动态菜单
   const menuItems = useMemo(
     () => [...decorateMenuItems(navItems, selected), ...microMenuItems],
-    [selected, microMenuItems],
+    [navItems, selected, microMenuItems],
   )
+
+  /* 侧边栏工具提示随三态切换 */
+  const sidebarTip = sidebarMode === 'expanded'
+    ? t('shell.sidebarCollapse')
+    : sidebarMode === 'collapsed'
+      ? t('shell.sidebarHide')
+      : t('shell.sidebarExpand')
 
   return (
     <div className={`app-shell ${headerVisible ? 'header-on' : 'header-off'} sidebar-${sidebarMode}`}>
       {/* ========== 顶部导航（可隐藏） ========== */}
       <header className="app-header" aria-hidden={!headerVisible}>
         <div className="header-left">
-          <Tooltip title={`侧边栏：${sidebarMode === 'expanded' ? '点击折叠' : sidebarMode === 'collapsed' ? '点击隐藏' : '点击展开'}`}>
+          <Tooltip title={`${t('shell.sidebarAria')}：${sidebarTip}`}>
             <Button
               type="text"
               className="sidebar-toggle-btn"
@@ -369,14 +389,15 @@ export default function Layout() {
 
           <div className="brand" onClick={() => setSidebarMode(p => p === 'hidden' ? 'expanded' : p)}>
             <ThunderboltOutlined className="brand-logo" />
-            <Text strong className="brand-name">星际控制台</Text>
+            <Text strong className="brand-name">{t('shell.brand')}</Text>
           </div>
         </div>
 
         <div className="header-right">
           <ChangelogMenu />
+          <LanguageSwitch />
 
-          <Tooltip title={headerVisible ? '隐藏顶部导航栏' : '显示顶部导航栏'}>
+          <Tooltip title={headerVisible ? t('shell.hideHeader') : t('shell.showHeader')}>
             <Button
               type="text"
               className="header-toggle-btn"
@@ -389,7 +410,7 @@ export default function Layout() {
             <Dropdown menu={{ items: userMenuItems, onClick: onUserMenu }} placement="bottomRight">
               <div className="user-chip-antd">
                 <Avatar size="small" style={{ background: '#1677ff' }}>
-                  {user.name?.charAt(0).toUpperCase() || 'U'}
+                  {user.name?.charAt(0).toUpperCase() || t('shell.userFallback')}
                 </Avatar>
                 <Text className="user-name-text">{user.name}</Text>
                 <DownOutlined style={{ fontSize: '0.7rem', color: 'var(--c-text-3, #00000073)' }} />
@@ -401,7 +422,7 @@ export default function Layout() {
 
       {/* ========== 中部：左侧栏 + 右侧内容（唯一滚动容器在这里） ========== */}
       <section className="app-body">
-        <aside className="app-sidebar" aria-label="侧边导航">
+        <aside className="app-sidebar" aria-label={t('shell.sidebarAria')}>
           <div className="sidebar-scroll">
             <Menu
               mode="inline"
@@ -421,10 +442,10 @@ export default function Layout() {
             <Link
               to="/not-videos"
               className={`sidebar-hidden-entry${pathname === '/not-videos' ? ' is-current' : ''}`}
-              title="本地媒体中心（隐藏页）"
+              title={t('shell.hiddenEntryTitle')}
             >
               <VideoCameraOutlined />
-              <span>本地视频轮播</span>
+              <span>{t('nav.hiddenVideo')}</span>
             </Link>
           )}
 
@@ -432,7 +453,7 @@ export default function Layout() {
             <div className="sidebar-foot">
               <Badge status="processing" />
               <Text type="secondary" style={{ fontSize: '0.75rem' }}>
-                点击左上角按钮切换：折叠 / 隐藏
+                {t('shell.sidebarFoot')}
               </Text>
             </div>
           )}
@@ -443,7 +464,7 @@ export default function Layout() {
             <Outlet />
             <footer className="app-footer">
               <Text type="secondary" style={{ fontSize: '0.8rem' }}>
-                © {new Date().getFullYear()} 星际控制台 · Built with Ant Design
+                {t('shell.footer', { year: new Date().getFullYear() })}
               </Text>
             </footer>
           </main>
@@ -456,7 +477,7 @@ export default function Layout() {
         aria-hidden={headerVisible}
       >
         {!headerVisible && (
-          <Tooltip title="显示顶部导航栏">
+          <Tooltip title={t('shell.showHeader')}>
             <Button
               type="primary"
               shape="circle"
@@ -466,7 +487,7 @@ export default function Layout() {
           </Tooltip>
         )}
         {!headerVisible && sidebarMode === 'hidden' && (
-          <Tooltip title="展开侧边栏">
+          <Tooltip title={t('shell.sidebarExpand')}>
             <Button
               shape="circle"
               icon={<MenuUnfoldOutlined />}

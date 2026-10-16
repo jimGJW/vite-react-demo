@@ -1,0 +1,414 @@
+{
+  "page": {
+    "title": "컴포넌트 작업실 Studio",
+    "descLead": "로컬의 80+ 레거시 프론트엔드 프로젝트에서 선별·비즈니스 결합 제거·제로 의존 재작성을 거쳐 완성된 재사용 가능 컴포넌트 {count}개를 역량별로 {groups} 그룹으로 나누었습니다.",
+    "descTail": "모든 데모 데이터는 중립적인 가공 플레이스홀더이며 원본 민감 정보를 포함하지 않습니다."
+  },
+  "cat": {
+    "screen": "시각화 대시보드",
+    "builder": "규칙과 오케스트레이션",
+    "media": "이미지와 주석",
+    "form": "폼과 트리",
+    "report": "리포트와 추적",
+    "interact": "인터랙션·심화"
+  },
+  "demo": {
+    "scanempty": {
+      "name": "ScanEmpty",
+      "title": "스캔형 빈 상태",
+      "desc": "순수 CSS/SVG로 구현한 대시보드 빈 상태 스캔 애니메이션. 차트 라이브러리에 의존하지 않아 어떤 컨테이너에서도 사용 가능합니다.",
+      "text": "알림 없음",
+      "subText": "최근 24시간 동안 이상 이벤트 없음"
+    },
+    "autoscroll": {
+      "name": "AutoScrollList",
+      "title": "끊김 없는 스크롤 목록",
+      "desc": "내용이 컨테이너를 넘으면 자동으로 수직 루프 스크롤하고 호버 시 일시 정지. 변위는 CSS 변수로 구동되어 상태 흔들림이 없습니다."
+    },
+    "board": {
+      "name": "DraggableBoard",
+      "title": "편집 가능 보드",
+      "desc": "백분율 위치 지정 + 충돌 감지 + 포인터 이벤트 통합. 편집 모드를 켜면 카드 드래그·리사이즈가 가능하고 잘못된 위치는 튕겨냅니다."
+    },
+    "axisbreak": {
+      "name": "AxisBreakBar",
+      "title": "절축 막대그래프",
+      "desc": "고저값 차이가 클 때 공백 구간을 접습니다. 차트에서 가로로 드래그하면 접을 Y 구간을 선택할 수 있습니다.",
+      "unit": "만",
+      "chartTitle": "월간 지표"
+    },
+    "regionmap": {
+      "name": "SvgRegionMap",
+      "title": "데이터 기반 영역도",
+      "desc": "viewBox 기반 순수 SVG 등비 스케일링, 계층별 점 찍기(배경/영역 블록/버블), 영역 클릭 콜백."
+    },
+    "adapttable": {
+      "name": "AdaptTable",
+      "title": "대시보드 적응형 테이블",
+      "desc": "열 너비 백분율 균등 분배, 드래그로 열 너비·행 높이 조절, 셀 내용이 너무 길면 자동 전광판."
+    },
+    "rulebuilder": {
+      "name": "RuleBuilder",
+      "title": "시각적 조건 편집",
+      "desc": "AND/OR 중첩 그룹 + 리프 조건 재귀 트리. 필드 타입별로 연산자가 자동 전환되며 구조화된 JSON을 출력합니다."
+    },
+    "jsondiff": {
+      "name": "JsonDiff",
+      "title": "구조화 객체 비교",
+      "desc": "텍스트 diff가 아닌 구조 diff: 추가·삭제·변경·미변경을 정확히 표시하고 경로도 한눈에 보입니다."
+    },
+    "annotator": {
+      "name": "ImageAnnotator",
+      "title": "이미지 주석과 확대·이동",
+      "desc": "휠로 확대, 드래그로 이동. 주석 앵커는 정규화 좌표로 저장되어 확대·이동 후에도 밀리지 않습니다."
+    },
+    "dynform": {
+      "name": "DynamicForm",
+      "title": "schema 기반 동적 폼",
+      "desc": "필드 schema 하나가 UI 하나. 다양한 범용 필드 타입과 필수값 검증을 지원합니다."
+    },
+    "orgtree": {
+      "name": "OrgTree",
+      "title": "계층 조직 트리",
+      "desc": "임의 깊이까지 단계별로 펼치고 접을 수 있으며 단일 선택 검색이 가능한 계층 트리."
+    },
+    "scanreport": {
+      "name": "ScanReport",
+      "title": "보안 스캔 리포트 카드",
+      "desc": "구조화된 점검 리포트를 심각도 분포 + 상세 목록으로 렌더링. 취약점·검토·점검 등 임의의 목록을 담을 수 있습니다."
+    },
+    "anchornav": {
+      "name": "AnchorNav",
+      "title": "앵커 스크롤 내비게이션",
+      "desc": "왼쪽 고정 목차 + 오른쪽 콘텐츠 영역. 클릭하면 부드럽게 스크롤하고 스크롤 중 현재 섹션을 자동 강조(rAF 스로틀링)."
+    },
+    "pagetabs": {
+      "name": "PageTabs",
+      "title": "멀티 탭 작업 공간",
+      "desc": "라우팅식 탭 바: 전환·닫기·새로 만들기 가능. 콘텐츠 영역은 현재 탭의 render가 제공합니다."
+    },
+    "treetable": {
+      "name": "TreeTable",
+      "title": "트리 테이블 + 조상 유지 검색",
+      "desc": "단계별로 펼치기 가능. 이름으로 검색하면 히트한 자손의 부모 노드를 자동으로 유지·펼쳐 맥락을 잃지 않습니다."
+    },
+    "highlighter": {
+      "name": "Highlighter",
+      "title": "키워드 강조",
+      "desc": "키워드에 히트한 텍스트 조각을 <mark>로 감쌉니다. 순수 함수 분리로 어떤 목록이나 표 셀에도 임베드 가능합니다."
+    },
+    "editabletable": {
+      "name": "EditableTable",
+      "title": "행 내 편집 테이블",
+      "desc": "「편집」을 클릭하면 행 전체가 입력·드롭다운으로 전환되고 저장하면 다시 기록, 취소하면 초기값으로 복원합니다."
+    },
+    "draglayout": {
+      "name": "DragLayout",
+      "title": "자유 드래그·리사이즈 레이아웃",
+      "desc": "카드를 백분율로 배치하고 드래그로 이동·모서리 드래그로 리사이즈하며 위치는 컨테이너 안으로 자동 제한. 경량 로우코드 대시보드에 적합합니다."
+    },
+    "gauge": {
+      "name": "CanvasGauge",
+      "title": "Canvas 게이지",
+      "desc": "제로 의존 Canvas 게이지: rAF로 목표값까지 이징, DPR 고화질, 컨테이너 적응."
+    },
+    "carousel3d": {
+      "name": "CardCarousel3D",
+      "title": "3D 카드 캐러셀",
+      "desc": "제스처 방향 판정(>45°에서 세로 스크롤에 양보). 카드는 상대 위치에 따라 Z축 심도와 회전으로 전환됩니다."
+    },
+    "frameplayer": {
+      "name": "FramePlayer",
+      "title": "프레임 연속 재생기",
+      "desc": "fps에 따라 여러 「프레임」을 순환 재생. 재생·일시정지, 프레임 단위 이동, 진행률 드래그를 지원하며 프레임은 임의 노드가 될 수 있습니다."
+    },
+    "contextmenu": {
+      "name": "ContextMenu",
+      "title": "우클릭 메뉴",
+      "desc": "감싼 영역에서 우클릭하면 메뉴가 뜨고 아무 곳이나 클릭하거나 스크롤하면 닫힙니다."
+    },
+    "errorboundary": {
+      "name": "ErrorBoundary",
+      "title": "에러 경계",
+      "desc": "서브트리의 렌더 단계 예외를 포착해 폴백 UI를 보여주고 재시도를 지원합니다."
+    },
+    "fullscreen": {
+      "name": "Fullscreen",
+      "title": "전체화면 컨테이너",
+      "desc": "지정 영역에 Fullscreen API를 호출하고 현재 전체화면 상태를 동기화합니다."
+    }
+  },
+  "data": {
+    "rank": {
+      "node": "서비스 노드 {letter}{no}"
+    },
+    "board": {
+      "visits": "방문량",
+      "errors": "오류율",
+      "latency": "응답 시간",
+      "online": "온라인 노드"
+    },
+    "axis": {
+      "unit": "만",
+      "title": "월간 지표",
+      "m1": "1월",
+      "m2": "2월",
+      "m3": "3월",
+      "m4": "4월",
+      "m5": "5월",
+      "m6": "6월",
+      "m7": "7월",
+      "m8": "8월",
+      "m9": "9월",
+      "m10": "10월",
+      "m11": "11월",
+      "m12": "12월"
+    },
+    "region": {
+      "datacenter": "기계실",
+      "office": "사무실",
+      "storage": "창고",
+      "entrance": "출입구"
+    },
+    "nodeType": {
+      "server": "서버",
+      "gateway": "게이트웨이",
+      "terminal": "단말",
+      "sensor": "센서"
+    },
+    "nodeLabel": {
+      "rackA": "랙 A",
+      "coreSwitch": "코어 스위치",
+      "officeTerminal": "사무 단말",
+      "envSensor": "환경 센서",
+      "accessControl": "출입 통제",
+      "edge": "경계"
+    },
+    "table": {
+      "name": "리소스 이름",
+      "ip": "주소",
+      "group": "그룹",
+      "status": "상태"
+    },
+    "group": {
+      "net": "네트워크 조",
+      "room": "기계실 조",
+      "iot": "사물인터넷 조",
+      "terminal": "단말 조",
+      "sec": "보안 조"
+    },
+    "status": {
+      "online": "온라인",
+      "offline": "오프라인",
+      "maintaining": "점검 중"
+    },
+    "rule": {
+      "name": "이름",
+      "count": "수량",
+      "status": "상태",
+      "enabled": "활성화"
+    },
+    "form": {
+      "project": "프로젝트 이름",
+      "desc": "설명",
+      "count": "수량",
+      "category": "범주",
+      "enabled": "활성화 여부",
+      "date": "시작 날짜",
+      "required": "입력하세요",
+      "optional": "선택",
+      "catA": "A류",
+      "catB": "B류"
+    },
+    "org": {
+      "root": "루트 노드",
+      "group1": "그룹 1",
+      "group2": "그룹 2",
+      "child1": "하위 항목 1",
+      "child2": "하위 항목 2",
+      "child3": "하위 항목 3",
+      "child4": "하위 항목 4",
+      "child41": "하위 항목 4-1"
+    },
+    "report": {
+      "title": "의존 구성·설정 점검 리포트",
+      "f1Title": "알려진 고위험 취약점이 있는 의존",
+      "f1Detail": "일부 의존 버전이 보안 기준선 아래입니다. 업그레이드를 권장합니다.",
+      "f2Title": "설정에 평문 자격 증명 노출",
+      "f2Detail": "환경 변수나 비밀 관리 도구 사용을 권장합니다.",
+      "f3Title": "만료된 TLS 프로토콜",
+      "f3Detail": "TLS1.0/1.1 비활성화를 권장합니다.",
+      "f4Title": "디버그 포트 외부 노출",
+      "f4Detail": "내망에서만 개방할 것을 권장합니다.",
+      "f5Title": "LICENSE 선언 누락",
+      "f5Detail": "오픈소스 라이선스 선언을 보완하세요.",
+      "f6Title": "의존 버전 미잠금",
+      "f6Detail": "패치 버전 잠금을 권장합니다."
+    },
+    "anchor": {
+      "overview": "개요",
+      "overviewText": "이 영역은 앵커 스크롤을 보여줍니다. 왼쪽 목차를 클릭하면 콘텐츠 영역이 해당 섹션까지 부드럽게 스크롤합니다.",
+      "metric": "지표 설명",
+      "metricText": "스크롤 시 왼쪽 목차가 현재 보이는 섹션에 맞춰 자동 강조됩니다(프레임당 1회로 스로틀링).",
+      "usage": "사용 사례",
+      "usageText": "긴 문서, 고객센터, 설정 설명 등 목차 내비게이션이 필요한 페이지에 적합합니다.",
+      "faq": "자주 묻는 질문",
+      "faqText": "목차와 콘텐츠는 id로 앵커되어 추가 상태 동기화가 필요 없습니다."
+    },
+    "tree": {
+      "clusterA": "클러스터 A",
+      "clusterB": "클러스터 B",
+      "nodeA1": "노드 a-1",
+      "nodeA2": "노드 a-2",
+      "nodeB1": "노드 b-1",
+      "nodeB2": "노드 b-2",
+      "podA21": "컨테이너 a-2-1"
+    },
+    "drag": {
+      "card1": "카드 1",
+      "card1Text": "제목을 드래그해 이동, 오른쪽 아래를 드래그해 리사이즈",
+      "card2": "카드 2",
+      "card2Text": "위치는 자동으로 컨테이너 안으로 제한",
+      "card3": "카드 3",
+      "card3Text": "백분율 위치 지정, 적응형 스케일링",
+      "card4": "카드 4",
+      "card4Text": "임의의 내용을 담을 수 있음"
+    },
+    "carousel": {
+      "item": "콘텐츠 카드 {no}"
+    },
+    "ctx": {
+      "copy": "복사",
+      "rename": "이름 바꾸기",
+      "delete": "삭제"
+    },
+    "json": {
+      "sampleName": "예시 서비스"
+    },
+    "plan": {
+      "zoneA": "A구역",
+      "zoneB": "B구역",
+      "zoneC": "C구역",
+      "zoneD": "D구역"
+    }
+  },
+  "ui": {
+    "editMode": "편집 모드",
+    "regionSelected": "선택된 영역: {name}",
+    "show": "보기",
+    "hide": "숨기기",
+    "liveValues": "실시간 값",
+    "tabHome": "홈",
+    "tabDoc": "문서",
+    "tabLog": "로그",
+    "homeContent": "홈 콘텐츠 영역",
+    "docContent": "문서 콘텐츠 영역",
+    "logContent": "로그 콘텐츠 영역",
+    "newTab": "새 탭",
+    "newTabContent": "새로 열린 탭(데모)",
+    "searchPlaceholder": "키워드를 입력해 강조",
+    "hlKeyword": "서비스",
+    "hlText1": "코어 스위치-01 서비스 노드 상태 정상",
+    "hlText2": "앱 서버-A 서비스 응답 12ms",
+    "hlText3": "경계 게이트웨이-03 오프라인, 수동 개입 필요",
+    "randomValue": "랜덤 값",
+    "zero": "제로로",
+    "autoPlay": "자동 재생",
+    "ctxHint": "이 영역에서 우클릭하면 메뉴가 나타납니다",
+    "boomBtn": "렌더 예외 발생",
+    "boomHint": "버튼을 클릭해 서브트리가 에러를 던지게 하면 에러 경계가 폴백으로 보여주고 재시도를 지원합니다.",
+    "fullscreenHint": "오른쪽 위 「전체화면」 버튼을 클릭하세요(샌드박스에서는 제한될 수 있음)",
+    "gaugeTitle": "完成度"
+  },
+  "code": {
+    "copied": "사용법이 복사되었습니다",
+    "clipUnsupported": "현재 환경은 클립보드를 지원하지 않습니다",
+    "collapse": "사용법 접기",
+    "expand": "사용법 보기",
+    "copy": "복사"
+  },
+  "comp": {
+    "empty": "데이터 없음",
+    "rowResizeTitle": "드래그하여 행 높이 조절",
+    "noCards": "카드 없음",
+    "drag": "드래그",
+    "highRange": "고값 구간",
+    "lowRange": "저값 구간",
+    "lowValue": "저값",
+    "highValue": "고값",
+    "breaks": "절축 {count}",
+    "resetBreaks": "절축 초기화",
+    "axisHint": "차트에서 가로로 드래그하면 접을 수치 구간을 선택합니다",
+    "opGt": "보다 큼",
+    "opGe": "이상",
+    "opLt": "보다 작음",
+    "opLe": "이하",
+    "opEq": "같음",
+    "opRange": "구간",
+    "opNe": "같지 않음",
+    "opContains": "포함",
+    "opStarts": "시작이",
+    "opIn": "속함",
+    "opAnd": "이고 AND",
+    "opOr": "또는 OR",
+    "selectFieldFirst": "먼저 필드를 선택",
+    "boolYes": "예",
+    "boolNo": "아니오",
+    "valuePlaceholder": "값",
+    "fieldPlaceholder": "필드",
+    "addCondition": "조건",
+    "addGroup": "그룹",
+    "noConditions": "조건 없음",
+    "noFields": "fields가 전달되지 않아 필드를 선택할 수 없습니다",
+    "diffAdded": "추가",
+    "diffRemoved": "삭제",
+    "diffChanged": "변경",
+    "diffSame": "미변경",
+    "diffChanges": "변경 ({added}+{removed}+{changed})",
+    "diffAll": "전체",
+    "diffIdentical": "두 데이터가 완전히 일치합니다",
+    "formRequired": "{label}을(를) 입력하세요",
+    "formEmptySchema": "schema가 비어 있습니다",
+    "orgSearch": "노드 검색",
+    "orgExpand": "펼치기",
+    "orgCollapse": "접기",
+    "orgNoMatch": "일치하는 노드 없음",
+    "sevCritical": "심각",
+    "sevHigh": "높음",
+    "sevMedium": "보통",
+    "sevLow": "낮음",
+    "sevInfo": "안내",
+    "reportTitle": "스캔 리포트",
+    "reportSub": "{total}건 발견 · 점수 {score}/100",
+    "reportAll": "전체 {total}",
+    "reportEmpty": "발견 항목 없음",
+    "annoLabel": "주석 {no}",
+    "annoReset": "초기화",
+    "annoActive": "주석 중(이미지를 클릭해 추가)",
+    "annoStart": "주석",
+    "annoPlaceholder": "주석 라벨",
+    "annoNeedSrc": "src를 넣으면 배경도가 표시됩니다",
+    "annoRemove": "주석 「{label}」을(를) 삭제할까요?",
+    "annoList": "주석 ({count})",
+    "annoClear": "비우기",
+    "annoEmpty": "주석 없음",
+    "tabAdd": "새 탭",
+    "treeValue": "수치",
+    "treeSearch": "이름 검색(부모 자동 유지)",
+    "treeName": "이름",
+    "treeNoMatch": "일치 없음",
+    "editActions": "작업",
+    "editSave": "저장",
+    "editCancel": "취소",
+    "editStart": "편집",
+    "framePause": "일시정지",
+    "framePlay": "재생",
+    "framePrev": "이전 프레임",
+    "frameNext": "다음 프레임",
+    "frameTip": "프레임 {no}",
+    "fsEnter": "전체화면",
+    "fsExit": "전체화면 종료",
+    "errMessage": "렌더 오류",
+    "errRetry": "재시도"
+  }
+}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Button, Popover, Spin, Tag, Tooltip } from 'antd'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import { KPI_DEFS } from '../../../lib/astro/glossary'
+import { useI18n } from '../../../i18n/index.js'
 
 /* ---------- 小工具 ---------- */
 
@@ -30,6 +31,7 @@ function fmtLatLon(lat, lon) {
 
 /** 卡片外壳：统一处理标题 / 来源 / 加载 / 失败 */
 function Panel({ title, source, icon, loading, error, children, extra }) {
+  const { t } = useI18n()
   return (
     <section className="astro-panel">
       <header className="astro-panel__head">
@@ -40,8 +42,8 @@ function Panel({ title, source, icon, loading, error, children, extra }) {
         <div className="astro-panel__meta">
           {extra}
           {source && (
-            <Tooltip title={`数据来源：${source}`}>
-              <Tag className="astro-src-tag" bordered={false}>数据源</Tag>
+            <Tooltip title={t('astro.ui.sourceTip', { source })}>
+              <Tag className="astro-src-tag" bordered={false}>{t('astro.ui.sourceTag')}</Tag>
             </Tooltip>
           )}
         </div>
@@ -50,10 +52,10 @@ function Panel({ title, source, icon, loading, error, children, extra }) {
         {error ? (
           <div className="astro-fail">
             <span className="astro-fail__dot" />
-            该数据源暂时不可用：{error}
+            {t('astro.ui.fail', { error })}
           </div>
         ) : loading ? (
-          <div className="astro-loading"><Spin size="small" /> 正在拉取实时数据…</div>
+          <div className="astro-loading"><Spin size="small" /> {t('astro.ui.loading')}</div>
         ) : children}
       </div>
     </section>

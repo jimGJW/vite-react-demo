@@ -1,0 +1,31 @@
+{
+  "page": {
+    "title": "Démo de scan QR universel",
+    "desc": "Composant de scan par caméra WebRTC purement navigateur, entièrement détaché de toute logique métier et réutilisable sur n'importe quelle page.",
+    "customTrigger": "Nœud déclencheur personnalisé",
+    "lastResult": "Dernier résultat reconnu",
+    "historyTitle": "Historique des scans",
+    "historyEmpty": "Aucun enregistrement"
+  },
+  "tip": {
+    "label": "Astuce :",
+    "body": "En production, HTTPS est obligatoire ; sur localhost, la caméra fonctionne normalement en développement local ; compatible Chrome / Edge / Safari sur mobile et PC."
+  },
+  "overlay": {
+    "close": "Fermer le scanner",
+    "recognizing": "Reconnaissance de l'image...",
+    "pickImage": "Choisir une image dans l'album",
+    "hint": "Placez le QR code dans le cadre pour scanner"
+  },
+  "toast": {
+    "alreadyOpen": "La fenêtre de scan est déjà ouverte, veuillez d'abord la fermer.",
+    "noQr": "Aucun QR code reconnu dans l'image",
+    "noCamera": "Aucune caméra détectée sur cet appareil",
+    "startFailed": "Échec du démarrage de la caméra. Vérifiez les autorisations de l'appareil ou utilisez HTTPS.",
+    "noPermission": "Impossible d'obtenir l'autorisation de la caméra"
+  },
+  "btn": {
+    "open": "Ouvrir le scanner",
+    "starting": "Démarrage..."
+  }
+}

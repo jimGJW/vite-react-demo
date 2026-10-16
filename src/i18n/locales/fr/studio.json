@@ -1,0 +1,414 @@
+{
+  "page": {
+    "title": "Atelier de composants Studio",
+    "descLead": "{count} composants réutilisables, sélectionnés dans 80+ projets front-end historiques locaux, découplés de la logique métier et réécrits sans aucune dépendance, regroupés en {groups} catégories de capacités.",
+    "descTail": "Toutes les données de démonstration sont des placeholders neutres et fictifs, sans aucune information sensible originale."
+  },
+  "cat": {
+    "screen": "Visualisation",
+    "builder": "Règles et orchestration",
+    "media": "Image et annotation",
+    "form": "Formulaires et arbres",
+    "report": "Rapports et traçabilité",
+    "interact": "Interaction · Avancé"
+  },
+  "demo": {
+    "scanempty": {
+      "name": "ScanEmpty",
+      "title": "État vide à balayage",
+      "desc": "Un effet de balayage d'état vide pour grands écrans, implémenté en CSS/SVG pur — aucune bibliothèque de graphiques requise, utilisable dans tout conteneur.",
+      "text": "Aucune alerte",
+      "subText": "Aucun événement anormal au cours des 24 dernières heures"
+    },
+    "autoscroll": {
+      "name": "AutoScrollList",
+      "title": "Liste à défilement continu",
+      "desc": "Le contenu plus haut que le conteneur défile verticalement en boucle et se met en pause au survol ; le décalage est piloté par une variable CSS, sans tremblement d'état."
+    },
+    "board": {
+      "name": "DraggableBoard",
+      "title": "Tableau orchestrable",
+      "desc": "Positionnement en pourcentage + détection de collision + événements pointeur unifiés ; avec le mode édition activé, les cartes peuvent être déplacées/redimensionnées, et les positions illégales rebondissent."
+    },
+    "axisbreak": {
+      "name": "AxisBreakBar",
+      "title": "Histogramme à axe brisé",
+      "desc": "Replie les intervalles vides lorsque les valeurs hautes et basses sont très éloignées ; glissez horizontalement sur le graphique pour choisir l'intervalle Y à replier.",
+      "unit": "k",
+      "chartTitle": "Indicateur mensuel"
+    },
+    "regionmap": {
+      "name": "SvgRegionMap",
+      "title": "Carte de régions pilotée par les données",
+      "desc": "SVG pur basé sur viewBox avec mise à l'échelle proportionnelle, points en couches (fond/blocs de région/bulles), callback de clic sur les régions."
+    },
+    "adapttable": {
+      "name": "AdaptTable",
+      "title": "Tableau adaptatif grand écran",
+      "desc": "Largeurs de colonnes réparties également en pourcentage, largeur de colonne/hauteur de ligne ajustables par glissement, bandeau défilant automatique pour les cellules trop longues."
+    },
+    "rulebuilder": {
+      "name": "RuleBuilder",
+      "title": "Constructeur de conditions visuel",
+      "desc": "Groupes imbriqués AND/OR + arbre récursif de conditions feuilles, avec bascule automatique des opérateurs selon le type de champ ; sortie en JSON structuré."
+    },
+    "jsondiff": {
+      "name": "JsonDiff",
+      "title": "Comparaison d'objets structurée",
+      "desc": "Un diff structurel plutôt qu'un diff textuel : marque précisément ajouté/supprimé/modifié/inchangé, avec les chemins en un coup d'œil."
+    },
+    "annotator": {
+      "name": "ImageAnnotator",
+      "title": "Annotation d'image avec zoom et panoramique",
+      "desc": "Zoom à la molette, panoramique par glissement ; les ancres d'annotation sont stockées en coordonnées normalisées et ne dérivent pas après zoom/panoramique."
+    },
+    "dynform": {
+      "name": "DynamicForm",
+      "title": "Formulaire dynamique piloté par schéma",
+      "desc": "Un schéma de champs est une UI ; prend en charge de nombreux types de champs courants et la validation des champs obligatoires."
+    },
+    "orgtree": {
+      "name": "OrgTree",
+      "title": "Arbre organisationnel hiérarchique",
+      "desc": "Un arbre hiérarchique de toute profondeur, dépliable/repliable niveau par niveau, avec recherche à sélection unique."
+    },
+    "scanreport": {
+      "name": "ScanReport",
+      "title": "Carte de rapport d'analyse de sécurité",
+      "desc": "Rend un rapport d'inspection structuré sous forme de distribution de gravité + liste détaillée, pouvant porter n'importe quelle liste : vulnérabilités, revues, inspections, etc."
+    },
+    "anchornav": {
+      "name": "AnchorNav",
+      "title": "Navigation par ancres",
+      "desc": "Sommaire gauche collant + zone de contenu à droite ; clic pour un défilement fluide, la section courante étant automatiquement mise en évidence lors du défilement (limité par rAF)."
+    },
+    "pagetabs": {
+      "name": "PageTabs",
+      "title": "Espace de travail multi-onglets",
+      "desc": "Barre d'onglets de type routeur : commutable, fermable, créable ; la zone de contenu est fournie par le render de l'onglet courant."
+    },
+    "treetable": {
+      "name": "TreeTable",
+      "title": "Table arborescent + recherche préservant les ancêtres",
+      "desc": "Dépliable niveau par niveau ; la recherche par nom conserve et déploie automatiquement les parents des descendants correspondants, sans perdre le contexte."
+    },
+    "highlighter": {
+      "name": "Highlighter",
+      "title": "Mise en évidence de mots-clés",
+      "desc": "Enveloppe les fragments de texte correspondant au mot-clé dans <mark> ; découpage en fonction pure, intégrable dans toute liste ou cellule de tableau."
+    },
+    "editabletable": {
+      "name": "EditableTable",
+      "title": "Tableau éditable en ligne",
+      "desc": "Un clic sur « Éditer » fait basculer toute la ligne en champs/listes déroulantes ; enregistrer réécrit, annuler restaure les valeurs initiales."
+    },
+    "draglayout": {
+      "name": "DragLayout",
+      "title": "Disposition libre par glissement",
+      "desc": "Les cartes sont positionnées en pourcentage, déplaçables par glissement et redimensionnables par le coin, toujours contenues dans le conteneur ; idéal pour des tableaux de bord low-code légers."
+    },
+    "gauge": {
+      "name": "CanvasGauge",
+      "title": "Jauge Canvas",
+      "desc": "Jauge Canvas sans dépendance : easing rAF jusqu'à la valeur cible, haute résolution DPR, adaptation au conteneur."
+    },
+    "carousel3d": {
+      "name": "CardCarousel3D",
+      "title": "Carrousel de cartes 3D",
+      "desc": "Détection de direction du geste (>45° cède la place au défilement vertical) ; les cartes basculent avec profondeur d'axe Z et rotation selon la position relative."
+    },
+    "frameplayer": {
+      "name": "FramePlayer",
+      "title": "Lecteur de séquence d'images",
+      "desc": "Lit en boucle plusieurs « images » selon les fps, avec lecture/pause, pas à pas et glissement de la progression ; une image peut être n'importe quel nœud."
+    },
+    "contextmenu": {
+      "name": "ContextMenu",
+      "title": "Menu contextuel",
+      "desc": "Un clic droit dans la zone enveloppée ouvre le menu ; un clic n'importe où ou le défilement le ferme."
+    },
+    "errorboundary": {
+      "name": "ErrorBoundary",
+      "title": "Frontière d'erreur",
+      "desc": "Capture les exceptions de phase de rendu du sous-arbre, affiche une UI de repli et prend en charge la nouvelle tentative."
+    },
+    "fullscreen": {
+      "name": "Fullscreen",
+      "title": "Conteneur plein écran",
+      "desc": "Appelle l'API Fullscreen sur une zone donnée et synchronise l'état plein écran courant."
+    }
+  },
+  "data": {
+    "rank": {
+      "node": "Nœud de service {letter}{no}"
+    },
+    "board": {
+      "visits": "Visites",
+      "errors": "Taux d'erreur",
+      "latency": "Temps de réponse",
+      "online": "Nœuds en ligne"
+    },
+    "axis": {
+      "unit": "k",
+      "title": "Indicateur mensuel",
+      "m1": "janv.",
+      "m2": "févr.",
+      "m3": "mars",
+      "m4": "avr.",
+      "m5": "mai",
+      "m6": "juin",
+      "m7": "juil.",
+      "m8": "août",
+      "m9": "sept.",
+      "m10": "oct.",
+      "m11": "nov.",
+      "m12": "déc."
+    },
+    "region": {
+      "datacenter": "Salle serveur",
+      "office": "Bureaux",
+      "storage": "Entreposage",
+      "entrance": "Entrée"
+    },
+    "nodeType": {
+      "server": "Serveur",
+      "gateway": "Passerelle",
+      "terminal": "Terminal",
+      "sensor": "Capteur"
+    },
+    "nodeLabel": {
+      "rackA": "Baie A",
+      "coreSwitch": "Switch cœur",
+      "officeTerminal": "Terminal bureau",
+      "envSensor": "Capteur env.",
+      "accessControl": "Contrôle d'accès",
+      "edge": "Edge"
+    },
+    "table": {
+      "name": "Nom de la ressource",
+      "ip": "Adresse",
+      "group": "Groupe",
+      "status": "Statut"
+    },
+    "group": {
+      "net": "Réseau",
+      "room": "Salle serveur",
+      "iot": "IoT",
+      "terminal": "Terminal",
+      "sec": "Sécurité"
+    },
+    "status": {
+      "online": "En ligne",
+      "offline": "Hors ligne",
+      "maintaining": "Maintenance"
+    },
+    "rule": {
+      "name": "Nom",
+      "count": "Quantité",
+      "status": "Statut",
+      "enabled": "Activé"
+    },
+    "form": {
+      "project": "Nom du projet",
+      "desc": "Description",
+      "count": "Quantité",
+      "category": "Catégorie",
+      "enabled": "Activer",
+      "date": "Date de début",
+      "required": "Veuillez saisir",
+      "optional": "Facultatif",
+      "catA": "Type A",
+      "catB": "Type B"
+    },
+    "org": {
+      "root": "Nœud racine",
+      "group1": "Groupe 1",
+      "group2": "Groupe 2",
+      "child1": "Sous-élément 1",
+      "child2": "Sous-élément 2",
+      "child3": "Sous-élément 3",
+      "child4": "Sous-élément 4",
+      "child41": "Sous-élément 4-1"
+    },
+    "report": {
+      "title": "Rapport d'inspection des dépendances et de la configuration",
+      "f1Title": "Dépendance avec une vulnérabilité critique connue",
+      "f1Detail": "Une version de dépendance est inférieure à la ligne de base de sécurité ; une mise à niveau est recommandée.",
+      "f2Title": "Identifiants en clair présents dans la configuration",
+      "f2Detail": "Il est recommandé d'utiliser des variables d'environnement ou une gestion des secrets.",
+      "f3Title": "Protocole TLS obsolète",
+      "f3Detail": "Il est recommandé de désactiver TLS1.0/1.1.",
+      "f4Title": "Port de débogage exposé à l'extérieur",
+      "f4Detail": "Il est recommandé de ne l'ouvrir que sur l'intranet.",
+      "f5Title": "Déclaration LICENSE manquante",
+      "f5Detail": "Ajoutez une déclaration de licence open source.",
+      "f6Title": "Versions de dépendances non verrouillées",
+      "f6Detail": "Il est recommandé de verrouiller les versions de correctif."
+    },
+    "anchor": {
+      "overview": "Aperçu",
+      "overviewText": "Cette zone démontre le défilement par ancres : un clic sur une entrée du sommaire de gauche fait défiler en douceur la zone de contenu jusqu'à la section correspondante.",
+      "metric": "Explication des indicateurs",
+      "metricText": "Lors du défilement, le sommaire de gauche met automatiquement en évidence la section visible courante (limité à une fois par image).",
+      "usage": "Cas d'usage",
+      "usageText": "Adapté aux documents longs, centres d'aide, notes de configuration et autres pages nécessitant une navigation par sommaire.",
+      "faq": "Questions fréquentes",
+      "faqText": "Le sommaire et le contenu sont ancrés par id, sans synchronisation d'état supplémentaire."
+    },
+    "tree": {
+      "clusterA": "Cluster A",
+      "clusterB": "Cluster B",
+      "nodeA1": "Nœud a-1",
+      "nodeA2": "Nœud a-2",
+      "nodeB1": "Nœud b-1",
+      "nodeB2": "Nœud b-2",
+      "podA21": "Conteneur a-2-1"
+    },
+    "drag": {
+      "card1": "Carte 1",
+      "card1Text": "Glissez le titre pour déplacer, le coin inférieur droit pour redimensionner",
+      "card2": "Carte 2",
+      "card2Text": "Les positions sont automatiquement limitées au conteneur",
+      "card3": "Carte 3",
+      "card3Text": "Positionnement en pourcentage, mise à l'échelle adaptative",
+      "card4": "Carte 4",
+      "card4Text": "Peut contenir n'importe quel contenu"
+    },
+    "carousel": {
+      "item": "Carte de contenu {no}"
+    },
+    "ctx": {
+      "copy": "Copier",
+      "rename": "Renommer",
+      "delete": "Supprimer"
+    },
+    "json": {
+      "sampleName": "Service d'exemple"
+    },
+    "plan": {
+      "zoneA": "Zone A",
+      "zoneB": "Zone B",
+      "zoneC": "Zone C",
+      "zoneD": "Zone D"
+    }
+  },
+  "ui": {
+    "editMode": "Mode édition",
+    "regionSelected": "Région sélectionnée : {name}",
+    "show": "Afficher",
+    "hide": "Masquer",
+    "liveValues": "valeurs en direct",
+    "tabHome": "Accueil",
+    "tabDoc": "Documents",
+    "tabLog": "Journaux",
+    "homeContent": "Zone de contenu Accueil",
+    "docContent": "Zone de contenu Documents",
+    "logContent": "Zone de contenu Journaux",
+    "newTab": "Nouvel onglet",
+    "newTabContent": "Onglet nouvellement ouvert (démo)",
+    "searchPlaceholder": "Saisissez un mot-clé à mettre en évidence",
+    "hlKeyword": "service",
+    "hlText1": "switch-cœur-01 état du nœud de service normal",
+    "hlText2": "serveur-app-A réponse du service 12 ms",
+    "hlText3": "passerelle-edge-03 hors ligne, intervention manuelle requise",
+    "randomValue": "Valeur aléatoire",
+    "zero": "Remise à zéro",
+    "autoPlay": "Lecture auto",
+    "ctxHint": "Faites un clic droit dans cette zone pour ouvrir le menu",
+    "boomBtn": "Déclencher une exception de rendu",
+    "boomHint": "Cliquez sur le bouton pour faire lever une exception au sous-arbre ; la frontière d'erreur affichera un repli et prendra en charge la nouvelle tentative.",
+    "fullscreenHint": "Cliquez sur le bouton « Plein écran » en haut à droite (peut être limité dans un bac à sable)",
+    "gaugeTitle": "完成度"
+  },
+  "code": {
+    "copied": "Utilisation copiée",
+    "clipUnsupported": "L'environnement actuel ne prend pas en charge le presse-papiers",
+    "collapse": "Replier l'utilisation",
+    "expand": "Voir l'utilisation",
+    "copy": "Copier"
+  },
+  "comp": {
+    "empty": "Aucune donnée",
+    "rowResizeTitle": "Glisser pour ajuster la hauteur de ligne",
+    "noCards": "Aucune carte",
+    "drag": "Glisser",
+    "highRange": "Intervalle haut",
+    "lowRange": "Intervalle bas",
+    "lowValue": "Bas",
+    "highValue": "Haut",
+    "breaks": "{count} axes brisés",
+    "resetBreaks": "Réinitialiser les axes brisés",
+    "axisHint": "Glissez horizontalement sur le graphique pour sélectionner l'intervalle de valeurs à replier",
+    "opGt": "Supérieur à",
+    "opGe": "Supérieur ou égal",
+    "opLt": "Inférieur à",
+    "opLe": "Inférieur ou égal",
+    "opEq": "Égal",
+    "opRange": "Intervalle",
+    "opNe": "Différent",
+    "opContains": "Contient",
+    "opStarts": "Commence par",
+    "opIn": "Parmi",
+    "opAnd": "Et AND",
+    "opOr": "Ou OR",
+    "selectFieldFirst": "Sélectionnez d'abord un champ",
+    "boolYes": "Oui",
+    "boolNo": "Non",
+    "valuePlaceholder": "Valeur",
+    "fieldPlaceholder": "Champ",
+    "addCondition": "Condition",
+    "addGroup": "Groupe",
+    "noConditions": "Aucune condition pour l'instant",
+    "noFields": "Aucun fields transmis, impossible de sélectionner un champ",
+    "diffAdded": "Ajouté",
+    "diffRemoved": "Supprimé",
+    "diffChanged": "Modifié",
+    "diffSame": "Inchangé",
+    "diffChanges": "Changements ({added}+{removed}+{changed})",
+    "diffAll": "Tout",
+    "diffIdentical": "Les deux jeux de données sont parfaitement identiques",
+    "formRequired": "Veuillez remplir {label}",
+    "formEmptySchema": "Le schéma est vide",
+    "orgSearch": "Rechercher des nœuds",
+    "orgExpand": "Déplier",
+    "orgCollapse": "Replier",
+    "orgNoMatch": "Aucun nœud correspondant",
+    "sevCritical": "Critique",
+    "sevHigh": "Élevé",
+    "sevMedium": "Moyen",
+    "sevLow": "Faible",
+    "sevInfo": "Info",
+    "reportTitle": "Rapport d'analyse",
+    "reportSub": "{total} constatations · Score {score}/100",
+    "reportAll": "Tout {total}",
+    "reportEmpty": "Aucune constatation",
+    "annoLabel": "Annotation {no}",
+    "annoReset": "Réinitialiser",
+    "annoActive": "Annotation en cours (cliquez sur l'image pour ajouter)",
+    "annoStart": "Annoter",
+    "annoPlaceholder": "Libellé d'annotation",
+    "annoNeedSrc": "Passez src pour afficher l'image de fond",
+    "annoRemove": "Supprimer l'annotation « {label} » ?",
+    "annoList": "Annotations ({count})",
+    "annoClear": "Vider",
+    "annoEmpty": "Aucune annotation",
+    "tabAdd": "Nouvel onglet",
+    "treeValue": "Valeur",
+    "treeSearch": "Rechercher un nom (parents auto-conservés)",
+    "treeName": "Nom",
+    "treeNoMatch": "Aucune correspondance",
+    "editActions": "Actions",
+    "editSave": "Enregistrer",
+    "editCancel": "Annuler",
+    "editStart": "Éditer",
+    "framePause": "Pause",
+    "framePlay": "Lecture",
+    "framePrev": "Image précédente",
+    "frameNext": "Image suivante",
+    "frameTip": "Image {no}",
+    "fsEnter": "Plein écran",
+    "fsExit": "Quitter le plein écran",
+    "errMessage": "Erreur de rendu",
+    "errRetry": "Réessayer"
+  }
+}

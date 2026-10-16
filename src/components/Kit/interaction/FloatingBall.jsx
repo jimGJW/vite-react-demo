@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { clamp } from '../utils.js'
+import { useI18n } from '../../../i18n'
 
 /**
  * FloatingBall · 可拖拽悬浮球
@@ -62,6 +63,7 @@ export default function FloatingBall({
   onPositionChange,
   className = '',
 }) {
+  const { t } = useI18n()
   const [viewport, setViewport] = useState(() => ({
     w: typeof window === 'undefined' ? 1280 : window.innerWidth,
     h: typeof window === 'undefined' ? 800 : window.innerHeight,
@@ -164,7 +166,7 @@ export default function FloatingBall({
       className={`kit-ball ${dragging ? 'kit-ball--dragging' : ''} ${className}`}
       style={{ left: `${Math.round(left)}px`, top: `${Math.round(top)}px`, width: size, height: size, zIndex }}
       title={tooltip}
-      aria-label={tooltip || '悬浮球'}
+      aria-label={tooltip || t('kit.ballAria')}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}

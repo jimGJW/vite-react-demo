@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react'
+import { useI18n } from '../../../i18n/index.js'
 
 /**
  * AutoScrollList · 无缝滚动榜单
@@ -31,10 +32,11 @@ export default function AutoScrollList({
   maxHeight = DEFAULTS.maxHeight,
   gap = 0,
   pauseOnHover = true,
-  emptyText = '暂无数据',
+  emptyText,
   className = '',
   renderItem,
 }) {
+  const { t } = useI18n()
   const wrapRef = useRef(null)
   const innerRef = useRef(null)
   const timerRef = useRef(null)
@@ -92,7 +94,7 @@ export default function AutoScrollList({
       style={{ maxHeight }}
     >
       <div ref={innerRef} className="st-ascroll__inner" style={{ gap }}>
-        {items.length === 0 && <div className="st-ascroll__empty">{emptyText}</div>}
+        {items.length === 0 && <div className="st-ascroll__empty">{emptyText ?? t('studio.comp.empty')}</div>}
         {items.map((item, index) => (
           <div
             key={item?.key ?? item?.id ?? index}

@@ -1,12 +1,14 @@
 import { useMemo, useState } from 'react'
 import { Input, Empty } from 'antd'
+import { useI18n } from '../../../i18n/index.js'
 
 /**
  * 树形表格：可逐级展开 / 收起，支持按名称检索。
  * 检索时自动「保留祖先链」——命中子孙的父节点不会被过滤掉，且自动展开。
  * 来自某中台项目的树表格 + 祖先保留搜索思路，去业务化重写。
  */
-export default function TreeTable({ treeData = [], searchable = true, valueTitle = '数值' }) {
+export default function TreeTable({ treeData = [], searchable = true, valueTitle }) {
+  const { t } = useI18n()
   const [keyword, setKeyword] = useState('')
   const [collapsed, setCollapsed] = useState(() => new Set())
 
@@ -66,7 +68,7 @@ export default function TreeTable({ treeData = [], searchable = true, valueTitle
     <div className="st-treetable">
       {searchable && (
         <Input.Search
-          placeholder="检索名称（自动保留父级）"
+          placeholder={t('studio.comp.treeSearch')}
           allowClear
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
@@ -74,11 +76,11 @@ export default function TreeTable({ treeData = [], searchable = true, valueTitle
         />
       )}
       <div className="st-treetable__head">
-        <span className="st-treetable__name">名称</span>
-        <span className="st-treetable__value">{valueTitle}</span>
+        <span className="st-treetable__name">{t('studio.comp.treeName')}</span>
+        <span className="st-treetable__value">{valueTitle ?? t('studio.comp.treeValue')}</span>
       </div>
       <div className="st-treetable__body">
-        {rows.length ? rows : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="无匹配" />}
+        {rows.length ? rows : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('studio.comp.treeNoMatch')} />}
       </div>
     </div>
   )

@@ -1,0 +1,8 @@
+{
+  "title": "欢迎来到首页",
+  "desc": "这是一个使用 Vite + React + React Router 搭建的示例项目。",
+  "counter": "点击计数: {count}",
+  "navHintPre": "你可以点击顶部导航切换到",
+  "navHintOr": "或",
+  "navHintPost": "页面。"
+}

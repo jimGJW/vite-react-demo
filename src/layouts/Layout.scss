@@ -110,6 +110,107 @@
   }
 }
 
+/* —— 语言切换按钮：彩色描边药丸 + 国旗/徽标，hover 上浮，切换带 pop 动画 —— */
+.app-shell .lang-switch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  height: 32px;
+  padding: 0 0.55rem 0 0.4rem;
+  border: 1px solid color-mix(in srgb, var(--lang-color, #1677ff) 38%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--lang-color, #1677ff) 9%, #fff);
+  color: var(--c-text-1, #000000e0);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: transform var(--t-fast, 0.1s), box-shadow var(--t-fast, 0.1s),
+              background var(--t-fast, 0.1s), border-color var(--t-fast, 0.1s), color var(--t-fast, 0.1s);
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--lang-color, #1677ff) 28%, transparent);
+    background: color-mix(in srgb, var(--lang-color, #1677ff) 16%, #fff);
+    border-color: var(--lang-color, #1677ff);
+    color: var(--lang-color, #1677ff);
+  }
+  &:active { transform: translateY(0) scale(0.97); }
+
+  .lang-switch-btn__flag {
+    display: inline-flex;
+    animation: lang-pop 0.42s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .lang-switch-btn__label {
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+}
+
+/* 下拉浮层里的语种行：左侧 accent 条用各语种自己的颜色，选中项高亮 */
+.lang-switch-overlay .lang-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 172px;
+  position: relative;
+  padding-left: 12px;
+
+  /* 左侧 accent 条（用当前语种色） */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 62%;
+    border-radius: 3px;
+    background: var(--lang-color, #1677ff);
+  }
+
+  .lang-option__name {
+    flex: 1;
+    font-size: 13px;
+    color: var(--c-text-2, #000000a6);
+  }
+
+  .lang-option__check {
+    font-size: 12px;
+    color: var(--lang-color, #1677ff);
+  }
+
+  &.is-active .lang-option__name {
+    font-weight: 600;
+    color: var(--c-text-1, #000000e0);
+  }
+}
+
+/* 国旗 emoji / 字母徽标（无国旗 emoji 的语种回退） */
+.lang-flag {
+  line-height: 1;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.12));
+}
+.lang-flag--sm { font-size: 0.95rem; }
+.lang-flag--md { font-size: 1.15rem; }
+
+.lang-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+}
+.lang-badge--sm { min-width: 18px; height: 18px; font-size: 9px; padding: 0 3px; }
+.lang-badge--md { min-width: 24px; height: 24px; font-size: 10px; padding: 0 4px; }
+
+/* 切换语言时，国旗做一次弹入动画，让操作有反馈 */
+@keyframes lang-pop {
+  0%   { transform: scale(0.3) rotate(-30deg); opacity: 0; }
+  55%  { transform: scale(1.2) rotate(8deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); opacity: 1; }
+}
+
 /* =========================================================
    BODY
    ========================================================= */
@@ -316,6 +417,96 @@
   /* Vue 模式下强调色 — 移到块外，见下方独立规则 */
   /* 折叠态：隐藏分组分隔 */
   &.ant-menu-inline-collapsed .menu-sep-title { display: none !important; }
+
+  /* =========================================================
+     一级 / 二级 层级强化：分组标题做成「区块标签」，
+     二级页面明显缩进 + 引导轨 + 圆点，一眼分清层级
+     ========================================================= */
+
+  /* —— 一级：分组标题（排除子应用分组，它们有独立样式）—— */
+  .ant-menu-submenu:not(.micro-menu-group) > .ant-menu-submenu-title {
+    position: relative;
+    margin: 12px 6px 5px !important;
+    padding: 6px 10px 6px 16px !important;
+    font-size: 0.72rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.06em;
+    color: var(--c-text-3, #00000073) !important;
+    background: var(--c-bg-soft, #f4f5f7);
+    border-radius: 7px;
+
+    &:hover {
+      background: var(--c-primary-soft, rgba(22, 119, 255, 0.08)) !important;
+      color: var(--c-primary, #1677ff) !important;
+    }
+
+    /* 左侧短 accent 条，强化「这是分类」语义 */
+    &::before {
+      content: '';
+      position: absolute;
+      left: 5px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 3px;
+      height: 13px;
+      border-radius: 2px;
+      background: var(--c-border, rgba(0, 0, 0, 0.22));
+    }
+  }
+
+  /* 一级分组展开时：标题高亮，提示「当前所在的区块」 */
+  .ant-menu-submenu-open:not(.micro-menu-group) > .ant-menu-submenu-title {
+    color: var(--c-text-1, #000000e0) !important;
+    background: var(--c-primary-soft, rgba(22, 119, 255, 0.10)) !important;
+    &::before { background: var(--c-primary, #1677ff); }
+  }
+
+  /* —— 二级：分组内的页面链接（排除分隔标题与子应用项）—— */
+  .ant-menu-submenu:not(.micro-menu-group) > .ant-menu-sub {
+    position: relative;
+
+    /* 竖直引导轨 */
+    &::before {
+      content: '';
+      position: absolute;
+      left: 18px;
+      top: 5px;
+      bottom: 5px;
+      width: 2px;
+      border-radius: 2px;
+      background: var(--c-border-soft, #ececec);
+    }
+
+    .ant-menu-item:not(.menu-sep-title) {
+      position: relative;
+      margin-inline: 6px !important;
+      padding-inline-start: 32px !important;
+      font-size: 0.82rem !important;
+      color: var(--c-text-2, #000000a6) !important;
+
+      /* 连接圆点 */
+      &::before {
+        content: '';
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--c-border, rgba(0, 0, 0, 0.22));
+        transition: background var(--t-fast, 0.1s), box-shadow var(--t-fast, 0.1s);
+        z-index: 1;
+      }
+
+      &:hover::before { background: var(--c-primary, #1677ff); }
+    }
+
+    .ant-menu-item-selected:not(.menu-sep-title)::before {
+      background: var(--c-primary, #1677ff);
+      box-shadow: 0 0 0 3px var(--c-primary-soft, rgba(22, 119, 255, 0.16));
+    }
+  }
 }
 
 /* —— Vue 模式（data-ui-mode 在 <html> 上，非 .app-shell）—— */

@@ -1,0 +1,339 @@
+{
+  "layout": {
+    "reactColumn": "React · Ant Design",
+    "vueColumn": "Vue 3 · Element Plus (дэд апп)",
+    "subappTitle": "vue-app дэд апп (порт 7101)",
+    "subappDesc": "Энэ тохиолдлын Vue хэрэгжүүлэлт (Element Plus-ийн албан ёсны хэрэглээ) тусдаа төсөл болж шилжсэн бөгөөд qiankun рантайм нэгтгэдэг.",
+    "openLoaded": "Vue дэд апп дээр энэ тохиолдлыг нээх",
+    "openLoad": "Vue дэд апп-г ачааллаад энэ тохиолдлыг нээх",
+    "targetPre": "Зорилтот хуудас: ",
+    "targetPost": ". Ачаалсны дараа дэд апп-ийн функц цэс зүүн хажуугийн талбарт гарч, бусад тохиолдол руу шууд шилжих боломжтой.",
+    "diffTitle": "Зарчмын харьцуулалт",
+    "diffPoint": "Харьцуулах цэг",
+    "diffAntd": "React · Ant Design",
+    "diffVue": "Vue 3 · Element Plus",
+    "codeTitle": "Үндсэн код хэрэглээ",
+    "codeAntd": "Ant Design / React",
+    "codeVue": "Vue 3 / Element Plus"
+  },
+  "parentChild": {
+    "title": "Эцэг-хүүхэд хооронд утга дамжуулалт",
+    "subtitle": "Эцэг→хүүхэд: props(React) vs defineProps(Vue); хүүхэд→эцэг: callback vs custom emit.",
+    "tagProps": "Props нэг чиглэлийн дамжуулалт",
+    "tagEmit": "onChange / emit",
+    "tagLift": "Төлөв дээшлүүлэх",
+    "receiveProps": "Todo List (хүүхэд) · props хүлээн авдаг:",
+    "inputPlaceholder": "Даалгавар нэмэх…",
+    "emptyWarn": "Хоосон байж болохгүй",
+    "addButton": "Нэмэх",
+    "emptyText": "Даалгавар байхгүй — хүүхэд onAdd callback-аар эцэгт мэдэгддэг",
+    "demoTitle": "Энэ улирлын OKR",
+    "item1": "React-Vue хоёр framework нэгтгэлийг дуусгах",
+    "item2": "Компонентчлол рефакторыг хэрэгжүүлэх",
+    "parentState": "Эцэгийн state: items.length =",
+    "diff": {
+      "fatherToChild": {
+        "title": "Эцэг → хүүхэд",
+        "antd": "function Child(props) {/* props.title */}",
+        "vue": "<script setup>const props = defineProps(['title'])</script>"
+      },
+      "childToFather": {
+        "title": "Хүүхэд → эцэг",
+        "antd": "<Child onAdd={(v)=>setList(l=>[...l,v])} />",
+        "vue": "<script setup>const emit = defineEmits(['add'])\nemit('add', v)</script>"
+      },
+      "defaultValue": {
+        "title": "Анхдагч утга",
+        "antd": "function Child({ title = '默认' }) {}",
+        "vue": "withDefaults(defineProps({ title: { type: String, default: '默认' } }), {})"
+      },
+      "propsModify": {
+        "title": "props засварлах",
+        "antd": "Шууд өөрчлөх боломжгүй; callback-аар эцэгт state өөрчлүүлэх",
+        "vue": "Шууд өөрчлөх боломжгүй; v-model:xxx нь emit('update:xxx')-ийн синтаксын элдэв"
+      },
+      "eventNaming": {
+        "title": "Event нэрлэх",
+        "antd": "props callback onXxx camelCase",
+        "vue": "emit('add') kebab-case template @add"
+      }
+    }
+  },
+  "twoWay": {
+    "title": "Хоёр чиглэлийн холболт",
+    "subtitle": "React: хяналттай компонпонент (value + onChange); Vue: v-model синтаксын элдэв.",
+    "tagSugar": "Хяналт vs синтаксын элдэв",
+    "tagMulti": "v-model:xxx олон талбар",
+    "tagState": "useState / ref",
+    "nameLabel": "Нэр: ",
+    "namePlaceholder": "Нэр оруулна уу",
+    "demoName": "Бат",
+    "enableLabel": "Функц идэвхжүүлэх: ",
+    "currentLabel": "Одоогийн: ",
+    "enabledText": "Идэвхтэй",
+    "disabledText": "Идэвхгүй",
+    "volumeLabel": "Дуу чимээ: ",
+    "customLabel": "Тусдаа компонпонентын хоёр чиглэлийн холболт (value + onChange): ",
+    "customCounterLabel": "Тусдаа тоолуур",
+    "parentStateLabel": "Эцэгийн state",
+    "parentCount": "Эцэгийн count =",
+    "controlledNote": "(хүүхэд өөрөөсөө төлөвгүй, бүрэн хяналттай)",
+    "diff": {
+      "input": {
+        "title": "Инпут",
+        "antd": "value={x} onChange={e=>setX(e.target.value)}",
+        "vue": "v-model=\"x\""
+      },
+      "switch": {
+        "title": "Свитч",
+        "antd": "checked={x} onChange={setX}",
+        "vue": "v-model=\"x\" (компонпент дотооддоо checked)"
+      },
+      "custom": {
+        "title": "Тусдаа компонпонент (данс утга)",
+        "antd": "value={n} onChange={setN}",
+        "vue": "<Counter v-model=\"n\" />  → props.modelValue + emit('update:modelValue')"
+      },
+      "multiField": {
+        "title": "Олон талбарын хоёр чиглэлийн холболт",
+        "antd": "талбар тутам value/a/b/c + onChangeXxx",
+        "vue": "v-model:title / v-model:visible / v-model:count"
+      },
+      "modifier": {
+        "title": "Засагч",
+        "antd": "onChange дотор trim/lowercase бичнэ",
+        "vue": ".trim .number .lazy，defineModel({ trim: true })"
+      },
+      "essence": {
+        "title": "Суурь",
+        "antd": "нэг чиглэлийн дамнуулалт; гараар onChange",
+        "vue": "нэг чиглэлийн дамнуулалт (props зөвхөн унших + emit); v-modal бол синтаксын элдэв"
+      }
+    }
+  },
+  "provide": {
+    "title": "Түвшин дамнах утга дамжуулалт (Provide / Inject)",
+    "subtitle": "Түвшин тутам props дамнуулахаас зайлсхийх: React createContext + Provider + useContext; Vue provide / inject + readonly.",
+    "tagDrilling": "Props drilling",
+    "tagContext": "Context / provide/inject",
+    "tagDi": "Хамаарлын инжекшн",
+    "childLayer": "3-р түвшин · Child",
+    "childDirect": "шууд useContext()",
+    "themeLabel": "theme: ",
+    "userLabel": "Хэрэглэгч: ",
+    "notLoggedIn": "Нэвтрээгүй",
+    "grandchildToggle": "Ач хүүхэд \"тематик солих\"-г триггер хийдэг",
+    "fatherLayer": "2-р түвшин · Father (props байхгүй, дамжуулна)",
+    "grandpaLayer": "1-р түвшин · GrandPa (Provider)",
+    "toggleTheme": "Тематик солих",
+    "diff": {
+      "injectPoint": {
+        "title": "\"инжекшн цэг\" тодорхойлох",
+        "antd": "const Ctx = createContext(defaultValue)",
+        "vue": "setup() дээд түвшин: provide('key', value) эсвэл root app.provide()"
+      },
+      "provide": {
+        "title": "Утга өгөх",
+        "antd": "<Ctx.Provider value={...}>\n  {children}\n</Ctx.Provider>",
+        "vue": "provide('theme', { cur, setCur, user })"
+      },
+      "consume": {
+        "title": "Утга хэрэглэх",
+        "antd": "const { theme } = useContext(Ctx)",
+        "vue": "const theme = inject('theme', defaultVal)"
+      },
+      "default": {
+        "title": "Анхдагч утгийн механизм",
+        "antd": "createContext(default); Provider-д хүрээлээгүй бол default буцаана",
+        "vue": "inject(key, default) — хоёр дахь аргумент нь анхдагч утга"
+      },
+      "reactive": {
+        "title": "Хариу үйлдэл",
+        "antd": "Provider value-ийн лавлал өөрчлөгдвөл(setState) → бүх consumer дахин render",
+        "vue": "provide-д ref/reactive дамжуулах → inject автомат хариу үйлдэл үзүүлнэ"
+      },
+      "safe": {
+        "title": "Засварын аюулгүй байдал",
+        "antd": "Context утга ямар ч бүтэц байж болно; зөвхөн callback-аар өөрчлөхөөр тохиролцоно",
+        "vue": "provide(key, readonly(state)) хүүхдэд шууд засварлахаас хориглоно"
+      }
+    }
+  },
+  "ref": {
+    "title": "Ref / DOM үйлдэл",
+    "subtitle": "React: useRef(DOM/хувьсагч) + forwardRef + useImperativeHandle(тушаалтын API); Vue: ref=\"x\" + defineExpose.",
+    "tagRef": "useRef vs ref",
+    "tagImperative": "Тушаалтын API",
+    "tagForward": "forwardRef / defineExpose",
+    "videoTitle": "Бичлэг \"React vs Vue\"",
+    "inputPlaceholder": "\"Фокус\" дээр дараад текст сонгоно…",
+    "focusSelect": "Фокус + сонгох",
+    "reverseText": "Текст эргүүлэх",
+    "reverseLog": "Инпутын текстыг эргүүлэх → ",
+    "logEmpty": "Доорх лог хэсэг: баруун товчийг дарж доош автоматаар гүйлгэнэ (scrollBox.current.scrollTo)",
+    "appendScroll": "Нэмэх (дээш гүйлгэх)",
+    "appendLog": "Лог нэмэх: ",
+    "clear": "Цэвэрлэх",
+    "domRefCard": "① DOM Ref:原生 input / div үйлдэл",
+    "imperativeCard": "② forwardRef + useImperativeHandle: тушаалтын компонпонентын API",
+    "playing": "▶ Тоглуулж байна",
+    "paused": "⏸ Завсарлагдсан",
+    "playBtn": "▶ play()",
+    "pauseBtn": "⏸ pause()",
+    "seekBtn": "⏭ seek(30s)",
+    "jumpEnd": "⏩ Төгсгөл рүү үсрэх",
+    "resetBtn": "⟲ reset()",
+    "getStateBtn": "getState() → хэвлэх",
+    "imperativeNote1": "Эцэг хүүхэдийн дотоод state-г шууд уншиж чадахгүй; дараах зүйлээр:",
+    "imperativeNote2": "методыг тодорхой харуулна. Vue 3-ийн",
+    "imperativeNote3": "нэг нэгээр нь хариуцлагатай.",
+    "diff": {
+      "domRef": {
+        "title": "DOM ref тодорхойлох",
+        "antd": "const r = useRef(null); <input ref={r}/>",
+        "vue": "const r = ref(null); <input ref=\"r\" /> (ижил нэр бол холбоно)"
+      },
+      "crossRef": {
+        "title": "Компонпент хооронд ref дамжуулах",
+        "antd": "forwardRef(MyComp(props, ref))",
+        "vue": "хүүхдийн ref анхдагчаар root DOM-г заана; эсвэл $refs(options API)"
+      },
+      "exposeApi": {
+        "title": "Тушаалтын API харуулах",
+        "antd": "useImperativeHandle(ref, () => ({ play, ... }), deps)",
+        "vue": "defineExpose({ play, pause, getState })"
+      },
+      "readWrite": {
+        "title": "ref утга унших / бичих",
+        "antd": "r.current унших/бичих; .current өөрчлөх нь render триггерлахгүй",
+        "vue": "r.value унших/бичих; ref(reactive) автомат хариу үйлдэлтэй"
+      },
+      "multiRef": {
+        "title": "Олон ref: жагсаалт",
+        "antd": "ref={el => arr[i] = el}(callback ref) эсвэл useRef([])",
+        "vue": "<div v-for=\"i in 5\" :ref=\"el => list[i]=el\" /> 或 :ref=\"keyed\""
+      },
+      "sideEffect": {
+        "title": "\"хамарлын\" DOM үйлдэл",
+        "antd": "useEffect дотор үйлдэл хийх (mount-ийн дараа / хамаарлын өөрчлөлтийн дараа)",
+        "vue": "onMounted hook дотор"
+      }
+    }
+  },
+  "slot": {
+    "title": "Слот / Children хуваарилалт",
+    "subtitle": "React: children / олон ReactNode props(named) / renderItem render-prop(scoped); Vue: default / named / scoped slot.",
+    "tagChildren": "children · named · scoped",
+    "tagRender": "renderItem = scoped slot",
+    "tagDistribute": "Контент хуваарилалт",
+    "defaultSlot": "① Үндсэн слот: children",
+    "welcome": "🎯 Ажлын талбар тавтай морил",
+    "todayText": "Өнөөдөр сайхан өдөр. Хүүхэд props.children-аар энэ бүх хэсгийг шууд render хийдэг.",
+    "startWork": "Ажил эхлэх",
+    "viewNotify": "Мэдэгдэл 3 харах",
+    "namedSlot": "② Нэртэй слот: олон ReactNode props (title / extra / footer / children)",
+    "subtitle2": "Фронтенд инженер · 5 жил",
+    "setting": "Тохиргоо",
+    "followed": "Дагаж байна",
+    "follow": "Дагах",
+    "comment": "💬 Сэтгэгдэл: 128",
+    "repost": "🔁 Дахин хуваалцах: 54",
+    "view": "👀 Үзсэн: 2.3k",
+    "bodyPre": "Бүтээж байна:",
+    "bodyMid1": "гибрид төсөл,",
+    "bodyUse": "ашиглан",
+    "bodyMid2": "нэртэй слотоор контент хуваарилаад,",
+    "bodyVue": "Vue-ийн",
+    "bodyEnd": "нэг нэгээр нь хариуцлагатай.",
+    "scopedSlot": "③ Скоуп слот: renderItem (render-prop)",
+    "soldOut": "Бараа дуусав",
+    "noData": "Мэдээлэл байхгүй",
+    "productKeyboard": "Гар",
+    "productMouse": "Хулгана",
+    "productMonitor": "Монитор",
+    "diff": {
+      "default": {
+        "title": "Үндсэн слот",
+        "antd": "props.children",
+        "vue": "<slot />"
+      },
+      "named": {
+        "title": "Нэртэй слот",
+        "antd": "олон props: title / header / footer бүгд ReactNode",
+        "vue": "<slot name=\"header\" />\n<template #header>...</template>"
+      },
+      "scoped": {
+        "title": "Скоуп слот (жагсаалт рендер)",
+        "antd": "renderItem={(row, idx) => <Item />} эсвэл itemRender шинж чанар",
+        "vue": "<template #default=\"{ row, $index }\">\n  直接使用 row / $index\n</template>"
+      },
+      "fallback": {
+        "title": "Нөөц контент",
+        "antd": "контейнер дотор бичих: children || анхдагч зангуу",
+        "vue": "<slot>默认内容</slot>"
+      },
+      "multiSlot": {
+        "title": "Олон слот + өгөгдөл",
+        "antd": "slot prop бүр (scope) => ReactNode авдаг(функц слот)",
+        "vue": "<slot name=\"foot\" :total=\"total\" :count=\"count\" />\n<template #foot=\"{ total, count }\">"
+      },
+      "scenario": {
+        "title": "Хэрэглээний тохиолдол",
+        "antd": "ерөнхий Card / Modal / Table column / List itemRender",
+        "vue": "зүүнтэй адил + v-slot заавар"
+      }
+    }
+  },
+  "state": {
+    "title": "Глобал төлөв хуваалцах",
+    "subtitle": "React: createContext + useReducer эсвэл useMemo-р store хийх; Vue: reactive + provide/inject эсвэл Pinia. Энэ хуудас зөвхөн \"framework-native\"-ийг харьцуулна.",
+    "tagContext": "Context vs provide+reactive",
+    "tagCart": "Сагс худалдан авах",
+    "tagShare": "Олон компонпонент төлөв хуваалцах",
+    "cartTitle": "Сагс(хуваалцсан төлөв)",
+    "wallet": "Түрийвч: ¥",
+    "qtyLabel": "Тоо: ",
+    "amtLabel": "Дүн: ",
+    "checkout": "Одоо тооцоолох",
+    "productList": "Барааны жагсаалт(тусдаа хэрэглэгч)",
+    "namePlaceholder": "Барааны нэр",
+    "pricePlaceholder": "Үнэ",
+    "addButton": "Нэмэх",
+    "emptyCart": "Сагс хоосон",
+    "subtotal": "Бэлэн дүн: ¥",
+    "book1": "Vue 3 практик",
+    "book2": "React дизайн паттерн",
+    "diff": {
+      "native": {
+        "title": "Арга( native)",
+        "antd": "createContext + Provider + useContext; state-г Provider дотор",
+        "vue": "reactive эсвэл ref объект + provide(key, store); эсвэл Pinia(албан store)"
+      },
+      "reference": {
+        "title": "Төлөвийн лавлал",
+        "antd": "Provider value нь setState тутам шинэ объект; лавлал өөрчлөгдвөл бүх consumer дахин render",
+        "vue": "reactive объектын лавлал хувирдаггүй; шинж чанар өөрчлөхөд тухайн шинж чанараас хамаарсан хүнд автомат триггер"
+      },
+      "perf": {
+        "title": "Гүйцэтгэлийн оновчлох",
+        "antd": "олон Context-д хуваах / memo + useCallback / useMemo / сонгогч сан",
+        "vue": "computed хамаарлын төлөв автомат кэшлэгддэг; компонпонентын нарийвчлал"
+      },
+      "async": {
+        "title": "Асинхрон засвар",
+        "antd": "Provider компонпонент дотор useCallback(async ()=> {...setState}) бичих",
+        "vue": "action нь reactive шинж чанарыг шууд өөрчлөх энгийн async функц"
+      },
+      "devtools": {
+        "title": "Devtools",
+        "antd": "React DevTools Components-р Context харах; Redux/Zustand тусад нь панелтэй",
+        "vue": "Vue DevTools → Pinia панел эсвэл Setup状态 мод"
+      },
+      "prod": {
+        "title": "Продакшн дээр хэрэглэдэг wrapper",
+        "antd": "Zustand / Redux Toolkit / Jotai",
+        "vue": "Pinia(Vuex-г орлоно)"
+      }
+    }
+  }
+}

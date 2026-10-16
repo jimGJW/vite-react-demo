@@ -1,0 +1,17 @@
+{
+  "title": "星空コンソール",
+  "welcome": "おかえりなさい、艦長。メイン制御システムに入るには本人確認が必要です。",
+  "backHint": "確認後、{path} に自動的に戻ります",
+  "username": "アカウント",
+  "password": "アクセスキー",
+  "remember": "ログイン状態を保持",
+  "forgot": "キーを忘れた場合",
+  "modeLabel": "UI スタイル",
+  "modeAntd": "Ant Design",
+  "modeVue": "Vue スタイル",
+  "submit": "星艦に乗り込む",
+  "verifying": "本人確認中…",
+  "warping": "ワープ中…",
+  "newCrew": "新クルーですか？",
+  "apply": "入港を申請"
+}

@@ -1,0 +1,38 @@
+{
+  "demo": {
+    "title": "⚡ クイックアシスタント",
+    "leadBefore": "音声アシスタントと AI Agent はコンポーネント化されており、任意のページでポップアップとして起動できます。右下の ",
+    "leadKey": " クイックアシスタントキー ",
+    "leadAfter": " は自由にドラッグでき、クリックでメニューを展開し、2 つのアシスタントの ON/OFF や指定ページへのワンクリック移動が可能です。",
+    "statusLabel": "現在の状態：",
+    "voiceLabel": "音声アシスタント",
+    "agentLabel": "AI Agent",
+    "on": "オン",
+    "off": "オフ",
+    "openVoice": "🎙️ 音声アシスタントを開く",
+    "agentPrefix": "🤖 ",
+    "closeBtn": "閉じる",
+    "openBtn": "開く",
+    "agentSuffix": " AI Agent",
+    "sendToAgent": "➡️ 指令を Agent に渡す",
+    "closeAll": "すべて閉じる",
+    "fillAgentBtn": "Agent が「{text}」を入力",
+    "scrollBottom": "ページ下部までスクロール",
+    "analyzeButtons": "現在のページにどんなボタンがあるか分析して",
+    "dispatchOpen": "dispatchEvent → 音声アシスタントを開く",
+    "dispatchToggle": "dispatchEvent → AI Agent を切り替え",
+    "standaloneBtn": "独立音声アシスタントパネルを開く",
+    "standaloneTitle": "音声アシスタント（独立インスタンス）"
+  },
+  "method": {
+    "tag": "方法",
+    "m1Title": "useAssistants フック（React コンポーネント内推奨）",
+    "m1Desc": "Layout に <Assistants /> をマウントすれば、任意のページコンポーネントがフックでアシスタントパネルを読み取り・制御できます。",
+    "m2Title": "命令型 API（任意の JS / Vue ページで使用可）",
+    "m2Desc": "React コンテキスト不要。Vue SFC、素の JS、ブラウザコンソールから直接呼び出せます。",
+    "m3Title": "window ネイティブイベント（フレームワーク / スタック横断）",
+    "m3Desc": "Vue、Angular ページや iframe 内でもこのイベントでアシスタントを起動でき、プロジェクト既存の app:navigate の使い方と一致します。",
+    "m4Title": "コンポーネント埋め込み（アシスタントセンターから独立した制御）",
+    "m4Desc": "音声アシスタントパネルは通常の制御付きコンポーネントなので、単独のページで自分の state と組み合わせて使えます。"
+  }
+}

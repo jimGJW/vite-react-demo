@@ -4,6 +4,7 @@ import {
   ThunderboltOutlined, AimOutlined, ClearOutlined, SyncOutlined,
 } from '@ant-design/icons'
 import CompareLayout from '../../../utils/CompareLayout.jsx'
+import { useI18n } from '../../../i18n/index.js'
 
 const { Text, Paragraph } = Typography
 
@@ -14,7 +15,9 @@ const { Text, Paragraph } = Typography
    ===================================================================== */
 
 // 2. 自定义组件：VideoPlayer（模拟）—— 暴露 { play, pause, seek, getState } 命令式方法
-const VideoPlayer = forwardRef(function VideoPlayer({ title = '影片「React vs Vue」', duration = 120 }, ref) {
+const VideoPlayer = forwardRef(function VideoPlayer({ title, duration = 120 }, ref) {
+  const { t } = useI18n()
+  const playerTitle = title || t('compare.ref.videoTitle')
   const [playing, setPlaying] = useState(false)
   const [time, setTime] = useState(0)   // 0..duration
   const timerRef = useRef(null)
@@ -67,7 +70,7 @@ const VideoPlayer = forwardRef(function VideoPlayer({ title = '影片「React vs
   return (
     <div className="r-player">
       <div className="r-player__screen">
-        <div className="r-player__title">{title}</div>
+        <div className="r-player__title">{playerTitle}</div>
         <Progress
           type="circle"
           percent={pct}
@@ -78,7 +81,7 @@ const VideoPlayer = forwardRef(function VideoPlayer({ title = '影片「React vs
       </div>
       <div className="r-player__bar">
         <Tag color={playing ? 'green' : 'default'}>
-          {playing ? '▶ 播放中' : '⏸ 已暂停'}
+          {playing ? t('compare.ref.playing') : t('compare.ref.paused')}
         </Tag>
         <Progress percent={pct} showInfo={false} style={{ flex: 1, marginLeft: 12 }} />
       </div>
@@ -87,6 +90,7 @@ const VideoPlayer = forwardRef(function VideoPlayer({ title = '影片「React vs
 })
 
 function ReactDemo() {
+  const { t } = useI18n()
   // 1. DOM 引用
   const inputRef   = useRef(null)
   const scrollBox  = useRef(null)
@@ -99,25 +103,25 @@ function ReactDemo() {
   return (
     <Space direction="vertical" style={{ width: '100%' }} size="large">
 
-      <Card size="small" title={<><Tag color="blue">① DOM Ref：操作原生 input / div</Tag></>}>
+      <Card size="small" title={<><Tag color="blue">{t('compare.ref.domRefCard')}</Tag></>}>
         <Space.Compact style={{ width: '100%', marginBottom: 8 }}>
-          <Input ref={inputRef} placeholder="点击「聚焦」选中文字…" defaultValue="Hello React Refs!" />
+          <Input ref={inputRef} placeholder={t('compare.ref.inputPlaceholder')} defaultValue="Hello React Refs!" />
           <Button type="primary" icon={<AimOutlined />}
             onClick={() => { inputRef.current?.focus(); inputRef.current?.select() }}
-          >聚焦 + 选中</Button>
+          >{t('compare.ref.focusSelect')}</Button>
           <Button icon={<SyncOutlined />}
             onClick={() => {
               const v = inputRef.current?.value || ''
               inputRef.current.value = v.split('').reverse().join('')
-              append(`反转输入框文字 → ${inputRef.current.value}`)
+              append(t('compare.ref.reverseLog') + inputRef.current.value)
             }}
-          >倒转文字</Button>
+          >{t('compare.ref.reverseText')}</Button>
         </Space.Compact>
 
         <div ref={scrollBox} className="r-scroll">
           {log.length === 0
             ? <Text type="secondary" style={{ fontSize: 12 }}>
-                下方日志区：点击右侧按钮，自动滚动到底部（scrollBox.current.scrollTo）
+                {t('compare.ref.logEmpty')}
               </Text>
             : log.map((l, i) => (
                 <div key={i} className="r-scroll__item">
@@ -130,9 +134,9 @@ function ReactDemo() {
         </div>
         <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
           <Button size="small" icon={<ThunderboltOutlined />}
-            onClick={() => { append(`追加日志：${Date.now()}`); scrollBox.current?.scrollTo({ top: 0, behavior: 'smooth' }) }}
-          >追加（滚到底）</Button>
-          <Button size="small" icon={<ClearOutlined />} onClick={() => setLog([])}>清空</Button>
+            onClick={() => { append(t('compare.ref.appendLog') + Date.now()); scrollBox.current?.scrollTo({ top: 0, behavior: 'smooth' }) }}
+          >{t('compare.ref.appendScroll')}</Button>
+          <Button size="small" icon={<ClearOutlined />} onClick={() => setLog([])}>{t('compare.ref.clear')}</Button>
         </div>
       </Card>
 

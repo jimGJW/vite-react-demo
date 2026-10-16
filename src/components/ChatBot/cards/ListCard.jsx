@@ -6,18 +6,20 @@
 
 import { memo, useMemo } from 'react'
 import { Tag } from 'antd'
+import { useI18n } from '../../../i18n/index.js'
 import { parseArray } from './utils.js'
 
 export default memo(function ListCard({ data, onAsk, sessionDetailId }) {
+  const { t } = useI18n()
   const items = useMemo(() => parseArray(data), [data])
 
-  if (!items.length) return <div className="cb-empty">暂无匹配结果</div>
+  if (!items.length) return <div className="cb-empty">{t('chatbot.cards.noMatch')}</div>
 
   return (
     <div className="cb-list">
       {items.map((item, i) => {
         const id = item.id ?? item.key ?? item.name ?? ''
-        const title = item.name || item.alias || item.title || id || '未命名'
+        const title = item.name || item.alias || item.title || id || t('chatbot.cards.unnamed')
         const offline = item.type === '离线' || item.status === 'offline'
         return (
           <button

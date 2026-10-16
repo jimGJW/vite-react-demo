@@ -1,0 +1,68 @@
+{
+  "common": {
+    "expand": "펼치기",
+    "collapse": "접기",
+    "close": "닫기"
+  },
+  "quick": {
+    "voice": "음성 도우미",
+    "agent": "AI Agent",
+    "on": "켜짐",
+    "off": "꺼짐",
+    "navSep": "빠른 이동",
+    "jump": "이동",
+    "other": "기타",
+    "top": "맨 위로",
+    "hide": "도우미 버튼 숨기기",
+    "assistant": "도우미",
+    "fabTitle": "도우미 버튼(드래그 가능)",
+    "fabAria": "도우미 버튼",
+    "restoreTitle": "도우미 버튼 표시",
+    "pages": {
+      "home": "홈",
+      "agent": "AI 에이전트 콘솔",
+      "voice": "음성 도우미",
+      "dashboard": "대시보드",
+      "testCenter": "테스트 센터"
+    }
+  },
+  "voice": {
+    "title": "음성 도우미",
+    "subtitle": "음성을 텍스트로 · 온라인 / 오프라인 듀얼 엔진",
+    "charCount": "{count}자",
+    "envOnline": "온라인",
+    "envOffline": "오프라인",
+    "copy": "전문 복사",
+    "copied": "복사됨 ✓",
+    "clear": "비우기",
+    "sendToAgent": "AI 에이전트에 넘기기 →",
+    "sendToAgentTip": "인식된 텍스트를 AI 에이전트에 넘겨 실행",
+    "historyTitle": "인식 기록",
+    "historyEmpty": "아직 인식 기록이 없습니다. 위의 「음성 입력 시작」 또는 「녹음 시작」을 눌러 보세요",
+    "diagnose": "환경 진단",
+    "browserLabel": "브라우저",
+    "webSupport": "온라인 인식(Web Speech API)",
+    "localSupport": "오프라인 인식(로컬 Whisper)",
+    "supported": "지원",
+    "unsupported": "미지원",
+    "webNote": "(Chrome 중국어 인식은 Google 서비스에 의존하므로 국내 네트워크에서는 사용하지 못할 수 있습니다)",
+    "localNote": "(모델이 public/models/에 내장되어 완전 오프라인으로 동작)",
+    "currentStatus": "현재 상태",
+    "statusListening": "온라인으로 수신 대기 중",
+    "statusRecording": "녹음 중",
+    "statusRecognizing": "오프라인 변환 중",
+    "statusIdle": "대기",
+    "browser": {
+      "none": "알 수 없음",
+      "edge": "Microsoft Edge",
+      "chrome": "Google Chrome",
+      "firefox": "Mozilla Firefox",
+      "safari": "Apple Safari",
+      "unknown": "알 수 없는 브라우저"
+    }
+  },
+  "globalAgent": {
+    "title": "AI Agent",
+    "hint": "🤖 Ctrl+Shift+A 로 에이전트 호출 · Ctrl+↑↓ 로 스크롤 · Ctrl+⌥+←→ 로 앞으로/뒤로"
+  }
+}

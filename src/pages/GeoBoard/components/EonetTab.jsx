@@ -7,6 +7,7 @@ import { useMemo } from 'react'
 import { FireOutlined } from '@ant-design/icons'
 import { Empty, Table, Tag } from 'antd'
 import { Panel } from './ui.jsx'
+import { useI18n } from '../../../i18n/index.js'
 import { project, landPath, MAP_W, MAP_H } from '../../../components/AstroBoard/mapProjection.js'
 
 /** EONET 分类 → 落点/标签配色 */
@@ -18,26 +19,28 @@ const CAT_COLOR = {
   floods: '#0ea5e9',
   dustHaze: '#d97706',
 }
-const CAT_LABEL = {
-  wildfires: '野火',
-  severeStorms: '强风暴',
-  volcanoes: '火山',
-  seaLakeIce: '海冰',
-  floods: '洪水',
-  dustHaze: '沙尘',
+const CAT_KEYS = {
+  wildfires: 'geo.eonet.cat.wildfires',
+  severeStorms: 'geo.eonet.cat.severeStorms',
+  volcanoes: 'geo.eonet.cat.volcanoes',
+  seaLakeIce: 'geo.eonet.cat.seaLakeIce',
+  floods: 'geo.eonet.cat.floods',
+  dustHaze: 'geo.eonet.cat.dustHaze',
 }
 const catColor = (id) => CAT_COLOR[id] || '#94a3b8'
 
 /** 事件落点地图：复用地震图的等距圆柱投影与配色变量，点色按事件类别 */
 function EonetMap({ events }) {
+  const { t } = useI18n()
   const land = useMemo(() => landPath(), [])
   return (
     <div className="geo-quakemap">
-      <svg viewBox={`0 0 ${MAP_W} ${MAP_H}`} role="img" aria-label="近 30 天全球自然事件分布图">
+      <svg viewBox={`0 0 ${MAP_W} ${MAP_H}`} role="img" aria-label={t('geo.eonet.aria')}>
         <rect x="0" y="0" width={MAP_W} height={MAP_H} className="geo-quakemap__sea" />
         <path d={land} className="geo-quakemap__land" />
         {events.map((e) => {
           const p = project(e.lat, e.lon)
+          const catLabel = CAT_KEYS[e.catId] ? t(CAT_KEYS[e.catId]) : e.cat
           return (
             <circle
               key={e.id}
@@ -47,7 +50,7 @@ function EonetMap({ events }) {
               className="geo-quakemap__dot"
               style={{ '--dot-color': catColor(e.catId) }}
             >
-              <title>{`${e.title}（${CAT_LABEL[e.catId] || e.cat}）${e.time ? `\n${e.time.slice(0, 10)}` : ''}`}</title>
+              <title>{`${e.title}（${catLabel}）${e.time ? `\n${e.time.slice(0, 10)}` : ''}`}</title>
             </circle>
           )
         })}
@@ -56,22 +59,23 @@ function EonetMap({ events }) {
         {Object.keys(CAT_COLOR).map((id) => (
           <span key={id}>
             <i style={{ background: CAT_COLOR[id] }} />
-            {CAT_LABEL[id]}
+            {t(CAT_KEYS[id])}
           </span>
         ))}
-        <span className="geo-quakemap__legend-note">仅显示可定位到经纬度的进行中事件</span>
+        <span className="geo-quakemap__legend-note">{t('geo.eonet.legendNote')}</span>
       </div>
     </div>
   )
 }
 
 export default function EonetTab({ eonet, eonetData }) {
+  const { t } = useI18n()
   const events = eonetData?.events
   return (
     <div className="geo-tab-content">
       <Panel
-        title="近 30 天自然事件分布"
-        source="NASA EONET（eonet.gsfc.nasa.gov），进行中的自然事件，1 小时刷新"
+        title={t('geo.eonet.mapTitle')}
+        source={t('geo.eonet.mapSource')}
         icon={<FireOutlined />}
         loading={eonet.loading}
         error={eonet.error}
@@ -79,13 +83,13 @@ export default function EonetTab({ eonet, eonetData }) {
         {events?.length ? (
           <EonetMap events={events} />
         ) : (
-          <Empty description="暂无事件数据" />
+          <Empty description={t('geo.eonet.empty')} />
         )}
       </Panel>
 
       <Panel
-        title="自然事件列表"
-        source="NASA EONET；点击事件标题跳转官方详情页"
+        title={t('geo.eonet.listTitle')}
+        source={t('geo.eonet.listSource')}
         icon={<FireOutlined />}
         loading={eonet.loading}
         error={eonet.error}
@@ -96,16 +100,16 @@ export default function EonetTab({ eonet, eonetData }) {
             size="small"
             rowKey="id"
             dataSource={events}
-            pagination={{ pageSize: 10, size: 'small', showTotal: (t) => `共 ${t} 起` }}
+            pagination={{ pageSize: 10, size: 'small', showTotal: (total) => t('geo.eonet.listTotal', { n: total }) }}
             columns={[
               {
-                title: '分类',
+                title: t('geo.eonet.colCat'),
                 dataIndex: 'cat',
                 width: 110,
-                render: (v, r) => <Tag color={catColor(r.catId)}>{CAT_LABEL[r.catId] || v}</Tag>,
+                render: (v, r) => <Tag color={catColor(r.catId)}>{CAT_KEYS[r.catId] ? t(CAT_KEYS[r.catId]) : v}</Tag>,
               },
               {
-                title: '事件',
+                title: t('geo.eonet.colEvent'),
                 dataIndex: 'title',
                 render: (v, r) =>
                   r.link ? (
@@ -115,14 +119,14 @@ export default function EonetTab({ eonet, eonetData }) {
                   ),
               },
               {
-                title: '坐标',
+                title: t('geo.eonet.colCoord'),
                 key: 'coord',
                 width: 140,
                 align: 'right',
                 render: (_, r) => `${r.lat.toFixed(1)}°, ${r.lon.toFixed(1)}°`,
               },
               {
-                title: '日期',
+                title: t('geo.eonet.colDate'),
                 dataIndex: 'time',
                 width: 110,
                 align: 'right',
@@ -131,7 +135,7 @@ export default function EonetTab({ eonet, eonetData }) {
             ]}
           />
         ) : (
-          <Empty description="暂无事件数据" />
+          <Empty description={t('geo.eonet.empty')} />
         )}
       </Panel>
     </div>

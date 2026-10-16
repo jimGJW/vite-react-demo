@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from 'react'
 import { Button, Space, Card, Typography, Tag } from 'antd'
 import CompareLayout from '../../../utils/CompareLayout.jsx'
+import { useI18n } from '../../../i18n/index.js'
 
 
 const { Text, Paragraph } = Typography
@@ -18,27 +19,29 @@ const useThemeCtx = () => useContext(ThemeContext)
 
 /* —— 子组件（第 3 层）：直接用 useContext，不用逐层 props —— */
 function Child() {
+  const { t } = useI18n()
   const { theme, user, toggleTheme } = useThemeCtx()
   return (
     <Card
       size="small"
       type="inner"
-      title={<><Tag color="purple">第 3 层 · Child</Tag> 直接 useContext()</>}
+      title={<><Tag color="purple">{t('compare.provide.childLayer')}</Tag> {t('compare.provide.childDirect')}</>}
     >
       <Paragraph style={{ margin: 0 }}>
-        theme：<Tag color={theme === 'dark' ? 'default' : 'gold'}>{theme}</Tag>
-        &nbsp;&nbsp;用户：<Tag color="blue">{user?.name ?? '未登录'}</Tag>
+        {t('compare.provide.themeLabel')}<Tag color={theme === 'dark' ? 'default' : 'gold'}>{theme}</Tag>
+        &nbsp;&nbsp;{t('compare.provide.userLabel')}<Tag color="blue">{user?.name ?? t('compare.provide.notLoggedIn')}</Tag>
       </Paragraph>
       <Button size="small" onClick={toggleTheme} style={{ marginTop: 8 }}>
-        孙组件触发「切换主题」
+        {t('compare.provide.grandchildToggle')}
       </Button>
     </Card>
   )
 }
 /* —— 第 2 层：完全不关心 props —— */
 function Father() {
+  const { t } = useI18n()
   return (
-    <Card size="small" title={<Tag color="cyan">第 2 层 · Father（无 props，透传）</Tag>}
+    <Card size="small" title={<Tag color="cyan">{t('compare.provide.fatherLayer')}</Tag>}
       style={{ marginTop: 10 }}>
       <Child />
     </Card>
@@ -46,6 +49,7 @@ function Father() {
 }
 
 function ReactDemo() {
+  const { t } = useI18n()
   const [theme, setTheme] = useState('light')
   const user = { name: 'Alice', role: 'admin' }
   const value = {
@@ -61,8 +65,8 @@ function ReactDemo() {
       <Space direction="vertical" style={{ width: '100%' }}>
         <Card
           size="small"
-          title={<><Tag color="blue">第 1 层 · GrandPa（Provider）</Tag>
-            <Button size="small" type="primary" ghost onClick={value.toggleTheme}>切换主题</Button></>}
+          title={<><Tag color="blue">{t('compare.provide.grandpaLayer')}</Tag>
+            <Button size="small" type="primary" ghost onClick={value.toggleTheme}>{t('compare.provide.toggleTheme')}</Button></>}
           style={{ background: panelBg, color: panelColor }}
         >
           <Text style={{ color: panelColor }}>
@@ -77,24 +81,25 @@ function ReactDemo() {
 
 /* ========== 页面 ========== */
 export default function CompareProvide() {
+  const { t } = useI18n()
   return (
     <CompareLayout
-      title="跨层传值 (Provide / Inject)"
-      subtitle="避免层层 props 钻穿：React 用 createContext + Provider + useContext；Vue 用 provide / inject + readonly 防篡改。"
+      title={t('compare.provide.title')}
+      subtitle={t('compare.provide.subtitle')}
       tags={[
-        { label: 'Props drilling' },
-        { label: 'Context / provide/inject' },
-        { label: '依赖注入', color: 'purple' },
+        { label: t('compare.provide.tagDrilling') },
+        { label: t('compare.provide.tagContext') },
+        { label: t('compare.provide.tagDi'), color: 'purple' },
       ]}
       reactDemo={<ReactDemo />}
       vueAppPath="/pattern/provide"
       diffRows={[
-        { title: '声明「注入点」', antd: 'const Ctx = createContext(defaultValue)', vue: 'setup() 顶层：provide(\'key\', value)，或在根 app.provide()' },
-        { title: '提供值', antd: '<Ctx.Provider value={...}>\n  {children}\n</Ctx.Provider>', vue: 'provide(\'theme\', { cur, setCur, user })' },
-        { title: '消费值', antd: 'const { theme } = useContext(Ctx)', vue: 'const theme = inject(\'theme\', defaultVal)' },
-        { title: '默认值机制', antd: 'createContext(default)；未被 Provider 包裹时返回 default', vue: 'inject(key, default)，第二个参数即默认值' },
-        { title: '响应式', antd: 'Provider value 引用变化（setState）→ 所有 consumer re-render', vue: 'provide 传入 ref/reactive → inject 自动响应' },
-        { title: '修改安全', antd: 'Context 值可以是任何结构；自行约定只通过回调改', vue: 'provide(key, readonly(state)) 禁止子组件直接修改' },
+        { title: t('compare.provide.diff.injectPoint.title'), antd: t('compare.provide.diff.injectPoint.antd'), vue: t('compare.provide.diff.injectPoint.vue') },
+        { title: t('compare.provide.diff.provide.title'), antd: t('compare.provide.diff.provide.antd'), vue: t('compare.provide.diff.provide.vue') },
+        { title: t('compare.provide.diff.consume.title'), antd: t('compare.provide.diff.consume.antd'), vue: t('compare.provide.diff.consume.vue') },
+        { title: t('compare.provide.diff.default.title'), antd: t('compare.provide.diff.default.antd'), vue: t('compare.provide.diff.default.vue') },
+        { title: t('compare.provide.diff.reactive.title'), antd: t('compare.provide.diff.reactive.antd'), vue: t('compare.provide.diff.reactive.vue') },
+        { title: t('compare.provide.diff.safe.title'), antd: t('compare.provide.diff.safe.antd'), vue: t('compare.provide.diff.safe.vue') },
       ]}
       code={{
         antdCode:

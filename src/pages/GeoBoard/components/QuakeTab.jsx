@@ -5,16 +5,18 @@
 import { AimOutlined } from '@ant-design/icons'
 import { Empty, Table, Tag } from 'antd'
 import { Panel, depthClass, fmtBJT, magColor } from './ui.jsx'
+import { useI18n } from '../../../i18n/index.js'
 import QuakeMap from './QuakeMap.jsx'
 import StrongQuakes from './StrongQuakes.jsx'
 
 export default function QuakeTab({ quakes, quakeData, bigQuakes, bigData }) {
+  const { t } = useI18n()
   return (
     <div className="geo-tab-content">
       {/* 地震世界地图 */}
       <Panel
-        title="过去 24 小时全球地震分布"
-        source="USGS 地震危害计划（earthquake.usgs.gov），M2.5+，2 分钟刷新"
+        title={t('geo.quake.mapTitle')}
+        source={t('geo.quake.mapSource')}
         icon={<AimOutlined />}
         loading={quakes.loading}
         error={quakes.error}
@@ -22,14 +24,14 @@ export default function QuakeTab({ quakes, quakeData, bigQuakes, bigData }) {
         {quakeData ? (
           <QuakeMap quakes={quakeData.quakes} />
         ) : (
-          <Empty description="暂无地震数据" />
+          <Empty description={t('geo.quake.empty')} />
         )}
       </Panel>
 
       {/* 地震列表 */}
       <Panel
-        title="地震列表（按时间倒序）"
-        source="USGS；点击震级列可按震级排序"
+        title={t('geo.quake.listTitle')}
+        source={t('geo.quake.listSource')}
         icon={<AimOutlined />}
         loading={quakes.loading}
         error={quakes.error}
@@ -40,16 +42,16 @@ export default function QuakeTab({ quakes, quakeData, bigQuakes, bigData }) {
             size="small"
             rowKey="id"
             dataSource={quakeData.quakes}
-            pagination={{ pageSize: 12, size: 'small', showTotal: (t) => `共 ${t} 条` }}
+            pagination={{ pageSize: 12, size: 'small', showTotal: (total) => t('geo.quake.pageTotal', { n: total }) }}
             columns={[
               {
-                title: '北京时间',
+                title: t('geo.quake.colBJT'),
                 dataIndex: 'time',
                 width: 96,
-                render: (t) => fmtBJT(t),
+                render: (v) => fmtBJT(v),
               },
               {
-                title: '震级',
+                title: t('geo.quake.colMag'),
                 dataIndex: 'mag',
                 width: 90,
                 sorter: (a, b) => (a.mag || 0) - (b.mag || 0),
@@ -61,9 +63,9 @@ export default function QuakeTab({ quakes, quakeData, bigQuakes, bigData }) {
                   </Tag>
                 ),
               },
-              { title: '地点', dataIndex: 'place', ellipsis: true },
+              { title: t('geo.quake.colPlace'), dataIndex: 'place', ellipsis: true },
               {
-                title: '深度',
+                title: t('geo.quake.colDepth'),
                 dataIndex: 'depth',
                 width: 120,
                 align: 'right',
@@ -76,14 +78,14 @@ export default function QuakeTab({ quakes, quakeData, bigQuakes, bigData }) {
             ]}
           />
         ) : (
-          <Empty description="暂无地震数据" />
+          <Empty description={t('geo.quake.empty')} />
         )}
       </Panel>
 
       {/* 近 30 天强震：与上面「此刻的脉动」互补，看的是月尺度活动水平 */}
       <Panel
-        title="近 30 天全球强震（M5.5+）"
-        source="EMSC FDSN（www.seismicportal.eu），minmag=5.5 服务端过滤，30 分钟刷新"
+        title={t('geo.quake.strongTitle')}
+        source={t('geo.quake.strongSource')}
         icon={<AimOutlined />}
         loading={bigQuakes.loading}
         error={bigQuakes.error}
@@ -98,7 +100,7 @@ export default function QuakeTab({ quakes, quakeData, bigQuakes, bigData }) {
             windowDays={bigData.windowDays}
           />
         ) : (
-          <Empty description="暂无强震数据" />
+          <Empty description={t('geo.quake.strongEmpty')} />
         )}
       </Panel>
     </div>

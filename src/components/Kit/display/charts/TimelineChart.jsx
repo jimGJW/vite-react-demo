@@ -1,6 +1,7 @@
 import { useMemo, useRef } from 'react'
 import { useEcharts } from './useEcharts.js'
 import { AXIS_LINE, SPLIT_LINE, tooltipBase } from './chartBase.js'
+import { useI18n } from '../../../../i18n'
 
 /**
  * TimelineChart · 双折线时间趋势（带时间轴缩放滑块）
@@ -25,18 +26,20 @@ const LEGEND_COLOR = '#94a3b8'
 export default function TimelineChart({
   data = [],
   height = 260,
-  seriesNames = ['系列 A', '系列 B'],
+  seriesNames,
   colors = ['#4f46e5', '#22d3ee'],
   smooth = true,
   showZoom = true,
   showLegend = true,
   className = '',
 }) {
+  const { t } = useI18n()
+  const names = seriesNames ?? [t('kit.timeline.seriesA'), t('kit.timeline.seriesB')]
   const elRef = useRef(null)
 
   const option = useMemo(() => {
     const build = (index, key) => ({
-      name: seriesNames[index] || `系列 ${index + 1}`,
+      name: names[index] || t('kit.timeline.seriesFallback', { index: index + 1 }),
       type: 'line',
       smooth,
       symbol: 'none',
@@ -86,7 +89,7 @@ export default function TimelineChart({
         : {}),
       series: [build(0, 'y1'), build(1, 'y2')],
     }
-  }, [data, seriesNames, colors, smooth, showZoom, showLegend])
+  }, [data, names, colors, smooth, showZoom, showLegend, t])
 
   useEcharts(elRef, option)
 

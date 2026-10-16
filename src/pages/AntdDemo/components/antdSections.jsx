@@ -1,14 +1,17 @@
 import { useState } from 'react'
 import {
-  Card, Table, Tabs, Form, Input, InputNumber, Select, Switch,
+  Card, Form, Input, InputNumber, Select, Switch,
   DatePicker, Button, Space, Tag, Statistic, Row, Col, Steps,
   Breadcrumb, Progress, Slider, Rate, message, Modal,
-  Typography, Divider, Badge,
+  Divider, Badge, Typography,
 } from 'antd'
 import {
   HomeOutlined, UserOutlined, BarChartOutlined,
   ShoppingOutlined, ClockCircleOutlined,
 } from '@ant-design/icons'
+
+/* Typography 家族按解构取用：Paragraph / Text 是本页主力排版组件 */
+const { Paragraph, Text } = Typography
 
 export const tableData = [
   { key: '1', name: '胡彦祖', age: 32, address: '北京市海淀区中关村大街1号', status: 'active' },
@@ -118,7 +121,7 @@ export function FormSection() {
           </Col>
           <Col xs={24}>
             <Form.Item label="项目描述" name="desc">
-              <TextArea rows={2} placeholder="请输入项目描述" />
+              <Input.TextArea rows={2} placeholder="请输入项目描述" />
             </Form.Item>
           </Col>
           <Col xs={24}>

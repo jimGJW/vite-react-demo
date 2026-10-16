@@ -1,0 +1,62 @@
+{
+  "demo": {
+    "title": "命令面板 CommandPalette",
+    "leadBefore": "一個零外部依賴（僅 React）的玻璃態命令面板元件。按下",
+    "leadMac": "（macOS）或 ",
+    "leadWin": "（Windows / Linux）喚起面板，模糊搜尋指令，",
+    "leadSelect": " 選擇並 ",
+    "leadRun": " 執行，",
+    "leadClose": " 關閉。",
+    "hintText": "點此組合鍵喚起面板（本頁已接入）",
+    "placeholder": "搜尋指令，試試「保存」「home」「反饋」…",
+    "feedbackTitle": "執行反饋",
+    "lastCommand": "最近執行指令",
+    "none": "— 暫無 —",
+    "closeCount": "面板關閉次數",
+    "usageTitle": "用法",
+    "propsTitle": "Props",
+    "thProp": "屬性",
+    "thType": "類型",
+    "thDesc": "說明",
+    "propCommands": "指令列表，每項含 ",
+    "propPlaceholder": "搜尋框佔位符，預設「搜尋指令…」",
+    "propOnClose": "面板關閉後回調（ESC / 遮罩點擊 / 執行指令後觸發）",
+    "cmdFieldsTitle": "指令項字段",
+    "thField": "字段",
+    "fieldId": "唯一標識（用作 key）",
+    "fieldLabel": "顯示名稱，參與模糊匹配",
+    "fieldGroup": "分組名，缺省歸「其他」",
+    "fieldIcon": "圖標，任意可渲染內容（emoji / 字符 / JSX）",
+    "fieldKeywords": "匹配關鍵詞，與 label 一同參與模糊搜尋",
+    "fieldAction": "回車或點擊時執行，參數為該指令物件"
+  },
+  "cmd": {
+    "navHome": "前往首頁",
+    "navDashboard": "前往控制台",
+    "navAbout": "關於專案",
+    "actNew": "新建檔案",
+    "actSave": "儲存",
+    "actExport": "匯出數據",
+    "actTheme": "切換主題",
+    "helpShortcut": "查看快捷鍵",
+    "helpDoc": "閱讀文件",
+    "helpFeedback": "反饋問題"
+  },
+  "group": {
+    "nav": "導航",
+    "action": "操作",
+    "help": "幫助"
+  },
+  "component": {
+    "placeholder": "搜尋指令…",
+    "dialogAria": "命令面板",
+    "searchAria": "搜尋指令",
+    "otherGroup": "其他",
+    "emptyTitle": "沒有匹配的指令",
+    "emptyHint": "試試更換關鍵詞，或清空搜尋查看全部指令",
+    "tipSelect": "選擇",
+    "tipRun": "執行",
+    "tipClose": "關閉",
+    "count": "{count} 條結果"
+  }
+}

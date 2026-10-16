@@ -1,0 +1,20 @@
+{
+  "title": "Zustandsautomaten & Zeitreise",
+  "lead1": "Ziehe „wer wohin wechseln kann“ aus Komponenten in eine einzige Zustandstabelle; illegale Übergänge werden in",
+  "lead2": " selbst abgefangen, ohne ifs im Business-Code zu verstreuen. Füge einen Undo-Stack hinzu und du bekommst Zeitreise gratis (Undo / Redo / Sprung überall).",
+  "flowTitle": "Ticket-Ablaufdiagramm (aktueller Zustand hervorgehoben)",
+  "flowAria": "Ticket-Zustandsablaufdiagramm",
+  "step": "Schritt {current} / {total}",
+  "grayHint": "Ein grauer Button bedeutet, die Aktion ist im aktuellen Zustand nicht erlaubt — die Maschine gibt direkt ok:false zurück, sodass Business-Code nicht erneut prüfen muss.",
+  "triggerTip": "{event} auslösen",
+  "travelTitle": "Zeitreise: Undo / Redo / Sprung überall",
+  "travelHint": "Der Verlaufs-Stack speichert eine \"Folge von Zustandssnapshots\". Committest du einen neuen Zustand nicht am Ende, wird der spätere Redo-Zweig verworfen — Standardverhalten jedes Undo-Stacks.",
+  "undo": "Undo",
+  "redo": "Redo",
+  "jumpStart": "Zurück zum Anfang",
+  "timelineLabel": "Zeitleiste",
+  "sliderTip": "Schritt {step}: {label}",
+  "stepItem": "Schritt {step} · {label}",
+  "currentMark": "(aktuell)",
+  "disableReason": "「{label}」状态下不能触发「{event}」"
+}

@@ -8,15 +8,17 @@ import { Panel, TermTip } from './ui.jsx'
 import { zhMethod } from '../../../lib/astro/glossary'
 import GalaxyDiagram from './GalaxyDiagram.jsx'
 import GalaxyFacts from './GalaxyFacts.jsx'
+import { useI18n } from '../../../i18n/index.js'
 
 export default function DeepTab({ exoplanets, galaxyView, setGalaxyView }) {
+  const { t } = useI18n()
   return (
     <>
               <div className="astro-tab-content">
                 {/* 系外行星 */}
       <Panel
-        title="系外行星与巡天成果"
-        source="NASA Exoplanet Archive（已确认行星，default_flag=1）"
+        title={t('astro.deepExoTitle')}
+        source={t('astro.deepExoSource')}
         icon={<AimOutlined />}
         loading={exoplanets.loading}
         error={exoplanets.error}
@@ -27,23 +29,23 @@ export default function DeepTab({ exoplanets, galaxyView, setGalaxyView }) {
               <span className="astro-exo-big__num">
                 {exoplanets.data?.total ? exoplanets.data.total.toLocaleString() : '—'}
               </span>
-              <span className="astro-exo-big__label">颗已确认系外行星</span>
+              <span className="astro-exo-big__label">{t('astro.deepExoCount')}</span>
             </div>
             <div className="astro-exo-range">
-              确认年份跨度 {exoplanets.data?.firstYear ?? '—'} – {exoplanets.data?.lastYear ?? '—'}
+              {t('astro.deepExoYearRange', { first: exoplanets.data?.firstYear ?? '—', last: exoplanets.data?.lastYear ?? '—' })}
             </div>
             <div className="astro-exo-methods">
               {exoplanets.data?.methods?.map((m) => {
-                const t = zhMethod(m.name)
+                const zm = zhMethod(m.name)
                 return (
-                  <TermTip key={m.name} zh={t.zh} en={t.en} desc={t.desc}>
+                  <TermTip key={m.name} zh={zm.zh} en={zm.en} desc={zm.desc}>
                     <div className="astro-exo-method">
                       <div className="astro-exo-method__bar">
                         <i style={{ width: `${(m.count / (exoplanets.data?.total || 1)) * 100}%` }} />
                       </div>
                       <span className="astro-exo-method__name">
-                        {t.zh}
-                        <span className="astro-exo-method__en">{t.en}</span>
+                        {zm.zh}
+                        <span className="astro-exo-method__en">{zm.en}</span>
                       </span>
                       <span className="astro-exo-method__cnt">
                         {m.count} · {((m.count / (exoplanets.data?.total || 1)) * 100).toFixed(1)}%
@@ -56,7 +58,7 @@ export default function DeepTab({ exoplanets, galaxyView, setGalaxyView }) {
           </div>
 
           <div className="astro-exo-latest">
-            <div className="astro-chart__title">最新确认（{exoplanets.data?.lastYear ?? ''} 年）</div>
+            <div className="astro-chart__title">{t('astro.deepExoLatest', { year: exoplanets.data?.lastYear ?? '' })}</div>
             {exoplanets.data?.latest?.length ? (
               <div className="astro-exo-list">
                 {exoplanets.data.latest.map((p) => {
@@ -64,20 +66,20 @@ export default function DeepTab({ exoplanets, galaxyView, setGalaxyView }) {
                   return (
                     <div key={p.name} className="astro-exo-item">
                       <div className="astro-exo-item__name">{p.name}</div>
-                      <div className="astro-exo-item__host">绕 {p.host}</div>
+                      <div className="astro-exo-item__host">{t('astro.deepExoOrbit', { host: p.host })}</div>
                       <div className="astro-exo-item__meta">
                         <TermTip zh={mt.zh} en={mt.en} desc={mt.desc}>
                           <Tag bordered={false} className="astro-method-tag">{mt.zh}</Tag>
                         </TermTip>
-                        {p.periodDays && <span>周期 {Number(p.periodDays).toFixed(2)} 天</span>}
-                        {p.distLy && <span>距地 {p.distLy} 光年</span>}
+                        {p.periodDays && <span>{t('astro.deepExoPeriod', { n: Number(p.periodDays).toFixed(2) })}</span>}
+                        {p.distLy && <span>{t('astro.deepExoDist', { n: p.distLy })}</span>}
                       </div>
                     </div>
                   )
                 })}
               </div>
             ) : (
-              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无数据" />
+              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('astro.deepEmpty')} />
             )}
           </div>
         </div>
@@ -85,15 +87,18 @@ export default function DeepTab({ exoplanets, galaxyView, setGalaxyView }) {
 
       {/* 银河系 */}
       <Panel
-        title="银河系结构与太阳的位置"
-        source="ESA Gaia DR3 公开数据 / NASA 银河系基础参数"
+        title={t('astro.deepGalaxyTitle')}
+        source={t('astro.deepGalaxySource')}
         icon={<CompassOutlined />}
         extra={
           <Segmented
             size="small"
             value={galaxyView}
             onChange={setGalaxyView}
-            options={['结构', '数据']}
+            options={[
+              { label: t('astro.galaxyViewStruct'), value: '结构' },
+              { label: t('astro.galaxyViewData'), value: '数据' },
+            ]}
           />
         }
       >

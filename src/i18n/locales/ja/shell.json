@@ -1,0 +1,16 @@
+{
+  "brand": "星空コンソール",
+  "sidebarCollapse": "クリックで折りたたむ",
+  "sidebarHide": "クリックで非表示",
+  "sidebarExpand": "クリックで展開",
+  "hideHeader": "上部ナビゲーションを隠す",
+  "showHeader": "上部ナビゲーションを表示",
+  "logout": "ログアウト",
+  "sidebarAria": "サイドナビゲーション",
+  "hiddenEntryTitle": "ローカルメディアセンター（非表示ページ）",
+  "sidebarFoot": "左上のボタンで切替：折りたたみ / 非表示",
+  "footer": "© {year} 星空コンソール · Built with Ant Design",
+  "userFallback": "U",
+  "docTitle": "インターステラーコンソール · 深空 / 地球 / 海洋データボード",
+  "metaDesc": "React 19 + Vue 3 + Angular 22 マルチフレームワークコンポーネントデモ：チャート、データテーブル、コマンドパレット、音声・スキャン、AI Agent コンソール。"
+}

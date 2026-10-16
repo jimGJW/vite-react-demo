@@ -1,0 +1,414 @@
+{
+  "page": {
+    "title": "Component Studio",
+    "descLead": "{count} reusable components, picked from 80+ local legacy front-end projects, decoupled from business logic and rewritten with zero dependencies, grouped into {groups} capability areas.",
+    "descTail": "All demo data is neutral fictional placeholder content with no original sensitive information."
+  },
+  "cat": {
+    "screen": "Visualization",
+    "builder": "Rules & Orchestration",
+    "media": "Image & Annotation",
+    "form": "Forms & Trees",
+    "report": "Reports & Tracing",
+    "interact": "Interaction · Advanced"
+  },
+  "demo": {
+    "scanempty": {
+      "name": "ScanEmpty",
+      "title": "Scanning empty state",
+      "desc": "A large-screen empty-state scanning animation built with pure CSS/SVG — no chart library required, usable in any container.",
+      "text": "No alerts",
+      "subText": "No abnormal events in the last 24 hours"
+    },
+    "autoscroll": {
+      "name": "AutoScrollList",
+      "title": "Seamless scrolling list",
+      "desc": "Content taller than the container scrolls vertically in a loop automatically and pauses on hover; the offset is driven by a CSS variable, with no state jitter."
+    },
+    "board": {
+      "name": "DraggableBoard",
+      "title": "Orchestratable board",
+      "desc": "Percentage positioning + collision detection + unified pointer events; with editing on, cards can be dragged/resized, and illegal drops snap back."
+    },
+    "axisbreak": {
+      "name": "AxisBreakBar",
+      "title": "Axis-break bar chart",
+      "desc": "Folds away blank ranges when high and low values differ wildly; drag horizontally on the chart to choose the Y range to fold.",
+      "unit": "10k",
+      "chartTitle": "Monthly metric"
+    },
+    "regionmap": {
+      "name": "SvgRegionMap",
+      "title": "Data-driven region map",
+      "desc": "viewBox-based pure SVG with proportional scaling, layered dots (base map / region blocks / bubbles), and region click callbacks."
+    },
+    "adapttable": {
+      "name": "AdaptTable",
+      "title": "Large-screen adaptive table",
+      "desc": "Column widths split evenly by percentage, draggable column width / row height, and automatic marquee for overlong cell content."
+    },
+    "rulebuilder": {
+      "name": "RuleBuilder",
+      "title": "Visual condition builder",
+      "desc": "AND/OR nested groups + a recursive tree of leaf conditions, with operators switching automatically by field type; outputs structured JSON."
+    },
+    "jsondiff": {
+      "name": "JsonDiff",
+      "title": "Structured object diff",
+      "desc": "A structural diff rather than a text diff: accurately marks added / removed / changed / unchanged, with paths at a glance."
+    },
+    "annotator": {
+      "name": "ImageAnnotator",
+      "title": "Image annotation with zoom & pan",
+      "desc": "Wheel zoom, drag pan; annotation anchors are stored in normalized coordinates, so they never drift after zoom/pan."
+    },
+    "dynform": {
+      "name": "DynamicForm",
+      "title": "Schema-driven dynamic form",
+      "desc": "One field schema is one UI; supports many common field types plus required-field validation."
+    },
+    "orgtree": {
+      "name": "OrgTree",
+      "title": "Hierarchical org tree",
+      "desc": "A hierarchical tree of any depth that expands/collapses level by level, with single-select search."
+    },
+    "scanreport": {
+      "name": "ScanReport",
+      "title": "Security scan report card",
+      "desc": "Renders a structured scan report as a severity distribution + detail list, able to carry any checklist: vulnerabilities, reviews, inspections, etc."
+    },
+    "anchornav": {
+      "name": "AnchorNav",
+      "title": "Anchor scroll navigation",
+      "desc": "Sticky left-hand table of contents + right-hand content area; click to smooth-scroll, with the current section auto-highlighted while scrolling (rAF-throttled)."
+    },
+    "pagetabs": {
+      "name": "PageTabs",
+      "title": "Multi-tab workspace",
+      "desc": "Router-style tab bar: switchable, closable, and creatable; the content area is provided by the current tab's render."
+    },
+    "treetable": {
+      "name": "TreeTable",
+      "title": "Tree table + ancestor-preserving search",
+      "desc": "Expands level by level; searching by name automatically keeps and expands the parents of matched descendants, never losing context."
+    },
+    "highlighter": {
+      "name": "Highlighter",
+      "title": "Keyword highlighting",
+      "desc": "Wraps text fragments matching the keyword in <mark>; pure-function splitting, embeddable in any list or table cell."
+    },
+    "editabletable": {
+      "name": "EditableTable",
+      "title": "Inline-editable table",
+      "desc": "Click \"Edit\" to switch the whole row to inputs/dropdowns; saving writes back, canceling restores the initial values."
+    },
+    "draglayout": {
+      "name": "DragLayout",
+      "title": "Free drag-and-resize layout",
+      "desc": "Cards are positioned by percentage and can be dragged to move or corner-dragged to resize, always constrained to the container; ideal for lightweight low-code dashboards."
+    },
+    "gauge": {
+      "name": "CanvasGauge",
+      "title": "Canvas gauge",
+      "desc": "Zero-dependency Canvas gauge: rAF easing to the target value, high-DPI, container-adaptive."
+    },
+    "carousel3d": {
+      "name": "CardCarousel3D",
+      "title": "3D card carousel",
+      "desc": "Gesture direction detection (>45° yields to vertical scrolling); cards switch with Z-axis depth and rotation by relative position."
+    },
+    "frameplayer": {
+      "name": "FramePlayer",
+      "title": "Frame sequence player",
+      "desc": "Loops through a set of \"frames\" by fps, with play/pause, frame stepping, and progress dragging; a frame can be any node."
+    },
+    "contextmenu": {
+      "name": "ContextMenu",
+      "title": "Context menu",
+      "desc": "Right-click inside the wrapped area to open the menu; clicking anywhere or scrolling closes it."
+    },
+    "errorboundary": {
+      "name": "ErrorBoundary",
+      "title": "Error boundary",
+      "desc": "Catches render-phase exceptions in the subtree, shows a fallback UI, and supports retry."
+    },
+    "fullscreen": {
+      "name": "Fullscreen",
+      "title": "Fullscreen container",
+      "desc": "Calls the Fullscreen API on a given area and syncs the current fullscreen state."
+    }
+  },
+  "data": {
+    "rank": {
+      "node": "Service node {letter}{no}"
+    },
+    "board": {
+      "visits": "Visits",
+      "errors": "Error rate",
+      "latency": "Latency",
+      "online": "Online nodes"
+    },
+    "axis": {
+      "unit": "10k",
+      "title": "Monthly metric",
+      "m1": "Jan",
+      "m2": "Feb",
+      "m3": "Mar",
+      "m4": "Apr",
+      "m5": "May",
+      "m6": "Jun",
+      "m7": "Jul",
+      "m8": "Aug",
+      "m9": "Sep",
+      "m10": "Oct",
+      "m11": "Nov",
+      "m12": "Dec"
+    },
+    "region": {
+      "datacenter": "Data center",
+      "office": "Office",
+      "storage": "Warehouse",
+      "entrance": "Entrance"
+    },
+    "nodeType": {
+      "server": "Server",
+      "gateway": "Gateway",
+      "terminal": "Terminal",
+      "sensor": "Sensor"
+    },
+    "nodeLabel": {
+      "rackA": "Rack A",
+      "coreSwitch": "Core switch",
+      "officeTerminal": "Office terminal",
+      "envSensor": "Env sensor",
+      "accessControl": "Access control",
+      "edge": "Edge"
+    },
+    "table": {
+      "name": "Resource name",
+      "ip": "Address",
+      "group": "Group",
+      "status": "Status"
+    },
+    "group": {
+      "net": "Network",
+      "room": "Data center",
+      "iot": "IoT",
+      "terminal": "Terminal",
+      "sec": "Security"
+    },
+    "status": {
+      "online": "Online",
+      "offline": "Offline",
+      "maintaining": "Maintaining"
+    },
+    "rule": {
+      "name": "Name",
+      "count": "Count",
+      "status": "Status",
+      "enabled": "Enabled"
+    },
+    "form": {
+      "project": "Project name",
+      "desc": "Description",
+      "count": "Count",
+      "category": "Category",
+      "enabled": "Enable",
+      "date": "Start date",
+      "required": "Please enter",
+      "optional": "Optional",
+      "catA": "Type A",
+      "catB": "Type B"
+    },
+    "org": {
+      "root": "Root node",
+      "group1": "Group 1",
+      "group2": "Group 2",
+      "child1": "Child 1",
+      "child2": "Child 2",
+      "child3": "Child 3",
+      "child4": "Child 4",
+      "child41": "Child 4-1"
+    },
+    "report": {
+      "title": "Dependency & configuration inspection report",
+      "f1Title": "Dependency with a known high-risk vulnerability",
+      "f1Detail": "A dependency version is below the security baseline; an upgrade is recommended.",
+      "f2Title": "Plaintext credentials found in configuration",
+      "f2Detail": "Use environment variables or a secrets manager instead.",
+      "f3Title": "Outdated TLS protocol",
+      "f3Detail": "Disabling TLS1.0/1.1 is recommended.",
+      "f4Title": "Debug port exposed to the internet",
+      "f4Detail": "Opening it to the intranet only is recommended.",
+      "f5Title": "Missing LICENSE declaration",
+      "f5Detail": "Add an open-source license declaration.",
+      "f6Title": "Dependency versions not locked",
+      "f6Detail": "Locking patch versions is recommended."
+    },
+    "anchor": {
+      "overview": "Overview",
+      "overviewText": "This area demonstrates anchor scrolling: click an item in the left directory and the content area smooth-scrolls to the matching section.",
+      "metric": "Metric notes",
+      "metricText": "While scrolling, the left directory automatically highlights the currently visible section (throttled to once per frame).",
+      "usage": "Use cases",
+      "usageText": "Great for long documents, help centers, configuration notes, and any page needing directory navigation.",
+      "faq": "FAQ",
+      "faqText": "The directory and content are anchored via id, with no extra state syncing needed."
+    },
+    "tree": {
+      "clusterA": "Cluster A",
+      "clusterB": "Cluster B",
+      "nodeA1": "Node a-1",
+      "nodeA2": "Node a-2",
+      "nodeB1": "Node b-1",
+      "nodeB2": "Node b-2",
+      "podA21": "Container a-2-1"
+    },
+    "drag": {
+      "card1": "Card 1",
+      "card1Text": "Drag the title to move, drag the bottom-right corner to resize",
+      "card2": "Card 2",
+      "card2Text": "Drops are automatically constrained to the container",
+      "card3": "Card 3",
+      "card3Text": "Percentage positioning, adaptive scaling",
+      "card4": "Card 4",
+      "card4Text": "Can hold any content"
+    },
+    "carousel": {
+      "item": "Content card {no}"
+    },
+    "ctx": {
+      "copy": "Copy",
+      "rename": "Rename",
+      "delete": "Delete"
+    },
+    "json": {
+      "sampleName": "Sample service"
+    },
+    "plan": {
+      "zoneA": "Zone A",
+      "zoneB": "Zone B",
+      "zoneC": "Zone C",
+      "zoneD": "Zone D"
+    }
+  },
+  "ui": {
+    "editMode": "Edit mode",
+    "regionSelected": "Selected region: {name}",
+    "show": "Show",
+    "hide": "Hide",
+    "liveValues": "live values",
+    "tabHome": "Home",
+    "tabDoc": "Docs",
+    "tabLog": "Logs",
+    "homeContent": "Home content area",
+    "docContent": "Docs content area",
+    "logContent": "Logs content area",
+    "newTab": "New tab",
+    "newTabContent": "Newly opened tab (demo)",
+    "searchPlaceholder": "Type a keyword to highlight",
+    "hlKeyword": "service",
+    "hlText1": "core-switch-01 service node status normal",
+    "hlText2": "app-server-A service response 12ms",
+    "hlText3": "edge-gateway-03 offline, manual intervention needed",
+    "randomValue": "Random value",
+    "zero": "Reset to zero",
+    "autoPlay": "Autoplay",
+    "ctxHint": "Right-click this area to open the menu",
+    "boomBtn": "Trigger render exception",
+    "boomHint": "Click the button to make the subtree throw; the error boundary will catch it and support retry.",
+    "fullscreenHint": "Click the \"Fullscreen\" button at the top right (may be restricted in a sandbox)",
+    "gaugeTitle": "完成度"
+  },
+  "code": {
+    "copied": "Usage copied",
+    "clipUnsupported": "Clipboard is not supported in this environment",
+    "collapse": "Collapse usage",
+    "expand": "View usage",
+    "copy": "Copy"
+  },
+  "comp": {
+    "empty": "No data",
+    "rowResizeTitle": "Drag to adjust row height",
+    "noCards": "No cards",
+    "drag": "Drag",
+    "highRange": "High range",
+    "lowRange": "Low range",
+    "lowValue": "Low",
+    "highValue": "High",
+    "breaks": "{count} breaks",
+    "resetBreaks": "Reset breaks",
+    "axisHint": "Drag horizontally on the chart to select the value range to fold",
+    "opGt": "Greater than",
+    "opGe": "Not less than",
+    "opLt": "Less than",
+    "opLe": "Not greater than",
+    "opEq": "Equals",
+    "opRange": "Between",
+    "opNe": "Not equals",
+    "opContains": "Contains",
+    "opStarts": "Starts with",
+    "opIn": "In",
+    "opAnd": "AND",
+    "opOr": "OR",
+    "selectFieldFirst": "Select a field first",
+    "boolYes": "Yes",
+    "boolNo": "No",
+    "valuePlaceholder": "Value",
+    "fieldPlaceholder": "Field",
+    "addCondition": "Condition",
+    "addGroup": "Group",
+    "noConditions": "No conditions yet",
+    "noFields": "No fields passed in; fields cannot be selected",
+    "diffAdded": "Added",
+    "diffRemoved": "Removed",
+    "diffChanged": "Changed",
+    "diffSame": "Unchanged",
+    "diffChanges": "Changes ({added}+{removed}+{changed})",
+    "diffAll": "All",
+    "diffIdentical": "The two datasets are completely identical",
+    "formRequired": "Please fill in {label}",
+    "formEmptySchema": "Schema is empty",
+    "orgSearch": "Search nodes",
+    "orgExpand": "Expand",
+    "orgCollapse": "Collapse",
+    "orgNoMatch": "No matching nodes",
+    "sevCritical": "Critical",
+    "sevHigh": "High",
+    "sevMedium": "Medium",
+    "sevLow": "Low",
+    "sevInfo": "Info",
+    "reportTitle": "Scan report",
+    "reportSub": "{total} findings · Score {score}/100",
+    "reportAll": "All {total}",
+    "reportEmpty": "No findings",
+    "annoLabel": "Annotation {no}",
+    "annoReset": "Reset",
+    "annoActive": "Annotating (click the image to add)",
+    "annoStart": "Annotate",
+    "annoPlaceholder": "Annotation label",
+    "annoNeedSrc": "Pass src to show the base image",
+    "annoRemove": "Delete annotation \"{label}\"?",
+    "annoList": "Annotations ({count})",
+    "annoClear": "Clear",
+    "annoEmpty": "No annotations",
+    "tabAdd": "New tab",
+    "treeValue": "Value",
+    "treeSearch": "Search name (parents auto-kept)",
+    "treeName": "Name",
+    "treeNoMatch": "No match",
+    "editActions": "Actions",
+    "editSave": "Save",
+    "editCancel": "Cancel",
+    "editStart": "Edit",
+    "framePause": "Pause",
+    "framePlay": "Play",
+    "framePrev": "Previous frame",
+    "frameNext": "Next frame",
+    "frameTip": "Frame {no}",
+    "fsEnter": "Fullscreen",
+    "fsExit": "Exit fullscreen",
+    "errMessage": "Render error",
+    "errRetry": "Retry"
+  }
+}

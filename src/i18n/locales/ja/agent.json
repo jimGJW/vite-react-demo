@@ -1,0 +1,80 @@
+{
+  "console": {
+    "title": "🤖 AI Agent コンソール",
+    "online": "オンライン",
+    "modeDirect": "直接モード",
+    "modeIframe": "iframe モード",
+    "toggleMode": "モード切替"
+  },
+  "page": {
+    "desc": "自然言語で現在のページを操作します。クリック、入力、スクロール、分析、ナビゲーションに対応。入力欄・ショートカットコマンド・マイク音声の 3 つの操作方法があります。",
+    "execPre": "実行済み ",
+    "execPost": " 回の操作"
+  },
+  "stats": {
+    "execPre": "実行 ",
+    "execPost": " 回",
+    "successPre": "成功 ",
+    "failPre": "失敗 ",
+    "voicePre": "音声 ",
+    "ratePre": "成功率 ",
+    "ratePost": "%",
+    "clearTitle": "履歴を消去",
+    "clear": "🗑 消去"
+  },
+  "history": {
+    "failBadge": "失敗",
+    "copyTitle": "コマンドをコピー",
+    "redoTitle": "再実行",
+    "success": "成功",
+    "emptyTitle": "最初のコマンドを始めましょう",
+    "emptyLine1": "「ログインボタンをクリック」「ホームに移動」「下にスクロール」を試してみてください",
+    "emptyLine2": "または「フォーム記入：名前 张三、メール a@b.com」「フォーム送信」",
+    "emptyLine3": "下のショートカットコマンドをクリックするか、🎤 を押して音声入力もできます"
+  },
+  "input": {
+    "micUnsupported": "現在のブラウザはマイク録音に対応していません",
+    "micStopTip": "録音を停止して認識を開始",
+    "micTip": "🎤 音声でページを操作：コマンドを話すと自動実行（クリック/跳転/スクロール/入力）",
+    "placeholder": "コマンドを入力または貼り付け…Enter で実行 · Shift+Enter で改行 · 🎤 で音声も可",
+    "executing": "実行中",
+    "execute": "▶ 実行"
+  },
+  "shortcuts": {
+    "title": "⚡ ワンクリック実行",
+    "runTip": "「{label}」を直接実行"
+  },
+  "voice": {
+    "recording": "🎙️ 録音中…終わったら ⏹ を押して停止",
+    "recognizing": "⏳ 音声を端末内で認識中（端末外に出ません）",
+    "loadingModel": "⏬ 音声モデルの初回読み込み（一度だけ、約 40MB）"
+  },
+  "status": {
+    "directMode": "直接モード：現在のページ DOM を操作",
+    "iframeWaiting": "iframe モード：接続を待機中...",
+    "iframeConnected": "iframe 接続済み",
+    "parsing": "🔄「{task}」を解析中...",
+    "done": "✅ 完了：{summary}",
+    "failed": "❌ 失敗：{summary}",
+    "partialDone": "⚠️ 完了：{summary}",
+    "error": "❌ エラー：{message}",
+    "recognized": "🎙️ 認識：{text}",
+    "corrected": "（修正済み：{text}）",
+    "voiceFailed": "❌ 音声認識に失敗：{message}",
+    "copied": "📋「{task}」をコピーしました",
+    "copyFailed": "❌ コピー失敗"
+  },
+  "summary": {
+    "allSuccess": "✓ 全て成功 · {count} 個のアクション",
+    "allFail": "✗ 全て失敗 · {count} 個のアクション",
+    "partial": "一部成功 · {success}/{total}"
+  },
+  "iframe": {
+    "placeholder": "埋め込みページのアドレス（iframe モード）",
+    "hint": "iframe モードでは対象ページのアドレスを設定する必要があります"
+  },
+  "errors": {
+    "iframeNotReady": "iframe の準備ができていません",
+    "timeout": "タイムアウト（5秒）"
+  }
+}

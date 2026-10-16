@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Form, Button, message, Tabs, Switch, Select, Input, Checkbox, Empty } from 'antd'
-import { Slider, Rate, TimePicker } from 'antd'
 import FormBuilder from 'antd-form-builder'
 import './index.scss'
 

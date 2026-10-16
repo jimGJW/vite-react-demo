@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { Button, Select, Input, InputNumber, Space, Empty } from 'antd'
 import { PlusOutlined, DeleteOutlined, FolderAddOutlined } from '@ant-design/icons'
+import { useI18n } from '../../../i18n/index.js'
 
 /**
  * RuleBuilder · 可视化条件编排
@@ -25,24 +26,37 @@ import { PlusOutlined, DeleteOutlined, FolderAddOutlined } from '@ant-design/ico
 
 const OPERATORS = {
   number: [
-    { value: '>', label: '大于' },
-    { value: '>=', label: '不小于' },
-    { value: '<', label: '小于' },
-    { value: '<=', label: '不大于' },
-    { value: '=', label: '等于' },
-    { value: 'between', label: '区间' },
+    { value: '>' },
+    { value: '>=' },
+    { value: '<' },
+    { value: '<=' },
+    { value: '=' },
+    { value: 'between' },
   ],
   string: [
-    { value: '=', label: '等于' },
-    { value: '!=', label: '不等于' },
-    { value: 'contains', label: '包含' },
-    { value: 'starts', label: '开头是' },
+    { value: '=' },
+    { value: '!=' },
+    { value: 'contains' },
+    { value: 'starts' },
   ],
   enum: [
-    { value: '=', label: '等于' },
-    { value: 'in', label: '属于' },
+    { value: '=' },
+    { value: 'in' },
   ],
-  boolean: [{ value: '=', label: '等于' }],
+  boolean: [{ value: '=' }],
+}
+
+const OP_LABEL = {
+  '>': 'studio.comp.opGt',
+  '>=': 'studio.comp.opGe',
+  '<': 'studio.comp.opLt',
+  '<=': 'studio.comp.opLe',
+  '=': 'studio.comp.opEq',
+  between: 'studio.comp.opRange',
+  '!=': 'studio.comp.opNe',
+  contains: 'studio.comp.opContains',
+  starts: 'studio.comp.opStarts',
+  in: 'studio.comp.opIn',
 }
 
 const newLeaf = (field) => ({ field: field?.name ?? '', op: '=', value: '' })
@@ -69,7 +83,8 @@ function removeAt(node, path) {
 
 /* —— 值编辑器：按字段类型渲染不同输入控件 —— */
 function ValueEditor({ def, value, op, onChange }) {
-  if (!def) return <Input size="small" className="st-rule__value" disabled placeholder="先选字段" />
+  const { t } = useI18n()
+  if (!def) return <Input size="small" className="st-rule__value" disabled placeholder={t('studio.comp.selectFieldFirst')} />
   const set = (v) => onChange({ ...value, value: v })
 
   if (def.type === 'boolean') {
@@ -78,7 +93,7 @@ function ValueEditor({ def, value, op, onChange }) {
         size="small"
         className="st-rule__value"
         value={value.value}
-        options={[{ value: true, label: '是' }, { value: false, label: '否' }]}
+        options={[{ value: true, label: t('studio.comp.boolYes') }, { value: false, label: t('studio.comp.boolNo') }]}
         onChange={set}
       />
     )
@@ -125,7 +140,7 @@ function ValueEditor({ def, value, op, onChange }) {
       size="small"
       className="st-rule__value"
       value={value.value}
-      placeholder="值"
+      placeholder={t('studio.comp.valuePlaceholder')}
       onChange={(e) => set(e.target.value)}
     />
   )
@@ -133,6 +148,7 @@ function ValueEditor({ def, value, op, onChange }) {
 
 /* —— 一条叶子条件：字段 + 操作符 + 值 —— */
 function ConditionRow({ fields, def, value, onChange, onRemove }) {
+  const { t } = useI18n()
   const ops = opsFor(def?.type)
   const op = ops.find((o) => o.value === value.op) ? value.op : ops[0].value
 
@@ -151,7 +167,7 @@ function ConditionRow({ fields, def, value, onChange, onRemove }) {
         size="small"
         className="st-rule__field"
         value={value.field || undefined}
-        placeholder="字段"
+        placeholder={t('studio.comp.fieldPlaceholder')}
         options={fields.map((f) => ({ value: f.name, label: f.label || f.name }))}
         onChange={handleField}
       />
@@ -159,7 +175,7 @@ function ConditionRow({ fields, def, value, onChange, onRemove }) {
         size="small"
         className="st-rule__op"
         value={op}
-        options={ops}
+        options={ops.map((o) => ({ value: o.value, label: t(OP_LABEL[o.value]) }))}
         onChange={(o) => onChange({ ...value, op: o })}
       />
       <ValueEditor def={def} value={value} op={op} onChange={onChange} />
@@ -170,6 +186,7 @@ function ConditionRow({ fields, def, value, onChange, onRemove }) {
 
 /* —— 一个 AND/OR 分组（递归）—— */
 function GroupNode({ node, path, fields, onChangeRoot, onRemove, depth = 0 }) {
+  const { t } = useI18n()
   const updateSelf = useCallback(
     (updater) => onChangeRoot((root) => updateAt(root, path, updater)),
     [onChangeRoot, path],
@@ -188,12 +205,12 @@ function GroupNode({ node, path, fields, onChangeRoot, onRemove, depth = 0 }) {
           size="small"
           value={node.op}
           onChange={changeOp}
-          options={[{ value: 'AND', label: '且 AND' }, { value: 'OR', label: '或 OR' }]}
+          options={[{ value: 'AND', label: t('studio.comp.opAnd') }, { value: 'OR', label: t('studio.comp.opOr') }]}
           className="st-rule__op-select"
         />
         <Space size={4}>
-          <Button size="small" icon={<PlusOutlined />} onClick={addLeaf}>条件</Button>
-          <Button size="small" icon={<FolderAddOutlined />} onClick={addGroup}>分组</Button>
+          <Button size="small" icon={<PlusOutlined />} onClick={addLeaf}>{t('studio.comp.addCondition')}</Button>
+          <Button size="small" icon={<FolderAddOutlined />} onClick={addGroup}>{t('studio.comp.addGroup')}</Button>
           {onRemove && (
             <Button size="small" type="text" danger icon={<DeleteOutlined />} onClick={onRemove} />
           )}
@@ -202,7 +219,7 @@ function GroupNode({ node, path, fields, onChangeRoot, onRemove, depth = 0 }) {
 
       <div className="st-rule__group-body">
         {node.conditions.length === 0 && (
-          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无条件" />
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('studio.comp.noConditions')} />
         )}
         {node.conditions.map((cond, i) => {
           const childPath = [...path, i]
@@ -237,6 +254,7 @@ function GroupNode({ node, path, fields, onChangeRoot, onRemove, depth = 0 }) {
 }
 
 export default function RuleBuilder({ fields = [], value, onChange, className = '' }) {
+  const { t } = useI18n()
   const fieldOptions = useMemo(
     () => fields.map((f) => ({ value: f.name, label: f.label || f.name })),
     [fields],
@@ -257,7 +275,7 @@ export default function RuleBuilder({ fields = [], value, onChange, className = 
     <div className={`st-rule ${className}`}>
       <GroupNode node={current} path={[]} fields={fields} onChangeRoot={emit} />
       {fieldOptions.length === 0 && (
-        <div className="st-dynform__empty">未传入 fields，无法选择字段</div>
+        <div className="st-dynform__empty">{t('studio.comp.noFields')}</div>
       )}
     </div>
   )

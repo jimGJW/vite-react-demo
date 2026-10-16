@@ -1,0 +1,188 @@
+/**
+ * i18n 单元测试：钉死「10 语种命名空间键结构完全一致 + 源码 t() 引用键全部存在 + 无空值」。
+ *
+ * 目录结构：src/i18n/locales/<lang>/<ns>.json（一种语言一个文件夹、一个分类一个文件）。
+ * 新增页面文案的流程：在 10 个语种目录下同名字文件同时补键 → 在页面里 t('ns.key')，
+ * 任何一步漏掉，这里的对应断言都会红。
+ */
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { ok, eq, length } from './harness.mjs'
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
+const LOCALE_DIR = path.join(ROOT, 'src', 'i18n', 'locales')
+const SRC_DIR = path.join(ROOT, 'src')
+
+const EXPECTED_LANGS = ['zh-CN', 'zh-TW', 'en', 'ja', 'ko', 'de', 'fr', 'th', 'mn', 'bo']
+
+/** 递归取全部叶子键路径：{ nav: { home } } → ['nav.home'] */
+function leafKeys(obj, prefix = '') {
+  const out = []
+  for (const [k, v] of Object.entries(obj)) {
+    const p = prefix ? `${prefix}.${k}` : k
+    if (v && typeof v === 'object' && !Array.isArray(v)) out.push(...leafKeys(v, p))
+    else out.push(p)
+  }
+  return out
+}
+
+/** 把 locales/<lang>/*.json 合并成与旧扁平结构同构的对象：lang → { ns → 文案 } */
+function readLang(lang) {
+  const dir = path.join(LOCALE_DIR, lang)
+  const merged = {}
+  for (const f of fs.readdirSync(dir).filter((f) => f.endsWith('.json')).sort()) {
+    merged[f.replace('.json', '')] = JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8'))
+  }
+  return merged
+}
+
+/** 某语种目录下的命名空间文件名集合（不含 .json） */
+function namespacesOf(lang) {
+  return fs.readdirSync(path.join(LOCALE_DIR, lang))
+    .filter((f) => f.endsWith('.json'))
+    .map((f) => f.replace('.json', ''))
+    .sort()
+}
+
+/** 递归收集 src 下的 js/jsx 文件 */
+function walk(dir) {
+  const out = []
+  for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+    if (e.name === 'node_modules' || e.name === 'dist') continue
+    const p = path.join(dir, e.name)
+    if (e.isDirectory()) out.push(...walk(p))
+    else if (/\.(jsx?|mjs)$/.test(e.name)) out.push(p)
+  }
+  return out
+}
+
+export default [
+  [
+    '10 个语种目录齐备、可解析，且只有一层命名空间文件',
+    () => {
+      const dirs = fs.readdirSync(LOCALE_DIR, { withFileTypes: true })
+        .filter((e) => e.isDirectory())
+        .map((e) => e.name)
+        .sort()
+      eq(dirs.join(','), [...EXPECTED_LANGS].sort().join(','), '语种目录集合')
+      for (const lang of EXPECTED_LANGS) {
+        const j = readLang(lang)
+        ok(j && typeof j === 'object' && Object.keys(j).length > 0, `${lang} 可解析为非空对象`)
+      }
+      /* locales 根下不应再残留扁平 <lang>.json（旧结构已废除） */
+      const rootJson = fs.readdirSync(LOCALE_DIR).filter((f) => f.endsWith('.json'))
+      eq(rootJson.length, 0, 'locales 根目录残留扁平 JSON')
+    },
+  ],
+  [
+    '各语种命名空间文件集合完全一致（同文件名 = 同分类）',
+    () => {
+      const base = namespacesOf('zh-CN')
+      ok(base.length >= 8, `简体中文命名空间应 ≥8（实际 ${base.length}）`)
+      for (const lang of EXPECTED_LANGS) {
+        const ns = namespacesOf(lang)
+        const missing = base.filter((k) => !ns.includes(k))
+        const extra = ns.filter((k) => !base.includes(k))
+        eq(missing.join(','), '', `${lang} 缺失命名空间文件`)
+        eq(extra.join(','), '', `${lang} 多出命名空间文件`)
+      }
+    },
+  ],
+  [
+    '10 个语种键结构与简体中文完全一致（无缺失 / 无多余）',
+    () => {
+      const base = leafKeys(readLang('zh-CN')).sort()
+      ok(base.length >= 100, `简体中文键数量应 ≥100（实际 ${base.length}）`)
+      for (const lang of EXPECTED_LANGS) {
+        const ks = leafKeys(readLang(lang)).sort()
+        const missing = base.filter((k) => !ks.includes(k))
+        const extra = ks.filter((k) => !base.includes(k))
+        eq(missing.join(','), '', `${lang} 缺失键`)
+        eq(extra.join(','), '', `${lang} 多余键`)
+        length(ks, base.length, `${lang} 键数量`)
+      }
+    },
+  ],
+  [
+    '所有语种所有文案非空（含插值占位符语法检查）',
+    () => {
+      for (const lang of EXPECTED_LANGS) {
+        const j = readLang(lang)
+        for (const key of leafKeys(j)) {
+          const v = key.split('.').reduce((o, s) => o[s], j)
+          ok(typeof v === 'string' && v.trim().length > 0, `${lang}.${key} 为空`)
+          /* {name} 占位符成对出现：花括号数必须为偶数，防止写花脸 */
+          const opens = (v.match(/\{/g) || []).length
+          const closes = (v.match(/\}/g) || []).length
+          eq(opens, closes, `${lang}.${key} 花括号不成对`)
+        }
+      }
+    },
+  ],
+  [
+    '占位符跨语种一致：同一键的 {var} 名集合相同',
+    () => {
+      const base = readLang('zh-CN')
+      const varsOf = (obj, prefix = '') => {
+        const out = {}
+        for (const [k, v] of Object.entries(obj)) {
+          const p = prefix ? `${prefix}.${k}` : k
+          if (v && typeof v === 'object' && !Array.isArray(v)) Object.assign(out, varsOf(v, p))
+          else out[p] = (String(v).match(/\{(\w+)\}/g) || []).sort().join(',')
+        }
+        return out
+      }
+      const baseVars = varsOf(base)
+      for (const lang of EXPECTED_LANGS) {
+        const vars = varsOf(readLang(lang))
+        for (const [key, set] of Object.entries(baseVars)) {
+          eq(vars[key], set, `${lang}.${key} 占位符与简体中文不一致`)
+        }
+      }
+    },
+  ],
+  [
+    '源码中所有 t() 引用的键都存在于简体中文文案',
+    () => {
+      const base = new Set(leafKeys(readLang('zh-CN')))
+      const files = walk(SRC_DIR)
+      const pattern = /\bt\(\s*['"`]([\w.-]+)['"`]/g
+      const bad = []
+      for (const f of files) {
+        /* 剥注释：文档注释里的用法示例（t('xxx.yyy')）不是真实引用 */
+        const src = fs.readFileSync(f, 'utf8')
+          .replace(/\/\*[\s\S]*?\*\//g, '')
+          .replace(/(^|[^:])\/\/.*$/gm, '$1')
+        for (const m of src.matchAll(pattern)) {
+          if (!base.has(m[1])) bad.push(`${path.relative(ROOT, f)} → t('${m[1]}')`)
+        }
+      }
+      eq(bad.join('\n'), '', '存在不存在的 i18n 键引用')
+    },
+  ],
+  [
+    '核心分类齐备：nav / shell / home / about / login / notFound / loading / lang',
+    () => {
+      const base = readLang('zh-CN')
+      for (const cat of ['nav', 'shell', 'home', 'about', 'login', 'notFound', 'loading', 'lang']) {
+        ok(base[cat] && Object.keys(base[cat]).length > 0, `缺少分类 ${cat}`)
+      }
+      /* 导航分类要覆盖侧边栏全部一级入口 */
+      for (const key of ['home', 'dashboard', 'about', 'testCenter']) {
+        ok(base.nav[key], `nav.${key} 缺失`)
+      }
+    },
+  ],
+  [
+    'translate 兜底语义：缺失键返回第三参 fallback，而非键名',
+    async () => {
+      const { translate } = await import('../../src/i18n/translate.mjs')
+      const messages = { 'zh-CN': { a: { b: '值' } }, en: {} }
+      eq(translate(messages, 'en', 'a.b'), '值', '缺失语种回退简体中文')
+      eq(translate(messages, 'en', 'a.c', {}, '兜底'), '兜底', 'fallback 参数生效')
+      eq(translate(messages, 'en', 'a.c'), 'a.c', '无 fallback 时返回键名')
+      eq(translate(messages, 'zh-CN', 'a.b', {}, '兜底'), '值', '有值时忽略 fallback')
+    },
+  ],
+]

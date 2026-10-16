@@ -4,7 +4,10 @@
  * 内容区由 panels[active].render() 提供，便于实现「打开新标签页」的交互。
  * 来自某中台项目的多标签页工作区思路，去 Umi 运行时重写。
  */
+import { useI18n } from '../../../i18n/index.js'
+
 export default function PageTabs({ panels = [], activeKey, onChange, onClose, onAdd }) {
+  const { t } = useI18n()
   const active = panels.find((p) => p.key === activeKey)
   return (
     <div className="st-pagetabs">
@@ -30,7 +33,7 @@ export default function PageTabs({ panels = [], activeKey, onChange, onClose, on
           </span>
         ))}
         {onAdd && (
-          <span className="st-pagetabs__tab st-pagetabs__add" onClick={onAdd} title="新建标签">+</span>
+          <span className="st-pagetabs__tab st-pagetabs__add" onClick={onAdd} title={t('studio.comp.tabAdd')}>+</span>
         )}
       </div>
       <div className="st-pagetabs__body">{active?.render ? active.render() : null}</div>

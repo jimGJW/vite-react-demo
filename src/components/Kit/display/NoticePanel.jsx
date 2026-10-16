@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Badge, Button, Empty, Popover, Tabs } from 'antd'
 import { BellOutlined, CheckOutlined } from '@ant-design/icons'
+import { useI18n } from '../../../i18n'
 
 /**
  * NoticePanel · 通知面板
@@ -60,13 +61,16 @@ export default function NoticePanel({
   placement = 'bottomRight',
   width = 320,
   listHeight = 300,
-  emptyText = '暂无消息',
-  clearText = '清空',
+  emptyText,
+  clearText,
   onItemClick,
   onClear,
   children,
   className = '',
 }) {
+  const { t } = useI18n()
+  const emptyMsg = emptyText ?? t('kit.notice.empty')
+  const clearMsg = clearText ?? t('kit.notice.clear')
   const [open, setOpen] = useState(false)
   const [activeKey, setActiveKey] = useState(tabs[0]?.key)
 
@@ -85,7 +89,7 @@ export default function NoticePanel({
           <div style={{ maxHeight: listHeight, overflowY: 'auto' }}>
             <NoticeList
               items={tab.items}
-              emptyText={tab.emptyText || emptyText}
+              emptyText={tab.emptyText || emptyMsg}
               onItemClick={onItemClick}
             />
           </div>
@@ -96,7 +100,7 @@ export default function NoticePanel({
     <div style={{ maxHeight: listHeight, overflowY: 'auto' }}>
       <NoticeList
         items={tabs[0]?.items}
-        emptyText={tabs[0]?.emptyText || emptyText}
+        emptyText={tabs[0]?.emptyText || emptyMsg}
         onItemClick={onItemClick}
       />
     </div>
@@ -112,7 +116,7 @@ export default function NoticePanel({
           icon={<CheckOutlined />}
           onClick={() => onClear?.(multiple ? activeKey : tabs[0]?.key)}
         >
-          {clearText}
+          {clearMsg}
         </Button>
       </div>
     </div>
@@ -128,7 +132,7 @@ export default function NoticePanel({
       className={className}
     >
       {children || (
-        <button type="button" className="kit-notice__trigger" aria-label="通知">
+        <button type="button" className="kit-notice__trigger" aria-label={t('kit.notice.aria')}>
           <Badge count={total} size="small" offset={[2, -2]}>
             <BellOutlined />
           </Badge>

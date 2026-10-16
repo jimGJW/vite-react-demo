@@ -1,0 +1,62 @@
+{
+  "demo": {
+    "title": "พาเลตคำสั่ง CommandPalette",
+    "leadBefore": "พาเลตคำสั่งสไตล์กลัสส์ไร้การพึ่งพาไลบรารีภายนอก (ใช้ React เท่านั้น) กด",
+    "leadMac": " (macOS) หรือ ",
+    "leadWin": " (Windows / Linux) เพื่อเปิดพาเลต ค้นหาคำสั่งแบบฟัซซี่",
+    "leadSelect": " เพื่อเลือก",
+    "leadRun": " เพื่อ execute",
+    "leadClose": " เพื่อปิด",
+    "hintText": "กดคีย์คู่นี้เพื่อเปิดพาเลต (เปิดใช้งานในหน้านี้แล้ว)",
+    "placeholder": "ค้นหาคำสั่ง — ลอง \"บันทึก\", \"home\", \"feedback\"…",
+    "feedbackTitle": "ผลลัพธ์การดำเนินการ",
+    "lastCommand": "คำสั่งที่ดำเนินการล่าสุด",
+    "none": "— ยังไม่มี —",
+    "closeCount": "จำนวนครั้งที่ปิดพาเลต",
+    "usageTitle": "วิธีใช้",
+    "propsTitle": "Props",
+    "thProp": "คุณสมบัติ",
+    "thType": "ประเภท",
+    "thDesc": "คำอธิบาย",
+    "propCommands": "รายการคำสั่ง แต่ละรายการมี ",
+    "propPlaceholder": "placeholder ของช่องค้นหา ค่าเริ่มต้น «ค้นหาคำสั่ง…»",
+    "propOnClose": "callback หลังจากปิดพาเลต (ESC / คลิกพื้นหลัง / หลังจาก run คำสั่ง)",
+    "cmdFieldsTitle": "ฟิลด์ของคำสั่ง",
+    "thField": "ฟิลด์",
+    "fieldId": "ตัวระบุที่ไม่ซ้ำ (ใช้เป็น key)",
+    "fieldLabel": "ชื่อที่แสดง เข้าร่วมในการจับคู่แบบฟัซซี่",
+    "fieldGroup": "ชื่อกลุ่ม ค่าเริ่มต้น «อื่น ๆ»",
+    "fieldIcon": "ไอคอน เนื้อหาที่เรนเดอร์ได้อะไรก็ได้ (emoji / ตัวอักษร / JSX)",
+    "fieldKeywords": "คำสำคัญสำหรับจับคู่ ค้นหาแบบฟัซซี่ร่วมกับ label",
+    "fieldAction": "execute เมื่อกด Enter หรือคลิก พารามิเตอร์คือวัตถุคำสั่ง"
+  },
+  "cmd": {
+    "navHome": "ไปหน้าแรก",
+    "navDashboard": "ไปคอนโซล",
+    "navAbout": "เกี่ยวกับโปรเจกต์",
+    "actNew": "สร้างไฟล์ใหม่",
+    "actSave": "บันทึก",
+    "actExport": "ส่งออกข้อมูล",
+    "actTheme": "สลับธีม",
+    "helpShortcut": "ดูคีย์ลัด",
+    "helpDoc": "อ่านเอกสาร",
+    "helpFeedback": "รายงานปัญหา"
+  },
+  "group": {
+    "nav": "นำทาง",
+    "action": "การดำเนินการ",
+    "help": "ความช่วยเหลือ"
+  },
+  "component": {
+    "placeholder": "ค้นหาคำสั่ง…",
+    "dialogAria": "พาเลตคำสั่ง",
+    "searchAria": "ค้นหาคำสั่ง",
+    "otherGroup": "อื่น ๆ",
+    "emptyTitle": "ไม่มีคำสั่งที่ตรงกัน",
+    "emptyHint": "ลองเปลี่ยนคำสำคัญหรือล้างการค้นหาเพื่อดูคำสั่งทั้งหมด",
+    "tipSelect": "เลือก",
+    "tipRun": "execute",
+    "tipClose": "ปิด",
+    "count": "{count} รายการ"
+  }
+}

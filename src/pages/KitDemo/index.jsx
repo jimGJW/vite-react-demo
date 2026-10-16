@@ -3,30 +3,31 @@ import { ThunderboltOutlined } from '@ant-design/icons'
 import InteractionTab from './components/InteractionTab.jsx'
 import DisplayTab from './components/DisplayTab.jsx'
 import FormTab from './components/FormTab.jsx'
+import { useI18n } from '../../i18n/index.js'
 import './index.scss'
 
 const { Paragraph, Text } = Typography
 
 export default function KitDemo() {
+  const { t } = useI18n()
   return (
     <div className="kit-demo">
       <div className="kit-demo__hero">
         <h2>
-          <ThunderboltOutlined /> 组件工具箱 Kit
+          <ThunderboltOutlined /> {t('kit.page.title')}
         </h2>
         <Paragraph type="secondary" style={{ marginBottom: 0 }}>
-          从本地两个存量项目（旧移动端 / 旧平板端）里挑选出的通用能力，去掉业务耦合后重写为 React 19 + antd 5 组件。
-          完整调研清单（选了什么、为什么、跳过了什么）见{' '}
-          <Text code>src/components/Kit/README.md</Text>。
+          {t('kit.page.descLead')} <Text code>src/components/Kit/README.md</Text>{' '}
+          {t('kit.page.descTail')}
         </Paragraph>
       </div>
 
       <Tabs
         defaultActiveKey="interaction"
         items={[
-          { key: 'interaction', label: '移动交互（6）', children: <InteractionTab /> },
-          { key: 'display', label: '数据展示（9）', children: <DisplayTab /> },
-          { key: 'form', label: '表单控件（3）', children: <FormTab /> },
+          { key: 'interaction', label: t('kit.page.tabInteraction', { count: 6 }), children: <InteractionTab /> },
+          { key: 'display', label: t('kit.page.tabDisplay', { count: 9 }), children: <DisplayTab /> },
+          { key: 'form', label: t('kit.page.tabForm', { count: 3 }), children: <FormTab /> },
         ]}
       />
     </div>

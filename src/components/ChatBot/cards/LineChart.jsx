@@ -17,11 +17,13 @@ import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { Button, Space } from 'antd'
 import * as echarts from 'echarts'
 import { FIELD_LABELS } from '../config.js'
+import { useI18n, pickLang } from '../../../i18n/index.js'
 import { toSeries } from './utils.js'
 
 const PALETTE = ['#1677ff', '#722ed1', '#13c2c2', '#52c41a', '#faad14', '#eb2f96', '#fa541c']
 
 export default memo(function LineChart({ data, title, series }) {
+  const { t, lang } = useI18n()
   const domRef = useRef(null)
   const chartRef = useRef(null)
   const [colorIdx, setColorIdx] = useState(0)
@@ -35,13 +37,15 @@ export default memo(function LineChart({ data, title, series }) {
     if (!points.length) return { x: [], list: [] }
     return {
       x: points.map((p) => p.name),
-      list: [{ name: FIELD_LABELS[title] || title || '数值', values: points.map((p) => p.value) }],
+      list: [{ name: pickLang(FIELD_LABELS[title], lang) || title || t('chatbot.cards.chartValue'), values: points.map((p) => p.value) }],
     }
-  }, [series, data, title])
+  }, [series, data, title, lang, t])
 
   const hasData = model.list.length > 0 && model.x.length > 0
   const multi = model.list.length > 1
-  const cardTitle = multi ? FIELD_LABELS[title] || title || '趋势' : model.list[0]?.name || '数值'
+  const cardTitle = multi
+    ? pickLang(FIELD_LABELS[title], lang) || title || t('chatbot.cards.chartTrend')
+    : model.list[0]?.name || t('chatbot.cards.chartValue')
 
   /* 配色轮播：多序列时整体错位，让「换个颜色」一次换掉一整组 */
   const colors = useMemo(
@@ -105,7 +109,7 @@ export default memo(function LineChart({ data, title, series }) {
     )
   }, [model, colors, multi])
 
-  if (!hasData) return <div className="cb-empty">暂无可绘制的数据</div>
+  if (!hasData) return <div className="cb-empty">{t('chatbot.cards.noChart')}</div>
 
   const saveImage = () => {
     const url = chartRef.current?.getDataURL({ pixelRatio: 2, backgroundColor: '#fff' })
@@ -123,11 +127,11 @@ export default memo(function LineChart({ data, title, series }) {
       <div className="cb-card__head">
         <span className="cb-card__title">{cardTitle}</span>
         <Space size={2}>
-          <Button size="small" type="text" aria-label="换个颜色" onClick={() => setColorIdx((i) => i + 1)}>
-            换个颜色
+          <Button size="small" type="text" aria-label={t('chatbot.cards.changeColor')} onClick={() => setColorIdx((i) => i + 1)}>
+            {t('chatbot.cards.changeColor')}
           </Button>
-          <Button size="small" type="text" aria-label="保存图片" onClick={saveImage}>
-            保存图片
+          <Button size="small" type="text" aria-label={t('chatbot.cards.saveImage')} onClick={saveImage}>
+            {t('chatbot.cards.saveImage')}
           </Button>
         </Space>
       </div>

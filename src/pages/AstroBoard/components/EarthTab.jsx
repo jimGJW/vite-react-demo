@@ -4,6 +4,7 @@
  */
 import { Menu, Select, Spin, Tag, Tooltip } from 'antd'
 import { AimOutlined, MoonOutlined, RocketOutlined } from '@ant-design/icons'
+import { useI18n } from '../../../i18n/index.js'
 import { MARK_COLOR, Metric, MoonSVG, Panel, fmtLatLon, pad } from './ui.jsx'
 import { OBSERVERS, footprintRadius } from '../../../lib/astro/orbital.js'
 import { KPI_DEFS } from '../../../lib/astro/glossary'
@@ -12,56 +13,56 @@ import WorldTrackMap from '../../../components/AstroBoard/WorldTrackMap.jsx'
 export default function EarthTab({
   iss, stations, selected, setSelected, positions, active, track, sun, moon, visibleTo, passes, passCity, setPassCity,
 }) {
+  const { t } = useI18n()
   return (
     <>
               <div className="astro-tab-content">
                 {/* 月球 */}
       <Panel
-        title="月球月相与距离"
-        source="本地计算（Jean Meeus《天文算法》简化版）"
+        title={t('astro.earthMoonTitle')}
+        source={t('astro.earthMoonSource')}
         icon={<MoonOutlined />}
       >
         <div className="astro-moon-layout">
           <div className="astro-moon-visual">
             <MoonSVG phaseFraction={moon.phaseFraction} />
             <div className="astro-moon-phase">{moon.phaseName}</div>
-            <div className="astro-moon-illum">照亮率 {(moon.illumination * 100).toFixed(1)}%</div>
+            <div className="astro-moon-illum">{t('astro.earthMoonIllum')} {(moon.illumination * 100).toFixed(1)}%</div>
           </div>
           <div className="astro-moon-data">
             <div className="astro-moon-rows">
               <div className="astro-moon-row">
-                <span>月龄</span>
+                <span>{t('astro.earthMoonAge')}</span>
                 <strong>{moon.age.toFixed(2)} 天</strong>
               </div>
               <div className="astro-moon-row">
-                <span>地月距离</span>
+                <span>{t('astro.earthMoonDist')}</span>
                 <strong>{moon.dist.toLocaleString()} km</strong>
                 <span className="astro-moon-delta" style={{ color: moon.distPct > 0 ? '#ff7a45' : '#52c41a' }}>
                   {moon.distPct > 0 ? '+' : ''}{moon.distPct.toFixed(2)}%
                 </span>
               </div>
               <div className="astro-moon-row">
-                <span>视直径</span>
+                <span>{t('astro.earthMoonDiameter')}</span>
                 <strong>{moon.angularDiam.toFixed(2)} 角分</strong>
               </div>
               <div className="astro-moon-row">
-                <span>距离状态</span>
+                <span>{t('astro.earthMoonDistState')}</span>
                 <strong style={{ color: moon.distLabel === '近地点附近' ? '#ff4d4f' : moon.distLabel === '远地点附近' ? '#4a9eff' : undefined }}>
                   {moon.distLabel}
                 </strong>
               </div>
               <div className="astro-moon-row">
-                <span>距下次满月</span>
+                <span>{t('astro.earthMoonNextFull')}</span>
                 <strong>{moon.daysToFullMoon.toFixed(1)} 天</strong>
               </div>
               <div className="astro-moon-row">
-                <span>距下次新月</span>
+                <span>{t('astro.earthMoonNextNew')}</span>
                 <strong>{moon.daysToNewMoon.toFixed(1)} 天</strong>
               </div>
             </div>
             <div className="astro-moon-note">
-              月相由地-月-日几何关系决定，不需要网络请求——只要时间对就能算。
-              近地点时月球看起来比远地点大约 14%，且潮汐力更强。
+              {t('astro.earthMoonNote')}
             </div>
           </div>
         </div>
@@ -69,12 +70,12 @@ export default function EarthTab({
 
       {/* 空间站 */}
       <Panel
-        title="空间站在轨实时位置"
-        source="wheretheiss.at（ISS 实时接口）+ Celestrak（轨道根数 TLE，本地 SGP4 推算）"
+        title={t('astro.earthStationTitle')}
+        source={t('astro.earthStationSource')}
         icon={<RocketOutlined />}
         loading={stations.loading}
         error={stations.error}
-        extra={<Tag bordered={false} className="astro-live-tag">每 5 秒刷新</Tag>}
+        extra={<Tag bordered={false} className="astro-live-tag">{t('astro.earthLiveTag')}</Tag>}
       >
         <div className="astro-station-layout">
           <div className="astro-station-map">

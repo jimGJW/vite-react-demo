@@ -1,18 +1,13 @@
-import { useMemo, useState } from 'react'
-import { Card, Tag, Typography, Segmented, Empty, Tooltip } from 'antd'
-import { GithubOutlined, AppstoreOutlined, BranchesOutlined } from '@ant-design/icons'
-import { TEMPLATES, GROUPS, FRAMEWORK_COLOR } from '../../../components/Templates/index.js'
+import { Card, Tag, Typography, Tooltip } from 'antd'
+import { GithubOutlined, BranchesOutlined } from '@ant-design/icons'
+import { FRAMEWORK_COLOR } from '../../../components/Templates/index.js'
+import { useI18n } from '../../../i18n/index.js'
 
-const { Title, Paragraph, Text } = Typography
-
-/* 各分组计数（与过滤无关，始终展示全量统计） */
-const GROUP_COUNTS = GROUPS.map((g) => ({
-  ...g,
-  count: g.key === 'all' ? TEMPLATES.length : TEMPLATES.filter((t) => t.group === g.key).length,
-}))
+const { Paragraph, Text } = Typography
 
 
 export function TemplateCard({ item }) {
+  const { t } = useI18n()
   const color = FRAMEWORK_COLOR[item.framework] || '#1677ff'
   return (
     <Card
@@ -43,12 +38,12 @@ export function TemplateCard({ item }) {
       <div className="tpl-card__foot">
         {item.upstream ? (
           <a className="tpl-card__link" href={item.upstream} target="_blank" rel="noreferrer">
-            <GithubOutlined /> 查看上游仓库
+            <GithubOutlined /> {t('templates.card.upstream')}
           </a>
         ) : (
-          <Tooltip title={item.derived ? '本地派生项目，无独立公开仓库' : '公开开源模板，无独立仓库地址'}>
+          <Tooltip title={item.derived ? t('templates.card.derivedTip') : t('templates.card.templateTip')}>
             <span className="tpl-card__link tpl-card__link--disabled">
-              <BranchesOutlined /> {item.derived ? '同基座衍生（本地）' : '开源模板（本地）'}
+              <BranchesOutlined /> {item.derived ? t('templates.card.derivedLocal') : t('templates.card.templateLocal')}
             </span>
           </Tooltip>
         )}

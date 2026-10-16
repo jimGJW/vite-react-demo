@@ -4,11 +4,13 @@ import { KpiHint, TermTip } from './ui.jsx'
 import { azToCompass, observability } from '../../../components/AstroBoard/skyHelpers.js'
 import { equatorialToHorizontal } from '../../../lib/astro/skyProjection.js'
 import { zhDsoType } from '../../../lib/astro/glossary'
+import { useI18n } from '../../../i18n/index.js'
 
 /* ---------- 星图侧栏辅助 ---------- */
 
 /** 太阳系天体在观测地上空的方位/高度一行 */
 export function SkyBodyRow({ name, h, color, extra }) {
+  const { t } = useI18n()
   if (!h || typeof h.alt !== 'number') {
     return (
       <div className="astro-sky-body is-down">
@@ -24,7 +26,7 @@ export function SkyBodyRow({ name, h, color, extra }) {
       <span className="astro-sky-body__dot" style={{ background: color || ob.color }} />
       <span className="astro-sky-body__name">{name}</span>
       <span className="astro-sky-body__dir">
-        {down ? '地平线下' : `${azToCompass(h.az)} ${h.alt.toFixed(0)}°`}
+        {down ? t('astro.skyBelow') : `${azToCompass(h.az)} ${h.alt.toFixed(0)}°`}
       </span>
       {extra && <span className="astro-sky-body__extra">{extra}</span>}
     </div>
@@ -39,6 +41,7 @@ export function SkyBodyRow({ name, h, color, extra }) {
  * ——「现在最高的是哪个」。
  */
 export function MessierTable({ catalog, lat, lon, now }) {
+  const { t } = useI18n()
   const [sortBy, setSortBy] = useState('alt')
 
   const rows = useMemo(() => {
@@ -62,21 +65,21 @@ export function MessierTable({ catalog, lat, lon, now }) {
     <div className="astro-messier">
       <div className="astro-messier__head">
         <span>
-          当前地平线以上 <b>{visibleCount}</b> / {total} 个
+          {t('astro.messierCount', { visible: visibleCount, total })}
         </span>
         <Segmented
           size="small"
           value={sortBy}
           onChange={setSortBy}
           options={[
-            { label: '按高度角', value: 'alt' },
-            { label: '按亮度', value: 'mag' },
+            { label: t('astro.sortAlt'), value: 'alt' },
+            { label: t('astro.sortMag'), value: 'mag' },
           ]}
         />
       </div>
       <div className="astro-messier__grid">
         {rows.map((r) => {
-          const t = zhDsoType(r.type)
+          const dt = zhDsoType(r.type)
           const ob = observability(r.alt)
           return (
             <div key={r.id} className="astro-messier__item">
@@ -85,11 +88,11 @@ export function MessierTable({ catalog, lat, lon, now }) {
                 <div className="astro-messier__name">
                   {/* altName 常已含类型（「猫眼星系」），再挂一个「星系」Tag 就成了
                       「猫眼星系星系」。名称里已有类型词时就不重复挂 Tag。 */}
-                  {r.altName || t.zh}
-                  {!r.altName?.includes(t.zh) && (
-                    <TermTip zh={t.zh} en={t.en} desc={t.desc}>
+                  {r.altName || dt.zh}
+                  {!r.altName?.includes(dt.zh) && (
+                    <TermTip zh={dt.zh} en={dt.en} desc={dt.desc}>
                       <Tag bordered={false} className="astro-messier__tag">
-                        {t.zh}
+                        {dt.zh}
                       </Tag>
                     </TermTip>
                   )}
@@ -97,7 +100,7 @@ export function MessierTable({ catalog, lat, lon, now }) {
                 <div className="astro-messier__meta">
                   {typeof r.mag === 'number' && (
                     <span>
-                      {r.mag.toFixed(1)} 等
+                      {t('astro.magUnit', { n: r.mag.toFixed(1) })}
                       <KpiHint kpiKey="dsoMag" />
                     </span>
                   )}
@@ -109,7 +112,7 @@ export function MessierTable({ catalog, lat, lon, now }) {
         })}
       </div>
       {!visibleCount && (
-        <Empty description="当前观测地与时刻，地平线以上没有梅西耶天体（试试换城市或等天黑）" />
+        <Empty description={t('astro.messierEmpty')} />
       )}
     </div>
   )

@@ -8,7 +8,7 @@ import {
 } from '../../components/Charts/index.js'
 import './index.scss'
 
-import { rnd, seriesNames, singleSeries, multiSeries, drillSeries, makeData } from './components/chartData.js'
+import {  makeData } from './components/chartData.js'
 
 function ChartsDemo() {
   const [data, setData] = useState(makeData)

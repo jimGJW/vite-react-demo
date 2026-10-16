@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Button, Input, Space, Empty } from 'antd'
+import { useI18n } from '../../../i18n/index.js'
 import { DownOutlined, RightOutlined, TeamOutlined } from '@ant-design/icons'
 
 /**
@@ -72,6 +73,7 @@ function TreeNode({ node, depth, selectedId, expanded, onToggle, onSelect }) {
 }
 
 export default function OrgTree({ data = [], selectedId, defaultExpanded = true, onSelect, className = '' }) {
+  const { t } = useI18n()
   const allIds = useMemo(() => collectIds(data), [data])
   const [expanded, setExpanded] = useState(() => new Set(defaultExpanded ? allIds : []))
   const [keyword, setKeyword] = useState('')
@@ -105,19 +107,19 @@ export default function OrgTree({ data = [], selectedId, defaultExpanded = true,
       <div className="st-orgtree__toolbar">
         <Input.Search
           size="small"
-          placeholder="搜索节点"
+          placeholder={t('studio.comp.orgSearch')}
           allowClear
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
         />
         <Space size={4}>
-          <Button size="small" onClick={() => setExpanded(new Set(allIds))}>展开</Button>
-          <Button size="small" onClick={() => setExpanded(new Set())}>收起</Button>
+          <Button size="small" onClick={() => setExpanded(new Set(allIds))}>{t('studio.comp.orgExpand')}</Button>
+          <Button size="small" onClick={() => setExpanded(new Set())}>{t('studio.comp.orgCollapse')}</Button>
         </Space>
       </div>
       <div className="st-orgtree__body">
         {filtered.length === 0 ? (
-          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="无匹配节点" />
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('studio.comp.orgNoMatch')} />
         ) : (
           filtered.map((node) => (
             <TreeNode

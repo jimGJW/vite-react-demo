@@ -1,6 +1,7 @@
 import { useState } from 'react'
 // 命令式「拉起扫码弹窗」函数（非 React Hook），已更名为 openQrScanner
 import { openQrScanner } from '../hooks/useWebQrScanner'
+import { useI18n } from '../i18n'
 
 export default function QrScanBtn({
   onScanSuccess,
@@ -9,6 +10,7 @@ export default function QrScanBtn({
   children,
   btnProps = {},
 }) {
+  const { t } = useI18n()
   const [loading, setLoading] = useState(false)
 
   const openScan = () => {
@@ -60,7 +62,7 @@ export default function QrScanBtn({
       style={defaultBtnStyle}
       {...btnProps}
     >
-      {loading ? '启动中...' : btnProps.children || '打开扫码'}
+      {loading ? t('scan.btn.starting') : btnProps.children || t('scan.btn.open')}
     </button>
   )
 }

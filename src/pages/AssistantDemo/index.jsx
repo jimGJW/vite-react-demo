@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Button, Space, Tag, Typography } from 'antd'
+import { Button, Tag, Typography } from 'antd'
 import {
   useAssistants,
   openAssistant,
@@ -7,14 +7,16 @@ import {
   controlAssistant,
 } from '../../components/Assistants/index.jsx'
 import VoiceAssistantPanel from '../../components/Assistants/VoiceAssistantPanel.jsx'
+import { useI18n } from '../../i18n/index.js'
 import './index.scss'
 
 const { Paragraph, Text, Title } = Typography
 
 
-import { CodeBlock, Method } from './components/assistantParts.jsx'
+import {  Method } from './components/assistantParts.jsx'
 
 export default function AssistantDemo() {
+  const { t } = useI18n()
   const assistants = useAssistants()
   const [standaloneOpen, setStandaloneOpen] = useState(false)
 
@@ -23,17 +25,17 @@ export default function AssistantDemo() {
 
   return (
     <div className="page-card ad-page">
-      <Title level={3}>⚡ 快捷助手</Title>
+      <Title level={3}>{t('assistantDemo.demo.title')}</Title>
       <Paragraph className="ad-lead">
-        语音助手与 AI Agent 都已经组件化，可以在任意页面唤起弹窗。右下角的
-        <Text strong> 快捷助手键 </Text>
-        可自由拖动，点击展开菜单即可开关两个助手、或一键跳转到指定页面。
+        {t('assistantDemo.demo.leadBefore')}
+        <Text strong>{t('assistantDemo.demo.leadKey')}</Text>
+        {t('assistantDemo.demo.leadAfter')}
       </Paragraph>
 
       <div className="ad-status">
-        当前状态：
-        <Tag color={voiceOn ? 'green' : 'default'}>语音助手 {voiceOn ? '已开启' : '已关闭'}</Tag>
-        <Tag color={agentOn ? 'green' : 'default'}>AI Agent {agentOn ? '已开启' : '已关闭'}</Tag>
+        {t('assistantDemo.demo.statusLabel')}{' '}
+        <Tag color={voiceOn ? 'green' : 'default'}>{t('assistantDemo.demo.voiceLabel')} {voiceOn ? t('assistantDemo.demo.on') : t('assistantDemo.demo.off')}</Tag>
+        <Tag color={agentOn ? 'green' : 'default'}>{t('assistantDemo.demo.agentLabel')} {agentOn ? t('assistantDemo.demo.on') : t('assistantDemo.demo.off')}</Tag>
       </div>
 
       <Method

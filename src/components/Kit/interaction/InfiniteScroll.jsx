@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useInView } from '../hooks.js'
+import { useI18n } from '../../../i18n'
 
 /**
  * InfiniteScroll · 触底加载
@@ -24,11 +25,14 @@ export default function InfiniteScroll({
   hasMore = true,
   loading = false,
   rootMargin = '120px',
-  loadingText = '加载中…',
-  endText = '没有更多了',
+  loadingText,
+  endText,
   children,
   className = '',
 }) {
+  const { t } = useI18n()
+  const loadingMsg = loadingText ?? t('kit.infinite.loading')
+  const endMsg = endText ?? t('kit.infinite.end')
   const sentinelRef = useRef(null)
   const inView = useInView(sentinelRef, { rootMargin })
   const firedRef = useRef(false)
@@ -52,9 +56,9 @@ export default function InfiniteScroll({
       {children}
       <div ref={sentinelRef} className="kit-inf__sentinel" aria-hidden="true" />
       {hasMore ? (
-        loading ? <div className="kit-inf__state">{loadingText}</div> : null
+        loading ? <div className="kit-inf__state">{loadingMsg}</div> : null
       ) : (
-        <div className="kit-inf__state kit-inf__state--end">{endText}</div>
+        <div className="kit-inf__state kit-inf__state--end">{endMsg}</div>
       )}
     </div>
   )

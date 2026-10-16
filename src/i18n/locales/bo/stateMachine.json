@@ -1,0 +1,20 @@
+{
+  "title": "State machines & time travel",
+  "lead1": "Extract \"who can transition where\" into one state table; illegal transitions are blocked in",
+  "lead2": " itself, so no ifs across business code. Add an undo stack and you get time travel for free (undo / redo / jump).",
+  "flowTitle": "Ticket flow diagram (current state highlighted)",
+  "flowAria": "Ticket state flow diagram",
+  "step": "Step {current} / {total}",
+  "grayHint": "A grayed button means the action is not allowed in the current state — the machine returns ok:false directly, no re-check needed.",
+  "triggerTip": "Trigger {event}",
+  "travelTitle": "Time travel: undo / redo / jump anywhere",
+  "travelHint": "The history stack stores a sequence of state snapshots. Committing a new state while not at the end discards the later redo branch — standard undo-stack behavior.",
+  "undo": "Undo",
+  "redo": "Redo",
+  "jumpStart": "Back to start",
+  "timelineLabel": "Timeline",
+  "sliderTip": "Step {step}: {label}",
+  "stepItem": "Step {step} · {label}",
+  "currentMark": "(current)",
+  "disableReason": "「{label}」状态下不能触发「{event}」"
+}

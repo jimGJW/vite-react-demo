@@ -1,0 +1,31 @@
+{
+  "page": {
+    "title": "通用掃碼功能示範",
+    "desc": "純瀏覽器 WebRTC 攝像頭掃碼組件，已剝離任何業務邏輯，可在任意頁面復用。",
+    "customTrigger": "自定義觸發節點",
+    "lastResult": "最近識別結果",
+    "historyTitle": "識別歷史",
+    "historyEmpty": "暫無記錄"
+  },
+  "tip": {
+    "label": "使用提示:",
+    "body": "生產環境必須使用 HTTPS;localhost 本地開發可正常調用攝像頭; 兼容移動端與 PC 端 Chrome / Edge / Safari。"
+  },
+  "overlay": {
+    "close": "關閉掃碼",
+    "recognizing": "圖片識別中...",
+    "pickImage": "從相簿選擇圖片",
+    "hint": "將二維碼放入框內掃描"
+  },
+  "toast": {
+    "alreadyOpen": "掃碼窗口已打開，請先關閉",
+    "noQr": "圖片未識別到二維碼",
+    "noCamera": "當前設備未檢測到攝像頭",
+    "startFailed": "攝像頭啟動失敗，請檢查設備權限或使用 HTTPS 訪問",
+    "noPermission": "無法獲取攝像頭權限"
+  },
+  "btn": {
+    "open": "打開掃碼",
+    "starting": "啟動中..."
+  }
+}

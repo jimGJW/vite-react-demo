@@ -1,0 +1,16 @@
+{
+  "brand": "Interstellare Konsole",
+  "sidebarCollapse": "Zum Einklappen klicken",
+  "sidebarHide": "Zum Ausblenden klicken",
+  "sidebarExpand": "Zum Ausklappen klicken",
+  "hideHeader": "Obere Navigationsleiste ausblenden",
+  "showHeader": "Obere Navigationsleiste anzeigen",
+  "logout": "Abmelden",
+  "sidebarAria": "Seitennavigation",
+  "hiddenEntryTitle": "Lokales Medienzentrum (versteckte Seite)",
+  "sidebarFoot": "Taste oben links zum Wechseln: einklappen / ausblenden",
+  "footer": "© {year} Interstellare Konsole · Built with Ant Design",
+  "userFallback": "U",
+  "docTitle": "Interstellare Konsole · Deep-Space-/Erde-/Ozean-Datenboards",
+  "metaDesc": "React 19 + Vue 3 + Angular 22 Multi-Framework-Komponenten-Demo: Diagramme, Datentabellen, Befehlspalette, Sprache & Scan, AI-Agent-Konsole."
+}

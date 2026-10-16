@@ -1,4 +1,7 @@
+import { useI18n } from '../../../i18n/index.js'
+
 export function Co2Trend({ history, latest, growthPerYear }) {
+  const { t } = useI18n()
   if (!history?.length) return null
   const W = 640
   const H = 210
@@ -13,7 +16,7 @@ export function Co2Trend({ history, latest, growthPerYear }) {
   const ticks = [min, (min + max) / 2, max].map((v) => Math.round(v))
   return (
     <div className="geo-chart">
-      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="全球月均二氧化碳浓度趋势">
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t('geo.co2.aria')}>
         {/* 横向网格与 y 轴刻度 */}
         {ticks.map((t) => (
           <g key={t}>
@@ -39,8 +42,7 @@ export function Co2Trend({ history, latest, growthPerYear }) {
         <text x={W - PAD.r} y={H - 8} textAnchor="end" className="geo-chart__tick">{latest.ym}</text>
       </svg>
       <div className="geo-chart__caption">
-        近 5 年全球月均 CO₂（NOAA 全球海洋边界层平均值）· 年增幅约 {growthPerYear ?? '—'} ppm
-        —— 工业化前水平约 280 ppm，当前增幅主要由化石燃料排放驱动
+        {t('geo.co2.caption', { growth: growthPerYear ?? '—' })}
       </div>
     </div>
   )

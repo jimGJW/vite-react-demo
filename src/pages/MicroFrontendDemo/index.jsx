@@ -2,11 +2,10 @@ import { Alert, Button, Card, Space, Tag, Typography, Divider } from 'antd'
 import { MICRO_APP_LIST } from '../../micros/config.js'
 import { isInQiankun } from '../../micros/qiankunHost.js'
 import { useSubAppLoader } from '../../micros/useSubAppLoader.js'
+import { useI18n } from '../../i18n/index.js'
 import './index.scss'
 
 const { Title, Paragraph, Text } = Typography
-
-const STATUS_TEXT = { idle: '未加载', loading: '加载中', loaded: '已挂载', error: '加载失败' }
 
 /**
  * 微前端融合总览页（qiankun）
@@ -19,6 +18,7 @@ const STATUS_TEXT = { idle: '未加载', loading: '加载中', loaded: '已挂�
  * 并发加载会互相覆写 window.proxy 导致 bootstrap 超时（single-spa #31）。
  */
 export default function MicroFrontendDemo() {
+  const { t } = useI18n()
   const vue = useSubAppLoader('vue')
   const angular = useSubAppLoader('angular')
   const loaders = { vue, angular }
@@ -31,12 +31,9 @@ export default function MicroFrontendDemo() {
 
   return (
     <div className="micro-frontend-page">
-      <Title level={2}>微前端融合（qiankun）</Title>
+      <Title level={2}>{t('micro.title')}</Title>
       <Paragraph>
-        本页演示主 React 应用（端口 <Text code>5173</Text>）通过 <Text strong>qiankun</Text> 把两个
-        <Text strong>独立工程</Text> —— Vue 3 子应用（<Text code>7101</Text>）与 Angular 子应用（
-        <Text code>7102</Text>）—— 融合进来。三者各自独立开发、独立构建、独立部署，由 qiankun 统一调度。
-        加载后子应用的<strong>功能菜单会注册到左侧边栏</strong>；也可直接访问各自独立宿主页：
+        {t('micro.intro1')}<Text code>5173</Text>{t('micro.intro2')}<Text strong>qiankun</Text>{t('micro.intro3')}<Text strong>{t('micro.indepProj')}</Text>{t('micro.intro4')}<Text code>7101</Text>{t('micro.intro5')}<Text code>7102</Text>{t('micro.intro6')}<strong>{t('micro.menuRegister')}</strong>{t('micro.intro7')}
         <Button type="link" size="small" style={{ padding: 0 }} href="/micro-vue">
           /micro-vue
         </Button>
@@ -44,7 +41,7 @@ export default function MicroFrontendDemo() {
         <Button type="link" size="small" style={{ padding: 0 }} href="/micro-angular">
           /micro-angular
         </Button>
-        （进入即自动加载）。
+        {t('micro.intro8')}
       </Paragraph>
 
       {isInQiankun() && (
@@ -52,7 +49,7 @@ export default function MicroFrontendDemo() {
           type="info"
           showIcon
           style={{ marginBottom: 16 }}
-          message="当前主应用本身正运行在另一个 qiankun 主应用内"
+          message={t('micro.inQiankun')}
         />
       )}
 
@@ -60,21 +57,21 @@ export default function MicroFrontendDemo() {
         type="warning"
         showIcon
         style={{ marginBottom: 16 }}
-        message="演示前提：请先执行根目录 npm run dev:all 启动三个服务（主应用 + vue-app + angular-app）。仅启动主应用时子应用容器为空属正常。"
+        message={t('micro.prereq')}
       />
 
       <Space wrap style={{ marginBottom: 24 }}>
         <Button type="primary" onClick={loadAll}>
-          一键加载全部子应用（串行）
+          {t('micro.loadAll')}
         </Button>
         {MICRO_APP_LIST.map((a) => (
           <Button key={`load-${a.key}`} onClick={() => loaders[a.key].load()}>
-            加载 {a.title}
+            {t('micro.loadItem', { title: a.title })}
           </Button>
         ))}
         {MICRO_APP_LIST.map((a) => (
           <Button key={`unload-${a.key}`} onClick={() => loaders[a.key].unload()}>
-            卸载 {a.title}
+            {t('micro.unloadItem', { title: a.title })}
           </Button>
         ))}
       </Space>
@@ -96,9 +93,9 @@ export default function MicroFrontendDemo() {
               }
               extra={
                 <Space>
-                  <Tag color={color}>{STATUS_TEXT[s]}</Tag>
+                  <Tag color={color}>{t(`micro.status.${s}`)}</Tag>
                   <Button size="small" type="link" href={a.hostPath}>
-                    独立页
+                    {t('micro.standalone')}
                   </Button>
                 </Space>
               }
@@ -117,10 +114,7 @@ export default function MicroFrontendDemo() {
 
       <Divider />
       <Paragraph type="secondary">
-        预留地址结构：子应用注册表见 <Text code>src/micros/config.js</Text>，宿主逻辑见
-        <Text code>src/micros/qiankunHost.js</Text>，加载器 Hook 见
-        <Text code>src/micros/useSubAppLoader.js</Text>。新增子应用只需在 config 中加一项、放置对应工程并注册
-        hostPath 路由即可。从 Compare 系列页面的「在 Vue 子应用中打开」也会直达独立宿主页并定位到对应模式。
+        {t('micro.footPre')}<Text code>src/micros/config.js</Text>{t('micro.footMid1')}<Text code>src/micros/qiankunHost.js</Text>{t('micro.footMid2')}<Text code>src/micros/useSubAppLoader.js</Text>{t('micro.footTail')}
       </Paragraph>
     </div>
   )

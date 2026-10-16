@@ -53,6 +53,14 @@ export default defineConfig([
       'src/pages/GeoBoard/components/ui.jsx',
       'src/pages/OceanBoard/components/ui.jsx',
       'src/pages/AstroBoard/components/ui.jsx',
+      // 演示页的「分区零件」模块：每个演示页把若干分区（表格 / 表单 / 图表）
+      // 的数据常量与配套小组件放在同一文件导出，页面 index.jsx 只做组装。
+      // 与 Charts/shared.jsx 同构——拆成两文件会让「分区数据 + 它的展示组件」
+      // 长期不同步，故按同一模式豁免
+      'src/pages/AntdDemo/components/antdSections.jsx',
+      'src/pages/EChartsDemo/components/echartsParts.jsx',
+      'src/pages/ChatBotShare/components/shareParts.jsx',
+      'src/pages/StudioDemo/components/StudioDemos.jsx',
     ],
     rules: { 'react-refresh/only-export-components': 'off' },
   },

@@ -1,53 +1,49 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Menu, Tabs, Card, Typography } from 'antd'
 import { CodepenOutlined } from '@ant-design/icons'
 import { CATEGORIES, CodeBlock } from './components/StudioDemos.jsx'
+import { useI18n } from '../../i18n/index.js'
 import './StudioDemo.scss'
 
 const { Title, Paragraph, Text } = Typography
 
 export default function StudioDemo() {
+  const { t } = useI18n()
   const [cat, setCat] = useState('screen')
-  const current = CATEGORIES.find((c) => c.key === cat)
+  const cats = CATEGORIES(t)
+  const current = cats.find((c) => c.key === cat)
 
-  const totalCount = CATEGORIES.reduce((n, c) => n + c.demos.length, 0)
+  const totalCount = cats.reduce((n, c) => n + c.demos.length, 0)
 
-  const menuItems = useMemo(
-    () => CATEGORIES.map((c) => ({
-      key: c.key,
-      icon: c.icon,
-      label: <span className="studio-demo__menu-label">{c.label}<em>{c.demos.length}</em></span>,
-    })),
-    [],
-  )
+  const menuItems = cats.map((c) => ({
+    key: c.key,
+    icon: c.icon,
+    label: <span className="studio-demo__menu-label">{c.label}<em>{c.demos.length}</em></span>,
+  }))
 
-  const tabItems = useMemo(
-    () => current.demos.map((d) => ({
-      key: d.key,
-      label: d.title.split(' · ')[0],
-      children: (
-        <div className="studio-demo__panel">
-          <div className="studio-demo__meta">
-            <Text strong>{d.title}</Text>
-            <Paragraph type="secondary" className="studio-demo__desc">{d.desc}</Paragraph>
-          </div>
-          <div className="studio-demo__stage">{d.render()}</div>
-          <CodeBlock code={d.usage} />
+  const tabItems = current.demos.map((d) => ({
+    key: d.key,
+    label: d.title.split(' · ')[0],
+    children: (
+      <div className="studio-demo__panel">
+        <div className="studio-demo__meta">
+          <Text strong>{d.title}</Text>
+          <Paragraph type="secondary" className="studio-demo__desc">{d.desc}</Paragraph>
         </div>
-      ),
-    })),
-    [current],
-  )
+        <div className="studio-demo__stage">{d.render()}</div>
+        <CodeBlock code={d.usage} />
+      </div>
+    ),
+  }))
 
   return (
     <div className="studio-demo">
       <div className="studio-demo__header">
         <Title level={3} style={{ marginBottom: 4 }}>
-          <CodepenOutlined /> 组件工坊 Studio
+          <CodepenOutlined /> {t('studio.page.title')}
         </Title>
         <Paragraph type="secondary" style={{ marginBottom: 0 }}>
-          从本地 80+ 存量前端项目里筛选、去业务化、零依赖重写而成的 {totalCount} 个可复用组件，按能力分为 {CATEGORIES.length} 组。
-          所有演示数据均为中性虚构占位，不含任何原始敏感信息。
+          {t('studio.page.descLead', { count: totalCount, groups: cats.length })} {t('studio.page.descTail')}
         </Paragraph>
       </div>
 

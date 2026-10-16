@@ -1,29 +1,8 @@
 import TestCenter from '../../components/TestCenter/index.js'
 // 以原始字符串导入真实 Python 脚本与 App 路由源码，保证展示内容与文件同步
 import pyScript from '../../../tests/test_pages.py?raw'
-import './index.scss'
-
-/** 动态导入组件并校验有任意导出（具名或 default） */
-async function checkImport(path) {
-  try {
-    const mod = await import(path)
-    const keys = Object.keys(mod)
-    const ok = keys.length > 0 || mod.default != null
-    return {
-      pass: ok,
-      detail: ok ? `导出 ${keys.length} 项${mod.default ? '（含 default）' : ''}` : '无导出',
-    }
-  } catch (e) {
-    return { pass: false, detail: String(e?.message || e) }
-  }
-}
-
-/**
- * 前端测试用例：点击即时执行，验证数据 / 组件 / 路由层逻辑。
- * 用例 run 为 async，支持动态 import，结果实时回显。
- */
-
 import { CASES } from './components/testCases.js'
+import './index.scss'
 
 function TestCenterDemo() {
   return (

@@ -4,17 +4,10 @@ import VirtualScrollCase from './VirtualScrollCase.jsx'
 import FpsCase from './FpsCase.jsx'
 import WorkerCase from './WorkerCase.jsx'
 import RerenderCase from './RerenderCase.jsx'
+import { useI18n } from '../../i18n/index.js'
 import './index.scss'
 
 const { Title, Paragraph } = Typography
-
-/* 模块级常量：Tabs 配置每次渲染都一样，没必要重建 */
-const TAB_ITEMS = [
-  { key: 'list', label: '虚拟滚动', children: <VirtualScrollCase /> },
-  { key: 'fps', label: '帧率监测', children: <FpsCase /> },
-  { key: 'worker', label: 'Web Worker', children: <WorkerCase /> },
-  { key: 'rerender', label: '重渲染优化', children: <RerenderCase /> },
-]
 
 /**
  * 性能实验室演示页。
@@ -22,16 +15,24 @@ const TAB_ITEMS = [
  * 而是把 DOM 行数、帧率、动画是否卡住直接摆出来。
  */
 export default function PerfLabDemo() {
+  const { t } = useI18n()
+  /* Tabs 配置：children 是稳定节点，这里只用 t() 取标签，每次渲染重建代价可忽略 */
+  const TAB_ITEMS = [
+    { key: 'list', label: t('perf.tab.list'), children: <VirtualScrollCase /> },
+    { key: 'fps', label: t('perf.tab.fps'), children: <FpsCase /> },
+    { key: 'worker', label: t('perf.tab.worker'), children: <WorkerCase /> },
+    { key: 'rerender', label: t('perf.tab.rerender'), children: <RerenderCase /> },
+  ]
+
   return (
     <div className="perf-lab">
       <header className="perf-lab__header">
         <Title level={4} className="perf-lab__title">
-          <ThunderboltOutlined /> 性能实验室 PerfLab
+          <ThunderboltOutlined /> {t('perf.title')}
         </Title>
         <Paragraph type="secondary" className="perf-lab__lead">
-          四个可当场验证的性能实验：10 万行列表、实时帧率、Web Worker 分流、重渲染优化。
-          底层能力收敛在 <code>src/components/PerfLab/</code>，纯函数部分由
-          <code> tests/unit/perf-lab.test.mjs</code> 覆盖，不用开浏览器也能验证边界。
+          {t('perf.lead1')}<code>src/components/PerfLab/</code>{t('perf.lead2')}
+          <code> tests/unit/perf-lab.test.mjs</code>{t('perf.lead3')}{t('perf.lead4')}
         </Paragraph>
       </header>
 

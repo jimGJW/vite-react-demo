@@ -1,0 +1,31 @@
+{
+  "page": {
+    "title": "범용 스캔 데모",
+    "desc": "순수 브라우저 WebRTC 카메라 스캔 컴포넌트로, 비즈니스 로직이 완전히 분리되어 어떤 페이지에서도 재사용할 수 있습니다.",
+    "customTrigger": "사용자 정의 트리거 노드",
+    "lastResult": "최근 인식 결과",
+    "historyTitle": "인식 기록",
+    "historyEmpty": "기록 없음"
+  },
+  "tip": {
+    "label": "사용 팁:",
+    "body": "프로덕션 환경에서는 HTTPS가 필수입니다. localhost 로컬 개발에서는 카메라를 정상적으로 사용할 수 있으며, 모바일과 PC의 Chrome / Edge / Safari를 지원합니다."
+  },
+  "overlay": {
+    "close": "스캔 닫기",
+    "recognizing": "이미지 인식 중...",
+    "pickImage": "앨범에서 이미지 선택",
+    "hint": "QR 코드를 프레임 안에 넣고 스캔하세요"
+  },
+  "toast": {
+    "alreadyOpen": "스캔 창이 이미 열려 있습니다. 먼저 닫아 주세요.",
+    "noQr": "이미지에서 QR 코드를 찾을 수 없습니다",
+    "noCamera": "현재 기기에서 카메라가 감지되지 않습니다",
+    "startFailed": "카메라 시작에 실패했습니다. 기기 권한을 확인하거나 HTTPS로 접속하세요.",
+    "noPermission": "카메라 권한을 얻을 수 없습니다"
+  },
+  "btn": {
+    "open": "스캔 열기",
+    "starting": "시작 중..."
+  }
+}

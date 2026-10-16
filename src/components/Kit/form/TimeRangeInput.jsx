@@ -3,6 +3,7 @@ import { Button, TimePicker, Tooltip } from 'antd'
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import { minutesToTime, splitDuration, uid, validateTimeRanges } from '../utils.js'
+import { useI18n } from '../../../i18n'
 
 /**
  * TimeRangeInput · 时段录入（工时/排班/营业时间）
@@ -40,13 +41,17 @@ export default function TimeRangeInput({
   maxHours = 24,
   disabled = false,
   showSummary = true,
-  addText = '添加时段',
-  summaryText = '合计工时',
+  addText,
+  summaryText,
   className = '',
 }) {
+  const { t } = useI18n()
+  const addMsg = addText ?? t('kit.timeRange.add')
+  const summaryMsg = summaryText ?? t('kit.timeRange.summary')
+  const removeMsg = t('kit.timeRange.remove')
   const { errors, totalMinutes } = useMemo(
-    () => validateTimeRanges(value, { maxHours }),
-    [value, maxHours],
+    () => validateTimeRanges(value, { maxHours, t }),
+    [value, maxHours, t],
   )
 
   const update = (index, patch) => {
@@ -74,7 +79,7 @@ export default function TimeRangeInput({
             format={FORMAT}
             minuteStep={1}
             disabled={disabled}
-            placeholder="开始"
+            placeholder={t('kit.timeRange.start')}
             onChange={(time) => update(index, { start: time ? time.format(FORMAT) : '' })}
           />
           <span className="kit-timerange__dash">~</span>
@@ -83,18 +88,18 @@ export default function TimeRangeInput({
             format={FORMAT}
             minuteStep={1}
             disabled={disabled}
-            placeholder="结束"
+            placeholder={t('kit.timeRange.end')}
             onChange={(time) => update(index, { end: time ? time.format(FORMAT) : '' })}
           />
 
-          <Tooltip title="删除该时段">
+          <Tooltip title={removeMsg}>
             <Button
               type="text"
               size="small"
               danger
               disabled={disabled}
               icon={<DeleteOutlined />}
-              aria-label="删除该时段"
+              aria-label={removeMsg}
               onClick={() => removeRange(index)}
             />
           </Tooltip>
@@ -109,16 +114,18 @@ export default function TimeRangeInput({
           disabled={disabled}
           onClick={addRange}
         >
-          {addText}
+          {addMsg}
         </Button>
       </div>
 
       {showSummary && (
         <div className="kit-timerange__summary">
-          <span>{summaryText}</span>
+          <span>{summaryMsg}</span>
           <span className="kit-timerange__total">
-            {hours} 小时 {minutes} 分
-            {totalMinutes > 0 && <span className="kit-hint">（{minutesToTime(totalMinutes)}）</span>}
+            {t('kit.timeRange.duration', { hours, minutes })}
+            {totalMinutes > 0 && (
+              <span className="kit-hint">{t('kit.timeRange.durationHint', { time: minutesToTime(totalMinutes) })}</span>
+            )}
           </span>
         </div>
       )}

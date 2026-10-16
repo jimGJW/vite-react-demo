@@ -1,0 +1,17 @@
+{
+  "title": "星際控制台",
+  "welcome": "歡迎歸來，艦長。請驗證身份以進入主控系統。",
+  "backHint": "驗證通過後將自動返回 {path}",
+  "username": "帳號",
+  "password": "存取金鑰",
+  "remember": "保持登入",
+  "forgot": "忘記金鑰？",
+  "modeLabel": "介面風格",
+  "modeAntd": "Ant Design",
+  "modeVue": "Vue 風格",
+  "submit": "進入星艦",
+  "verifying": "身份驗證中…",
+  "warping": "躍遷中…",
+  "newCrew": "新艦員？",
+  "apply": "申請進駐"
+}

@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { useI18n } from '../../../i18n'
 
 /**
  * PullToRefresh · 下拉刷新容器
@@ -27,12 +28,16 @@ export default function PullToRefresh({
   threshold = 56,
   resistence = 2.5,
   disabled = false,
-  pullText = '下拉刷新',
-  releaseText = '松手刷新',
-  refreshingText = '正在刷新…',
+  pullText,
+  releaseText,
+  refreshingText,
   children,
   className = '',
 }) {
+  const { t } = useI18n()
+  const pullMsg = pullText ?? t('kit.ptr.pull')
+  const releaseMsg = releaseText ?? t('kit.ptr.release')
+  const refreshingMsg = refreshingText ?? t('kit.ptr.refreshing')
   const contentRef = useRef(null)
   const startYRef = useRef(0)
   const activeRef = useRef(false)
@@ -115,7 +120,7 @@ export default function PullToRefresh({
   const onMouseUp = () => { void finish() }
 
   const hintText =
-    phase === PHASE.REFRESHING ? refreshingText : phase === PHASE.READY ? releaseText : pullText
+    phase === PHASE.REFRESHING ? refreshingMsg : phase === PHASE.READY ? releaseMsg : pullMsg
   // 手指未松开时不加过渡，否则跟手位移会被动画拖慢
   const following = phase === PHASE.PULLING || phase === PHASE.READY
 

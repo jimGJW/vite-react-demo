@@ -1,5 +1,6 @@
 import { clamp } from '../../Utils/index.js'
 import { useRef, useState } from 'react'
+import { useI18n } from '../../../i18n/index.js'
 
 /**
  * DraggableBoard · 可编排看板
@@ -48,6 +49,7 @@ export default function DraggableBoard({
   renderItem,
   className = '',
 }) {
+  const { t } = useI18n()
   const boardRef = useRef(null)
   const [preview, setPreview] = useState(null)
   const [invalid, setInvalid] = useState(false)
@@ -130,7 +132,7 @@ export default function DraggableBoard({
       style={{ paddingTop: `${aspect * 100}%` }}
     >
       <div className="st-board__inner">
-        {items.length === 0 && <div className="st-board__empty">暂无卡片</div>}
+        {items.length === 0 && <div className="st-board__empty">{t('studio.comp.noCards')}</div>}
         {items.map((item) => {
           const box = preview && preview.id === item.id ? { ...item, ...preview } : item
           return (
@@ -150,7 +152,7 @@ export default function DraggableBoard({
                 onPointerDown={(e) => startDrag(e, item, 'move')}
               >
                 <span className="st-board__title">{item.title}</span>
-                {editable && <span className="st-board__hint">拖动</span>}
+                {editable && <span className="st-board__hint">{t('studio.comp.drag')}</span>}
               </div>
               <div className="st-board__body">{renderItem ? renderItem(item) : null}</div>
               {editable && (

@@ -1,0 +1,16 @@
+{
+  "brand": "星際控制台",
+  "sidebarCollapse": "點擊折疊",
+  "sidebarHide": "點擊隱藏",
+  "sidebarExpand": "點擊展開",
+  "hideHeader": "隱藏頂部導航欄",
+  "showHeader": "顯示頂部導航欄",
+  "logout": "登出",
+  "sidebarAria": "側邊導航",
+  "hiddenEntryTitle": "本地媒體中心（隱藏頁）",
+  "sidebarFoot": "點擊左上角按鈕切換：折疊 / 隱藏",
+  "footer": "© {year} 星際控制台 · Built with Ant Design",
+  "userFallback": "U",
+  "docTitle": "星際控制台 · 深空 / 地球 / 海洋數據看板",
+  "metaDesc": "React 19 + Vue 3 + Angular 22 多框架元件演示：圖表、資料表格、命令面板、語音與掃碼、AI Agent 控制台。"
+}

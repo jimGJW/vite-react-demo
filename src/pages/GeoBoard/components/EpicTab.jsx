@@ -5,13 +5,15 @@
 import { PictureOutlined } from '@ant-design/icons'
 import { Empty, Spin, Tag } from 'antd'
 import { Panel } from './ui.jsx'
+import { useI18n } from '../../../i18n/index.js'
 
 export default function EpicTab({ epic, epicData }) {
+  const { t } = useI18n()
   return (
     <div className="geo-tab-content">
       <Panel
-        title="DSCOVR/EPIC 整圆盘地球"
-        source="NASA EPIC（epic.gsfc.nasa.gov），日地拉格朗日 L1 点拍摄，约每 2 小时一帧"
+        title={t('geo.epic.title')}
+        source={t('geo.epic.source')}
         icon={<PictureOutlined />}
         loading={epic.loading}
         error={epic.error}
@@ -23,20 +25,19 @@ export default function EpicTab({ epic, epicData }) {
               href={epicData.frames[0].url}
               target="_blank"
               rel="noreferrer"
-              title="点击查看原图"
+              title={t('geo.epic.viewOrig')}
             >
-              <img src={epicData.frames[0].url} alt={epicData.frames[0].caption || '地球'} loading="lazy" />
+              <img src={epicData.frames[0].url} alt={epicData.frames[0].caption || t('geo.epic.alt')} loading="lazy" />
             </a>
             <div className="geo-epic__body">
-              <h4>{epicData.date} · 自然色</h4>
+              <h4>{epicData.date} · {t('geo.epic.naturalColor')}</h4>
               <div className="geo-epic__meta">
-                <Tag color="green">DSCOVR 卫星 · 距地球约 150 万 km</Tag>
-                <Tag>{epicData.frames[0].time?.slice(11, 16)} UTC 拍摄</Tag>
+                <Tag color="green">{t('geo.epic.dscovrTag')}</Tag>
+                <Tag>{epicData.frames[0].time?.slice(11, 16)} {t('geo.epic.utcShot')}</Tag>
               </div>
               <p className="geo-epic__caption">{epicData.frames[0].caption || '——'}</p>
               <p className="geo-epic__note">
-                EPIC 相机从日地 L1 点持续凝视地球向阳面，10 个窄波段合成自然色——
-                这是「天上视角看地下」最经典的一张脸。
+                {t('geo.epic.note')}
               </p>
               {/* 当日其余帧：胶片条 */}
               {epicData.frames.length > 1 && (
@@ -52,9 +53,9 @@ export default function EpicTab({ epic, epicData }) {
             </div>
           </div>
         ) : epic.loading ? (
-          <div className="geo-loading"><Spin /> 正在加载今日地球…</div>
+          <div className="geo-loading"><Spin /> {t('geo.epic.loading')}</div>
         ) : (
-          <Empty description="EPIC 暂时不可用" />
+          <Empty description={t('geo.epic.empty')} />
         )}
       </Panel>
     </div>

@@ -1,0 +1,8 @@
+{
+  "title": "홈에 오신 것을 환영합니다",
+  "desc": "Vite + React + React Router 로 만든 예제 프로젝트입니다.",
+  "counter": "클릭 횟수: {count}",
+  "navHintPre": "상단 내비게이션에서",
+  "navHintOr": "또는",
+  "navHintPost": "페이지로 이동할 수 있습니다."
+}

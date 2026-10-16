@@ -1,0 +1,38 @@
+{
+  "demo": {
+    "title": "⚡ ตัวช่วยด่วน",
+    "leadBefore": "ผู้ช่วยเสียงและ AI Agent ถูกคอมโพเนนต์ไว้แล้ว เรียกเป็นป็อปอัพได้ในทุกหน้า ",
+    "leadKey": " ปุ่มตัวช่วยด่วน ",
+    "leadAfter": " มุมขวาล่างลากได้อิสระ คลิกเพื่อขยายเมนู ปิด/เปิดทั้งสองตัวช่วยหรือก้าวไปหน้าที่ระบุในคลิกเดียว",
+    "statusLabel": "สถานะปัจจุบัน: ",
+    "voiceLabel": "ผู้ช่วยเสียง",
+    "agentLabel": "AI Agent",
+    "on": "เปิดอยู่",
+    "off": "ปิดอยู่",
+    "openVoice": "🎙️ เปิดผู้ช่วยเสียง",
+    "agentPrefix": "🤖 ",
+    "closeBtn": "ปิด",
+    "openBtn": "เปิด",
+    "agentSuffix": " AI Agent",
+    "sendToAgent": "➡️ ส่งคำสั่งให้ Agent",
+    "closeAll": "ปิดทั้งหมด",
+    "fillAgentBtn": "Agent กรอก \"{text}\"",
+    "scrollBottom": "เลื่อนลงท้ายหน้า",
+    "analyzeButtons": "วิเคราะห์ว่าหน้าปัจจุบันมีปุ่มอะไรบ้าง",
+    "dispatchOpen": "dispatchEvent → เปิดผู้ช่วยเสียง",
+    "dispatchToggle": "dispatchEvent → สลับ AI Agent",
+    "standaloneBtn": "เปิดแผงผู้ช่วยเสียงอิสระ",
+    "standaloneTitle": "ผู้ช่วยเสียง (อินสแตนซ์อิสระ)"
+  },
+  "method": {
+    "tag": "วิธี",
+    "m1Title": "useAssistants Hook (แนะนำในคอมโพเนนต์ React)",
+    "m1Desc": "หลังจาก mount <Assistants /> ใน Layout คอมโพเนนต์หน้าใดก็อ่านและควบคุมแผงตัวช่วยผ่าน Hook ได้",
+    "m2Title": "API แบบสั่งงาน (ใช้ได้ในหน้า JS / Vue ใด ๆ)",
+    "m2Desc": "ไม่ต้องพึ่ง React context เรียกจาก Vue SFC, JS ล้วน หรือคอนโซลเบราว์เซอร์ได้ตรง ๆ",
+    "m3Title": "window native event (ข้ามเฟรมเวิร์ก / ข้ามเทคสแตก)",
+    "m3Desc": "หน้า Vue, Angular หรือใน iframe ใช้ event นี้เรียกตัวช่วยได้ สอดคล้องกับวิธีใช้ app:navigate ที่มีในโปรเจกต์",
+    "m4Title": "ฝังคอมโพเนนต์ (ควบคุมอิสระแยกลอกจากศูนย์ตัวช่วย)",
+    "m4Desc": "แผงผู้ช่วยเสียงเป็นคอมโพเนนต์ควบคุมปกติ ใช้เฉพาะในหน้าเดียวกับ state ของตัวเองก็ได้"
+  }
+}

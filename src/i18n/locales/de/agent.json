@@ -1,0 +1,80 @@
+{
+  "console": {
+    "title": "🤖 KI-Agent-Konsole",
+    "online": "Online",
+    "modeDirect": "Direktmodus",
+    "modeIframe": "iframe-Modus",
+    "toggleMode": "Modus wechseln"
+  },
+  "page": {
+    "desc": "Steuern Sie die aktuelle Seite mit natürlicher Sprache: Klicken, Eingeben, Scrollen, Analysieren, Navigieren. Drei Interaktionswege: Eingabefeld, Schnellbefehle und Mikrofon-Spracheingabe.",
+    "execPre": "Ausgeführt: ",
+    "execPost": " Vorgänge"
+  },
+  "stats": {
+    "execPre": "Ausgeführt ",
+    "execPost": " mal",
+    "successPre": "Erfolg ",
+    "failPre": "Fehler ",
+    "voicePre": "Sprache ",
+    "ratePre": "Erfolgsquote ",
+    "ratePost": "%",
+    "clearTitle": "Verlauf löschen",
+    "clear": "🗑 Löschen"
+  },
+  "history": {
+    "failBadge": "Fehlgeschlagen",
+    "copyTitle": "Befehl kopieren",
+    "redoTitle": "Erneut ausführen",
+    "success": "Erfolg",
+    "emptyTitle": "Starten Sie Ihren ersten Befehl",
+    "emptyLine1": "Versuchen Sie „Login-Button klicken“, „zur Startseite springen“, „nach unten scrollen“",
+    "emptyLine2": "oder „Formular ausfüllen: Name Zhang San, E-Mail a@b.com“, „Formular absenden“",
+    "emptyLine3": "Sie können auch unten auf einen Schnellbefehl klicken oder auf 🎤 für die Spracheingabe tippen"
+  },
+  "input": {
+    "micUnsupported": "Der aktuelle Browser unterstützt keine Mikrofonaufnahme",
+    "micStopTip": "Aufnahme beenden und Erkennung starten",
+    "micTip": "🎤 Seite per Sprache steuern: Befehl sprechen, automatische Ausführung (Klicken/Springen/Scrollen/Eingeben)",
+    "placeholder": "Befehl eingeben oder einfügen… Enter = ausführen · Shift+Enter = neue Zeile · oder 🎤 für Sprache",
+    "executing": "Läuft",
+    "execute": "▶ Ausführen"
+  },
+  "shortcuts": {
+    "title": "⚡ Ein-Klick-Ausführung",
+    "runTip": "„{label}“ direkt ausführen"
+  },
+  "voice": {
+    "recording": "🎙️ Aufnahme läuft… zum Beenden ⏹ drücken",
+    "recognizing": "⏳ Sprache wird lokal erkannt (verlässt das Gerät nicht)",
+    "loadingModel": "⏬ Sprachmodell wird erstmals geladen (nur einmal, ca. 40 MB)"
+  },
+  "status": {
+    "directMode": "Direktmodus: steuert das DOM der aktuellen Seite",
+    "iframeWaiting": "iframe-Modus: Warten auf Verbindung...",
+    "iframeConnected": "iframe verbunden",
+    "parsing": "🔄 „{task}“ wird analysiert...",
+    "done": "✅ Fertig: {summary}",
+    "failed": "❌ Fehlgeschlagen: {summary}",
+    "partialDone": "⚠️ Fertig: {summary}",
+    "error": "❌ Fehler: {message}",
+    "recognized": "🎙️ Erkannt: {text}",
+    "corrected": "(korrigiert: {text})",
+    "voiceFailed": "❌ Spracherkennung fehlgeschlagen: {message}",
+    "copied": "📋 „{task}“ kopiert",
+    "copyFailed": "❌ Kopieren fehlgeschlagen"
+  },
+  "summary": {
+    "allSuccess": "✓ Alle erfolgreich · {count} Aktionen",
+    "allFail": "✗ Alle fehlgeschlagen · {count} Aktionen",
+    "partial": "Teilweise erfolgreich · {success}/{total}"
+  },
+  "iframe": {
+    "placeholder": "Adresse der eingebetteten Seite (iframe-Modus)",
+    "hint": "Im iframe-Modus muss die Zielseiten-Adresse konfiguriert werden"
+  },
+  "errors": {
+    "iframeNotReady": "iframe ist nicht bereit",
+    "timeout": "Zeitüberschreitung (5 s)"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "title": "Willkommen auf der Startseite",
+  "desc": "Ein Beispielprojekt mit Vite + React + React Router.",
+  "counter": "Klick-Zähler: {count}",
+  "navHintPre": "Über die obere Navigation kannst du zur",
+  "navHintOr": "oder",
+  "navHintPost": "Seite wechseln."
+}

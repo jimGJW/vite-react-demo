@@ -11,6 +11,7 @@
  */
 import { ExperimentOutlined } from '@ant-design/icons'
 import { Empty, Tooltip } from 'antd'
+import { useI18n } from '../../../i18n/index.js'
 import { Panel } from './ui.jsx'
 
 /** 海温 → 冷暖色：26.5°C 是台风生成阈值，单独标出来 */
@@ -29,6 +30,7 @@ function md(t) {
 }
 
 export default function SeaTempTab({ marine, marineData }) {
+  const { t } = useI18n()
   const items = marineData?.items || []
   // 按当前海温从高到低：一眼看出南北海水温差
   const sorted = [...items].sort((a, b) => (b.sst ?? -99) - (a.sst ?? -99))
@@ -39,20 +41,28 @@ export default function SeaTempTab({ marine, marineData }) {
   return (
     <div className="o-tab-content">
       <Panel
-        title="🌡 海表温度趋势"
-        source="Open-Meteo Marine（当前值 + 未来 7 天逐日区间）"
+        title={t('ocean.seaTempTitle')}
+        source={t('ocean.seaTempSource')}
         icon={<ExperimentOutlined />}
         loading={marine.loading}
         error={marine.error}
       >
         {!marine.loading && !items.length ? (
-          <Empty description="未取到海温数据" />
+          <Empty description={t('ocean.seaTempEmpty')} />
         ) : (
           <>
             <p className="o-sst-lead">
-              按当前海温从高到低排列。
-              {warm && cool ? ` 南北海水温差约 ${(warm.sst - cool.sst).toFixed(1)}°C（${warm.name} ${warm.sst?.toFixed(1)}°C vs ${cool.name} ${cool.sst?.toFixed(1)}°C）。` : ''}
-              <b>26.5°C</b> 是台风生成与维持的经验阈值——水温高于它的海域，才具备给台风供能的条件。
+              {t('ocean.seaTempLeadSort')}
+              {warm && cool
+                ? t('ocean.seaTempLeadDiff', {
+                    diff: (warm.sst - cool.sst).toFixed(1),
+                    warm: warm.name,
+                    warmSst: warm.sst?.toFixed(1),
+                    cool: cool.name,
+                    coolSst: cool.sst?.toFixed(1),
+                  })
+                : ''}
+              {t('ocean.seaTempThresholdNote')}
             </p>
 
             <div className="o-sst-list">
@@ -71,13 +81,13 @@ export default function SeaTempTab({ marine, marineData }) {
                       {c.sst == null ? '—' : c.sst.toFixed(1)}
                       <em>°C</em>
                     </span>
-                    <Tooltip title={lo == null ? '无区间数据' : `未来 7 天区间 ${lo.toFixed(1)}–${hi.toFixed(1)}°C`}>
+                    <Tooltip title={lo == null ? t('ocean.seaTempNoRange') : t('ocean.seaTempRangeTip', { lo: lo.toFixed(1), hi: hi.toFixed(1) })}>
                       <div className="o-sst-track">
                         <div
                           className="o-sst-range"
                           style={{ left: `${left}%`, width: `${width}%`, background: sstColor(c.sst) }}
                         />
-                        <div className="o-sst-threshold" title="26.5°C 台风阈值" />
+                        <div className="o-sst-threshold" title={t('ocean.seaTempThresholdTip')} />
                       </div>
                     </Tooltip>
                   </div>
@@ -86,17 +96,17 @@ export default function SeaTempTab({ marine, marineData }) {
             </div>
             <div className="o-sst-legend">
               <span>0°C</span>
-              <span className="o-sst-mark">26.5°C（台风阈值）</span>
+              <span className="o-sst-mark">{t('ocean.seaTempThresholdMark')}</span>
               <span>32°C</span>
             </div>
 
             {days.length ? (
               <div className="o-sst-week">
-                <div className="o-sst-weekHead">未来 7 天各海域海温（最高值，°C）</div>
+                <div className="o-sst-weekHead">{t('ocean.seaTempWeekHead')}</div>
                 <table className="o-sst-table">
                   <thead>
                     <tr>
-                      <th>海域</th>
+                      <th>{t('ocean.col.sea')}</th>
                       {days.map((d) => (
                         <th key={d}>{md(d)}</th>
                       ))}

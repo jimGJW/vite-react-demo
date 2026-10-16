@@ -1,0 +1,11 @@
+{
+  "title": "정보 페이지",
+  "desc": "라우팅, 레이아웃, 다중 페이지 구조를 갖춘 표준 React 프로젝트 스캐폴드로, 이후 개발의 출발점이 될 수 있습니다.",
+  "stackTitle": "기술 스택",
+  "react19": "코어 UI 라이브러리",
+  "router7": "프론트엔드 라우팅",
+  "vite8": "빌드 도구",
+  "eslint": "코드 규칙",
+  "structureTitle": "디렉터리 구조",
+  "structure": "src/\n├── layouts/     # 레이아웃 컴포넌트\n├── pages/       # 페이지 컴포넌트 (페이지별 폴더)\n├── App.jsx      # 라우트 진입점\n├── main.jsx     # 앱 진입점\n└── index.scss    # 글로벌 스타일"
+}

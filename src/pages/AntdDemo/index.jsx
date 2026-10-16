@@ -1,18 +1,15 @@
-import { useState } from 'react'
 import {
-  Card, Table, Tabs, Form, Input, InputNumber, Select, Switch,
-  DatePicker, Button, Space, Tag, Statistic, Row, Col, Steps,
-  Breadcrumb, Progress, Slider, Rate, message, Modal,
-  Typography, Divider, Badge,
+  Card, Table, Tabs,
+  Button,
+  Typography,
 } from 'antd'
 import {
-  HomeOutlined, UserOutlined, BarChartOutlined,
-  ShoppingOutlined, ClockCircleOutlined,
+  
+  
 } from '@ant-design/icons'
 import './index.scss'
 
-const { Title, Paragraph, Text } = Typography
-const { TextArea } = Input
+const { Title, Paragraph } = Typography
 
 /* —— 表格数据 —— */
 

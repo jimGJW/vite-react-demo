@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useI18n } from '../../../i18n/index.js'
 import { Form, Input, InputNumber, Select, Switch, DatePicker, Radio, Space } from 'antd'
 
 /**
@@ -37,9 +38,9 @@ function renderField(field) {
   }
 }
 
-function buildRules(field) {
+function buildRules(field, t) {
   if (!field.required) return []
-  return [{ required: true, message: `请填写${field.label || field.name}` }]
+  return [{ required: true, message: t('studio.comp.formRequired', { label: field.label || field.name }) }]
 }
 
 export default function DynamicForm({
@@ -49,6 +50,7 @@ export default function DynamicForm({
   disabled = false,
   layout = 'vertical',
 }) {
+  const { t } = useI18n()
   const [form] = Form.useForm()
 
   const items = useMemo(
@@ -56,12 +58,12 @@ export default function DynamicForm({
       schema.map((field) => ({
         name: field.name,
         label: field.label || field.name,
-        rules: buildRules(field),
+        rules: buildRules(field, t),
         valuePropName: field.type === 'switch' ? 'checked' : 'value',
         children: renderField(field),
         key: field.name,
       })),
-    [schema],
+    [schema, t],
   )
 
   return (
@@ -79,7 +81,7 @@ export default function DynamicForm({
             {it.children}
           </Form.Item>
         ))}
-        {schema.length === 0 && <div className="st-dynform__empty">schema 为空</div>}
+        {schema.length === 0 && <div className="st-dynform__empty">{t('studio.comp.formEmptySchema')}</div>}
       </Space>
     </Form>
   )

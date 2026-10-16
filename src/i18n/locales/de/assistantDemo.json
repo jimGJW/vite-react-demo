@@ -1,0 +1,38 @@
+{
+  "demo": {
+    "title": "⚡ Schnell-Assistenten",
+    "leadBefore": "Sprachassistent und AI Agent sind bereits komponentisiert und können auf jeder Seite als Popup aufgerufen werden. Der ",
+    "leadKey": " Schnell-Assistent-Schlüssel ",
+    "leadAfter": " unten rechts ist frei ziehbar; ein Klick klappt das Menü aus, um beide Assistenten zu schalten oder direkt zu einer bestimmten Seite zu springen.",
+    "statusLabel": "Aktueller Status: ",
+    "voiceLabel": "Sprachassistent",
+    "agentLabel": "AI Agent",
+    "on": "Ein",
+    "off": "Aus",
+    "openVoice": "🎙️ Sprachassistenten öffnen",
+    "agentPrefix": "🤖 ",
+    "closeBtn": "Schließen",
+    "openBtn": "Öffnen",
+    "agentSuffix": " AI Agent",
+    "sendToAgent": "➡️ Befehl an Agent übergeben",
+    "closeAll": "Alle schließen",
+    "fillAgentBtn": "Agent trägt „{text}“ ein",
+    "scrollBottom": "Zum Seitenende scrollen",
+    "analyzeButtons": "Analysiere, welche Schaltflächen die aktuelle Seite hat",
+    "dispatchOpen": "dispatchEvent → Sprachassistenten öffnen",
+    "dispatchToggle": "dispatchEvent → AI Agent umschalten",
+    "standaloneBtn": "Eigenständiges Sprachassistenten-Panel öffnen",
+    "standaloneTitle": "Sprachassistent (eigenständige Instanz)"
+  },
+  "method": {
+    "tag": "Methode",
+    "m1Title": "useAssistants-Hook (empfohlen in React-Komponenten)",
+    "m1Desc": "Nach dem Mounten von <Assistants /> im Layout kann jede Seitenkomponente die Assistenten-Panels über den Hook lesen und steuern.",
+    "m2Title": "Imperative API (in jeder JS- / Vue-Seite nutzbar)",
+    "m2Desc": "Kein React-Kontext nötig; direkt aus Vue-SFCs, vanilla JS oder der Browser-Konsole aufrufbar.",
+    "m3Title": "window-native Events (framework- / stack-übergreifend)",
+    "m3Desc": "Vue-, Angular-Seiten oder iframes können die Assistenten mit diesem Event aufrufen — konsistent mit der bestehenden app:navigate-Nutzung im Projekt.",
+    "m4Title": "Eingebettete Komponente (unabhängig vom Assistenten-Hub gesteuert)",
+    "m4Desc": "Das Sprachassistenten-Panel ist selbst eine gewöhnliche gesteuerte Komponente und kann auch allein in einer Seite mit eigenem State genutzt werden."
+  }
+}

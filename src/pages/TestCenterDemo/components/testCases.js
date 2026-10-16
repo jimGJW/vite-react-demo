@@ -1,3 +1,23 @@
+/**
+ * 前端测试用例：点击即时执行，验证数据 / 组件 / 路由层逻辑。
+ * 用例 run 为 async，支持动态 import，结果实时回显。
+ */
+
+/** 动态导入组件并校验有任意导出（具名或 default） */
+async function checkImport(path) {
+  try {
+    const mod = await import(path)
+    const keys = Object.keys(mod)
+    const ok = keys.length > 0 || mod.default != null
+    return {
+      pass: ok,
+      detail: ok ? `导出 ${keys.length} 项${mod.default ? '（含 default）' : ''}` : '无导出',
+    }
+  } catch (e) {
+    return { pass: false, detail: String(e?.message || e) }
+  }
+}
+
 export const CASES = [
   // —— 数据完整性 ——
   {

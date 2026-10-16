@@ -9,20 +9,23 @@ import { CompassOutlined, WarningOutlined } from '@ant-design/icons'
 import { Empty, Table, Tag, Tooltip } from 'antd'
 import { Panel } from './ui.jsx'
 import { zhCycloneClass, zhCycloneScale } from '../../../lib/earth/glossary.js'
-
-/** 8 方位中文（移向） */
-const DIRS = ['北', '东北', '东', '东南', '南', '西南', '西', '西北']
-function dirText(deg) {
-  if (!Number.isFinite(deg)) return '—'
-  return DIRS[Math.round((((deg % 360) + 360) % 360) / 45) % 8]
-}
+import { useI18n } from '../../../i18n/index.js'
 
 export default function CycloneTab({ cyclones, cycData }) {
+  const { t } = useI18n()
+  const dirText = (deg) => {
+    if (!Number.isFinite(deg)) return '—'
+    const i = Math.round((((deg % 360) + 360) % 360) / 45) % 8
+    return [
+      t('ocean.dir.n'), t('ocean.dir.ne'), t('ocean.dir.e'), t('ocean.dir.se'),
+      t('ocean.dir.s'), t('ocean.dir.sw'), t('ocean.dir.w'), t('ocean.dir.nw'),
+    ][i]
+  }
   return (
     <div className="o-tab-content">
       <Panel
-        title="当前活跃热带气旋"
-        source="NOAA NHC（www.nhc.noaa.gov，免密钥），10 分钟刷新；仅含北大西洋与东北太平洋"
+        title={t('ocean.cyc.panelActive')}
+        source={t('ocean.cyc.srcActive')}
         icon={<CompassOutlined />}
         loading={cyclones.loading}
         error={cyclones.error}
@@ -32,19 +35,20 @@ export default function CycloneTab({ cyclones, cycData }) {
             <>
               <div className="o-cyc-stats">
                 <span>
-                  活跃 <b>{cycData.count}</b> 个
+                  {t('ocean.cyc.statActive', { n: cycData.count })}
                 </span>
                 <span>
-                  达到飓风强度 <b style={{ color: '#ef4444' }}>{cycData.hurricaneCount}</b> 个
+                  {t('ocean.cyc.statHurricane', { n: cycData.hurricaneCount })}
                 </span>
                 <span>
-                  北大西洋 <b>{cycData.basins?.AT ?? 0}</b> · 东北太平洋{' '}
-                  <b>{cycData.basins?.EP ?? 0}</b>
+                  {t('ocean.cyc.statBasins', { at: cycData.basins?.AT ?? 0, ep: cycData.basins?.EP ?? 0 })}
                 </span>
                 {cycData.strongest && (
                   <span>
-                    最强 <b>{cycData.strongest.name}</b> ·{' '}
-                    {cycData.strongest.scale ? cycData.strongest.scale.zh : cycData.strongest.classZh}
+                    {t('ocean.cyc.statStrongest', {
+                      name: cycData.strongest.name,
+                      scale: cycData.strongest.scale ? cycData.strongest.scale.zh : cycData.strongest.classZh,
+                    })}
                   </span>
                 )}
               </div>
@@ -57,7 +61,7 @@ export default function CycloneTab({ cyclones, cycData }) {
                 scroll={{ x: 900 }}
                 columns={[
                   {
-                    title: '名称',
+                    title: t('ocean.cyc.colName'),
                     dataIndex: 'name',
                     width: 110,
                     render: (v, r) => (
@@ -67,9 +71,9 @@ export default function CycloneTab({ cyclones, cycData }) {
                       </span>
                     ),
                   },
-                  { title: '洋盆', dataIndex: 'basinZh', width: 110 },
+                  { title: t('ocean.cyc.colBasin'), dataIndex: 'basinZh', width: 110 },
                   {
-                    title: '分类',
+                    title: t('ocean.cyc.colClass'),
                     dataIndex: 'class',
                     width: 120,
                     render: (v, r) => {
@@ -82,7 +86,7 @@ export default function CycloneTab({ cyclones, cycData }) {
                     },
                   },
                   {
-                    title: '强度',
+                    title: t('ocean.cyc.colIntensity'),
                     dataIndex: 'intensityKt',
                     width: 140,
                     align: 'right',
@@ -98,7 +102,7 @@ export default function CycloneTab({ cyclones, cycData }) {
                     ),
                   },
                   {
-                    title: '等级',
+                    title: t('ocean.cyc.colScale'),
                     dataIndex: 'scale',
                     width: 110,
                     render: (s) =>
@@ -109,18 +113,18 @@ export default function CycloneTab({ cyclones, cycData }) {
                           </span>
                         </Tooltip>
                       ) : (
-                        <span style={{ color: '#94a3b8' }}>未达飓风</span>
+                        <span style={{ color: '#94a3b8' }}>{t('ocean.cyc.noScale')}</span>
                       ),
                   },
                   {
-                    title: '中心气压',
+                    title: t('ocean.cyc.colPressure'),
                     dataIndex: 'pressure',
                     width: 100,
                     align: 'right',
                     render: (v) => (v ? `${v} hPa` : '—'),
                   },
                   {
-                    title: '位置',
+                    title: t('ocean.cyc.colPos'),
                     dataIndex: 'lat',
                     width: 150,
                     align: 'right',
@@ -130,7 +134,7 @@ export default function CycloneTab({ cyclones, cycData }) {
                         : '—',
                   },
                   {
-                    title: '移动',
+                    title: t('ocean.cyc.colMove'),
                     dataIndex: 'moveDir',
                     width: 130,
                     align: 'right',
@@ -140,7 +144,7 @@ export default function CycloneTab({ cyclones, cycData }) {
                         : '—',
                   },
                   {
-                    title: '最新发布',
+                    title: t('ocean.cyc.colUpdated'),
                     dataIndex: 'lastUpdate',
                     width: 150,
                     render: (v) =>
@@ -152,33 +156,27 @@ export default function CycloneTab({ cyclones, cycData }) {
               />
             </>
           ) : (
-            <Empty description="当前北大西洋与东北太平洋无活跃热带气旋" />
+            <Empty description={t('ocean.cyc.emptyNone')} />
           )
         ) : (
-          <Empty description="暂无气旋数据" />
+          <Empty description={t('ocean.cyc.emptyData')} />
         )}
       </Panel>
 
       <Panel
-        title="读这张表前要知道的三件事"
-        source="科普说明（静态）"
+        title={t('ocean.cyc.panelTips')}
+        source={t('ocean.srcIntro')}
         icon={<WarningOutlined />}
       >
         <div className="o-prose">
           <p>
-            <b>① 覆盖范围有限。</b>本源是 NOAA 国家飓风中心（NHC），只负责北大西洋与东北太平洋。
-            西北太平洋的台风由 JTWC、日本气象厅与中央气象台发布，<strong>不在这个列表里</strong>。
-            显示「无活跃气旋」不代表全球无台风。
+            {t('ocean.cyc.tip1')}
           </p>
           <p>
-            <b>② 风速单位与我国不同。</b>NHC 用<b>节（kt）</b>和 1 分钟持续风速；
-            我国与日本用<b>米/秒</b>和 2 分钟持续风速，WMO 建议用 10 分钟。
-            同一场风暴，1 分钟平均会明显大于 10 分钟平均——跨机构比强度必须先看口径。
+            {t('ocean.cyc.tip2')}
           </p>
           <p>
-            <b>③ 等级只看风，不看水和雨。</b>萨菲尔–辛普森等级完全由风速决定，
-            但历史上热带气旋致死最多的原因是<b>风暴增水与内陆洪水</b>。
-            一个缓慢移动的「一级」风暴可以造成比快速过境的「四级」更严重的灾害。
+            {t('ocean.cyc.tip3')}
           </p>
         </div>
       </Panel>

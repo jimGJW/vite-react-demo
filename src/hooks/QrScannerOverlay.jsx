@@ -34,6 +34,7 @@ export function ScannerOverlay({
   loadingId,
   onClose,
   onUpload,
+  t,
 }) {
   return (
     <div
@@ -50,7 +51,7 @@ export function ScannerOverlay({
     >
       <button
         onClick={onClose}
-        aria-label="关闭扫码"
+        aria-label={t('scan.overlay.close')}
         style={{
           position: 'absolute',
           top: 24,
@@ -155,7 +156,7 @@ export function ScannerOverlay({
           fontSize: 14,
         }}
       >
-        图片识别中...
+        {t('scan.overlay.recognizing')}
       </span>
 
       <input
@@ -167,7 +168,7 @@ export function ScannerOverlay({
       />
       <button
         onClick={() => document.getElementById(uploadId).click()}
-        aria-label="从相册选择图片"
+        aria-label={t('scan.overlay.pickImage')}
         style={{
           position: 'absolute',
           bottom: 24,
@@ -191,7 +192,7 @@ export function ScannerOverlay({
           fontSize: 14,
         }}
       >
-        将二维码放入框内扫描
+        {t('scan.overlay.hint')}
       </div>
     </div>
   )

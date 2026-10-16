@@ -6,7 +6,7 @@ import {
   RadarComponent, DataZoomComponent, ToolboxComponent, MarkLineComponent,
 } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
-import { Card, Segmented, Space, Tag, Typography } from 'antd'
+import { Card, Segmented } from 'antd'
 
 echarts.use([
   BarChart, LineChart, PieChart, RadarChart, ScatterChart,
@@ -14,8 +14,6 @@ echarts.use([
   RadarComponent, DataZoomComponent, ToolboxComponent, MarkLineComponent,
   CanvasRenderer,
 ])
-
-const { Title, Paragraph } = Typography
 
 export const SCATTER_DATA = (() => {
   const d = []

@@ -10,6 +10,7 @@
  */
 import { CompassOutlined, ExperimentOutlined } from '@ant-design/icons'
 import { Empty, Table, Tag, Tooltip } from 'antd'
+import { useI18n } from '../../../i18n/index.js'
 import { Panel, waveLevel, fmtUTC } from './ui.jsx'
 
 /** 数值单元格：缺测显示 —，有值时可选着色 */
@@ -23,14 +24,14 @@ function Cell({ value, unit, digits = 1, color }) {
   )
 }
 
-/** 风向度数 → 八方位中文 */
-function dirText(deg) {
-  if (deg == null) return null
-  const names = ['北', '东北', '东', '东南', '南', '西南', '西', '西北']
-  return names[Math.round(deg / 45) % 8]
-}
-
 export default function BuoysTab({ buoys, buoyData }) {
+  const { t } = useI18n()
+  /** 风向度数 → 八方位中文 */
+  const dirText = (deg) => {
+    if (deg == null) return null
+    const i = Math.round(deg / 45) % 8
+    return [t('ocean.dir.n'), t('ocean.dir.ne'), t('ocean.dir.e'), t('ocean.dir.se'), t('ocean.dir.s'), t('ocean.dir.sw'), t('ocean.dir.w'), t('ocean.dir.nw')][i]
+  }
   const regions = buoyData?.regions || []
   // 平铺成表格行：每个区域标题行由 Table 的分组列承担，这里直接带区域字段
   const rows = regions.flatMap((r) => r.stations.map((s) => ({ ...s, regionName: r.name })))
@@ -39,8 +40,8 @@ export default function BuoysTab({ buoys, buoyData }) {
   return (
     <div className="o-tab-content">
       <Panel
-        title="浮标实测一览"
-        source="NOAA NDBC latest_obs（全站最新一次观测，UTC）"
+        title={t('ocean.buoy.panelList')}
+        source={t('ocean.buoy.srcList')}
         icon={<ExperimentOutlined />}
         loading={buoys.loading}
         error={buoys.error}
@@ -50,27 +51,27 @@ export default function BuoysTab({ buoys, buoyData }) {
             <>
               <div className="o-buoy-kpi">
                 <span>
-                  在岗站点 <b>{buoyData.totalStations}</b>
+                  {t('ocean.buoy.kpiStations', { n: buoyData.totalStations })}
                 </span>
                 <span>
-                  带波浪传感器 <b>{buoyData.waveStations}</b>
-                  <span className="o-buoy-kpi__sub">
-                    （仅约 {Math.round((buoyData.waveStations / buoyData.totalStations) * 100)}%）
-                  </span>
+                  {t('ocean.buoy.kpiWave', {
+                    n: buoyData.waveStations,
+                    pct: Math.round((buoyData.waveStations / buoyData.totalStations) * 100),
+                  })}
                 </span>
                 {buoyData.maxWave && (
                   <span>
-                    当前最狂 <b>{buoyData.maxWave.wvht.toFixed(1)} m</b>
-                    <span className="o-buoy-kpi__sub">
-                      站 {buoyData.maxWave.id} · {buoyData.maxWave.lat.toFixed(1)}° /{' '}
-                      {buoyData.maxWave.lon.toFixed(1)}°
-                    </span>
+                    {t('ocean.buoy.kpiMax', {
+                      h: buoyData.maxWave.wvht.toFixed(1),
+                      id: buoyData.maxWave.id,
+                      lat: buoyData.maxWave.lat.toFixed(1),
+                      lon: buoyData.maxWave.lon.toFixed(1),
+                    })}
                   </span>
                 )}
                 {sst && (
                   <span>
-                    水温跨度 <b>{sst.min.toFixed(1)} – {sst.max.toFixed(1)} °C</b>
-                    <span className="o-buoy-kpi__sub">{sst.n} 个站</span>
+                    {t('ocean.buoy.kpiSst', { min: sst.min.toFixed(1), max: sst.max.toFixed(1), n: sst.n })}
                   </span>
                 )}
               </div>
@@ -85,7 +86,7 @@ export default function BuoysTab({ buoys, buoyData }) {
                         return (
                           <Tooltip
                             key={s.id}
-                            title={`${s.regionName} · ${s.id}：${s.wtmp.toFixed(1)} °C`}
+                            title={t('ocean.buoy.tooltip', { region: s.regionName, id: s.id, temp: s.wtmp.toFixed(1) })}
                           >
                             <span
                               className="o-buoy-scale__dot"
@@ -97,7 +98,7 @@ export default function BuoysTab({ buoys, buoyData }) {
                   </div>
                   <div className="o-buoy-scale__axis">
                     <span>{sst.min.toFixed(1)} °C</span>
-                    <span className="o-buoy-scale__title">各代表站海表温度在跨度上的位置</span>
+                    <span className="o-buoy-scale__title">{t('ocean.buoy.scaleTitle')}</span>
                     <span>{sst.max.toFixed(1)} °C</span>
                   </div>
                 </div>
@@ -110,15 +111,15 @@ export default function BuoysTab({ buoys, buoyData }) {
                 dataSource={rows}
                 pagination={false}
                 columns={[
-                  { title: '海域', dataIndex: 'regionName', width: 200 },
+                  { title: t('ocean.buoy.colRegion'), dataIndex: 'regionName', width: 200 },
                   {
-                    title: '站号',
+                    title: t('ocean.buoy.colId'),
                     dataIndex: 'id',
                     width: 84,
                     render: (v) => <b>{v}</b>,
                   },
                   {
-                    title: '浪高',
+                    title: t('ocean.buoy.colWave'),
                     dataIndex: 'wvht',
                     width: 130,
                     align: 'right',
@@ -128,14 +129,14 @@ export default function BuoysTab({ buoys, buoyData }) {
                     },
                   },
                   {
-                    title: '主波周期',
+                    title: t('ocean.buoy.colPeriod'),
                     dataIndex: 'dpd',
                     width: 96,
                     align: 'right',
                     render: (v) => <Cell value={v && v > 0 ? v : null} unit=" s" digits={1} />,
                   },
                   {
-                    title: '风',
+                    title: t('ocean.buoy.colWind'),
                     dataIndex: 'wspd',
                     width: 120,
                     align: 'right',
@@ -143,7 +144,7 @@ export default function BuoysTab({ buoys, buoyData }) {
                       v != null ? (
                         <span>
                           {v.toFixed(1)} m/s
-                          {r.gst != null && <span className="o-buoy-unit">阵 {r.gst.toFixed(1)}</span>}
+                          {r.gst != null && <span className="o-buoy-unit">{t('ocean.buoy.gust')} {r.gst.toFixed(1)}</span>}
                           {dirText(r.wdir) && <span className="o-buoy-unit">{dirText(r.wdir)}</span>}
                         </span>
                       ) : (
@@ -151,21 +152,21 @@ export default function BuoysTab({ buoys, buoyData }) {
                       ),
                   },
                   {
-                    title: '海表温度',
+                    title: t('ocean.buoy.colSst'),
                     dataIndex: 'wtmp',
                     width: 100,
                     align: 'right',
                     render: (v) => <Cell value={v} unit=" °C" />,
                   },
                   {
-                    title: '气压',
+                    title: t('ocean.buoy.colPressure'),
                     dataIndex: 'pres',
                     width: 96,
                     align: 'right',
                     render: (v) => <Cell value={v} digits={1} />,
                   },
                   {
-                    title: '观测时刻',
+                    title: t('ocean.buoy.colTime'),
                     dataIndex: 'timeUnix',
                     align: 'right',
                     render: (v) => (v ? `${fmtUTC(new Date(v))} UTC` : '—'),
@@ -174,33 +175,29 @@ export default function BuoysTab({ buoys, buoyData }) {
               />
             </>
           ) : (
-            <Empty description="暂未取到浮标观测" />
+            <Empty description={t('ocean.buoy.empty')} />
           )
         ) : null}
       </Panel>
 
       <Panel
-        title="为什么这张表和「海况预报」不一样"
-        source="科普：实测与模式预报的关系"
+        title={t('ocean.buoy.panelWhy')}
+        source={t('ocean.buoy.srcWhy')}
         icon={<CompassOutlined />}
       >
         <div className="o-prose">
           <p>
-            预报页的浪高来自数值模式（把风场、水深、地形代进波动方程算出来），平滑且全球覆盖；
-            这张表是<b>浮标真的在海上测到的值</b>，一小时回传一次，带毛刺和缺口。
+            {t('ocean.buoy.prose1')}
           </p>
           <p>
-            缺测显示为「—」而不是 0 是有意的：NDBC 用 <code>MM</code> 标记缺测，
-            而不少站点（尤其岸站与他国气象浮标）根本没有波浪传感器，
-            会把波高一栏填成 0。把这类 0 当真值，会得出「全世界海面如镜」的错误印象。
+            {t('ocean.buoy.prose2')}
           </p>
           <p>
-            全球约 870 个在岗站里只有约四分之一测波浪——<b>海洋观测的稀疏程度远超陆地气象站</b>。
-            南半球与印度洋的覆盖尤其稀薄，这也是为什么那些海域的预报误差更大。
+            {t('ocean.buoy.prose3')}
           </p>
         </div>
         <div className="o-buoy-legend">
-          {['平静', '轻浪', '中浪', '大浪', '巨浪'].map((label, i) => {
+          {[t('ocean.buoy.legend0'), t('ocean.buoy.legend1'), t('ocean.buoy.legend2'), t('ocean.buoy.legend3'), t('ocean.buoy.legend4')].map((label, i) => {
             const probe = [0.1, 0.5, 1.0, 2.0, 3.0][i]
             const lv = waveLevel(probe)
             return (

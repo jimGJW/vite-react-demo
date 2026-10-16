@@ -6,15 +6,17 @@ import { Tag } from 'antd'
 import { CalendarOutlined } from '@ant-design/icons'
 import { Panel, TermTip } from './ui.jsx'
 import { zhLaunchStatus, zhMissionType } from '../../../lib/astro/glossary'
+import { useI18n } from '../../../i18n/index.js'
 
 export default function LaunchTab({ launches, launchData }) {
+  const { t, lang } = useI18n()
   return (
     <>
               <div className="astro-tab-content">
                 {/* 近期航天发射 */}
       <Panel
-        title="近期航天发射计划"
-        source="Launch Library 2（TheSpaceDevs 社区维护）"
+        title={t('astro.launchTitle')}
+        source={t('astro.launchSource')}
         icon={<CalendarOutlined />}
         loading={launches.loading}
         error={launches.error}
@@ -27,10 +29,10 @@ export default function LaunchTab({ launches, launchData }) {
               <div key={i} className="astro-launch-item">
                 <div className="astro-launch-item__time">
                   <span className="astro-launch-date">
-                    {l.net ? new Date(l.net).toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' }) : '—'}
+                    {l.net ? new Date(l.net).toLocaleDateString(lang, { month: 'short', day: 'numeric' }) : '—'}
                   </span>
                   <span className="astro-launch-clock">
-                    {l.net ? new Date(l.net).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false }) : ''}
+                    {l.net ? new Date(l.net).toLocaleTimeString(lang, { hour: '2-digit', minute: '2-digit', hour12: false }) : ''}
                   </span>
                   <TermTip zh={st.zh} en={st.en} desc={st.desc}>
                     <Tag

@@ -1,0 +1,80 @@
+{
+  "console": {
+    "title": "🤖 AI Agent Console",
+    "online": "Online",
+    "modeDirect": "Direct mode",
+    "modeIframe": "iframe mode",
+    "toggleMode": "Switch mode"
+  },
+  "page": {
+    "desc": "Control the current page with natural language: click, type, scroll, analyze, navigate. Three interaction methods: input box, quick commands, and microphone voice.",
+    "execPre": "Executed ",
+    "execPost": " operations"
+  },
+  "stats": {
+    "execPre": "Executed ",
+    "execPost": " times",
+    "successPre": "Success ",
+    "failPre": "Fail ",
+    "voicePre": "Voice ",
+    "ratePre": "Success rate ",
+    "ratePost": "%",
+    "clearTitle": "Clear history",
+    "clear": "🗑 Clear"
+  },
+  "history": {
+    "failBadge": "Failed",
+    "copyTitle": "Copy command",
+    "redoTitle": "Re-run",
+    "success": "Success",
+    "emptyTitle": "Start with your first command",
+    "emptyLine1": "Try \"click the login button\", \"go to homepage\", \"scroll down\"",
+    "emptyLine2": "or \"fill form: name Zhang San, email a@b.com\", \"submit form\"",
+    "emptyLine3": "You can also click a quick command below, or click 🎤 for voice input"
+  },
+  "input": {
+    "micUnsupported": "This browser does not support microphone recording",
+    "micStopTip": "Stop recording and start recognition",
+    "micTip": "🎤 Voice control: speak a command and it runs automatically (click/jump/scroll/type)",
+    "placeholder": "Type or paste a command… Enter to run · Shift+Enter for a new line · or click 🎤 for voice",
+    "executing": "Running",
+    "execute": "▶ Run"
+  },
+  "shortcuts": {
+    "title": "⚡ One-click run",
+    "runTip": "Run \"{label}\" directly"
+  },
+  "voice": {
+    "recording": "🎙️ Recording… click ⏹ when done",
+    "recognizing": "⏳ Recognizing speech locally (never leaves the device)",
+    "loadingModel": "⏬ Loading the voice model for the first time (once, ~40MB)"
+  },
+  "status": {
+    "directMode": "Direct mode: operates the current page DOM",
+    "iframeWaiting": "iframe mode: waiting for connection...",
+    "iframeConnected": "iframe connected",
+    "parsing": "🔄 Parsing \"{task}\"...",
+    "done": "✅ Done: {summary}",
+    "failed": "❌ Failed: {summary}",
+    "partialDone": "⚠️ Done: {summary}",
+    "error": "❌ Error: {message}",
+    "recognized": "🎙️ Recognized: {text}",
+    "corrected": "(corrected: {text})",
+    "voiceFailed": "❌ Voice recognition failed: {message}",
+    "copied": "📋 Copied \"{task}\"",
+    "copyFailed": "❌ Copy failed"
+  },
+  "summary": {
+    "allSuccess": "✓ All succeeded · {count} actions",
+    "allFail": "✗ All failed · {count} actions",
+    "partial": "Partially succeeded · {success}/{total}"
+  },
+  "iframe": {
+    "placeholder": "Embedded page URL (iframe mode)",
+    "hint": "In iframe mode, the target page URL must be configured"
+  },
+  "errors": {
+    "iframeNotReady": "iframe is not ready",
+    "timeout": "Timeout (5s)"
+  }
+}

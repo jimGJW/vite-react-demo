@@ -1,0 +1,68 @@
+{
+  "common": {
+    "expand": "展開",
+    "collapse": "折りたたむ",
+    "close": "閉じる"
+  },
+  "quick": {
+    "voice": "音声アシスタント",
+    "agent": "AI Agent",
+    "on": "オン",
+    "off": "オフ",
+    "navSep": "クイックジャンプ",
+    "jump": "ジャンプ",
+    "other": "その他",
+    "top": "トップへ戻る",
+    "hide": "アシスタントキーを隠す",
+    "assistant": "アシスタント",
+    "fabTitle": "アシスタントキー（ドラッグ可能）",
+    "fabAria": "アシスタントキー",
+    "restoreTitle": "アシスタントキーを表示",
+    "pages": {
+      "home": "ホーム",
+      "agent": "AI Agent コンソール",
+      "voice": "音声アシスタント",
+      "dashboard": "ダッシュボード",
+      "testCenter": "テストセンター"
+    }
+  },
+  "voice": {
+    "title": "音声アシスタント",
+    "subtitle": "音声からテキストへ · オンライン / オフラインのデュアルエンジン",
+    "charCount": "{count} 文字",
+    "envOnline": "オンライン",
+    "envOffline": "オフライン",
+    "copy": "全文コピー",
+    "copied": "コピー済み ✓",
+    "clear": "クリア",
+    "sendToAgent": "AI Agent に渡す →",
+    "sendToAgentTip": "認識したテキストを AI Agent に渡して実行させる",
+    "historyTitle": "認識履歴",
+    "historyEmpty": "認識履歴はまだありません。上の「音声入力を開始」または「録音を開始」を押してみてください",
+    "diagnose": "環境診断",
+    "browserLabel": "ブラウザ",
+    "webSupport": "オンライン認識（Web Speech API）",
+    "localSupport": "オフライン認識（ローカル Whisper）",
+    "supported": "対応",
+    "unsupported": "非対応",
+    "webNote": "（Chrome の中国語認識は Google サービスに依存しており、国内ネットワークでは利用できない場合があります）",
+    "localNote": "（モデルは public/models/ に内蔵されており、完全オフラインで動作）",
+    "currentStatus": "現在の状態",
+    "statusListening": "オンラインで聴取中",
+    "statusRecording": "録音中",
+    "statusRecognizing": "オフラインで文字起こし中",
+    "statusIdle": "待機中",
+    "browser": {
+      "none": "不明",
+      "edge": "Microsoft Edge",
+      "chrome": "Google Chrome",
+      "firefox": "Mozilla Firefox",
+      "safari": "Apple Safari",
+      "unknown": "不明なブラウザ"
+    }
+  },
+  "globalAgent": {
+    "title": "AI Agent",
+    "hint": "🤖 Ctrl+Shift+A でエージェントを呼び出し · Ctrl+↑↓ でスクロール · Ctrl+⌥+←→ で進む/戻る"
+  }
+}

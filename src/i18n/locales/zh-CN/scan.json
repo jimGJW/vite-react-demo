@@ -1,0 +1,31 @@
+{
+  "page": {
+    "title": "通用扫码功能演示",
+    "desc": "纯浏览器 WebRTC 摄像头扫码组件,已剥离任何业务逻辑,可在任意页面复用。",
+    "customTrigger": "自定义触发节点",
+    "lastResult": "最近识别结果",
+    "historyTitle": "识别历史",
+    "historyEmpty": "暂无记录"
+  },
+  "tip": {
+    "label": "使用提示:",
+    "body": "生产环境必须使用 HTTPS;localhost 本地开发可正常调用摄像头; 兼容移动端与 PC 端 Chrome / Edge / Safari。"
+  },
+  "overlay": {
+    "close": "关闭扫码",
+    "recognizing": "图片识别中...",
+    "pickImage": "从相册选择图片",
+    "hint": "将二维码放入框内扫描"
+  },
+  "toast": {
+    "alreadyOpen": "扫码窗口已打开，请先关闭",
+    "noQr": "图片未识别到二维码",
+    "noCamera": "当前设备未检测到摄像头",
+    "startFailed": "摄像头启动失败，请检查设备权限或使用 HTTPS 访问",
+    "noPermission": "无法获取摄像头权限"
+  },
+  "btn": {
+    "open": "打开扫码",
+    "starting": "启动中..."
+  }
+}

@@ -1,14 +1,19 @@
-export const CAPABILITY_COLUMNS = [
-  { title: '能力', dataIndex: 'name', key: 'name', width: 150 },
-  { title: '说明', dataIndex: 'desc', key: 'desc' },
-  {
-    title: '支持',
-    dataIndex: 'supported',
-    key: 'supported',
-    width: 78,
-    render: (v) => (v ? <Tag color="green">支持</Tag> : <Tag color="default">不支持</Tag>),
-  },
-]
+import { Tag } from 'antd'
+
+/** 能力探测表格列：文案走 t()，随语言切换（表头 + 支持/不支持徽标） */
+export function makeCapabilityColumns(t) {
+  return [
+    { title: t('webApi.colCapability'), dataIndex: 'name', key: 'name', width: 150 },
+    { title: t('webApi.colDesc'), dataIndex: 'desc', key: 'desc' },
+    {
+      title: t('webApi.colSupported'),
+      dataIndex: 'supported',
+      key: 'supported',
+      width: 78,
+      render: (v) => (v ? <Tag color="green">{t('webApi.supportedYes')}</Tag> : <Tag color="default">{t('webApi.supportedNo')}</Tag>),
+    },
+  ]
+}
 
 /* 环境快照：一次性读取，不随渲染变化 */
 export function readEnv() {

@@ -1,0 +1,20 @@
+{
+  "title": "Machines à états et voyage dans le temps",
+  "lead1": "Extrayez « qui peut transitionner vers où » des composants en une table d’états ; les transitions illégales sont bloquées dans",
+  "lead2": " lui-même, sans parsemer de if dans le code métier. Ajoutez une pile d’annulation et vous obtenez le voyage dans le temps gratuitement (annuler / rétablir / saut arbitraire).",
+  "flowTitle": "Diagramme de flux des tickets (état actuel mis en évidence)",
+  "flowAria": "Diagramme de flux des états de ticket",
+  "step": "Étape {current} / {total}",
+  "grayHint": "Un bouton grisé signifie que l’action n’est pas permise dans l’état actuel — la machine renvoie ok:false directement, le code métier n’a pas à re-vérifier.",
+  "triggerTip": "Déclencher {event}",
+  "travelTitle": "Voyage dans le temps : annuler / rétablir / saut arbitraire",
+  "travelHint": "La pile d’historique stocke une « séquence d’instantanés d’état ». Quand vous committez un nouvel état hors de la fin, la branche redo ultérieure est jetée — comportement standard de toute pile d’annulation.",
+  "undo": "Annuler",
+  "redo": "Rétablir",
+  "jumpStart": "Retour au début",
+  "timelineLabel": "Chronologie",
+  "sliderTip": "Étape {step} : {label}",
+  "stepItem": "Étape {step} · {label}",
+  "currentMark": "(actuel)",
+  "disableReason": "「{label}」状态下不能触发「{event}」"
+}

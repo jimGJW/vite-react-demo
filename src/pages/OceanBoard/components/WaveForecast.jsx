@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useI18n } from '../../../i18n/index.js'
 import { fmtSiteTime } from './ui.jsx'
 
 /* ---------- 24h 浪高预报（5 站多线，自绘 SVG） ---------- */
@@ -12,6 +13,7 @@ const SPOT_COLORS = {
 }
 
 export function WaveForecast({ spots }) {
+  const { t } = useI18n()
   const series = useMemo(
     () =>
       (spots || [])
@@ -30,11 +32,11 @@ export function WaveForecast({ spots }) {
   const ticks = [0, max / 2, max].map((v) => Number(v.toFixed(1)))
   return (
     <div className="o-chart">
-      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="未来 24 小时近海浪高预报">
-        {ticks.map((t) => (
-          <g key={t}>
-            <line x1={PAD.l} y1={y(t)} x2={W - PAD.r} y2={y(t)} className="o-chart__grid" />
-            <text x={PAD.l - 6} y={y(t) + 3.5} textAnchor="end" className="o-chart__tick">{t}</text>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t('ocean.chart.waveFcAria')}>
+        {ticks.map((tick) => (
+          <g key={tick}>
+            <line x1={PAD.l} y1={y(tick)} x2={W - PAD.r} y2={y(tick)} className="o-chart__grid" />
+            <text x={PAD.l - 6} y={y(tick) + 3.5} textAnchor="end" className="o-chart__tick">{tick}</text>
           </g>
         ))}
         {series.map((s) => (
@@ -44,12 +46,12 @@ export function WaveForecast({ spots }) {
             className="o-chart__line"
             style={{ stroke: s.color }}
           >
-            <title>{`${s.name} 未来 24h 浪高预报（Open-Meteo Marine）`}</title>
+            <title>{t('ocean.chart.waveFcBarTitle', { name: s.name })}</title>
           </path>
         ))}
         <text x={PAD.l} y={H - 8} className="o-chart__tick">{fmtSiteTime(series[0].forecast[0].t)}</text>
         <text x={W - PAD.r} y={H - 8} textAnchor="end" className="o-chart__tick">
-          {fmtSiteTime(series[0].forecast[n - 1].t)}（北京时间）
+          {`${fmtSiteTime(series[0].forecast[n - 1].t)}${t('ocean.time.beijing')}`}
         </text>
       </svg>
       <div className="o-chart__legend">
@@ -61,7 +63,7 @@ export function WaveForecast({ spots }) {
         ))}
       </div>
       <div className="o-chart__caption">
-        未来 24 小时各近海点浪高预报（米）——近岸浪高主要受风区、涌浪传播与潮位共同影响
+        {t('ocean.chart.waveFcCaption')}
       </div>
     </div>
   )

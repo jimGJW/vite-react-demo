@@ -1,0 +1,16 @@
+{
+  "brand": "Console interstellaire",
+  "sidebarCollapse": "Cliquer pour replier",
+  "sidebarHide": "Cliquer pour masquer",
+  "sidebarExpand": "Cliquer pour déployer",
+  "hideHeader": "Masquer la barre de navigation",
+  "showHeader": "Afficher la barre de navigation",
+  "logout": "Se déconnecter",
+  "sidebarAria": "Navigation latérale",
+  "hiddenEntryTitle": "Centre média local (page cachée)",
+  "sidebarFoot": "Bouton en haut à gauche : replier / masquer",
+  "footer": "© {year} Console interstellaire · Built with Ant Design",
+  "userFallback": "U",
+  "docTitle": "Console interstellaire · Tableaux de données espace / Terre / océan",
+  "metaDesc": "Démo de composants multi-frameworks React 19 + Vue 3 + Angular 22 : graphiques, tableaux de données, palette de commandes, voix et scan, console AI Agent."
+}

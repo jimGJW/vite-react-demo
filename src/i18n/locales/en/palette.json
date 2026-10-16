@@ -1,0 +1,62 @@
+{
+  "demo": {
+    "title": "Command Palette",
+    "leadBefore": "A zero-dependency (React only) glassmorphic command palette component. Press",
+    "leadMac": " (macOS) or ",
+    "leadWin": " (Windows / Linux) to open the palette, fuzzy-search commands,",
+    "leadSelect": " to select and ",
+    "leadRun": " to run,",
+    "leadClose": " to close.",
+    "hintText": "Press this key combo to open the palette (enabled on this page)",
+    "placeholder": "Search commands — try \"save\", \"home\", \"feedback\"…",
+    "feedbackTitle": "Execution Feedback",
+    "lastCommand": "Last executed command",
+    "none": "— None —",
+    "closeCount": "Panel close count",
+    "usageTitle": "Usage",
+    "propsTitle": "Props",
+    "thProp": "Prop",
+    "thType": "Type",
+    "thDesc": "Description",
+    "propCommands": "Command list; each item has ",
+    "propPlaceholder": "Search input placeholder; defaults to \"Search commands…\"",
+    "propOnClose": "Callback after the panel closes (ESC / backdrop click / after running a command)",
+    "cmdFieldsTitle": "Command fields",
+    "thField": "Field",
+    "fieldId": "Unique identifier (used as key)",
+    "fieldLabel": "Display name; participates in fuzzy matching",
+    "fieldGroup": "Group name; defaults to \"Other\"",
+    "fieldIcon": "Icon; any renderable content (emoji / char / JSX)",
+    "fieldKeywords": "Match keywords; fuzzy-searched together with label",
+    "fieldAction": "Runs on Enter or click; the parameter is the command object"
+  },
+  "cmd": {
+    "navHome": "Go to Home",
+    "navDashboard": "Go to Console",
+    "navAbout": "About the Project",
+    "actNew": "New File",
+    "actSave": "Save",
+    "actExport": "Export Data",
+    "actTheme": "Toggle Theme",
+    "helpShortcut": "View Shortcuts",
+    "helpDoc": "Read Docs",
+    "helpFeedback": "Report an Issue"
+  },
+  "group": {
+    "nav": "Navigation",
+    "action": "Actions",
+    "help": "Help"
+  },
+  "component": {
+    "placeholder": "Search commands…",
+    "dialogAria": "Command palette",
+    "searchAria": "Search commands",
+    "otherGroup": "Other",
+    "emptyTitle": "No matching commands",
+    "emptyHint": "Try different keywords, or clear the search to see all commands",
+    "tipSelect": "select",
+    "tipRun": "run",
+    "tipClose": "close",
+    "count": "{count} results"
+  }
+}

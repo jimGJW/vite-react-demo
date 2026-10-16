@@ -1,15 +1,17 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import StarArray from '../../components/StarArray/StarArray.jsx'
+import { useI18n } from '../../i18n/index.js'
 import './index.scss'
 
 function Home() {
   const [count, setCount] = useState(0)
+  const { t } = useI18n()
 
   return (
     <div className="page-card">
-      <h1>欢迎来到首页</h1>
-      <p>这是一个使用 Vite + React + React Router 搭建的示例项目。</p>
+      <h1>{t('home.title')}</h1>
+      <p>{t('home.desc')}</p>
 
       <div className="home-counter">
         <button
@@ -17,13 +19,13 @@ function Home() {
           className="btn"
           onClick={() => setCount((c) => c + 1)}
         >
-          点击计数: {count}
+          {t('home.counter', { count })}
         </button>
       </div>
 
       <p>
-        你可以点击顶部导航切换到 <Link to="/about">关于</Link> 或{' '}
-        <Link to="/dashboard">控制台</Link> 页面。
+        {t('home.navHintPre')} <Link to="/about">{t('nav.about')}</Link> {t('home.navHintOr')}{' '}
+        <Link to="/dashboard">{t('nav.dashboard')}</Link> {t('home.navHintPost')}
       </p>
 
       <ul>

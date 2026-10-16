@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Card, Segmented, Tag, Typography } from 'antd'
 import { ThunderboltOutlined } from '@ant-design/icons'
 import { VirtualList } from '../../components/PerfLab/index.js'
+import { useI18n, pickLang } from '../../i18n/index.js'
 import './index.scss'
 
 const { Text } = Typography
@@ -11,21 +12,21 @@ const VIEW_H = 320
 /** 全量渲染的安全上限：再往上浏览器会明显卡死，没必要硬撑 */
 const FULL_CAP = 5000
 
-const SIZE_OPTIONS = [
-  { label: '1 千行', value: 1000 },
-  { label: '1 万行', value: 10000 },
-  { label: '10 万行', value: 100000 },
+const GROUPS = [
+  { 'zh-CN': '计算集群', en: 'Compute' },
+  { 'zh-CN': '存储集群', en: 'Storage' },
+  { 'zh-CN': '网络集群', en: 'Network' },
+  { 'zh-CN': '边缘节点', en: 'Edge' },
+  { 'zh-CN': '安全域', en: 'Security' },
 ]
 
-const GROUPS = ['计算集群', '存储集群', '网络集群', '边缘节点', '安全域']
-
 /* 造数据：10 万行也能在百毫秒内生成完 */
-function buildRows(n) {
+function buildRows(n, lang) {
   const rows = new Array(n)
   for (let i = 0; i < n; i += 1) {
     rows[i] = {
       id: `r-${i}`,
-      name: `${GROUPS[i % GROUPS.length]} · ${i + 1}`,
+      name: `${pickLang(GROUPS[i % GROUPS.length], lang)} · ${i + 1}`,
       value: (i * 7919) % 1000,
     }
   }
@@ -48,10 +49,17 @@ function renderRow(row, i) {
  * 左右两个列表喂同一份数据，用「实测 DOM 行数」说话，而不是靠体感。
  */
 export default function VirtualScrollCase() {
+  const { t, lang } = useI18n()
+  const SIZE_OPTIONS = [
+    { label: t('perf.vscroll.k1'), value: 1000 },
+    { label: t('perf.vscroll.k10'), value: 10000 },
+    { label: t('perf.vscroll.k100'), value: 100000 },
+  ]
+
   const [size, setSize] = useState(1000)
   const [live, setLive] = useState({ rendered: 0, total: 0 })
 
-  const rows = useMemo(() => buildRows(size), [size])
+  const rows = useMemo(() => buildRows(size, lang), [size, lang])
   const plainRows = useMemo(() => rows.slice(0, Math.min(size, FULL_CAP)), [rows, size])
 
   const vWrapRef = useRef(null)
@@ -74,22 +82,21 @@ export default function VirtualScrollCase() {
       size="small"
       className="perf-lab__card"
       title={(
-        <span><ThunderboltOutlined /> 虚拟滚动：只渲染看得见的行</span>
+        <span><ThunderboltOutlined /> {t('perf.vscroll.title')}</span>
       )}
       extra={<Segmented size="small" value={size} onChange={setSize} options={SIZE_OPTIONS} />}
     >
       <div className="perf-lab__stage">
         <Text type="secondary" className="perf-lab__hint">
-          左右两个列表用的是同一份数据。滚动条高度完全一致（都是 {rows.length.toLocaleString()} 行 × {ROW_H}px），
-          区别只在于 DOM 里真正存在多少行节点。
+          {t('perf.vscroll.hint1')}{rows.length.toLocaleString()}{t('perf.vscroll.hint2')}{ROW_H}{t('perf.vscroll.hint3')}
         </Text>
 
         <div className="perf-lab__cols">
           <section ref={vWrapRef}>
             <div className="perf-lab__row" style={{ marginBottom: 6 }}>
-              <Tag color="blue">虚拟滚动</Tag>
+              <Tag color="blue">{t('perf.vscroll.virtualTag')}</Tag>
               <Text type="secondary" style={{ fontSize: '0.78rem' }}>
-                实时渲染 <b ref={vNodeRef}>0</b> / {rows.length.toLocaleString()} 行
+                {t('perf.vscroll.liveRender')} <b ref={vNodeRef}>0</b> / {rows.length.toLocaleString()}{t('perf.vscroll.rowUnit')}
               </Text>
             </div>
             <VirtualList
@@ -98,16 +105,16 @@ export default function VirtualScrollCase() {
               height={VIEW_H}
               renderItem={renderRow}
               onStatsChange={onStatsChange}
-              empty={<div style={{ padding: 16 }}>暂无数据</div>}
+              empty={<div style={{ padding: 16 }}>{t('perf.vscroll.noData')}</div>}
             />
           </section>
 
           <section ref={fWrapRef}>
             <div className="perf-lab__row" style={{ marginBottom: 6 }}>
-              <Tag color="red">全量渲染</Tag>
+              <Tag color="red">{t('perf.vscroll.fullTag')}</Tag>
               <Text type="secondary" style={{ fontSize: '0.78rem' }}>
-                实渲染 <b ref={fNodeRef}>0</b> 行
-                {size > FULL_CAP ? `（已截断到 ${FULL_CAP.toLocaleString()} 行上限）` : ''}
+                {t('perf.vscroll.fullRender')} <b ref={fNodeRef}>0</b>{t('perf.vscroll.rowUnit')}
+                {size > FULL_CAP ? `${t('perf.vscroll.truncatedPre')}${FULL_CAP.toLocaleString()}${t('perf.vscroll.truncatedPost')}` : ''}
               </Text>
             </div>
             <div className="perf-plain-list">
@@ -118,19 +125,19 @@ export default function VirtualScrollCase() {
 
         <dl className="perf-lab__stats">
           <div className="perf-lab__stat">
-            <dt>数据总量</dt>
+            <dt>{t('perf.vscroll.total')}</dt>
             <dd>{rows.length.toLocaleString()}</dd>
           </div>
           <div className="perf-lab__stat">
-            <dt>虚拟滚动渲染</dt>
+            <dt>{t('perf.vscroll.vRendered')}</dt>
             <dd>{live.rendered || '—'}</dd>
           </div>
           <div className="perf-lab__stat">
-            <dt>全量渲染</dt>
+            <dt>{t('perf.vscroll.fRendered')}</dt>
             <dd>{plainRows.length.toLocaleString()}</dd>
           </div>
           <div className="perf-lab__stat">
-            <dt>节点压缩比</dt>
+            <dt>{t('perf.vscroll.ratio')}</dt>
             <dd>
               {plainRows.length > 0 && live.rendered > 0
                 ? `${Math.round(plainRows.length / live.rendered)}×`
@@ -152,8 +159,7 @@ export default function VirtualScrollCase() {
 />`}</pre>
 
         <Text type="secondary" className="perf-lab__hint">
-          坑位提醒：<code>renderItem</code> 返回的元素必须自带 <code>key</code>，且要用业务 id 而不是数组下标 ——
-          用下标作 key 时插入/删除行会让 React 复用错节点，出现「内容对不上」的诡异 bug。
+          {t('perf.vscroll.pitfall1')}<code>renderItem</code>{t('perf.vscroll.pitfall2')}<code>key</code>{t('perf.vscroll.pitfall3')}
         </Text>
       </div>
     </Card>

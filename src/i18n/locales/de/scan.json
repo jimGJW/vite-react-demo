@@ -1,0 +1,31 @@
+{
+  "page": {
+    "title": "Universelle QR-Scan-Demo",
+    "desc": "Reines Browser-WebRTC-Kamera-Scan-Komponente, vollständig von jeder Geschäftslogik getrennt und auf jeder Seite wiederverwendbar.",
+    "customTrigger": "Eigener Auslöser-Knoten",
+    "lastResult": "Letztes Scan-Ergebnis",
+    "historyTitle": "Scan-Verlauf",
+    "historyEmpty": "Keine Einträge"
+  },
+  "tip": {
+    "label": "Hinweis:",
+    "body": "In Produktivumgebungen ist HTTPS erforderlich; auf localhost funktioniert der Kamerazugriff in der lokalen Entwicklung; kompatibel mit Chrome / Edge / Safari auf Mobilgeräten und PCs."
+  },
+  "overlay": {
+    "close": "Scanner schließen",
+    "recognizing": "Bild wird erkannt...",
+    "pickImage": "Bild aus dem Album auswählen",
+    "hint": "QR-Code in den Rahmen legen, um zu scannen"
+  },
+  "toast": {
+    "alreadyOpen": "Das Scanner-Fenster ist bereits geöffnet. Bitte zuerst schließen.",
+    "noQr": "Kein QR-Code im Bild erkannt",
+    "noCamera": "Auf diesem Gerät wurde keine Kamera gefunden",
+    "startFailed": "Kamera konnte nicht gestartet werden. Geräteberechtigungen prüfen oder über HTTPS zugreifen.",
+    "noPermission": "Kameraberechtigung kann nicht abgerufen werden"
+  },
+  "btn": {
+    "open": "Scanner öffnen",
+    "starting": "Wird gestartet..."
+  }
+}

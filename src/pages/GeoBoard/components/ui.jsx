@@ -2,6 +2,7 @@ import { Spin, Tag, Tooltip } from 'antd'
 // 震源深度分带 / AQI 分级 / 震级分档的阈值统一定义在词典里（唯一真源），
 // 这里只做转发——否则「名词解释」写的阈值和页面上的颜色会各说各话。
 import { depthClass, aqiLevel, magBand } from '../../../lib/earth/glossary.js'
+import { useI18n } from '../../../i18n/index.js'
 
 /* ---------- 小工具 ---------- */
 
@@ -40,6 +41,7 @@ export { depthClass, aqiLevel }
 
 /** 卡片外壳：与 AstroBoard 的 Panel 同构（class 前缀 g-） */
 function Panel({ title, source, icon, loading, error, children, extra }) {
+  const { t } = useI18n()
   return (
     <section className="geo-panel">
       <header className="geo-panel__head">
@@ -50,8 +52,8 @@ function Panel({ title, source, icon, loading, error, children, extra }) {
         <div className="geo-panel__meta">
           {extra}
           {source && (
-            <Tooltip title={`数据来源：${source}`}>
-              <Tag className="geo-src-tag" bordered={false}>数据源</Tag>
+            <Tooltip title={t('geo.ui.sourceTip', { source })}>
+              <Tag className="geo-src-tag" bordered={false}>{t('geo.ui.sourceTag')}</Tag>
             </Tooltip>
           )}
         </div>
@@ -60,10 +62,10 @@ function Panel({ title, source, icon, loading, error, children, extra }) {
         {error ? (
           <div className="geo-fail">
             <span className="geo-fail__dot" />
-            该数据源暂时不可用：{error}
+            {t('geo.ui.fail', { error })}
           </div>
         ) : loading ? (
-          <div className="geo-loading"><Spin size="small" /> 正在拉取实时数据…</div>
+          <div className="geo-loading"><Spin size="small" /> {t('geo.ui.loading')}</div>
         ) : children}
       </div>
     </section>

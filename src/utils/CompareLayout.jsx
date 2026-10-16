@@ -1,6 +1,7 @@
 import { Button, Divider, Typography, Tag, Row, Col } from 'antd'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useSubApps } from '../contexts/SubAppContext.jsx'
+import { useI18n } from '../i18n/index.js'
 import './CompareLayout.scss'
 
 const { Title, Paragraph, Text } = Typography
@@ -33,6 +34,7 @@ export default function CompareLayout({
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const { subApps, requestSubApp } = useSubApps()
+  const { t } = useI18n()
   const loaded = Boolean(subApps.vue?.microApp)
 
   const openInVueApp = () => {
@@ -56,7 +58,7 @@ export default function CompareLayout({
           </Paragraph>
           {tags && (
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              {tags.map((t, i) => <Tag key={i} color={t.color || 'blue'}>{t.label}</Tag>)}
+              {tags.map((tag, i) => <Tag key={i} color={tag.color || 'blue'}>{tag.label}</Tag>)}
             </div>
           )}
         </div>
@@ -68,7 +70,7 @@ export default function CompareLayout({
           <div className="compare-column">
             <div className="compare-column__header antd">
               <span className="badge antd">A</span>
-              <span className="col-title">React · Ant Design</span>
+              <span className="col-title">{t('compare.layout.reactColumn')}</span>
             </div>
             <div className="compare-column__body">{reactDemo}</div>
           </div>
@@ -77,7 +79,7 @@ export default function CompareLayout({
           <div className="compare-column">
             <div className="compare-column__header vue">
               <span className="badge vue">V</span>
-              <span className="col-title">Vue 3 · Element Plus（子应用）</span>
+              <span className="col-title">{t('compare.layout.vueColumn')}</span>
             </div>
             <div className="compare-column__body">
               {/* Vue 实现已迁入 qiankun 子应用：此处提供运行入口，替代原先的挂载桥内嵌 */}
@@ -85,18 +87,18 @@ export default function CompareLayout({
                 <div className="vue-subapp-card__head">
                   <span className="vue-subapp-card__logo">V</span>
                   <div>
-                    <div className="vue-subapp-card__title">vue-app 子应用（端口 7101）</div>
+                    <div className="vue-subapp-card__title">{t('compare.layout.subappTitle')}</div>
                     <div className="vue-subapp-card__desc">
-                      本案例的 Vue 实现（Element Plus 官方用法）已迁移为独立工程，由 qiankun 运行时融合。
+                      {t('compare.layout.subappDesc')}
                     </div>
                   </div>
                 </div>
                 <Button type="primary" onClick={openInVueApp}>
-                  {loaded ? '在 Vue 子应用中打开此案例' : '加载 Vue 子应用并打开此案例'}
+                  {loaded ? t('compare.layout.openLoaded') : t('compare.layout.openLoad')}
                 </Button>
                 <Paragraph type="secondary" style={{ marginTop: 10, marginBottom: 0, fontSize: 12 }}>
-                  目标页面：<Text code>{vueAppPath}</Text>
-                  。加载后该子应用的功能菜单会出现在左侧边栏，可直接切换其他案例。
+                  {t('compare.layout.targetPre')}<Text code>{vueAppPath}</Text>
+                  {t('compare.layout.targetPost')}
                 </Paragraph>
               </div>
             </div>
@@ -107,12 +109,12 @@ export default function CompareLayout({
       {/* 对比说明 */}
       {diffRows && diffRows.length > 0 && (
         <>
-          <Divider orientation="left">原理对比</Divider>
+          <Divider orientation="left">{t('compare.layout.diffTitle')}</Divider>
           <div className="compare-diff-table">
             <div className="diff-row diff-row--head">
-              <div className="diff-cell">对比点</div>
-              <div className="diff-cell antd">React · Ant Design</div>
-              <div className="diff-cell vue">Vue 3 · Element Plus</div>
+              <div className="diff-cell">{t('compare.layout.diffPoint')}</div>
+              <div className="diff-cell antd">{t('compare.layout.diffAntd')}</div>
+              <div className="diff-cell vue">{t('compare.layout.diffVue')}</div>
             </div>
             {diffRows.map((r, i) => (
               <div key={i} className="diff-row">
@@ -128,17 +130,17 @@ export default function CompareLayout({
       {/* 代码对比 */}
       {code && (
         <>
-          <Divider orientation="left">核心代码片段</Divider>
+          <Divider orientation="left">{t('compare.layout.codeTitle')}</Divider>
           <Row gutter={[16, 16]}>
             {code.antdCode && (
               <Col xs={24} lg={12}>
-                <div className="code-block-title">Ant Design / React</div>
+                <div className="code-block-title">{t('compare.layout.codeAntd')}</div>
                 <pre className="code-block"><code>{code.antdCode}</code></pre>
               </Col>
             )}
             {code.vueCode && (
               <Col xs={24} lg={12}>
-                <div className="code-block-title vue">Vue 3 / Element Plus</div>
+                <div className="code-block-title vue">{t('compare.layout.codeVue')}</div>
                 <pre className="code-block vue"><code>{code.vueCode}</code></pre>
               </Col>
             )}

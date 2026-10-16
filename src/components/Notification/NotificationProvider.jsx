@@ -8,6 +8,7 @@ import {
   useState,
 } from 'react'
 import { createPortal } from 'react-dom'
+import { useI18n } from '../../i18n/index.js'
 import { NOTIFY_TYPES, DEFAULT_DURATION, NotificationContext } from './NotificationContext.js'
 
 /* =====================================================================
@@ -24,13 +25,13 @@ const TYPE_META = {
   primary: { icon: '🔔', accent: 'var(--c-primary)', soft: 'var(--c-primary-soft)' },
 }
 
-/** 类型中文标签 */
-const TYPE_LABEL = {
-  info: '信息',
-  success: '成功',
-  warning: '警告',
-  error: '错误',
-  primary: '通知',
+/** 类型文案的 i18n 键（未知类型回退到原始 type 值） */
+const TYPE_LABEL_KEY = {
+  info: 'notify.component.typeInfo',
+  success: 'notify.component.typeSuccess',
+  warning: 'notify.component.typeWarning',
+  error: 'notify.component.typeError',
+  primary: 'notify.component.typePrimary',
 }
 
 let _seq = 0
@@ -46,11 +47,11 @@ function metaOf(type) {
 }
 
 /** 相对时间格式化（刚刚 / x 分钟前 / x 小时前 / 日期） */
-function relativeTime(ts) {
+function relativeTime(ts, t) {
   const diff = Date.now() - ts
-  if (diff < 60_000) return '刚刚'
-  if (diff < 3_600_000) return `${Math.floor(diff / 60_000)} 分钟前`
-  if (diff < 86_400_000) return `${Math.floor(diff / 3_600_000)} 小时前`
+  if (diff < 60_000) return t('notify.component.justNow')
+  if (diff < 3_600_000) return t('notify.component.minutesAgo', { count: Math.floor(diff / 60_000) })
+  if (diff < 86_400_000) return t('notify.component.hoursAgo', { count: Math.floor(diff / 3_600_000) })
   const d = new Date(ts)
   return `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
 }
@@ -248,9 +249,10 @@ function NotificationProvider({ children }) {
  * @param {{ toasts: NotifyItem[], onClose: (id: string) => void }} props
  */
 function ToastStack({ toasts, onClose }) {
+  const { t } = useI18n()
   if (typeof document === 'undefined') return null
   return createPortal(
-    <div className="notify-stack" role="region" aria-label="通知" aria-live="polite">
+    <div className="notify-stack" role="region" aria-label={t('notify.component.stackAria')} aria-live="polite">
       {toasts.map((it) => (
         <ToastCard key={it.id} item={it} onClose={onClose} />
       ))}
@@ -264,6 +266,7 @@ function ToastStack({ toasts, onClose }) {
  * @param {{ item: NotifyItem, onClose: (id: string) => void }} props
  */
 function ToastCard({ item, onClose }) {
+  const { t } = useI18n()
   const meta = metaOf(item.type)
   return (
     <div
@@ -282,7 +285,7 @@ function ToastCard({ item, onClose }) {
       <button
         type="button"
         className="notify-close"
-        aria-label="关闭通知"
+        aria-label={t('notify.component.closeToast')}
         onClick={() => onClose(item.id)}
       >
         ✕
@@ -306,7 +309,8 @@ function ToastCard({ item, onClose }) {
  * @param {{ triggerLabel?: string, className?: string }} props
  * @returns {import('react').ReactElement}
  */
-function NotificationDrawer({ triggerLabel = '通知', className = '' }) {
+function NotificationDrawer({ triggerLabel, className = '' }) {
+  const { t } = useI18n()
   const ctx = useContext(NotificationContext)
   const [open, setOpen] = useState(false)
 
@@ -315,6 +319,7 @@ function NotificationDrawer({ triggerLabel = '通知', className = '' }) {
   }
 
   const { history, unreadCount, markAllRead, clearHistory, markRead } = ctx
+  const label = triggerLabel ?? t('notify.component.triggerDefault')
 
   // Escape 关闭抽屉
   useEffect(() => {
@@ -336,7 +341,7 @@ function NotificationDrawer({ triggerLabel = '通知', className = '' }) {
         aria-expanded={open}
       >
         <span className="notify-drawer-icon" aria-hidden="true">🔔</span>
-        <span className="notify-drawer-label">{triggerLabel}</span>
+        <span className="notify-drawer-label">{label}</span>
         {unreadCount > 0 && (
           <span className="notify-badge">{unreadCount > 99 ? '99+' : unreadCount}</span>
         )}
@@ -345,13 +350,13 @@ function NotificationDrawer({ triggerLabel = '通知', className = '' }) {
       {open && typeof document !== 'undefined' && createPortal(
         <div className="notify-drawer-root">
           <div className="notify-drawer-backdrop" onClick={() => setOpen(false)} />
-          <aside className="notify-drawer" role="dialog" aria-label="通知中心">
+          <aside className="notify-drawer" role="dialog" aria-label={t('notify.component.drawerAria')}>
             <header className="notify-drawer-header">
               <div className="notify-drawer-title">
                 <span aria-hidden="true">🔔</span>
-                <span>通知中心</span>
+                <span>{t('notify.component.drawerTitle')}</span>
                 {unreadCount > 0 && (
-                  <span className="notify-drawer-count">{unreadCount} 条未读</span>
+                  <span className="notify-drawer-count">{t('notify.component.unreadCount', { count: unreadCount })}</span>
                 )}
               </div>
               <div className="notify-drawer-actions">
@@ -361,7 +366,7 @@ function NotificationDrawer({ triggerLabel = '通知', className = '' }) {
                   onClick={markAllRead}
                   disabled={unreadCount === 0}
                 >
-                  全部已读
+                  {t('notify.component.markAllRead')}
                 </button>
                 <button
                   type="button"
@@ -369,12 +374,12 @@ function NotificationDrawer({ triggerLabel = '通知', className = '' }) {
                   onClick={clearHistory}
                   disabled={history.length === 0}
                 >
-                  清空
+                  {t('notify.component.clearHistory')}
                 </button>
                 <button
                   type="button"
                   className="notify-close"
-                  aria-label="关闭抽屉"
+                  aria-label={t('notify.component.closeDrawer')}
                   onClick={() => setOpen(false)}
                 >
                   ✕
@@ -386,19 +391,20 @@ function NotificationDrawer({ triggerLabel = '通知', className = '' }) {
               {history.length === 0 ? (
                 <div className="notify-empty">
                   <span aria-hidden="true">📭</span>
-                  <p>暂无通知</p>
+                  <p>{t('notify.component.empty')}</p>
                 </div>
               ) : (
                 <ul className="notify-list">
                   {history.map((it) => {
                     const meta = metaOf(it.type)
+                    const labelKey = TYPE_LABEL_KEY[it.type]
                     return (
                       <li
                         key={it.id}
                         className={`notify-item ${it.read ? '' : 'is-unread'}`}
                         onClick={() => markRead(it.id)}
                       >
-                        {!it.read && <span className="notify-item-dot" aria-label="未读" />}
+                        {!it.read && <span className="notify-item-dot" aria-label={t('notify.component.unreadAria')} />}
                         <span
                           className="notify-item-icon"
                           style={{ color: meta.accent, background: meta.soft }}
@@ -407,12 +413,12 @@ function NotificationDrawer({ triggerLabel = '通知', className = '' }) {
                           {meta.icon}
                         </span>
                         <div className="notify-item-main">
-                          <div className="notify-item-title">{it.title || '通知'}</div>
+                          <div className="notify-item-title">{it.title || t('notify.component.itemFallback')}</div>
                           {it.description && (
                             <div className="notify-item-desc">{it.description}</div>
                           )}
                           <div className="notify-item-meta">
-                            {relativeTime(it.createdAt)} · {TYPE_LABEL[it.type] || it.type}
+                            {relativeTime(it.createdAt, t)} · {labelKey ? t(labelKey) : it.type}
                           </div>
                         </div>
                       </li>

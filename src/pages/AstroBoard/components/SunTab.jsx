@@ -9,17 +9,19 @@ import SolarCycleChart from './SolarCycleChart.jsx'
 import Sparkline from './Sparkline.jsx'
 import { f107Level, solarWindLevel } from '../../../lib/astro/orbital.js'
 import { zhAlertLevel, zhFlareClass, zhProtonScale } from '../../../lib/astro/glossary'
+import { useI18n } from '../../../i18n/index.js'
 
 export default function SunTab({
   spaceWeather, solarActivity, aurora, solarCycle, sw, kp, kpInfo, solar, xr, proton, alertData, auroraData, cycleData,
 }) {
+  const { t } = useI18n()
   return (
     <>
               <div className="astro-tab-content">
                 {/* 空间天气 */}
       <Panel
-        title="太阳与空间天气"
-        source="NOAA SWPC（美国海洋和大气管理局空间天气预报中心）"
+        title={t('astro.sunTitle')}
+        source={t('astro.sunSource')}
         icon={<ThunderboltOutlined />}
         loading={spaceWeather.loading}
         error={spaceWeather.error}
@@ -31,7 +33,7 @@ export default function SunTab({
                 <span className="astro-kp__val" style={{ color: kpInfo.color }}>
                   {kp == null ? '—' : kp.toFixed(2)}
                 </span>
-                <span className="astro-kp__unit">Kp 指数</span>
+                <span className="astro-kp__unit">{t('astro.sunKpIndex')}</span>
               </div>
               <div className="astro-kp__info">
                 <Tag bordered={false} style={{ background: kpInfo.color, color: '#fff' }}>
@@ -41,13 +43,13 @@ export default function SunTab({
                 <p>{kpInfo.desc}</p>
                 <div className="astro-kp__glossary">
                   <Tooltip title={<KpiCard kpiKey="kp" />}>
-                    <Tag bordered={false} className="astro-gloss-tag">Kp 是什么</Tag>
+                    <Tag bordered={false} className="astro-gloss-tag">{t('astro.sunKpWhat')}</Tag>
                   </Tooltip>
                   <Tooltip title={<KpiCard kpiKey="gscale" />}>
-                    <Tag bordered={false} className="astro-gloss-tag">G0–G5 分级</Tag>
+                    <Tag bordered={false} className="astro-gloss-tag">{t('astro.sunGScale')}</Tag>
                   </Tooltip>
                 </div>
-                {sw?.kp?.time && <span className="astro-sw-time">观测时间 {sw.kp.time.replace('T', ' ')} UTC</span>}
+                {sw?.kp?.time && <span className="astro-sw-time">{t('astro.sunObsTime', { time: sw.kp.time.replace('T', ' ') })}</span>}
               </div>
             </div>
 
@@ -55,7 +57,7 @@ export default function SunTab({
             {sw?.kp?.ok && sw.kp.history?.length > 2 && (
               <div className="astro-chart">
                 <div className="astro-chart__title">
-                  Kp 指数近 24 小时
+                  {t('astro.sunKp24h')}
                   <KpiHint kpiKey="kpHistory" />
                 </div>
                 <Sparkline
@@ -69,7 +71,7 @@ export default function SunTab({
 
             {/* G 级对照表：把「G0 = 平静」这类含义直接摊开 */}
             <div className="astro-gscale">
-              <div className="astro-chart__title">G 级对照表（NOAA 标准）</div>
+              <div className="astro-chart__title">{t('astro.sunGTable')}</div>
               <div className="astro-gscale-grid">
                 {G_SCALE_ROWS.map((r) => (
                   <Tooltip key={r.level} title={r.desc}>
@@ -90,7 +92,7 @@ export default function SunTab({
           <div className="astro-sw-side">
             <div className="astro-sw-row">
               <span>
-                太阳风速度
+                {t('astro.sunWindSpeed')}
                 <KpiHint kpiKey="wind" />
               </span>
               <strong style={{ color: solarWindLevel(sw?.wind?.ok ? sw.wind.speedKmS : null).color }}>
@@ -99,7 +101,7 @@ export default function SunTab({
             </div>
             <div className="astro-sw-row">
               <span>
-                行星际磁场 Bz
+                {t('astro.sunBz')}
                 <KpiHint kpiKey="bz" />
               </span>
               <strong style={{ color: (sw?.mag?.ok && sw.mag.bz < 0) ? 'var(--a-danger)' : undefined }}>
@@ -108,14 +110,14 @@ export default function SunTab({
             </div>
             <div className="astro-sw-row">
               <span>
-                行星际磁场 Bt
+                {t('astro.sunBt')}
                 <KpiHint kpiKey="bt" />
               </span>
               <strong>{sw?.mag?.ok ? `${sw.mag.bt} nT` : '—'}</strong>
             </div>
             <div className="astro-sw-row">
               <span>
-                F10.7 太阳射电流量
+                {t('astro.sunF107')}
                 <KpiHint kpiKey="f107" />
               </span>
               <strong style={{ color: f107Level(sw?.f107?.ok ? sw.f107.flux : null).color }}>
@@ -123,20 +125,18 @@ export default function SunTab({
               </strong>
             </div>
             <div className="astro-sw-row">
-              <span>90 天平均</span>
+              <span>{t('astro.sun90avg')}</span>
               <strong>{sw?.f107?.ok ? `${sw.f107.mean90 ?? '—'}` : '—'}</strong>
             </div>
             <div className="astro-sw-row">
               <span>
-                太阳黑子数（月均）
+                {t('astro.sunSunspot')}
                 <KpiHint kpiKey="sunspot" />
               </span>
               <strong>{sw?.sunspot?.ok ? sw.sunspot.ss : '—'}</strong>
             </div>
             <div className="astro-sw-note">
-              <b>Bz 为负值</b>时太阳风更易引发地磁暴，此时 GPS 与电网风险上升。
-              判定链条是：<b>Bz 转负 + 太阳风提速</b> → 磁层被压缩 → 能量灌入 →
-              Kp 抬升 → G 级告警。
+              {t('astro.sunSwNote')}
             </div>
           </div>
         </div>
@@ -144,19 +144,19 @@ export default function SunTab({
 
       {/* 太阳耀斑 */}
       <Panel
-        title="太阳耀斑监测（GOES X 射线）"
-        source="NOAA SWPC GOES 1 分钟长波段（0.05–0.4nm）X 射线流量，耀斑事件由本地算法识别"
+        title={t('astro.sunFlareTitle')}
+        source={t('astro.sunFlareSource')}
         icon={<ThunderboltOutlined />}
         loading={solarActivity.loading}
         error={solarActivity.error || solar?.xrays?.error}
       >
         {!xr ? (
-          <Empty description="X 射线数据暂不可用" />
+          <Empty description={t('astro.sunXrayEmpty')} />
         ) : (
           <>
             <div className="astro-flare-kpis">
               <div className="astro-flare-kpi">
-                <span>当前等级</span>
+                <span>{t('astro.sunFlareCurLevel')}</span>
                 <strong style={{ color: FLARE_TONE[xr.currentClass.letter] }}>
                   {zhFlareClass(xr.currentClass.letter).zh}
                   <KpiHint kpiKey="flare" />
@@ -164,19 +164,19 @@ export default function SunTab({
                 <em>{xr.currentFlux.toExponential(2)} W/m²</em>
               </div>
               <div className="astro-flare-kpi">
-                <span>24h 峰值</span>
+                <span>{t('astro.sun24hPeak')}</span>
                 <strong style={{ color: FLARE_TONE[xr.peakClass.letter] }}>
                   {zhFlareClass(xr.peakClass.letter).zh}
                 </strong>
                 <em>{new Date(xr.peakTime).toLocaleString('zh-CN', { hour12: false })}</em>
               </div>
               <div className="astro-flare-kpi">
-                <span>24h 耀斑次数</span>
+                <span>{t('astro.sunFlareCount24')}</span>
                 <strong>{xr.total24h}</strong>
                 <em>
                   {Object.entries(xr.byClass)
                     .map(([k, v]) => `${k}${v}`)
-                    .join(' · ') || '无'}
+                    .join(' · ') || t('astro.sunFlareNone')}
                 </em>
                 <KpiHint kpiKey="flareCount" />
               </div>
@@ -194,7 +194,7 @@ export default function SunTab({
             <div className="astro-flare-list">
               {xr.events?.length ? (
                 xr.events.slice(0, 8).map((e, i) => {
-                  const t = zhFlareClass(e.cls)
+                  const fc = zhFlareClass(e.cls)
                   return (
                     <div key={`${e.start}-${i}`} className="astro-flare-item">
                       <span className="astro-flare-item__cls" style={{ background: e.tone }}>
@@ -206,15 +206,15 @@ export default function SunTab({
                           minute: '2-digit', hour12: false,
                         })}
                       </span>
-                      <span className="astro-flare-item__dur">{e.durationMin} 分钟</span>
-                      <TermTip zh={t.zh} en={t.en} desc={t.desc}>
-                        <span className="astro-flare-item__desc">{t.desc.slice(0, 26)}…</span>
+                      <span className="astro-flare-item__dur">{t('astro.sunFlareDur', { min: e.durationMin })}</span>
+                      <TermTip zh={fc.zh} en={fc.en} desc={fc.desc}>
+                        <span className="astro-flare-item__desc">{fc.desc.slice(0, 26)}…</span>
                       </TermTip>
                     </div>
                   )
                 })
               ) : (
-                <Empty description="过去 24 小时无 B 级及以上耀斑（太阳很安静）" />
+                <Empty description={t('astro.sunFlareEmpty')} />
               )}
             </div>
           </>
@@ -223,18 +223,18 @@ export default function SunTab({
 
       {/* 太阳质子事件 */}
       <Panel
-        title="太阳质子事件（>10 MeV）"
-        source="NOAA SWPC GOES 积分质子通量，多星同源数据已按时间戳取最大值合并"
+        title={t('astro.sunProtonTitle')}
+        source={t('astro.sunProtonSource')}
         icon={<AlertOutlined />}
         loading={solarActivity.loading}
       >
         {!proton ? (
-          <Empty description="质子数据暂不可用" />
+          <Empty description={t('astro.sunProtonEmpty')} />
         ) : (
           <>
             <div className="astro-proton-row">
               <div className="astro-proton-stat">
-                <span>当前通量</span>
+                <span>{t('astro.sunProtonCur')}</span>
                 <strong>{proton.current}</strong>
                 <em>pfu</em>
               </div>
@@ -249,7 +249,7 @@ export default function SunTab({
                 </Tag>
               </TermTip>
               <div className="astro-proton-stat">
-                <span>24h 峰值</span>
+                <span>{t('astro.sun24hPeak')}</span>
                 <strong style={{ color: zhProtonScale(proton.peakLevel).tone }}>
                   {proton.peak} <em>pfu · {zhProtonScale(proton.peakLevel).zh}</em>
                 </strong>
@@ -269,19 +269,19 @@ export default function SunTab({
 
       {/* 极光 */}
       <Panel
-        title="极光椭圆与我国可见性"
-        source="NOAA SWPC OVATION 极光模型反演（多颗卫星融合观测）"
+        title={t('astro.sunAuroraTitle')}
+        source={t('astro.sunAuroraSource')}
         icon={<CompassOutlined />}
         loading={aurora.loading}
         error={aurora.error}
       >
         {!auroraData ? (
-          <Empty description="极光数据暂不可用" />
+          <Empty description={t('astro.sunAuroraEmpty')} />
         ) : (
           <>
             <div className="astro-aurora-head">
               <div className="astro-aurora-band">
-                <span className="astro-aurora-band__label">极光带纬度范围</span>
+                <span className="astro-aurora-band__label">{t('astro.sunAuroraBand')}</span>
                 <strong>
                   {auroraData.bandLatMin}° – {auroraData.bandLatMax}°
                 </strong>
@@ -308,15 +308,13 @@ export default function SunTab({
                   <span className="astro-aurora-city__name">{c.name}</span>
                   <span className="astro-aurora-city__lat">{c.lat}°N</span>
                   <Tag bordered={false} color={c.visible ? '#52c41a' : '#8c8c8c'}>
-                    {c.visible ? '可见极光' : '不可见'}
+                    {c.visible ? t('astro.auroraVisible') : t('astro.auroraInvisible')}
                   </Tag>
                 </div>
               ))}
             </div>
             <div className="astro-sw-note">
-              判据是地理纬度与极光带南界（<b>{auroraData.southEdge}°</b>）比较。
-              漠河位于 {auroraData.southEdge}° 以北，活动期有机会看到；
-              北京（40°N）低于此纬度，需 G4 以上强地磁暴才可能南扩到。
+              {t('astro.sunAuroraNote', { edge: auroraData.southEdge })}
             </div>
           </>
         )}
@@ -324,39 +322,37 @@ export default function SunTab({
 
       {/* 太阳活动周期 */}
       <Panel
-        title="太阳活动周期（第 25 周期）"
-        source="NOAA SWPC 观测实况 + 官方预测区间（含 25%/75% 置信界）"
+        title={t('astro.sunCycleTitle')}
+        source={t('astro.sunCycleSource')}
         icon={<ThunderboltOutlined />}
         loading={solarCycle.loading}
         error={solarCycle.error}
       >
         {!cycleData ? (
-          <Empty description="太阳周期数据暂不可用" />
+          <Empty description={t('astro.sunCycleEmpty')} />
         ) : (
           <>
             <div className="astro-cycle-kpis">
               <div className="astro-cycle-kpi">
-                <span>最新实测月</span>
+                <span>{t('astro.sunCycleCurMonth')}</span>
                 <strong>{cycleData.current.month}</strong>
-                <em>黑子数 {cycleData.current.ss}</em>
+                <em>{t('astro.sunCycleSs', { n: cycleData.current.ss })}</em>
               </div>
               <div className="astro-cycle-kpi">
-                <span>平滑黑子数</span>
+                <span>{t('astro.sunCycleSmoothed')}</span>
                 <strong>{cycleData.current.smoothed ?? '—'}</strong>
-                <em>{cycleData.current.smoothedMonth || ''}（13 个月滑动平均）</em>
+                <em>{t('astro.sunCycleSmoothNote', { m: cycleData.current.smoothedMonth || '' })}</em>
                 <KpiHint kpiKey="solarCycle" />
               </div>
               <div className="astro-cycle-kpi">
-                <span>本周期已观测峰值</span>
+                <span>{t('astro.sunCyclePeak')}</span>
                 <strong>{cycleData.historicalPeak.smoothed}</strong>
                 <em>{cycleData.historicalPeak.month}</em>
               </div>
             </div>
             <SolarCycleChart data={cycleData} />
             <div className="astro-sw-note">
-              太阳活动有约 11 年周期。当前第 25 周期自 2019 年末开始，
-              已观测平滑峰值 <b>{cycleData.historicalPeak.smoothed}</b>（{cycleData.historicalPeak.month}）。
-              曲线上的带状区域是 NOAA 官方预测区间，越窄表示预测越有把握。
+              {t('astro.sunCycleNote', { smoothed: cycleData.historicalPeak.smoothed, month: cycleData.historicalPeak.month })}
             </div>
           </>
         )}
@@ -364,8 +360,8 @@ export default function SunTab({
 
       {/* 空间天气警报 */}
       <Panel
-        title="官方空间天气警报（近 72 小时）"
-        source="NOAA SWPC alerts 产品，文本已解析为级别/强度/影响"
+        title={t('astro.sunAlertTitle')}
+        source={t('astro.sunAlertSource')}
         icon={<AlertOutlined />}
         loading={solarActivity.loading}
       >
@@ -380,8 +376,8 @@ export default function SunTab({
                     {a.scaleCode && (
                       <Tag bordered={false} color={a.scaleType === 'G' ? kpInfo.color : '#fa8c16'}>
                         {a.scaleType === 'G'
-                          ? `地磁 ${a.scaleCode} 级`
-                          : `辐射 ${a.scaleCode} 级`}
+                          ? t('astro.sunAlertGeo', { code: a.scaleCode })
+                          : t('astro.sunAlertRad', { code: a.scaleCode })}
                       </Tag>
                     )}
                     <span className="astro-alert-item__time">
@@ -396,7 +392,7 @@ export default function SunTab({
             })}
           </div>
         ) : (
-          <Empty description="近 72 小时无空间天气警报（平静期）" />
+          <Empty description={t('astro.sunAlertEmpty')} />
         )}
       </Panel>
               </div>

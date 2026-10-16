@@ -1,0 +1,339 @@
+{
+  "layout": {
+    "reactColumn": "React · Ant Design",
+    "vueColumn": "Vue 3 · Element Plus(서브앱)",
+    "subappTitle": "vue-app 서브앱(포트 7101)",
+    "subappDesc": "이 사례의 Vue 구현(Element Plus 공식 사용법)은 독립 프로젝트로 이전되어 qiankun 런타임이 융합합니다.",
+    "openLoaded": "Vue 서브앱에서 이 사례 열기",
+    "openLoad": "Vue 서브앱을 불러와 이 사례 열기",
+    "targetPre": "대상 페이지: ",
+    "targetPost": ". 로드 후 해당 서브앱의 기능 메뉴가 왼쪽 사이드바에 나타나 다른 사례로 바로 전환할 수 있습니다.",
+    "diffTitle": "원리 비교",
+    "diffPoint": "비교 포인트",
+    "diffAntd": "React · Ant Design",
+    "diffVue": "Vue 3 · Element Plus",
+    "codeTitle": "핵심 코드 스니펫",
+    "codeAntd": "Ant Design / React",
+    "codeVue": "Vue 3 / Element Plus"
+  },
+  "parentChild": {
+    "title": "부모-자식 값 전달",
+    "subtitle": "부모→자식: props(React) vs defineProps(Vue); 자식→부모: 콜백 vs 커스텀 emit 이벤트.",
+    "tagProps": "Props 단방향 데이터 흐름",
+    "tagEmit": "onChange / emit",
+    "tagLift": "상태 끌어올리기",
+    "receiveProps": "Todo List(자식) · props 수신:",
+    "inputPlaceholder": "할 일 추가…",
+    "emptyWarn": "비워둘 수 없습니다",
+    "addButton": "추가",
+    "emptyText": "할 일이 없습니다 — 자식이 onAdd 콜백으로 부모에게 알립니다",
+    "demoTitle": "이번 분기 OKR",
+    "item1": "React-Vue 듀얼 프레임워크 통합 완료",
+    "item2": "컴포넌트 기반 리팩터 적용",
+    "parentState": "부모 state: items.length =",
+    "diff": {
+      "fatherToChild": {
+        "title": "부모 → 자식",
+        "antd": "function Child(props) {/* props.title */}",
+        "vue": "<script setup>const props = defineProps(['title'])</script>"
+      },
+      "childToFather": {
+        "title": "자식 → 부모",
+        "antd": "<Child onAdd={(v)=>setList(l=>[...l,v])} />",
+        "vue": "<script setup>const emit = defineEmits(['add'])\nemit('add', v)</script>"
+      },
+      "defaultValue": {
+        "title": "기본값",
+        "antd": "function Child({ title = '默认' }) {}",
+        "vue": "withDefaults(defineProps({ title: { type: String, default: '默认' } }), {})"
+      },
+      "propsModify": {
+        "title": "props 수정",
+        "antd": "직접 불변; 콜백으로 부모가 state를 변경하게 한다",
+        "vue": "직접 불변; v-model:xxx는 emit('update:xxx')의 문법 설탕"
+      },
+      "eventNaming": {
+        "title": "이벤트 명명",
+        "antd": "props 콜백 onXxx 카멜케이스",
+        "vue": "emit('add') kebab-case 템플릿 @add"
+      }
+    }
+  },
+  "twoWay": {
+    "title": "양방향 바인딩",
+    "subtitle": "React: 제어 컴포넌트(value + onChange)로 명시적 바인딩; Vue: v-model 문법 설탕(:modelValue + @update:modelValue).",
+    "tagSugar": "제어 vs 문법 설탕",
+    "tagMulti": "v-model:xxx 다중 필드",
+    "tagState": "useState / ref",
+    "nameLabel": "이름: ",
+    "namePlaceholder": "이름을 입력하세요",
+    "demoName": "홍길동",
+    "enableLabel": "기능 활성화: ",
+    "currentLabel": "현재: ",
+    "enabledText": "활성화됨",
+    "disabledText": "비활성화됨",
+    "volumeLabel": "볼륨: ",
+    "customLabel": "커스텀 컴포넌트 양방향 바인딩(value + onChange): ",
+    "customCounterLabel": "커스텀 카운터",
+    "parentStateLabel": "부모 state",
+    "parentCount": "부모 count =",
+    "controlledNote": "(자식은 자체 상태 없이 완전히 제어됨)",
+    "diff": {
+      "input": {
+        "title": "입력창",
+        "antd": "value={x} onChange={e=>setX(e.target.value)}",
+        "vue": "v-model=\"x\""
+      },
+      "switch": {
+        "title": "스위치",
+        "antd": "checked={x} onChange={setX}",
+        "vue": "v-model=\"x\" (컴포넌트 내부에서 checked 사용)"
+      },
+      "custom": {
+        "title": "커스텀 컴포넌트(단일 값)",
+        "antd": "value={n} onChange={setN}",
+        "vue": "<Counter v-model=\"n\" />  → props.modelValue + emit('update:modelValue')"
+      },
+      "multiField": {
+        "title": "다중 필드 양방향 바인딩",
+        "antd": "필드별 value/a/b/c + onChangeXxx",
+        "vue": "v-model:title / v-model:visible / v-model:count"
+      },
+      "modifier": {
+        "title": "수정자",
+        "antd": "onChange에서 trim/lowercase 직접 처리",
+        "vue": ".trim .number .lazy，defineModel({ trim: true })"
+      },
+      "essence": {
+        "title": "본질",
+        "antd": "단방향 데이터 흐름; 수동 onChange로 구동",
+        "vue": "단방향 데이터 흐름(props 읽기 전용 + emit); v-model은 문법 설탕"
+      }
+    }
+  },
+  "provide": {
+    "title": "계층 간 값 전달(Provide / Inject)",
+    "subtitle": "계층마다 props를 전달하는 것을 피함: React는 createContext + Provider + useContext, Vue는 provide / inject + readonly로 변조 방지.",
+    "tagDrilling": "Props drilling",
+    "tagContext": "Context / provide/inject",
+    "tagDi": "의존성 주입",
+    "childLayer": "3층 · Child",
+    "childDirect": "직접 useContext()",
+    "themeLabel": "theme: ",
+    "userLabel": "사용자: ",
+    "notLoggedIn": "로그인 안 함",
+    "grandchildToggle": "손주 컴포넌트가 \"테마 전환\" 트리거",
+    "fatherLayer": "2층 · Father(props 없음, 통과)",
+    "grandpaLayer": "1층 · GrandPa(Provider)",
+    "toggleTheme": "테마 전환",
+    "diff": {
+      "injectPoint": {
+        "title": "\"주입 지점\" 선언",
+        "antd": "const Ctx = createContext(defaultValue)",
+        "vue": "setup() 최상단: provide('key', value) 또는 루트 app.provide()"
+      },
+      "provide": {
+        "title": "값 제공",
+        "antd": "<Ctx.Provider value={...}>\n  {children}\n</Ctx.Provider>",
+        "vue": "provide('theme', { cur, setCur, user })"
+      },
+      "consume": {
+        "title": "값 소비",
+        "antd": "const { theme } = useContext(Ctx)",
+        "vue": "const theme = inject('theme', defaultVal)"
+      },
+      "default": {
+        "title": "기본값 메커니즘",
+        "antd": "createContext(default); Provider로 감싸지 않으면 default 반환",
+        "vue": "inject(key, default) — 두 번째 인자가 기본값"
+      },
+      "reactive": {
+        "title": "반응형",
+        "antd": "Provider value 참조 변경(setState) → 모든 consumer 리렌더",
+        "vue": "provide에 ref/reactive 전달 → inject 자동 반응"
+      },
+      "safe": {
+        "title": "변경 안전",
+        "antd": "Context 값은 어떤 구조도 가능; 콜백으로만 변경하도록 자체 합의",
+        "vue": "provide(key, readonly(state))로 자식의 직접 수정 금지"
+      }
+    }
+  },
+  "ref": {
+    "title": "Ref / DOM 조작",
+    "subtitle": "React: useRef(DOM/변수) + forwardRef + useImperativeHandle(명령형 API); Vue: ref=\"x\" + defineExpose로 메서드 노출.",
+    "tagRef": "useRef vs ref",
+    "tagImperative": "명령형 API",
+    "tagForward": "forwardRef / defineExpose",
+    "videoTitle": "영상 \"React vs Vue\"",
+    "inputPlaceholder": "\"포커스\"를 눌러 텍스트 선택…",
+    "focusSelect": "포커스 + 선택",
+    "reverseText": "텍스트 반전",
+    "reverseLog": "입력창 텍스트 반전 → ",
+    "logEmpty": "아래 로그 영역: 오른쪽 버튼을 누르면 자동으로 맨 아래로 스크롤(scrollBox.current.scrollTo)",
+    "appendScroll": "추가(맨 위로 스크롤)",
+    "appendLog": "로그 추가: ",
+    "clear": "지우기",
+    "domRefCard": "① DOM Ref: 네이티브 input / div 조작",
+    "imperativeCard": "② forwardRef + useImperativeHandle: 명령형 컴포넌트 API",
+    "playing": "▶ 재생 중",
+    "paused": "⏸ 일시정지",
+    "playBtn": "▶ play()",
+    "pauseBtn": "⏸ pause()",
+    "seekBtn": "⏭ seek(30s)",
+    "jumpEnd": "⏩ 끝으로 이동",
+    "resetBtn": "⟲ reset()",
+    "getStateBtn": "getState() → 출력",
+    "imperativeNote1": "부모는 자식의 내부 state를 직접 읽을 수 없습니다. 다음을 통해 노출해야 합니다:",
+    "imperativeNote2": "메서드를 명시적으로 노출합니다. Vue 3의",
+    "imperativeNote3": "와 일대일 대응합니다.",
+    "diff": {
+      "domRef": {
+        "title": "DOM ref 선언",
+        "antd": "const r = useRef(null); <input ref={r}/>",
+        "vue": "const r = ref(null); <input ref=\"r\" /> (같은 이름이면 바인딩)"
+      },
+      "crossRef": {
+        "title": "컴포넌트 간 ref 전달",
+        "antd": "forwardRef(MyComp(props, ref))",
+        "vue": "자식 ref는 기본적으로 루트 DOM을 가리킴; 또는 $refs(options API)"
+      },
+      "exposeApi": {
+        "title": "명령형 API 노출",
+        "antd": "useImperativeHandle(ref, () => ({ play, ... }), deps)",
+        "vue": "defineExpose({ play, pause, getState })"
+      },
+      "readWrite": {
+        "title": "ref 값 읽기/쓰기",
+        "antd": "r.current 읽기/쓰기; .current 변경은 렌더 트리거 안 함",
+        "vue": "r.value 읽기/쓰기; ref(reactive)는 자동 반응형"
+      },
+      "multiRef": {
+        "title": "여러 ref: 목록",
+        "antd": "ref={el => arr[i] = el}(콜백 ref) 또는 useRef([])",
+        "vue": "<div v-for=\"i in 5\" :ref=\"el => list[i]=el\" /> 或 :ref=\"keyed\""
+      },
+      "sideEffect": {
+        "title": "\"부수효과\" DOM 조작",
+        "antd": "useEffect 안에서 조작(마운트 후 / 의존 변경 후)",
+        "vue": "onMounted 훅에서"
+      }
+    }
+  },
+  "slot": {
+    "title": "슬롯 / Children 분배",
+    "subtitle": "React: children / 여러 ReactNode props(named) / renderItem render-prop(scoped); Vue: 기본 slot / named slot / scoped slot(데이터 노출).",
+    "tagChildren": "children · named · scoped",
+    "tagRender": "renderItem = scoped slot",
+    "tagDistribute": "콘텐츠 분배",
+    "defaultSlot": "① 기본 슬롯: children",
+    "welcome": "🎯 작업대에 오신 것을 환영합니다",
+    "todayText": "오늘은 좋은 하루입니다. 자식이 props.children로 이 전체를 직접 렌더합니다.",
+    "startWork": "작업 시작",
+    "viewNotify": "알림 3 보기",
+    "namedSlot": "② 이름 있는 슬롯: 여러 ReactNode props(title / extra / footer / children)",
+    "subtitle2": "프론트엔드 엔지니어 · 5년",
+    "setting": "설정",
+    "followed": "팔로잉",
+    "follow": "팔로우",
+    "comment": "💬 댓글: 128",
+    "repost": "🔁 공유: 54",
+    "view": "👀 조회: 2.3k",
+    "bodyPre": "만드는 중:",
+    "bodyMid1": "하이브리드 프로젝트,",
+    "bodyUse": "를 사용해",
+    "bodyMid2": "이름 있는 슬롯으로 콘텐츠를 분배하고,",
+    "bodyVue": "Vue의",
+    "bodyEnd": "와 대응합니다.",
+    "scopedSlot": "③ 스코프 슬롯: renderItem(render-prop)",
+    "soldOut": "상품 품절",
+    "noData": "데이터 없음",
+    "productKeyboard": "키보드",
+    "productMouse": "마우스",
+    "productMonitor": "모니터",
+    "diff": {
+      "default": {
+        "title": "기본 슬롯",
+        "antd": "props.children",
+        "vue": "<slot />"
+      },
+      "named": {
+        "title": "이름 있는 슬롯",
+        "antd": "여러 props: title / header / footer 모두 ReactNode",
+        "vue": "<slot name=\"header\" />\n<template #header>...</template>"
+      },
+      "scoped": {
+        "title": "스코프 슬롯(목록 렌더)",
+        "antd": "renderItem={(row, idx) => <Item />} 또는 itemRender 속성",
+        "vue": "<template #default=\"{ row, $index }\">\n  直接使用 row / $index\n</template>"
+      },
+      "fallback": {
+        "title": "대체 콘텐츠",
+        "antd": "컨테이너에 작성: children || 기본 노드",
+        "vue": "<slot>默认内容</slot>"
+      },
+      "multiSlot": {
+        "title": "여러 slot + 데이터",
+        "antd": "각 slot prop이 (scope) => ReactNode 받음(함수 슬롯)",
+        "vue": "<slot name=\"foot\" :total=\"total\" :count=\"count\" />\n<template #foot=\"{ total, count }\">"
+      },
+      "scenario": {
+        "title": "사용 사례",
+        "antd": "범용 Card / Modal / Table column / List itemRender",
+        "vue": "좌측과 동일 + v-slot 디렉티브 모음"
+      }
+    }
+  },
+  "state": {
+    "title": "전역 상태 공유",
+    "subtitle": "React: createContext + useReducer 또는 useMemo로 store 래핑; Vue: reactive + provide/inject 또는 Pinia. 이 페이지는 \"프레임워크 네이티브\"만 비교하며 Redux/Zustand/Pinia는 도입하지 않습니다.",
+    "tagContext": "Context vs provide+reactive",
+    "tagCart": "장바구니 실전",
+    "tagShare": "여러 컴포넌트 간 상태 공유",
+    "cartTitle": "장바구니(공유 상태)",
+    "wallet": "지갑: ¥",
+    "qtyLabel": "수량: ",
+    "amtLabel": "금액: ",
+    "checkout": "바로 결제",
+    "productList": "상품 목록(독립 소비 컴포넌트)",
+    "namePlaceholder": "상품명",
+    "pricePlaceholder": "가격",
+    "addButton": "추가",
+    "emptyCart": "장바구니가 비었습니다",
+    "subtotal": "소계: ¥",
+    "book1": "Vue 3 실전",
+    "book2": "React 디자인 패턴",
+    "diff": {
+      "native": {
+        "title": "방식(네이티브)",
+        "antd": "createContext + Provider + useContext; state는 Provider 내에",
+        "vue": "reactive 또는 ref 객체 + provide(key, store); 또는 Pinia(공식 store)"
+      },
+      "reference": {
+        "title": "상태 참조",
+        "antd": "Provider value는 setState마다 새 객체라 참조 변경 시 모든 consumer 리렌더",
+        "vue": "reactive 객체의 참조는 불변; 속성 변경 시 해당 속성에 의존하는 구독자만 정확히 트리거"
+      },
+      "perf": {
+        "title": "성능 최적화",
+        "antd": "여러 Context로 분리 / memo + useCallback / useMemo / 셀렉터 라이브러리",
+        "vue": "computed 파생 상태는 자동 캐시; 컴포넌트 단위가 정밀"
+      },
+      "async": {
+        "title": "비동기 수정",
+        "antd": "Provider 컴포넌트 내에 useCallback(async ()=> {...setState}) 작성",
+        "vue": "action은 reactive 속성을 직접 수정하는 평범한 async 함수"
+      },
+      "devtools": {
+        "title": "Devtools",
+        "antd": "React DevTools Components로 Context 확인; Redux/Zustand는 전용 패널",
+        "vue": "Vue DevTools → Pinia 패널 또는 Setup 상태 트리"
+      },
+      "prod": {
+        "title": "프로덕션에서 흔한 래퍼",
+        "antd": "Zustand / Redux Toolkit / Jotai",
+        "vue": "Pinia(Vuex 대체)"
+      }
+    }
+  }
+}

@@ -24,6 +24,7 @@
 
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { Alert, Button, Input, Space, Tooltip, Typography, message as antdMessage } from 'antd'
+import { useI18n } from '../../i18n/index.js'
 import {
   ClearOutlined,
   HistoryOutlined,
@@ -38,19 +39,18 @@ import Conversation from './Message.jsx'
 import HistoryList from './HistoryList.jsx'
 import useMessage from './useMessage.js'
 import { createMockApi } from './mockBackend.js'
-import { DEFAULT_PLACEHOLDER, DEFAULT_RECOMMEND } from './config.js'
 import './ChatBot.scss'
 
 const { Text } = Typography
 
 export default function ChatBot({
   api,
-  title = 'AI 助手',
-  subtitle = '流式对话 · 卡片渲染 · 历史会话',
+  title: titleProp,
+  subtitle: subtitleProp,
   userId,
   head,
   perm,
-  placeholder = DEFAULT_PLACEHOLDER,
+  placeholder: placeholderProp,
   recommend,
   height = 640,
   className = '',
@@ -64,6 +64,10 @@ export default function ChatBot({
   onFinish,
   onError,
 }) {
+  const { t } = useI18n()
+  const title = titleProp ?? t('chatbot.header.title')
+  const subtitle = subtitleProp ?? t('chatbot.header.subtitle')
+  const placeholder = placeholderProp ?? t('chatbot.input.placeholder')
   // 未注入 api 时默认使用本地模拟后端，保证开箱即可演示。
   // 依赖数组留空：client 会被放进 Context，引用一旦变化就会让全部气泡重渲染。
   const mockClient = useMemo(() => createMockApi(), [])
@@ -131,21 +135,21 @@ export default function ChatBot({
   const openHistory = useCallback(() => {
     setHistoryOpen(true)
     if (!history.length) {
-      loadHistory(0).catch(() => antdMessage.error('历史会话加载失败，请稍后重试'))
+      loadHistory(0).catch(() => antdMessage.error(t('chatbot.history.loadFailed')))
     }
-  }, [history.length, loadHistory])
+  }, [history.length, loadHistory, t])
 
   const onLoadMore = useCallback(
-    () => loadHistory(historyPage + 1, { append: true }).catch(() => antdMessage.error('加载更多失败')),
-    [loadHistory, historyPage],
+    () => loadHistory(historyPage + 1, { append: true }).catch(() => antdMessage.error(t('chatbot.history.moreFailed'))),
+    [loadHistory, historyPage, t],
   )
 
   const onSelectHistory = useCallback(
     (id) => {
-      loadDetail(id).catch(() => antdMessage.error('会话详情加载失败'))
+      loadDetail(id).catch(() => antdMessage.error(t('chatbot.history.detailFailed')))
       setHistoryOpen(false)
     },
-    [loadDetail],
+    [loadDetail, t],
   )
 
   const onNewChat = useCallback(() => {
@@ -162,7 +166,16 @@ export default function ChatBot({
   /* 高频上下文：只被「等待中的气泡」消费 */
   const statusValue = useMemo(() => ({ loading: busy, statusLine }), [busy, statusLine])
 
-  const recommends = liveRecommend.length ? liveRecommend : showWelcome ? recommend ?? DEFAULT_RECOMMEND : []
+  const defaultRecommend = useMemo(
+    () => [
+      t('chatbot.recommend.table'),
+      t('chatbot.recommend.chart'),
+      t('chatbot.recommend.list'),
+      t('chatbot.recommend.task'),
+    ],
+    [t],
+  )
+  const recommends = liveRecommend.length ? liveRecommend : showWelcome ? recommend ?? defaultRecommend : []
 
   return (
     <ChatProvider value={ctxValue}>
@@ -178,22 +191,22 @@ export default function ChatBot({
               </div>
             </div>
             <Space size={2}>
-              <Tooltip title="新对话">
-                <Button type="text" aria-label="新对话" icon={<PlusOutlined />} onClick={creatNewChat} />
+              <Tooltip title={t('chatbot.header.newChat')}>
+                <Button type="text" aria-label={t('chatbot.header.newChat')} icon={<PlusOutlined />} onClick={creatNewChat} />
               </Tooltip>
-              <Tooltip title="历史会话">
+              <Tooltip title={t('chatbot.header.history')}>
                 <Button
                   type="text"
-                  aria-label="历史会话"
+                  aria-label={t('chatbot.header.history')}
                   icon={<HistoryOutlined />}
                   onClick={openHistory}
                 />
               </Tooltip>
               {rounds.length > 0 && (
-                <Tooltip title="清空当前对话">
+                <Tooltip title={t('chatbot.header.clearScreen')}>
                   <Button
                     type="text"
-                    aria-label="清空当前对话"
+                    aria-label={t('chatbot.header.clearScreen')}
                     icon={<ClearOutlined />}
                     onClick={clearScreen}
                   />
@@ -207,9 +220,9 @@ export default function ChatBot({
             {showWelcome ? (
               <div className="cb-welcome">
                 <RobotOutlined className="cb-welcome__icon" />
-                <div className="cb-welcome__title">你好，我是{title}</div>
+                <div className="cb-welcome__title">{t('chatbot.welcome.title', { name: title })}</div>
                 <div className="cb-welcome__desc">
-                  支持流式回答、Markdown、表格 / 图表 / 列表卡片、历史会话与赞踩反馈。试试下面这些问题：
+                  {t('chatbot.welcome.desc')}
                 </div>
               </div>
             ) : (
@@ -265,17 +278,17 @@ export default function ChatBot({
             />
             {busy ? (
               <Button type="primary" danger icon={<StopOutlined />} onClick={stopFetch}>
-                停止
+                {t('chatbot.input.stop')}
               </Button>
             ) : (
               <Button type="primary" icon={<SendOutlined />} onClick={send} disabled={!input.trim()}>
-                发送
+                {t('chatbot.input.send')}
               </Button>
             )}
           </div>
 
           <Text type="secondary" className="cb-foot">
-            Enter 发送 · Shift+Enter 换行
+            {t('chatbot.input.footHint')}
           </Text>
 
           <HistoryList

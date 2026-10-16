@@ -1,6 +1,7 @@
 import { Spin, Tag, Tooltip } from 'antd'
 // 海况分级的阈值统一定义在词典里，这里只转发（与 GeoBoard/ui.jsx 同一套做法）
 import { waveLevel } from '../../../lib/earth/glossary.js'
+import { useI18n } from '../../../i18n/index.js'
 
 /* ---------- 小工具 ---------- */
 
@@ -35,6 +36,7 @@ function fmtSiteDay(t) {
 
 /** 卡片外壳：与 GeoBoard 的 Panel 同构（class 前缀 o-） */
 function Panel({ title, source, icon, loading, error, children, extra }) {
+  const { t } = useI18n()
   return (
     <section className="o-panel">
       <header className="o-panel__head">
@@ -45,8 +47,8 @@ function Panel({ title, source, icon, loading, error, children, extra }) {
         <div className="o-panel__meta">
           {extra}
           {source && (
-            <Tooltip title={`数据来源：${source}`}>
-              <Tag className="o-src-tag" bordered={false}>数据源</Tag>
+            <Tooltip title={t('ocean.ui.sourceTip', { source })}>
+              <Tag className="o-src-tag" bordered={false}>{t('ocean.ui.sourceTag')}</Tag>
             </Tooltip>
           )}
         </div>
@@ -55,10 +57,10 @@ function Panel({ title, source, icon, loading, error, children, extra }) {
         {error ? (
           <div className="o-fail">
             <span className="o-fail__dot" />
-            该数据源暂时不可用：{error}
+            {t('ocean.ui.fail', { error })}
           </div>
         ) : loading ? (
-          <div className="o-loading"><Spin size="small" /> 正在拉取实时数据…</div>
+          <div className="o-loading"><Spin size="small" /> {t('ocean.ui.loading')}</div>
         ) : children}
       </div>
     </section>

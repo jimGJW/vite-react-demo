@@ -1,6 +1,7 @@
 import { clamp } from '../../Utils/index.js'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import AutoScrollList from './AutoScrollList.jsx'
+import { useI18n } from '../../../i18n/index.js'
 
 /**
  * AdaptTable · 大屏自适应表格
@@ -28,9 +29,10 @@ export default function AdaptTable({
   marquee = true,
   autoScroll = false,
   maxBodyHeight = 240,
-  emptyText = '暂无数据',
+  emptyText,
   className = '',
 }) {
+  const { t } = useI18n()
   const wrapRef = useRef(null)
   const [widths, setWidths] = useState(() => columns.map((c) => c.width ?? 0))
   const [rowH, setRowH] = useState(rowHeight)
@@ -151,14 +153,14 @@ export default function AdaptTable({
         <span
           className="st-adapttable__rowsplit"
           onPointerDown={startRowResize}
-          title="拖动调整行高"
+          title={t('studio.comp.rowResizeTitle')}
           aria-hidden="true"
         />
       </div>
 
       <div className="st-adapttable__body" style={autoScroll ? undefined : { maxHeight: maxBodyHeight }}>
         {dataSource.length === 0 ? (
-          <div className="st-adapttable__empty">{emptyText}</div>
+          <div className="st-adapttable__empty">{emptyText ?? t('studio.comp.empty')}</div>
         ) : autoScroll ? (
           <AutoScrollList
             items={dataSource}

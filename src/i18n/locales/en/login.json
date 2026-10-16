@@ -1,0 +1,17 @@
+{
+  "title": "Interstellar Console",
+  "welcome": "Welcome back, Captain. Verify your identity to enter the main control system.",
+  "backHint": "You will be returned to {path} after verification",
+  "username": "Account",
+  "password": "Access Key",
+  "remember": "Keep me signed in",
+  "forgot": "Forgot your key?",
+  "modeLabel": "Interface Style",
+  "modeAntd": "Ant Design",
+  "modeVue": "Vue Style",
+  "submit": "Board the Starship",
+  "verifying": "Verifying identity…",
+  "warping": "Warping…",
+  "newCrew": "New crew member?",
+  "apply": "Request access"
+}

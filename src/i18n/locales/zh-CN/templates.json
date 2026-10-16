@@ -1,0 +1,22 @@
+{
+  "page": {
+    "title": "开源模板库 Templates",
+    "descLead": "从本地 Front-End 归档中识别出的 {count} 个纯上游开源模板（此前判为 D 类，未做移植）。",
+    "descTail": "仅收录技术栈与能力点等元信息，全部为公开项目，不含任何内部代码或敏感数据。"
+  },
+  "empty": "该分类下暂无模板",
+  "card": {
+    "upstream": "查看上游仓库",
+    "derivedTip": "本地派生项目，无独立公开仓库",
+    "templateTip": "公开开源模板，无独立仓库地址",
+    "derivedLocal": "同基座衍生（本地）",
+    "templateLocal": "开源模板（本地）"
+  },
+  "groups": {
+    "all": "全部",
+    "react": "React",
+    "vue": "Vue",
+    "mobile": "移动端",
+    "libs": "组件库·工具"
+  }
+}

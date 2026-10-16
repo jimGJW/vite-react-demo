@@ -20,6 +20,7 @@
 import { memo, useDeferredValue } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { useI18n } from '../../i18n/index.js'
 import ListCard from './cards/ListCard.jsx'
 import DataTable from './cards/DataTable.jsx'
 import TaskTable from './cards/TaskTable.jsx'
@@ -30,11 +31,12 @@ import { CONTENT_TYPE } from './config.js'
 const REMARK_PLUGINS = [remarkGfm]
 
 const MarkdownAnswer = memo(function MarkdownAnswer({ text }) {
+  const { t } = useI18n()
   const deferred = useDeferredValue(text)
   return (
     <div className="cb-md">
       <ReactMarkdown remarkPlugins={REMARK_PLUGINS}>{String(deferred ?? '')}</ReactMarkdown>
-      <em className="cb-md__tips">本答案由 AI 生成，仅供参考。</em>
+      <em className="cb-md__tips">{t('chatbot.answer.tips')}</em>
     </div>
   )
 })

@@ -1,0 +1,11 @@
+{
+  "title": "Console",
+  "lead": "Voici quelques statistiques d'exemple :",
+  "loading": "Chargement...",
+  "stat": {
+    "users": "Nombre d'utilisateurs",
+    "posts": "Nombre d'articles",
+    "views": "Vues",
+    "revenue": "Revenus"
+  }
+}

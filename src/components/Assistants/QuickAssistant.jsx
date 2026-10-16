@@ -2,6 +2,7 @@ import { clamp } from '../Utils/index.js'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAssistants } from './AssistantContext.jsx'
+import { useI18n } from '../../i18n/index.js'
 import './QuickAssistant.scss'
 
 const LS_POS = 'assistant.quick.pos'
@@ -10,11 +11,11 @@ const MENU_WIDTH = 208
 const DRAG_THRESHOLD = 4
 
 const DEFAULT_PAGES = [
-  { to: '/', label: '首页', icon: '🏠' },
-  { to: '/agent', label: 'AI Agent 控制台', icon: '🤖' },
-  { to: '/voice', label: '语音助手', icon: '🎙️' },
-  { to: '/dashboard', label: '控制台', icon: '📊' },
-  { to: '/test-center', label: '测试中心', icon: '🧪' },
+  { to: '/', icon: '🏠' },
+  { to: '/agent', icon: '🤖' },
+  { to: '/voice', icon: '🎙️' },
+  { to: '/dashboard', icon: '📊' },
+  { to: '/test-center', icon: '🧪' },
 ]
 
 
@@ -66,6 +67,23 @@ export default function QuickAssistant({
 }) {
   const navigate = useNavigate()
   const ctx = useAssistants()
+  const { t } = useI18n()
+
+  /** 已知路由 → 翻译后的页签名；未知 / 自定义页签回退到调用方传入的 label */
+  const pageLabel = (to, fallbackLabel) => {
+    switch (to) {
+      case '/': return t('assistants.quick.pages.home')
+      case '/agent': return t('assistants.quick.pages.agent')
+      case '/voice': return t('assistants.quick.pages.voice')
+      case '/dashboard': return t('assistants.quick.pages.dashboard')
+      case '/test-center': return t('assistants.quick.pages.testCenter')
+      default: return fallbackLabel || to
+    }
+  }
+
+  /** 开关型菜单项 → 翻译后的名字 */
+  const toggleLabel = (key) =>
+    key === 'voice' ? t('assistants.quick.voice') : key === 'agent' ? t('assistants.quick.agent') : key
 
   const [win, setWin] = useState(() => ({
     w: typeof window === 'undefined' ? 1280 : window.innerWidth,
@@ -204,8 +222,8 @@ export default function QuickAssistant({
   const menuItems = useMemo(() => {
     if (items) return items
     return [
-      { key: 'voice', type: 'toggle', target: 'voice', icon: '🎙️', label: '语音助手' },
-      { key: 'agent', type: 'toggle', target: 'agent', icon: '🤖', label: 'AI Agent' },
+      { key: 'voice', type: 'toggle', target: 'voice', icon: '🎙️' },
+      { key: 'agent', type: 'toggle', target: 'agent', icon: '🤖' },
     ]
   }, [items])
 
@@ -261,11 +279,11 @@ export default function QuickAssistant({
           setHidden(false)
           saveJSON(LS_HIDDEN, false)
         }}
-        title="展开快捷助手键"
-        aria-label="展开快捷助手键"
+        title={t('assistants.quick.restoreTitle')}
+        aria-label={t('assistants.quick.restoreTitle')}
       >
         <span className="qa-restore-icon">⚡</span>
-        <span className="qa-restore-label">助手</span>
+        <span className="qa-restore-label">{t('assistants.quick.assistant')}</span>
       </button>
     )
   }
@@ -287,9 +305,9 @@ export default function QuickAssistant({
                 onClick={() => handleItem(item)}
               >
                 <span className="qa-menu-icon">{item.icon}</span>
-                <span className="qa-menu-label">{item.label}</span>
+                <span className="qa-menu-label">{toggleLabel(item.key)}</span>
                 {item.type === 'toggle' && (
-                  <span className={`qa-menu-state ${on ? 'on' : ''}`}>{on ? '已开启' : '已关闭'}</span>
+                  <span className={`qa-menu-state ${on ? 'on' : ''}`}>{on ? t('assistants.quick.on') : t('assistants.quick.off')}</span>
                 )}
               </button>
             )
@@ -297,23 +315,23 @@ export default function QuickAssistant({
 
           {navPages.length > 0 && (
             <>
-              <div className="qa-menu-sep"><span>快捷跳转</span></div>
+              <div className="qa-menu-sep"><span>{t('assistants.quick.navSep')}</span></div>
               {navPages.map((p) => (
                 <button
-                  key={p.to + p.label}
+                  key={p.to + (p.label || '')}
                   type="button"
                   role="menuitem"
                   className="qa-menu-item"
                   onClick={() => handleItem({ type: 'navigate', to: p.to })}
                 >
                   <span className="qa-menu-icon">{p.icon || '🧭'}</span>
-                  <span className="qa-menu-label">{p.label || p.to}</span>
+                  <span className="qa-menu-label">{pageLabel(p.to, p.label)}</span>
                 </button>
               ))}
             </>
           )}
 
-          <div className="qa-menu-sep"><span>其他</span></div>
+          <div className="qa-menu-sep"><span>{t('assistants.quick.other')}</span></div>
           <button
             type="button"
             role="menuitem"
@@ -321,7 +339,7 @@ export default function QuickAssistant({
             onClick={() => handleItem({ type: 'top' })}
           >
             <span className="qa-menu-icon">⬆️</span>
-            <span className="qa-menu-label">回到顶部</span>
+            <span className="qa-menu-label">{t('assistants.quick.top')}</span>
           </button>
           <button
             type="button"
@@ -330,7 +348,7 @@ export default function QuickAssistant({
             onClick={() => handleItem({ type: 'hide' })}
           >
             <span className="qa-menu-icon">👁️</span>
-            <span className="qa-menu-label">隐藏助手键</span>
+            <span className="qa-menu-label">{t('assistants.quick.hide')}</span>
           </button>
         </div>
       )}
@@ -346,14 +364,14 @@ export default function QuickAssistant({
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
         onClick={onClickFab}
-        title="快捷助手键（可拖动）"
-        aria-label="快捷助手键"
+        title={t('assistants.quick.fabTitle')}
+        aria-label={t('assistants.quick.fabAria')}
         aria-haspopup="menu"
         aria-expanded={menuOpen}
       >
         <span className="qa-fab-icon">{menuOpen ? '✕' : '⚡'}</span>
         {active && <span className="qa-fab-badge" />}
-        {!menuOpen && <span className="qa-fab-tip">助手</span>}
+        {!menuOpen && <span className="qa-fab-tip">{t('assistants.quick.assistant')}</span>}
       </div>
     </div>
   )

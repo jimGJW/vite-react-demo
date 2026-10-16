@@ -1,0 +1,38 @@
+{
+  "demo": {
+    "title": "⚡ 빠른 도우미",
+    "leadBefore": "음성 도우미와 AI Agent가 모두 컴포넌트화되어 어떤 페이지에서든 팝업으로 불러올 수 있습니다. 오른쪽 아래의 ",
+    "leadKey": " 빠른 도우미 키 ",
+    "leadAfter": " 는 자유롭게 드래그할 수 있고, 클릭하면 메뉴가 펼쳐져 두 도우미를 켜고 끄거나 지정된 페이지로 바로 이동할 수 있습니다.",
+    "statusLabel": "현재 상태: ",
+    "voiceLabel": "음성 도우미",
+    "agentLabel": "AI Agent",
+    "on": "켜짐",
+    "off": "꺼짐",
+    "openVoice": "🎙️ 음성 도우미 열기",
+    "agentPrefix": "🤖 ",
+    "closeBtn": "닫기",
+    "openBtn": "열기",
+    "agentSuffix": " AI Agent",
+    "sendToAgent": "➡️ 명령을 Agent에 전달",
+    "closeAll": "모두 닫기",
+    "fillAgentBtn": "Agent가 \"{text}\" 입력",
+    "scrollBottom": "페이지 하단으로 스크롤",
+    "analyzeButtons": "현재 페이지에 어떤 버튼이 있는지 분석해 줘",
+    "dispatchOpen": "dispatchEvent → 음성 도우미 열기",
+    "dispatchToggle": "dispatchEvent → AI Agent 토글",
+    "standaloneBtn": "독립 음성 도우미 패널 열기",
+    "standaloneTitle": "음성 도우미(독립 인스턴스)"
+  },
+  "method": {
+    "tag": "방식",
+    "m1Title": "useAssistants Hook(React 컴포넌트 내 권장)",
+    "m1Desc": "Layout에 <Assistants />를 마운트하면 어떤 페이지 컴포넌트에서도 Hook으로 도우미 패널을 읽고 제어할 수 있습니다.",
+    "m2Title": "명령형 API(임의의 JS / Vue 페이지에서 사용 가능)",
+    "m2Desc": "React 컨텍스트에 의존하지 않으며 Vue SFC, 순수 JS, 브라우저 콘솔에서 직접 호출할 수 있습니다.",
+    "m3Title": "window 네이티브 이벤트(프레임워크 / 스택 간)",
+    "m3Desc": "Vue, Angular 페이지나 iframe 안에서도 이 이벤트로 도우미를 불러올 수 있으며, 프로젝트의 기존 app:navigate 사용법과 동일합니다.",
+    "m4Title": "컴포넌트 내장(도우미 중심에서 분리된 독립 제어)",
+    "m4Desc": "음성 도우미 패널은 일반 제어 컴포넌트이므로 단일 페이지에서 자신의 state와 함께 단독으로 사용할 수도 있습니다."
+  }
+}

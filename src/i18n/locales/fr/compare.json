@@ -1,0 +1,339 @@
+{
+  "layout": {
+    "reactColumn": "React · Ant Design",
+    "vueColumn": "Vue 3 · Element Plus (sous-app)",
+    "subappTitle": "sous-app vue-app (port 7101)",
+    "subappDesc": "L'implémentation Vue de ce cas (usage officiel d'Element Plus) a été déplacée vers un projet indépendant, fusionnée à l'exécution par qiankun.",
+    "openLoaded": "Ouvrir ce cas dans la sous-app Vue",
+    "openLoad": "Charger la sous-app Vue et ouvrir ce cas",
+    "targetPre": "Page cible : ",
+    "targetPost": ". Après le chargement, le menu des fonctions de la sous-app apparaît dans la barre latérale gauche, vous permettant de changer de cas directement.",
+    "diffTitle": "Comparaison des principes",
+    "diffPoint": "Point de comparaison",
+    "diffAntd": "React · Ant Design",
+    "diffVue": "Vue 3 · Element Plus",
+    "codeTitle": "Extraits de code clés",
+    "codeAntd": "Ant Design / React",
+    "codeVue": "Vue 3 / Element Plus"
+  },
+  "parentChild": {
+    "title": "Communication parent-enfant",
+    "subtitle": "Parent→enfant : props (React) vs defineProps (Vue) ; enfant→parent : callback vs événement emit personnalisé.",
+    "tagProps": "Flux de données unidirectionnel des props",
+    "tagEmit": "onChange / emit",
+    "tagLift": "Remontée de état",
+    "receiveProps": "Todo List (enfant) · reçoit les props :",
+    "inputPlaceholder": "Ajouter une tâche…",
+    "emptyWarn": "Ne peut pas être vide",
+    "addButton": "Ajouter",
+    "emptyText": "Aucune tâche — l’enfant notifie le parent via le callback onAdd",
+    "demoTitle": "OKR du trimestre",
+    "item1": "Terminer l’intégration bi-framework React-Vue",
+    "item2": "Concrétiser la refonte par composants",
+    "parentState": "État parent : items.length =",
+    "diff": {
+      "fatherToChild": {
+        "title": "Parent → enfant",
+        "antd": "function Child(props) {/* props.title */}",
+        "vue": "<script setup>const props = defineProps(['title'])</script>"
+      },
+      "childToFather": {
+        "title": "Enfant → parent",
+        "antd": "<Child onAdd={(v)=>setList(l=>[...l,v])} />",
+        "vue": "<script setup>const emit = defineEmits(['add'])\nemit('add', v)</script>"
+      },
+      "defaultValue": {
+        "title": "Valeur par défaut",
+        "antd": "function Child({ title = '默认' }) {}",
+        "vue": "withDefaults(defineProps({ title: { type: String, default: '默认' } }), {})"
+      },
+      "propsModify": {
+        "title": "Modification des props",
+        "antd": "Immuable directement ; demander au parent de changer le état via un callback",
+        "vue": "Immuable directement ; v-model:xxx est du sucre syntaxique pour emit('update:xxx')"
+      },
+      "eventNaming": {
+        "title": "Nommage des événements",
+        "antd": "callbacks props onXxx camelCase",
+        "vue": "emit('add') kebab-case template @add"
+      }
+    }
+  },
+  "twoWay": {
+    "title": "Liaison bidirectionnelle",
+    "subtitle": "React : composants contrôlés (value + onChange) lient explicitement ; Vue : sucre v-model (:modelValue + @update:modelValue).",
+    "tagSugar": "Contrôlé vs sucre",
+    "tagMulti": "v-model:xxx multi-champs",
+    "tagState": "useState / ref",
+    "nameLabel": "Nom : ",
+    "namePlaceholder": "Veuillez saisir un nom",
+    "demoName": "Jean",
+    "enableLabel": "Activer la fonction : ",
+    "currentLabel": "Actuel : ",
+    "enabledText": "Activé",
+    "disabledText": "Désactivé",
+    "volumeLabel": "Volume : ",
+    "customLabel": "Liaison bidirectionnelle de composant personnalisé (value + onChange) : ",
+    "customCounterLabel": "Compteur personnalisé",
+    "parentStateLabel": "État parent",
+    "parentCount": "Compteur parent =",
+    "controlledNote": "(l’enfant n’a pas de état propre — entièrement contrôlé)",
+    "diff": {
+      "input": {
+        "title": "Champ de saisie",
+        "antd": "value={x} onChange={e=>setX(e.target.value)}",
+        "vue": "v-model=\"x\""
+      },
+      "switch": {
+        "title": "Interrupteur",
+        "antd": "checked={x} onChange={setX}",
+        "vue": "v-model=\"x\" (le composant utilise checked en interne)"
+      },
+      "custom": {
+        "title": "Composant personnalisé (valeur unique)",
+        "antd": "value={n} onChange={setN}",
+        "vue": "<Counter v-model=\"n\" />  → props.modelValue + emit('update:modelValue')"
+      },
+      "multiField": {
+        "title": "Liaison bidirectionnelle multi-champs",
+        "antd": "value/a/b/c + onChangeXxx par champ",
+        "vue": "v-model:title / v-model:visible / v-model:count"
+      },
+      "modifier": {
+        "title": "Modificateurs",
+        "antd": "écrire trim/lowercase soi-même dans onChange",
+        "vue": ".trim .number .lazy，defineModel({ trim: true })"
+      },
+      "essence": {
+        "title": "Essence",
+        "antd": "flux de données unidirectionnel ; piloté par onChange manuel",
+        "vue": "flux unidirectionnel (props en lecture seule + emit) ; v-model est du sucre"
+      }
+    }
+  },
+  "provide": {
+    "title": "Passage inter-couche (Provide / Inject)",
+    "subtitle": "Éviter le forage de props à travers les couches : React utilise createContext + Provider + useContext ; Vue utilise provide / inject + readonly contre la falsification.",
+    "tagDrilling": "Forage de props",
+    "tagContext": "Context / provide/inject",
+    "tagDi": "Injection de dépendances",
+    "childLayer": "Couche 3 · Child",
+    "childDirect": "useContext() directement",
+    "themeLabel": "theme : ",
+    "userLabel": "Utilisateur : ",
+    "notLoggedIn": "Non connecté",
+    "grandchildToggle": "Le petit-enfant déclenche « basculer le thème »",
+    "fatherLayer": "Couche 2 · Father (sans props, transmet)",
+    "grandpaLayer": "Couche 1 · GrandPa (Provider)",
+    "toggleTheme": "Basculer le thème",
+    "diff": {
+      "injectPoint": {
+        "title": "Déclarer le « point d’injection »",
+        "antd": "const Ctx = createContext(defaultValue)",
+        "vue": "setup() au niveau supérieur : provide('key', value), ou app.provide() à la racine"
+      },
+      "provide": {
+        "title": "Fournir une valeur",
+        "antd": "<Ctx.Provider value={...}>\n  {children}\n</Ctx.Provider>",
+        "vue": "provide('theme', { cur, setCur, user })"
+      },
+      "consume": {
+        "title": "Consommer une valeur",
+        "antd": "const { theme } = useContext(Ctx)",
+        "vue": "const theme = inject('theme', defaultVal)"
+      },
+      "default": {
+        "title": "Mécanisme de valeur par défaut",
+        "antd": "createContext(default) ; renvoie default quand non enveloppé par un Provider",
+        "vue": "inject(key, default) — le deuxième argument est la valeur par défaut"
+      },
+      "reactive": {
+        "title": "Réactivité",
+        "antd": "la référence de value du Provider change (setState) → tous les consommateurs se re-rendent",
+        "vue": "passer ref/reactive à provide → inject réagit automatiquement"
+      },
+      "safe": {
+        "title": "Sécurité de mutation",
+        "antd": "une valeur de contexte peut être n’importe quelle structure ; convenir de ne la changer que via des callbacks",
+        "vue": "provide(key, readonly(state)) interdit aux enfants de modifier directement"
+      }
+    }
+  },
+  "ref": {
+    "title": "Opérations Ref / DOM",
+    "subtitle": "React : useRef (DOM/variable) + forwardRef + useImperativeHandle (API impérative) ; Vue : ref=\"x\" + defineExpose.",
+    "tagRef": "useRef vs ref",
+    "tagImperative": "API impérative",
+    "tagForward": "forwardRef / defineExpose",
+    "videoTitle": "Vidéo « React vs Vue »",
+    "inputPlaceholder": "Cliquez sur « Focus » pour sélectionner le texte…",
+    "focusSelect": "Focus + sélection",
+    "reverseText": "Inverser le texte",
+    "reverseLog": "Inverser le texte saisi → ",
+    "logEmpty": "Zone de journal ci-dessous : cliquez les boutons à droite pour défiler automatiquement vers le bas (scrollBox.current.scrollTo).",
+    "appendScroll": "Ajouter (défiler en haut)",
+    "appendLog": "Ajouter un journal : ",
+    "clear": "Effacer",
+    "domRefCard": "① Ref DOM : manipuler input / div natifs",
+    "imperativeCard": "② forwardRef + useImperativeHandle : API impérative de composant",
+    "playing": "▶ Lecture",
+    "paused": "⏸ En pause",
+    "playBtn": "▶ play()",
+    "pauseBtn": "⏸ pause()",
+    "seekBtn": "⏭ seek(30s)",
+    "jumpEnd": "⏩ Aller à la fin",
+    "resetBtn": "⟲ reset()",
+    "getStateBtn": "getState() → imprimer",
+    "imperativeNote1": "Le parent ne peut pas lire l’état interne de l’enfant directement ; il faut passer par",
+    "imperativeNote2": "en exposant explicitement les méthodes. Correspond un à un à Vue 3",
+    "imperativeNote3": "respectivement.",
+    "diff": {
+      "domRef": {
+        "title": "Déclaration de ref DOM",
+        "antd": "const r = useRef(null); <input ref={r}/>",
+        "vue": "const r = ref(null); <input ref=\"r\" /> (le même nom suffit à lier)"
+      },
+      "crossRef": {
+        "title": "Passer un ref entre composants",
+        "antd": "forwardRef(MyComp(props, ref))",
+        "vue": "le ref d’un enfant pointe par défaut sur le DOM racine ; ou $refs (options API)"
+      },
+      "exposeApi": {
+        "title": "Exposer une API impérative",
+        "antd": "useImperativeHandle(ref, () => ({ play, ... }), deps)",
+        "vue": "defineExpose({ play, pause, getState })"
+      },
+      "readWrite": {
+        "title": "Lire / écrire les valeurs de ref",
+        "antd": "lire/écrire r.current ; changer .current ne déclenche pas de rendu",
+        "vue": "lire/écrire r.value ; ref(reactive) est automatiquement réactif"
+      },
+      "multiRef": {
+        "title": "Plusieurs refs : listes",
+        "antd": "ref={el => arr[i] = el} (ref callback) ou useRef([])",
+        "vue": "<div v-for=\"i in 5\" :ref=\"el => list[i]=el\" /> 或 :ref=\"keyed\""
+      },
+      "sideEffect": {
+        "title": "Opérations DOM « à effet de bord »",
+        "antd": "opérer dans useEffect (après montage / après changement des deps)",
+        "vue": "dans le hook onMounted"
+      }
+    }
+  },
+  "slot": {
+    "title": "Slots / distribution Children",
+    "subtitle": "React : children / plusieurs props ReactNode (nommés) / renderItem render-prop (à portée) ; Vue : slot par défaut / nommé / à portée avec exposition de données.",
+    "tagChildren": "children · nommé · à portée",
+    "tagRender": "renderItem = slot à portée",
+    "tagDistribute": "Distribution de contenu",
+    "defaultSlot": "① Slot par défaut : children",
+    "welcome": "🎯 Bienvenue dans votre espace de travail",
+    "todayText": "Aujourd’hui est une belle journée. L’enfant rend tout ce bloc directement via props.children.",
+    "startWork": "Commencer à travailler",
+    "viewNotify": "Voir les notifications 3",
+    "namedSlot": "② Slots nommés : plusieurs props ReactNode (title / extra / footer / children)",
+    "subtitle2": "Ingénieur front-end · 5 ans",
+    "setting": "Paramètres",
+    "followed": "Abonné",
+    "follow": "Suivre",
+    "comment": "💬 Commentaires : 128",
+    "repost": "🔁 Republications : 54",
+    "view": "👀 Vues : 2,3k",
+    "bodyPre": "Je construis un",
+    "bodyMid1": "projet hybride,",
+    "bodyUse": "en utilisant",
+    "bodyMid2": "slots nommés pour distribuer le contenu,",
+    "bodyVue": "correspondant au",
+    "bodyEnd": "respectivement.",
+    "scopedSlot": "③ Slot à portée : renderItem (render-prop)",
+    "soldOut": "Produits épuisés",
+    "noData": "Aucune donnée",
+    "productKeyboard": "Clavier",
+    "productMouse": "Souris",
+    "productMonitor": "Écran",
+    "diff": {
+      "default": {
+        "title": "Slot par défaut",
+        "antd": "props.children",
+        "vue": "<slot />"
+      },
+      "named": {
+        "title": "Slots nommés",
+        "antd": "plusieurs props : title / header / footer sont tous des ReactNode",
+        "vue": "<slot name=\"header\" />\n<template #header>...</template>"
+      },
+      "scoped": {
+        "title": "Slot à portée (rendu de liste)",
+        "antd": "renderItem={(row, idx) => <Item />} ou la prop itemRender",
+        "vue": "<template #default=\"{ row, $index }\">\n  直接使用 row / $index\n</template>"
+      },
+      "fallback": {
+        "title": "Contenu de repli",
+        "antd": "dans le conteneur : children || nœud par défaut",
+        "vue": "<slot>默认内容</slot>"
+      },
+      "multiSlot": {
+        "title": "Plusieurs slots + données",
+        "antd": "chaque prop de slot prend (scope) => ReactNode (slots fonctionnels)",
+        "vue": "<slot name=\"foot\" :total=\"total\" :count=\"count\" />\n<template #foot=\"{ total, count }\">"
+      },
+      "scenario": {
+        "title": "Cas d’usage",
+        "antd": "Card / Modal / Table column / List itemRender génériques",
+        "vue": "idem à gauche + la famille de directives v-slot"
+      }
+    }
+  },
+  "state": {
+    "title": "Partage de état global",
+    "subtitle": "React : createContext + useReducer ou useMemo pour un store ; Vue : reactive + provide/inject ou Pinia. Cette page compare uniquement des approches « natves du framework », sans Redux/Zustand/Pinia.",
+    "tagContext": "Context vs provide+reactive",
+    "tagCart": "Panier en pratique",
+    "tagShare": "Partage de état entre composants",
+    "cartTitle": "Panier (état partagé)",
+    "wallet": "Portefeuille : ¥",
+    "qtyLabel": "Qté : ",
+    "amtLabel": "Montant : ",
+    "checkout": "Payer maintenant",
+    "productList": "Liste de produits (consommateur indépendant)",
+    "namePlaceholder": "Nom du produit",
+    "pricePlaceholder": "Prix",
+    "addButton": "Ajouter",
+    "emptyCart": "Le panier est vide",
+    "subtotal": "Sous-total : ¥",
+    "book1": "Vue 3 en pratique",
+    "book2": "Patrons de conception React",
+    "diff": {
+      "native": {
+        "title": "Approche (native)",
+        "antd": "createContext + Provider + useContext ; garder le state dans le Provider",
+        "vue": "objet reactive ou ref + provide(key, store) ; ou Pinia (store officiel)"
+      },
+      "reference": {
+        "title": "Référence de état",
+        "antd": "la value du Provider est un nouvel objet à chaque setState ; le changement de référence re-rend tous les consommateurs",
+        "vue": "la référence d’un objet reactive ne change pas ; muter une propriété déclenche précisément ses abonnés"
+      },
+      "perf": {
+        "title": "Optimisation des performances",
+        "antd": "diviser en plusieurs Context / memo + useCallback / useMemo / bibliothèques de sélecteurs",
+        "vue": "l’état dérivé computed se met en cache automatiquement ; la granularité des composants est précise"
+      },
+      "async": {
+        "title": "Mises à jour asynchrones",
+        "antd": "écrire useCallback(async ()=> {...setState}) dans le Provider",
+        "vue": "une action est une simple fonction async qui mute les propriétés reactive"
+      },
+      "devtools": {
+        "title": "Devtools",
+        "antd": "React DevTools Components pour le contexte ; Redux/Zustand ont des panneaux dédiés",
+        "vue": "Vue DevTools → panneau Pinia ou l’arbre d’état Setup"
+      },
+      "prod": {
+        "title": "Wrappers courants en production",
+        "antd": "Zustand / Redux Toolkit / Jotai",
+        "vue": "Pinia (remplace Vuex)"
+      }
+    }
+  }
+}

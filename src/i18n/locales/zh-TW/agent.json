@@ -1,0 +1,80 @@
+{
+  "console": {
+    "title": "🤖 AI Agent 控制台",
+    "online": "在線",
+    "modeDirect": "直接模式",
+    "modeIframe": "iframe 模式",
+    "toggleMode": "切換模式"
+  },
+  "page": {
+    "desc": "用自然語言控制當前頁面，支援點擊、輸入、滾動、分析、導航；輸入框、快捷指令、麥克風語音三種互動方式。",
+    "execPre": "已執行 ",
+    "execPost": " 次操作"
+  },
+  "stats": {
+    "execPre": "執行 ",
+    "execPost": " 次",
+    "successPre": "成功 ",
+    "failPre": "失敗 ",
+    "voicePre": "語音 ",
+    "ratePre": "成功率 ",
+    "ratePost": "%",
+    "clearTitle": "清空歷史",
+    "clear": "🗑 清空"
+  },
+  "history": {
+    "failBadge": "失敗",
+    "copyTitle": "複製指令",
+    "redoTitle": "重新執行",
+    "success": "成功",
+    "emptyTitle": "開始你的第一條指令",
+    "emptyLine1": "試試「點擊登入按鈕」「跳轉到首頁」「向下滾動」",
+    "emptyLine2": "或「填寫表單：姓名張三，郵箱a@b.com」「提交表單」",
+    "emptyLine3": "也可以點擊下方的快捷指令，或點 🎤 語音輸入"
+  },
+  "input": {
+    "micUnsupported": "當前瀏覽器不支援麥克風錄音",
+    "micStopTip": "停止錄音並開始識別",
+    "micTip": "🎤 語音控制頁面：說指令自動執行（點擊/跳轉/滾動/輸入）",
+    "placeholder": "輸入或貼上指令…Enter 執行 · Shift+Enter 換行 · 也可點 🎤 語音",
+    "executing": "執行中",
+    "execute": "▶ 執行"
+  },
+  "shortcuts": {
+    "title": "⚡ 一鍵執行",
+    "runTip": "直接執行「{label}」"
+  },
+  "voice": {
+    "recording": "🎙️ 正在錄音…說完點 ⏹ 停止",
+    "recognizing": "⏳ 正在本地識別語音（不出本機）",
+    "loadingModel": "⏬ 首次載入語音模型（僅一次，約 40MB）"
+  },
+  "status": {
+    "directMode": "直接模式：操作當前頁面 DOM",
+    "iframeWaiting": "iframe 模式：等待連接...",
+    "iframeConnected": "iframe 已連接",
+    "parsing": "🔄 正在解析「{task}」...",
+    "done": "✅ 完成：{summary}",
+    "failed": "❌ 失敗：{summary}",
+    "partialDone": "⚠️ 完成：{summary}",
+    "error": "❌ 錯誤：{message}",
+    "recognized": "🎙️ 識別：{text}",
+    "corrected": "（已修正：{text}）",
+    "voiceFailed": "❌ 語音識別失敗：{message}",
+    "copied": "📋 已複製「{task}」",
+    "copyFailed": "❌ 複製失敗"
+  },
+  "summary": {
+    "allSuccess": "✓ 全部成功 · {count} 個動作",
+    "allFail": "✗ 全部失敗 · {count} 個動作",
+    "partial": "部分成功 · {success}/{total}"
+  },
+  "iframe": {
+    "placeholder": "嵌入頁面位址（iframe 模式）",
+    "hint": "iframe 模式下需配置目標頁面位址"
+  },
+  "errors": {
+    "iframeNotReady": "iframe 未就緒",
+    "timeout": "超時（5s）"
+  }
+}

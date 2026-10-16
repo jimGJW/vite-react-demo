@@ -14,6 +14,7 @@
 
 import { memo, useState } from 'react'
 import { Avatar, Button, Divider, Tooltip, message as antdMessage } from 'antd'
+import { useI18n } from '../../i18n/index.js'
 import {
   CheckOutlined,
   CopyOutlined,
@@ -77,6 +78,7 @@ export const RightMessage = memo(function RightMessage({ message }) {
  */
 export const PendingBubble = memo(function PendingBubble() {
   const { loading, statusLine } = useChatStatus()
+  const { t } = useI18n()
   if (!loading) return null
 
   return (
@@ -87,7 +89,7 @@ export const PendingBubble = memo(function PendingBubble() {
           <span>{statusLine}</span>
         </>
       ) : (
-        <span className="cb-dots" aria-label="正在生成">
+        <span className="cb-dots" aria-label={t('chatbot.bubble.generating')}>
           <i />
           <i />
           <i />
@@ -101,6 +103,7 @@ export const PendingBubble = memo(function PendingBubble() {
 
 export const LeftMessage = memo(function LeftMessage({ data, isLast, roundId, onReload }) {
   const { toolBox = true, updateMessageState, shareState, onAsk, api } = useChatContext()
+  const { t } = useI18n()
   const [copied, setCopied] = useState(false)
 
   const streamId = data.sessionDetailId || roundId
@@ -112,7 +115,7 @@ export const LeftMessage = memo(function LeftMessage({ data, isLast, roundId, on
       setCopied(true)
       setTimeout(() => setCopied(false), 1500)
     } else {
-      antdMessage.warning('复制失败，请手动选择文本复制')
+      antdMessage.warning(t('chatbot.bubble.copyFailed'))
     }
   }
 
@@ -142,33 +145,33 @@ export const LeftMessage = memo(function LeftMessage({ data, isLast, roundId, on
 
             {toolBox && !shareState && (
               <div className="cb-tools">
-                <Tooltip title={copied ? '已复制' : '复制'}>
+                <Tooltip title={copied ? t('chatbot.bubble.copied') : t('chatbot.bubble.copy')}>
                   <Button
                     size="small"
                     type="text"
-                    aria-label="复制回答"
+                    aria-label={t('chatbot.bubble.copyAria')}
                     icon={copied ? <CheckOutlined /> : <CopyOutlined />}
                     onClick={doCopy}
                   />
                 </Tooltip>
 
                 {isLast && onReload && (
-                  <Tooltip title="重新生成">
+                  <Tooltip title={t('chatbot.bubble.reload')}>
                     <Button
                       size="small"
                       type="text"
-                      aria-label="重新生成"
+                      aria-label={t('chatbot.bubble.reloadAria')}
                       icon={<ReloadOutlined />}
                       onClick={onReload}
                     />
                   </Tooltip>
                 )}
 
-                <Tooltip title="有帮助">
+                <Tooltip title={t('chatbot.bubble.like')}>
                   <Button
                     size="small"
                     type="text"
-                    aria-label="有帮助"
+                    aria-label={t('chatbot.bubble.likeAria')}
                     aria-pressed={state === '1'}
                     className={state === '1' ? 'is-active' : ''}
                     icon={state === '1' ? <LikeFilled /> : <LikeOutlined />}
@@ -176,11 +179,11 @@ export const LeftMessage = memo(function LeftMessage({ data, isLast, roundId, on
                   />
                 </Tooltip>
 
-                <Tooltip title="没帮助">
+                <Tooltip title={t('chatbot.bubble.dislike')}>
                   <Button
                     size="small"
                     type="text"
-                    aria-label="没帮助"
+                    aria-label={t('chatbot.bubble.dislikeAria')}
                     aria-pressed={state === '0'}
                     className={state === '0' ? 'is-active cb-tools__down' : ''}
                     icon={state === '0' ? <DislikeFilled /> : <DislikeOutlined />}
@@ -201,10 +204,11 @@ export const LeftMessage = memo(function LeftMessage({ data, isLast, roundId, on
 /* ------------------------------------------------------------------ 一轮对话 */
 
 export const Conversation = memo(function Conversation({ data, isLast, onReload }) {
+  const { t } = useI18n()
   if (data.sessionDetailId === NEW_CHAT_MARK && !data.conversation.length) {
     return (
       <Divider plain className="cb-divider">
-        全新的开始
+        {t('chatbot.divider.newStart')}
       </Divider>
     )
   }

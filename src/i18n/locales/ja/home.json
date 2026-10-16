@@ -1,0 +1,8 @@
+{
+  "title": "ホームへようこそ",
+  "desc": "Vite + React + React Router で構築されたサンプルプロジェクトです。",
+  "counter": "カウント: {count}",
+  "navHintPre": "上部ナビゲーションから",
+  "navHintOr": "または",
+  "navHintPost": "ページに移動できます。"
+}

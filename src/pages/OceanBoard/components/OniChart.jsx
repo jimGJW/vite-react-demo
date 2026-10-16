@@ -1,4 +1,7 @@
+import { useI18n } from '../../../i18n/index.js'
+
 export function OniChart({ history, latest, state }) {
+  const { t } = useI18n()
   if (!history?.length) return null
   const W = 640
   const H = 220
@@ -17,13 +20,13 @@ export function OniChart({ history, latest, state }) {
   }
   return (
     <div className="o-chart">
-      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label="厄尔尼诺指数 ONI 历史">
-        {[2, 1, 0, -1, -2].map((t) => (
-          <g key={t}>
-            <line x1={PAD.l} y1={y(t)} x2={W - PAD.r} y2={y(t)}
-              className={t === 0 ? 'o-chart__zero' : 'o-chart__grid'} />
-            <text x={PAD.l - 6} y={y(t) + 3.5} textAnchor="end" className="o-chart__tick">
-              {t > 0 ? `+${t}` : t}
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t('ocean.chart.oniAria')}>
+        {[2, 1, 0, -1, -2].map((tick) => (
+          <g key={tick}>
+            <line x1={PAD.l} y1={y(tick)} x2={W - PAD.r} y2={y(tick)}
+              className={tick === 0 ? 'o-chart__zero' : 'o-chart__grid'} />
+            <text x={PAD.l - 6} y={y(tick) + 3.5} textAnchor="end" className="o-chart__tick">
+              {tick > 0 ? `+${tick}` : tick}
             </text>
           </g>
         ))}
@@ -40,7 +43,12 @@ export function OniChart({ history, latest, state }) {
               fill={colorAt(h.anom)}
               rx="1.5"
             >
-              <title>{`${h.year} 年 ${h.season}：ONI ${h.anom >= 0 ? '+' : ''}${h.anom.toFixed(2)}（海温 ${h.sst.toFixed(2)} °C）`}</title>
+              <title>{t('ocean.chart.oniBarTitle', {
+                year: h.year,
+                season: h.season,
+                anom: `${h.anom >= 0 ? '+' : ''}${h.anom.toFixed(2)}`,
+                sst: h.sst.toFixed(2),
+              })}</title>
             </rect>
           )
         })}
@@ -50,8 +58,7 @@ export function OniChart({ history, latest, state }) {
         </text>
       </svg>
       <div className="o-chart__caption">
-        ONI = Niño 3.4 区（5°N–5°S, 170°W–120°W）海温距平的 3 个月滑动均值（NOAA CPC）。
-        连续 5 季 ≥ +0.5 为厄尔尼诺、≤ −0.5 为拉尼娜；当前最新 {latest.year} 年 {latest.season}：
+        {t('ocean.chart.oniCaption', { year: latest.year, season: latest.season })}
         <b style={{ color: colorAt(latest.anom) }}> {latest.anom >= 0 ? '+' : ''}{latest.anom.toFixed(2)}（{state}）</b>
       </div>
     </div>

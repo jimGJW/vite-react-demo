@@ -2,6 +2,7 @@ import { createRoot } from 'react-dom/client'
 import QrScanner from 'qr-scanner'
 import { ScannerOverlay } from './QrScannerOverlay.jsx'
 import { showToast } from './showToast.jsx'
+import { MESSAGES, DEFAULT_LANG, isSupportedLang, translate } from '../i18n'
 
 /* =====================================================================
  * 摄像头扫码（命令式弹窗，非 React Hook）
@@ -15,9 +16,32 @@ import { showToast } from './showToast.jsx'
 let scanningLock = false
 const genId = () => `qr-${Date.now()}-${Math.random().toString(36).slice(2)}`
 
+/* 镜像 I18nProvider 的语种解析（localStorage['app.lang.v1'] → 浏览器语言 → 简体中文）：
+ * 本模块是命令式入口，弹窗经 createRoot 独立渲染、不在 React 树内，
+ * 拿不到 Context，只能直连 translate 纯函数按当前语种取词。 */
+function readPersistedLang() {
+  try {
+    const saved = localStorage.getItem('app.lang.v1')
+    if (saved && isSupportedLang(saved)) return saved
+  } catch { /* 隐私模式等场景下忽略 */ }
+  try {
+    const nav = (navigator.languages?.[0] || navigator.language || '').toLowerCase()
+    /* 浏览器语言就近映射：zh-hant-* → 繁体，en-* → 英语，其余落简体 */
+    if (nav.startsWith('zh')) {
+      return /hant|tw|hk|mo/.test(nav) ? 'zh-TW' : 'zh-CN'
+    }
+    const base = nav.split('-')[0]
+    if (isSupportedLang(base)) return base
+  } catch { /* ignore */ }
+  return DEFAULT_LANG
+}
+
 export function openQrScanner({ onSuccess, onCancel, onError }) {
+  const lang = readPersistedLang()
+  const t = (key) => translate(MESSAGES, lang, key)
+
   if (scanningLock) {
-    showToast('info', '扫码窗口已打开，请先关闭')
+    showToast('info', t('scan.toast.alreadyOpen'))
     return () => {}
   }
   scanningLock = true
@@ -94,11 +118,11 @@ export function openQrScanner({ onSuccess, onCancel, onError }) {
         onSuccess(res.data)
         destroy()
       } else {
-        showToast('warn', '图片未识别到二维码')
+        showToast('warn', t('scan.toast.noQr'))
       }
     } catch (err) {
       if (loadingDom) loadingDom.style.visibility = 'hidden'
-      showToast('warn', '图片未识别到二维码')
+      showToast('warn', t('scan.toast.noQr'))
       onError?.(err)
     } finally {
       e.target.value = ''
@@ -112,13 +136,14 @@ export function openQrScanner({ onSuccess, onCancel, onError }) {
       loadingId={loadingId}
       onClose={() => destroy(true)}
       onUpload={handleUpload}
+      t={t}
     />
   )
 
   QrScanner.hasCamera()
     .then((hasCam) => {
       if (!hasCam) {
-        showToast('warn', '当前设备未检测到摄像头')
+        showToast('warn', t('scan.toast.noCamera'))
         destroy(true)
         return
       }
@@ -137,13 +162,13 @@ export function openQrScanner({ onSuccess, onCancel, onError }) {
         highlightCodeOutline: true,
       })
       scannerInstance.start().catch((err) => {
-        showToast('error', '摄像头启动失败，请检查设备权限或使用 HTTPS 访问')
+        showToast('error', t('scan.toast.startFailed'))
         onError?.(err)
         destroy(true)
       })
     })
     .catch((err) => {
-      showToast('error', '无法获取摄像头权限')
+      showToast('error', t('scan.toast.noPermission'))
       onError?.(err)
       destroy(true)
     })

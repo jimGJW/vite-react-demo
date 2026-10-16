@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { Input, Select, Button, Space } from 'antd'
+import { useI18n } from '../../../i18n/index.js'
 
 /**
  * 行内编辑表格：点击「编辑」整行切换为输入框 / 下拉，保存即写回。
  * 来自某存量后台项目的行内编辑思路，去 redux / antd3 重写。
  */
 export default function EditableTable({ columns = [], data = [], rowKey = 'id' }) {
+  const { t } = useI18n()
   const [rows, setRows] = useState(() => data.map((r) => ({ ...r })))
 
   const setCell = (key, col, val) =>
@@ -35,7 +37,7 @@ export default function EditableTable({ columns = [], data = [], rowKey = 'id' }
           {columns.map((c) => (
             <th key={c.key}>{c.title}</th>
           ))}
-          <th>操作</th>
+          <th>{t('studio.comp.editActions')}</th>
         </tr>
       </thead>
       <tbody>
@@ -69,11 +71,11 @@ export default function EditableTable({ columns = [], data = [], rowKey = 'id' }
             <td>
               {r.__editing ? (
                 <Space size={4}>
-                  <Button size="small" type="link" onClick={() => save(r[rowKey])}>保存</Button>
-                  <Button size="small" type="link" onClick={() => cancel(r[rowKey])}>取消</Button>
+                  <Button size="small" type="link" onClick={() => save(r[rowKey])}>{t('studio.comp.editSave')}</Button>
+                  <Button size="small" type="link" onClick={() => cancel(r[rowKey])}>{t('studio.comp.editCancel')}</Button>
                 </Space>
               ) : (
-                <Button size="small" type="link" onClick={() => start(r[rowKey])}>编辑</Button>
+                <Button size="small" type="link" onClick={() => start(r[rowKey])}>{t('studio.comp.editStart')}</Button>
               )}
             </td>
           </tr>

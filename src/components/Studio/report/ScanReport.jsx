@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Tag, Progress, Empty, Segmented } from 'antd'
+import { useI18n } from '../../../i18n/index.js'
 import { WarningOutlined, InfoCircleOutlined, BugOutlined } from '@ant-design/icons'
 
 /**
@@ -15,16 +16,25 @@ import { WarningOutlined, InfoCircleOutlined, BugOutlined } from '@ant-design/ic
  */
 
 const SEVERITY = {
-  critical: { label: '严重', color: '#cf1322', order: 0 },
-  high: { label: '高危', color: '#fa541c', order: 1 },
-  medium: { label: '中危', color: '#faad14', order: 2 },
-  low: { label: '低危', color: '#1677ff', order: 3 },
-  info: { label: '提示', color: '#8c8c8c', order: 4 },
+  critical: { color: '#cf1322', order: 0 },
+  high: { color: '#fa541c', order: 1 },
+  medium: { color: '#faad14', order: 2 },
+  low: { color: '#1677ff', order: 3 },
+  info: { color: '#8c8c8c', order: 4 },
 }
 
 const ALL = Object.keys(SEVERITY)
 
+const SEV_LABEL = {
+  critical: 'studio.comp.sevCritical',
+  high: 'studio.comp.sevHigh',
+  medium: 'studio.comp.sevMedium',
+  low: 'studio.comp.sevLow',
+  info: 'studio.comp.sevInfo',
+}
+
 export default function ScanReport({ report, className = '' }) {
+  const { t } = useI18n()
   const findings = useMemo(() => report?.findings || [], [report])
   const [severity, setSeverity] = useState('all')
 
@@ -43,8 +53,8 @@ export default function ScanReport({ report, className = '' }) {
     <div className={`st-scanreport ${className}`}>
       <div className="st-scanreport__head">
         <div>
-          <div className="st-scanreport__title">{report?.title || '扫描报告'}</div>
-          <div className="st-scanreport__sub">{total} 项发现 · 评分 {score}/100</div>
+          <div className="st-scanreport__title">{report?.title || t('studio.comp.reportTitle')}</div>
+          <div className="st-scanreport__sub">{t('studio.comp.reportSub', { total, score })}</div>
         </div>
         <Progress
           type="dashboard"
@@ -62,7 +72,7 @@ export default function ScanReport({ report, className = '' }) {
             <div key={s} className="st-scanreport__bar-row">
               <span className="st-scanreport__bar-label">
                 <i style={{ background: meta.color }} />
-                {meta.label}
+                {t(SEV_LABEL[s])}
               </span>
               <div className="st-scanreport__bar-track">
                 <span className="st-scanreport__bar-fill" style={{ width: `${pct}%`, background: meta.color }} />
@@ -78,20 +88,20 @@ export default function ScanReport({ report, className = '' }) {
           size="small"
           value={severity}
           onChange={setSeverity}
-          options={[{ label: `全部 ${total}`, value: 'all' }, ...ALL.map((s) => ({ label: `${SEVERITY[s].label} ${counts[s]}`, value: s }))]}
+          options={[{ label: t('studio.comp.reportAll', { total }), value: 'all' }, ...ALL.map((s) => ({ label: `${t(SEV_LABEL[s])} ${counts[s]}`, value: s }))]}
         />
       </div>
 
       <div className="st-scanreport__list">
         {shown.length === 0 ? (
-          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="无发现项" />
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('studio.comp.reportEmpty')} />
         ) : (
           shown.map((f) => {
             const meta = SEVERITY[f.severity] || SEVERITY.info
             return (
               <div key={f.id} className="st-scanreport__item">
                 <Tag color={meta.color} className="st-scanreport__sev">
-                  {meta.label}
+                  {t(SEV_LABEL[f.severity] ?? SEV_LABEL.info)}
                 </Tag>
                 <div className="st-scanreport__item-body">
                   <div className="st-scanreport__item-title">

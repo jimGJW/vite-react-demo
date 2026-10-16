@@ -1,0 +1,11 @@
+{
+  "title": "À propos",
+  "desc": "Un projet React standard avec routage, mise en page et structure multi-pages — un point de départ pour vos développements.",
+  "stackTitle": "Stack technique",
+  "react19": "Bibliothèque UI de base",
+  "router7": "Routage front-end",
+  "vite8": "Outil de build",
+  "eslint": "Normes de code",
+  "structureTitle": "Structure des dossiers",
+  "structure": "src/\n├── layouts/     # Composants de mise en page\n├── pages/       # Composants de page (un dossier par page)\n├── App.jsx      # Point d'entrée du routage\n├── main.jsx     # Point d'entrée de l'app\n└── index.scss    # Styles globaux"
+}

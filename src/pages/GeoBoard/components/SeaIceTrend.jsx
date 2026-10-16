@@ -1,4 +1,7 @@
+import { useI18n } from '../../../i18n/index.js'
+
 export function SeaIceTrend({ history, latest, avg1980s, avg2010s, declinePct, zh = '北极', monthLabel = '9 月' }) {
+  const { t } = useI18n()
   if (!history?.length) return null
   const W = 640
   const H = 210
@@ -18,7 +21,7 @@ export function SeaIceTrend({ history, latest, avg1980s, avg2010s, declinePct, z
   const ticks = [2, 4, 6, 8].filter((t) => t <= max)
   return (
     <div className="geo-chart">
-      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`${zh}${monthLabel}海冰范围年际变化`}>
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={t('geo.seaIce.aria', { zh, month: monthLabel })}>
         {ticks.map((t) => (
           <g key={t}>
             <line x1={PAD.l} y1={y(t)} x2={W - PAD.r} y2={y(t)} className="geo-chart__grid" />
@@ -35,7 +38,7 @@ export function SeaIceTrend({ history, latest, avg1980s, avg2010s, declinePct, z
             fill={colorAt(frac(h.year))}
             rx="1.5"
           >
-            <title>{`${h.year} 年 ${monthLabel}：${h.extent.toFixed(2)} 百万 km²`}</title>
+            <title>{t('geo.seaIce.barTitle', { year: h.year, month: monthLabel, extent: h.extent.toFixed(2) })}</title>
           </rect>
         ))}
         {/* 两个年代的均值参考线 */}
@@ -46,9 +49,15 @@ export function SeaIceTrend({ history, latest, avg1980s, avg2010s, declinePct, z
         <text x={W - PAD.r} y={H - 8} textAnchor="end" className="geo-chart__tick">{latest.year}</text>
       </svg>
       <div className="geo-chart__caption">
-        {zh} {monthLabel}海冰范围（极值月，NSIDC）· 1981–1990 均值 {avg1980s?.toFixed(2)}（冷线）
-        vs 2011–2020 均值 {avg2010s?.toFixed(2)}（暖线）· 相比 {history[0].year} 年{' '}
-        <b>{declinePct <= 0 ? '缩减' : '增长'} {Math.abs(declinePct ?? 0)}%</b>
+        {t('geo.seaIce.caption', {
+          zh,
+          month: monthLabel,
+          avg1980s: avg1980s != null ? avg1980s.toFixed(2) : '—',
+          avg2010s: avg2010s != null ? avg2010s.toFixed(2) : '—',
+          year: history[0].year,
+          word: declinePct <= 0 ? t('geo.seaIce.shrink') : t('geo.seaIce.grow'),
+          decline: Math.abs(declinePct ?? 0),
+        })}
       </div>
     </div>
   )

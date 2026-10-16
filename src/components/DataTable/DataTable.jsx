@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useI18n } from '../../i18n/index.js'
 import './DataTable.scss'
 
 /* =====================================================================
@@ -6,8 +7,6 @@ import './DataTable.scss'
  * 统一消费 :root 设计 token，保持 Indigo 玻璃态风格
  * 能力：列排序、列级模糊筛选、分页、行选择、空状态、加载骨架、横向滚动
  * ===================================================================== */
-
-const DEFAULT_EMPTY = '暂无数据'
 
 /** 渲染单元格：优先用列 render，否则取 row[key]。 */
 function renderCell(col, row, rowIndex) {
@@ -75,7 +74,7 @@ function Checkbox({ checked = false, indeterminate = false, onChange, ...rest })
  * @param {{selectedRowKeys:Array<string|number>,onChange:(keys:Array,rows:Array)=>void}} [props.rowSelection] 行选择配置。
  * @param {{onClick?:(row:Object,index:number)=>void,onDoubleClick?:(row:Object,index:number)=>void}} [props.onRow] 行事件。
  * @param {boolean} [props.loading=false] 是否显示加载骨架。
- * @param {string} [props.emptyText='暂无数据'] 空状态文案。
+ * @param {string} [props.emptyText] 空状态文案；缺省走 i18n（dataTable.component.empty）。
  * @param {string} [props.rowKey='id'] 行唯一标识字段名。
  * @param {string} [props.className] 额外类名。
  * @returns {JSX.Element}
@@ -87,10 +86,12 @@ export function DataTable({
   rowSelection,
   onRow,
   loading = false,
-  emptyText = DEFAULT_EMPTY,
+  emptyText,
   rowKey = 'id',
   className = '',
 }) {
+  const { t } = useI18n()
+  const emptyLabel = emptyText ?? t('dataTable.component.empty')
   const [sorter, setSorter] = useState({ key: null, order: null })
   const [filters, setFilters] = useState({})
   const [page, setPage] = useState(1)
@@ -203,7 +204,7 @@ export function DataTable({
 
   return (
     <div className={`dt ${loading ? 'is-loading' : ''} ${className}`.trim()}>
-      <div className="dt-scroll" role="region" aria-label="数据表格" tabIndex={0}>
+      <div className="dt-scroll" role="region" aria-label={t('dataTable.component.regionAria')} tabIndex={0}>
         <table className="dt-table">
           {columns.length > 0 && (
             <thead>
@@ -214,7 +215,7 @@ export function DataTable({
                       checked={allPageSelected}
                       indeterminate={!allPageSelected && somePageSelected}
                       onChange={toggleSelectAll}
-                      aria-label="全选当前页"
+                      aria-label={t('dataTable.component.selectAllPage')}
                     />
                   </th>
                 )}
@@ -247,7 +248,7 @@ export function DataTable({
                           <input
                             type="search"
                             className="dt-filter-input"
-                            placeholder={`筛选 ${col.title}`}
+                            placeholder={t('dataTable.component.filter', { column: col.title })}
                             value={filters[col.key] || ''}
                             onChange={(e) => onFilter(col.key, e.target.value)}
                           />
@@ -280,7 +281,7 @@ export function DataTable({
                 <td colSpan={colCount}>
                   <div className="dt-empty">
                     <span className="dt-empty-icon" aria-hidden="true">📭</span>
-                    <span className="dt-empty-text">{emptyText}</span>
+                    <span className="dt-empty-text">{emptyLabel}</span>
                   </div>
                 </td>
               </tr>
@@ -300,7 +301,7 @@ export function DataTable({
                         <Checkbox
                           checked={selected}
                           onChange={() => toggleRow(row)}
-                          aria-label={`选择第 ${globalIndex + 1} 行`}
+                          aria-label={t('dataTable.component.selectRow', { row: globalIndex + 1 })}
                         />
                       </td>
                     )}
@@ -320,13 +321,11 @@ export function DataTable({
       {usePagination && !loading && (
         <div className="dt-footer">
           <div className="dt-info">
-            共 <strong>{total}</strong> 条
-            {total > 0 && (
-              <>
-                {' '}· 第 {(safePage - 1) * pageSize + 1}-
-                {Math.min(safePage * pageSize, total)} 条
-              </>
-            )}
+            {t('dataTable.component.totalBefore')}<strong>{total}</strong>{t('dataTable.component.totalAfter')}
+            {total > 0 && t('dataTable.component.range', {
+              from: (safePage - 1) * pageSize + 1,
+              to: Math.min(safePage * pageSize, total),
+            })}
           </div>
           <div className="dt-pager">
             <button
@@ -334,7 +333,7 @@ export function DataTable({
               className="dt-page-btn"
               onClick={() => setPage(1)}
               disabled={safePage <= 1}
-              aria-label="首页"
+              aria-label={t('dataTable.component.firstPage')}
             >
               «
             </button>
@@ -343,7 +342,7 @@ export function DataTable({
               className="dt-page-btn"
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={safePage <= 1}
-              aria-label="上一页"
+              aria-label={t('dataTable.component.prevPage')}
             >
               ‹
             </button>
@@ -355,7 +354,7 @@ export function DataTable({
               className="dt-page-btn"
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={safePage >= totalPages}
-              aria-label="下一页"
+              aria-label={t('dataTable.component.nextPage')}
             >
               ›
             </button>
@@ -364,7 +363,7 @@ export function DataTable({
               className="dt-page-btn"
               onClick={() => setPage(totalPages)}
               disabled={safePage >= totalPages}
-              aria-label="末页"
+              aria-label={t('dataTable.component.lastPage')}
             >
               »
             </button>

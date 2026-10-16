@@ -1,0 +1,31 @@
+{
+  "page": {
+    "title": "汎用スキャンデモ",
+    "desc": "純ブラウザの WebRTC カメラでスキャンするコンポーネント。業務ロジックから完全に切り離しており、任意のページで再利用できます。",
+    "customTrigger": "カスタムトリガーノード",
+    "lastResult": "最新の認識結果",
+    "historyTitle": "認識履歴",
+    "historyEmpty": "記録はありません"
+  },
+  "tip": {
+    "label": "ヒント:",
+    "body": "本番環境では HTTPS が必須です。localhost のローカル開発ではカメラを正常に呼び出せます。モバイルと PC の Chrome / Edge / Safari に対応しています。"
+  },
+  "overlay": {
+    "close": "スキャンを閉じる",
+    "recognizing": "画像を認識中...",
+    "pickImage": "アルバムから画像を選択",
+    "hint": "QR コードを枠内に入れてスキャン"
+  },
+  "toast": {
+    "alreadyOpen": "スキャン画面は既に開いています。先に閉じてください。",
+    "noQr": "画像から QR コードを認識できませんでした",
+    "noCamera": "このデバイスではカメラが検出されませんでした",
+    "startFailed": "カメラの起動に失敗しました。デバイスの権限を確認するか、HTTPS でアクセスしてください。",
+    "noPermission": "カメラの権限を取得できません"
+  },
+  "btn": {
+    "open": "スキャンを開く",
+    "starting": "起動中..."
+  }
+}

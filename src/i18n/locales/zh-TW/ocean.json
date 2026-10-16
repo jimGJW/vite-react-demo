@@ -1,0 +1,349 @@
+{
+  "hero": {
+    "title": "海洋數據看板",
+    "subPre": "「天上 · 地下 · 海洋」的第三塊拼圖——",
+    "linkAstro": "深空看板",
+    "subMid": "看天、",
+    "linkGeo": "地球看板",
+    "subPost": "看地，這裡看海：近海的海浪與海溫、舊金山站的實測潮位與高低潮預報、以及正在發生的聖嬰現象。"
+  },
+  "theme": {
+    "toDay": "切換到白晝",
+    "toNight": "切換到夜航",
+    "day": "白晝",
+    "night": "夜航"
+  },
+  "refresh": "刷新",
+  "metric": {
+    "maxWave": {
+      "label": "最大浪高（5 站）",
+      "info": "青島外海/長江口/廈門/珠江口/三亞 5 個近海觀測點中的當前最大浪高（Open-Meteo Marine 網格預報）"
+    },
+    "avgSst": {
+      "label": "平均海表溫度",
+      "info": "5 個近海點海表溫度（SST）的算術平均；SST 是颱風生成與聖嬰現象的關鍵變數"
+    },
+    "tideNow": {
+      "label": "當前潮位",
+      "info": "舊金山站最新實測水位（MLLW 基準 = 平均較低低潮面，美國潮位站通用零點）"
+    },
+    "nextHigh": {
+      "label": "下次高潮",
+      "info": "NOAA 潮汐調和預報（未來 48h）；時間為站點當地時間"
+    },
+    "nextLow": {
+      "label": "下次低潮",
+      "info": "潮差 = 相鄰高潮與低潮之差，趕海、進港避淺都看它"
+    },
+    "cyclone": {
+      "label": "活躍熱帶氣旋",
+      "info": "NOAA NHC 責任區（北大西洋 + 東北太平洋）當前活躍氣旋數；颶風級為 64 kt 以上。西北太平洋颱風不在本源內"
+    },
+    "ssta": {
+      "label": "海洋溫度距平",
+      "info": "全球海洋年均溫相對 1901–2000 年基準的偏差；地球滯留熱量的九成以上進了海洋"
+    },
+    "oni": {
+      "label": "聖嬰 ONI",
+      "info": "Niño 3.4 區海溫距平 3 月滑動均值；≥ +0.5 聖嬰 / ≤ −0.5 反聖嬰，|ONI|≥2.0 為超強"
+    },
+    "buoy": {
+      "label": "浮標最大浪（實測）",
+      "info": "NOAA NDBC 全球浮標網當前實測到的最大有效波高（區別於上方「最大浪高」的模式預報值）"
+    }
+  },
+  "tab": {
+    "waves": "海浪與海溫",
+    "tide": "潮汐",
+    "oni": "氣候振盪",
+    "cyclone": "熱帶氣旋",
+    "buoy": "浮標實況",
+    "marine": "海況預報",
+    "coast": "海岸榜",
+    "seatem": "海溫趨勢",
+    "cases": "真實案例"
+  },
+  "footer": "全部資料來自公開免費介面（Open-Meteo Marine / NOAA CO-OPS / NOAA CPC / NOAA NHC / NOAA PSL / NOAA NCEI / NOAA NDBC），僅用於科普與視覺化展示。海況為網格模式預報而非站點實測；潮汐時間為站點當地時間；氣候振盪分級依據 NOAA 官方閾值；活躍氣旋僅涵蓋 NHC 責任區（北大西洋與東北太平洋）；浮標為整點後回傳的實測值，各站時鐘略有先後，缺測以 MM 標記。",
+  "col": {
+    "sea": "海域",
+    "waveHeight": "有效波高",
+    "swell": "湧浪",
+    "windWave": "風浪",
+    "waveDir": "浪向",
+    "period": "平均週期",
+    "sst": "海表溫度",
+    "observeTime": "觀測時刻"
+  },
+  "srcIntro": "科普說明（靜態）",
+  "time": {
+    "beijing": "（北京時間）",
+    "site": "（站點時間）",
+    "utc": "（UTC）"
+  },
+  "station": {
+    "sf": "舊金山"
+  },
+  "empty": {
+    "noWaveData": "暫無海況資料",
+    "noForecast": "暫無預報資料",
+    "noGlobal": "暫無全球海域資料"
+  },
+  "waves": {
+    "panelNearshore": "近海海況實況",
+    "srcNearshore": "Open-Meteo Marine（免密鑰），5 個近海點一次請求，30 分鐘刷新；浪向為來向",
+    "panelSwellWind": "湧浪與風浪：同一片海的兩股波",
+    "tipSwell": "別處風暴生成後傳播過來的長週期波；本地沒風卻有大浪就是它",
+    "tipWindWave": "本地風當場吹出來的短週期波；風停即消散",
+    "prose1": "海面其實是兩股波的疊加：風浪由本地風當場吹出來，波形雜亂、週期短（3–8 s），風一停很快就散；湧浪是別處的風暴生成的波跨越上千公里傳過來，波形規則、週期長（8–20 s），能在無風的晴天繼續拍岸。",
+    "prose2": "分開看這兩項才解釋得了一個常見現象：本地風和日麗，卻湧起大浪——那就是遠洋風暴的先兆湧浪，比風暴本身早到好幾天。衝浪者等的就是它，而港口繫泊斷裂、船舶劇烈橫搖的元兇也往往是它。表格裡的「有效波高」是二者合成後按最大 1/3 取平均的結果，不是最大浪高——實際最大波可達它的 1.6–1.9 倍。",
+    "panelForecast": "未來 24 小時浪高預報",
+    "srcForecast": "Open-Meteo Marine，逐小時浪高（網格再分析 + 預報模式），30 分鐘刷新",
+    "panelGlobal": "全球 10 大海域浪況速覽",
+    "srcGlobal": "Open-Meteo Marine，全球代表海域一次多點請求，1 小時刷新；時刻為 UTC"
+  },
+  "tide": {
+    "panelObs": "實測潮位（過去 24 小時）",
+    "srcObs": "NOAA CO-OPS 潮位站 9414290（舊金山），6 分鐘採樣，6 分鐘刷新",
+    "panelPred": "高低潮預報（未來 48 小時）",
+    "srcPred": "NOAA CO-OPS 調和預報（interval=hilo），1 小時刷新；時間為站點當地時間",
+    "colTime": "時刻（站點）",
+    "colType": "類型",
+    "colLevel": "預報潮高",
+    "high": "高潮",
+    "low": "低潮",
+    "emptyObs": "暫無潮位資料",
+    "emptyPred": "暫無潮汐預報",
+    "panelWx": "站點氣溫實況（與潮位同站）",
+    "srcWx": "NOAA CO-OPS 氣象感測器，舊金山站 9414290，30 分鐘刷新",
+    "emptyWx": "暫無站點氣象資料",
+    "wxLabel": "站點氣溫",
+    "wxRange": "24h 區間",
+    "wxTipTitle": "海陸溫差驅動海陸風：白天陸地升溫快，風從海上吹向陸地；夜間相反。舊金山的夏季濃霧就源自這個溫差",
+    "wxTipText": "海陸溫差 → 海陸風與霧",
+    "panelDatum": "潮位基準面是什麼意思",
+    "mllw": "平均較低低潮面",
+    "prose1a": "潮位表的零點不是海平面，而是一個約定的基準面。本站用的是",
+    "prose1b": "——取每日兩次低潮中較低的那一個做長期平均。美國海圖與潮位表通用它，好處是絕大多數實測水位都為正，不會出現負潮位帶來的換算混亂。",
+    "prose2": "注意它和「平均海平面 MSL」不是一回事：MSL 才是海平面上升研究用的基準。同一個驗潮站的 MLLW 與 MSL 之間可以差出半公尺以上，跨基準引用潮位必須做換算，否則會憑空多出或吃掉幾十公分。",
+    "total": "共 {n} 個潮候"
+  },
+  "oni": {
+    "panelOni": "ONI 聖嬰指數（近 5 年）",
+    "srcOni": "NOAA CPC（cpc.ncep.noaa.gov），Niño 3.4 區 3 月滑動海溫距平，12 小時刷新",
+    "emptyOni": "暫無 ONI 資料",
+    "panelSsta": "全球海洋溫度距平（1850 → 今）",
+    "srcSsta": "NOAA NCEI Climate at a Glance，全球海洋年均溫距平，基準 1901–2000 年",
+    "emptySsta": "暫無海洋溫度距平資料",
+    "sstaYear": "{year} 年",
+    "sstaWarmest": "最暖年份",
+    "sstaTip": "1981–2010 是現代氣候學常用的參照期；近 10 年與它的差距就是「加速」的量",
+    "captionSsta": "地球因溫室氣體滯留的多餘熱量，九成以上進了海洋。這條曲線是「地球能量失衡」最直接的體溫計——比氣溫距平更少受年際雜訊干擾，也因此更難被短期波動「洗白」。",
+    "panelOsc": "年代際振盪：PDO 與 AMO",
+    "srcOsc": "NOAA PSL（psl.noaa.gov）月值序列，缺測占位（PDO −9.90 / AMO −99.99）已剔除",
+    "emptyOsc": "暫無振盪指數資料",
+    "oscLast12": "近 12 月",
+    "oscWarm": "暖位相",
+    "oscCold": "冷位相",
+    "oscPeriod": "週期 {period}",
+    "oscCaption": "{name}年均值（近 60 年）· 最新有效月 {ym}（{value}）· 持續同號數年才有位相意義，單月跳動不必解讀",
+    "panelWhy": "為什麼全球都盯著 Niño 3.4",
+    "prose1": "赤道中東太平洋一片巴掌大的海域（5°N–5°S, 170°W–120°W），被稱為 Niño 3.4。這裡海溫比常年偏高 0.5 °C 以上並持續數月，就是聖嬰（El Niño，聖嬰）；偏低則是反聖嬰（La Niña，聖女）。",
+    "prose2": "別看它只是海溫差了零點幾度——海洋是地球最大的熱量庫，這片海一「發燒」，全球大氣環流都會被改寫：我國容易出現暖冬與南澇北旱，澳大利亞與東南亞易發乾旱，大西洋颶風反而被抑制。NOAA 每個季度更新的 ONI 指數，就是全球氣候預測最重要的「體溫計」。",
+    "prose3": "而 PDO 與 AMO 是更慢的背景音量旋鈕：同樣強度的聖嬰，在 PDO 暖位相下對北美的影響會更強。所以判斷一次事件的實際影響，要把它放在年代際背景上看，而不是只看 ONI 的絕對值。",
+    "oscAria": "{name}年際變化",
+    "sstaAria": "全球海洋溫度距平年際變化",
+    "sstaLast10": "近 10 年均值",
+    "sstaVs": "vs 1981–2010 均值"
+  },
+  "cyc": {
+    "panelActive": "當前活躍熱帶氣旋",
+    "srcActive": "NOAA NHC（www.nhc.noaa.gov，免密鑰），10 分鐘刷新；僅含北大西洋與東北太平洋",
+    "statActive": "活躍 {n} 個",
+    "statHurricane": "達到颶風強度 {n} 個",
+    "statBasins": "北大西洋 {at} · 東北太平洋 {ep}",
+    "statStrongest": "最強 {name} · {scale}",
+    "colName": "名稱",
+    "colBasin": "洋盆",
+    "colClass": "分類",
+    "colIntensity": "強度",
+    "colScale": "等級",
+    "colPressure": "中心氣壓",
+    "colPos": "位置",
+    "colMove": "移動",
+    "colUpdated": "最新發布",
+    "noScale": "未達颶風",
+    "emptyNone": "當前北大西洋與東北太平洋無活躍熱帶氣旋",
+    "emptyData": "暫無氣旋資料",
+    "panelTips": "讀這張表前要知道的三件事",
+    "srcTips": "科普說明（靜態）",
+    "tip1": "① 涵蓋範圍有限。本源是 NOAA 國家颶風中心（NHC），只負責北大西洋與東北太平洋。西北太平洋的颱風由 JTWC、日本氣象廳與中央氣象台發布，不在這個列表裡。顯示「無活躍氣旋」不代表全球無颱風。",
+    "tip2": "② 風速單位與我國不同。NHC 用節（kt）和 1 分鐘持續風速；我國與日本用米/秒和 2 分鐘持續風速，WMO 建議用 10 分鐘。同一場風暴，1 分鐘平均會明顯大於 10 分鐘平均——跨機構比強度必須先看口徑。",
+    "tip3": "③ 等級只看風，不看水和雨。薩菲爾–辛普森等級完全由風速決定，但歷史上熱帶氣旋致死最多的原因是風暴增水與內陸洪水。一個緩慢移動的「一級」風暴可以造成比快速過境的「四級」更嚴重的災害。"
+  },
+  "buoy": {
+    "panelList": "浮標實測一覽",
+    "srcList": "NOAA NDBC latest_obs（全站最新一次觀測，UTC）",
+    "kpiStations": "在崗站點 {n}",
+    "kpiWave": "帶波浪感測器 {n}（僅約 {pct}%）",
+    "kpiMax": "當前最狂 {h} m · 站 {id} · {lat}° / {lon}°",
+    "kpiSst": "水溫跨度 {min} – {max} °C（{n} 個站）",
+    "scaleTitle": "各代表站海表溫度在跨度上的位置",
+    "colRegion": "海域",
+    "colId": "站號",
+    "colWave": "浪高",
+    "colPeriod": "主波週期",
+    "colWind": "風",
+    "colSst": "海表溫度",
+    "colPressure": "氣壓",
+    "colTime": "觀測時刻",
+    "gust": "陣",
+    "empty": "暫未取到浮標觀測",
+    "panelWhy": "為什麼這張表和「海況預報」不一樣",
+    "srcWhy": "科普：實測與模式預報的關係",
+    "prose1": "預報頁的浪高來自數值模式（把風場、水深、地形代進波動方程算出來），平滑且全球覆蓋；這張表是浮標真的在海上測到的值，一小時回傳一次，帶毛刺和缺口。",
+    "prose2": "缺測顯示為「—」而不是 0 是有意的：NDBC 用 MM 標記缺測，而不少站點（尤其岸站與他國氣象浮標）根本沒有波浪感測器，會把波高一欄填成 0。把這類 0 當真值，會得出「全世界海面如鏡」的錯誤印象。",
+    "prose3": "全球約 870 個在崗站裡只有約四分之一測波浪——海洋觀測的稀疏程度遠超陸地氣象站。南半球與印度洋的覆蓋尤其稀薄，這也是為什麼那些海域的預報誤差更大。",
+    "legend0": "平靜",
+    "legend1": "輕浪",
+    "legend2": "中浪",
+    "legend3": "大浪",
+    "legend4": "巨浪",
+    "tooltip": "{region} · {id}：{temp} °C"
+  },
+  "case": {
+    "no": "案例 {n}",
+    "date": "📅 {date}",
+    "ian": {
+      "title": "2022·颶風 Ian",
+      "m1Label": "峰值強度",
+      "m1Info": "薩菲爾-辛普森等級最高級，1 分鐘持續風速 ≥ 70 m/s",
+      "m2Label": "登陸強度",
+      "m2Info": "以四級強度登陸佛羅里達西南部（Cayo Costa）",
+      "m3Label": "最大浪高",
+      "m3Info": "對應本看板「浮標最大浪」的極端浪檔",
+      "desc": "Ian 在墨西哥灣暖水區快速增強，僅用一天就從熱帶風暴躍升為五級颶風，登陸時帶來毀滅性風暴潮與內陸洪災。它把「熱帶氣旋」頁簽裡的 NHC 即時資料與本看板「浮標最大浪」的分級聯繫了起來：颶風既是風災，也是海況災難，近岸浪高往往疊加風暴潮，放大破壞。",
+      "source": "NOAA NHC"
+    },
+    "elnino": {
+      "title": "2023–2024·強聖嬰",
+      "m1Label": "ONI 峰值",
+      "m1Info": "Niño 3.4 區海溫距平，達到「強聖嬰」門檻（|ONI|≥2.0）",
+      "m2Label": "判定",
+      "m2Info": "本看板「氣候振盪」頁簽對 ONI≥+0.5 標紅",
+      "m3Label": "影響",
+      "m3Info": "東亞暖冬、美洲西岸洪澇、赤道太平洋漁業減產",
+      "desc": "赤道中東太平洋海表溫度異常增暖，透過大氣橋影響全球天氣。本看板「氣候振盪」頁簽即時繪製 ONI 曲線，你能在那裡看到這次事件如何從 +0.5 一路爬升到 +2.0——這正是聖嬰從「出現」到「強事件」的演化軌跡。",
+      "source": "NOAA CPC / NOAA PSL"
+    },
+    "indian": {
+      "title": "2004·印度洋大地震與海嘯",
+      "m1Label": "震級",
+      "m1Info": "蘇門答臘俯衝帶巨型逆衝，釋放能量相當於數萬顆原子彈",
+      "m2Label": "遇難",
+      "m2Info": "環印度洋 14 國，史上死亡人數最多的海嘯之一",
+      "m3Label": "越洋傳播",
+      "m3Info": "海嘯橫掃印度洋，甚至抵達非洲東岸",
+      "desc": "這次災難直接催生了印度洋海嘯預警系統。它說明海嘯不只在太平洋（本看板海嘯源主要涵蓋太平洋中心），任何俯衝帶強震都可能激發跨洋海嘯。理解「地震頁簽的俯衝帶巨震」與「海嘯公告」的因果鏈，是讀懂本看板的關鍵。",
+      "source": "NOAA / 各國海嘯中心"
+    }
+  },
+  "coast": {
+    "panel": "海岸海況榜",
+    "src": "Open-Meteo Marine（按當前浪高從大到小）",
+    "empty": "未取到海岸海況資料",
+    "lead": "排序按當前浪高從大到小。同一浪高下，週期越短浪越陡、體感越顛——所以建議裡把週期一起算了進去，不只看浪高一個數字。",
+    "tooltip": "湧浪 {swellH} m / {swellP} s，風浪 {windH} m",
+    "level": {
+      "1": {
+        "zh": "大浪",
+        "advice": "不建議出海，港口作業與近岸遊玩都應避開"
+      },
+      "2": {
+        "zh": "中浪",
+        "adviceNormal": "小型船謹慎，大型船正常",
+        "adviceSteep": "浪陡且亂，小型船建議取消行程"
+      },
+      "3": {
+        "zh": "輕浪",
+        "adviceNormal": "多數船隻可正常作業，新手建議跟船",
+        "adviceSteep": "風浪為主、海面碎，小型船需留意顛簸"
+      },
+      "4": {
+        "zh": "海況平穩",
+        "adviceNormal": "適合近岸活動、潛水與小型船出海",
+        "adviceSteep": "浪不高但週期短、偏碎，近岸玩水無礙，小艇略顛"
+      },
+      "nodata": {
+        "zh": "無資料",
+        "advice": "該海域本次未取到浪高"
+      }
+    }
+  },
+  "marine": {
+    "panel": "未來 7 天海況預報",
+    "src": "Open-Meteo Marine（逐日最大浪高，本地時區）",
+    "empty": "未取到海況預報資料",
+    "lead": "表頭為日期，儲存格是該海域當天的最大浪高（公尺），顏色對應海況等級。浪高由風浪與湧浪疊加而成：風浪隨本地風生消，湧浪則是別處風暴傳來的長波——這也是為什麼有時本地風和日麗，海上卻湧浪很大。",
+    "colWave": "當前浪高 (m)",
+    "colPeriod": "週期 (s)",
+    "colSst": "海溫 (°C)"
+  },
+  "seatem": {
+    "panel": "海表溫度趨勢",
+    "src": "Open-Meteo Marine（當前值 + 未來 7 天逐日區間）",
+    "empty": "未取到海溫資料",
+    "lead1": "按當前海溫從高到低排列。{cond}",
+    "lead2": " 是颱風生成與維持的經驗閾值——水溫高於它的海域，才具備給颱風供能的條件。",
+    "tooltipRange": "未來 7 天區間 {lo}–{hi}°C",
+    "noRange": "無區間資料",
+    "thresh": "26.5°C 颱風閾值",
+    "legendMark": "26.5°C（颱風閾值）",
+    "weekHead": "未來 7 天各海域海溫（最高值，°C）"
+  },
+  "global": {
+    "empty": "暫無全球海域資料",
+    "colWave": "浪高",
+    "colDir": "浪向",
+    "colPeriod": "平均週期",
+    "colTime": "時刻"
+  },
+  "chart": {
+    "anomaly": "距平序列",
+    "waveFcAria": "未來 24 小時近海浪高預報",
+    "waveFcCaption": "未來 24 小時各近海點浪高預報（公尺）——近岸浪高主要受風區、湧浪傳播與潮位共同影響",
+    "tideAria": "過去 24 小時實測潮位",
+    "tideCaption": "{station}站過去 24 小時實測潮位（公尺，MLLW 基準，NOAA CO-OPS 6 分鐘採樣）——半日潮約 12h25m 一個週期，{station}潮差可達 1.8 m",
+    "oniAria": "聖嬰指數 ONI 歷史",
+    "oniCaption": "ONI = Niño 3.4 區（5°N–5°S, 170°W–120°W）海溫距平的 3 個月滑動均值（NOAA CPC）。連續 5 季 ≥ +0.5 為聖嬰、≤ −0.5 為反聖嬰；當前最新 {year} 年 {season}：",
+    "oniBarTitle": "{year} 年 {season}：ONI {anom}（海溫 {sst} °C）",
+    "barTitle": "{key}：{value} {unit}",
+    "waveFcBarTitle": "{name} 未来 24h 浪高预报（Open-Meteo Marine）"
+  },
+  "dir": {
+    "n": "北",
+    "ne": "東北",
+    "e": "東",
+    "se": "東南",
+    "s": "南",
+    "sw": "西南",
+    "w": "西",
+    "nw": "西北"
+  },
+  "seaTempTitle": "🌡 海表溫度趨勢",
+  "seaTempSource": "Open-Meteo Marine（目前值 + 未來 7 天逐日區間）",
+  "seaTempEmpty": "未取到海溫資料",
+  "seaTempLeadSort": "按目前海溫由高到低排列。",
+  "seaTempLeadDiff": "南北海水溫差約 {diff}°C（{warm} {warmSst}°C vs {cool} {coolSst}°C）。",
+  "seaTempThresholdNote": "26.5°C 是颱風生成與維持的經驗閾值——水溫高於它的海域，才具備給颱風供能的條件。",
+  "seaTempNoRange": "無區間資料",
+  "seaTempRangeTip": "未來 7 天區間 {lo}–{hi}°C",
+  "seaTempThresholdTip": "26.5°C 颱風閾值",
+  "seaTempThresholdMark": "26.5°C（颱風閾值）",
+  "seaTempWeekHead": "未來 7 天各海域海溫（最高值，°C）",
+  "ui": {
+    "sourceTip": "資料來源：{source}",
+    "sourceTag": "資料源",
+    "fail": "該資料源暫時不可用：{error}",
+    "loading": "正在拉取即時資料…"
+  }
+}

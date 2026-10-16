@@ -1,0 +1,31 @@
+{
+  "page": {
+    "title": "Universal QR Scan Demo",
+    "desc": "A pure-browser WebRTC camera QR scanning component, fully decoupled from business logic and reusable on any page.",
+    "customTrigger": "Custom trigger node",
+    "lastResult": "Latest scan result",
+    "historyTitle": "Scan history",
+    "historyEmpty": "No records yet"
+  },
+  "tip": {
+    "label": "Tip:",
+    "body": "HTTPS is required in production; camera access works on localhost during local development; compatible with Chrome / Edge / Safari on mobile and desktop."
+  },
+  "overlay": {
+    "close": "Close scanner",
+    "recognizing": "Recognizing image...",
+    "pickImage": "Choose image from album",
+    "hint": "Place the QR code inside the frame to scan"
+  },
+  "toast": {
+    "alreadyOpen": "The scanner window is already open. Please close it first.",
+    "noQr": "No QR code found in the image",
+    "noCamera": "No camera detected on this device",
+    "startFailed": "Failed to start the camera. Check device permissions or access the site over HTTPS.",
+    "noPermission": "Unable to obtain camera permission"
+  },
+  "btn": {
+    "open": "Open scanner",
+    "starting": "Starting..."
+  }
+}

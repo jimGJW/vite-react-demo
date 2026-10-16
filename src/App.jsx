@@ -4,6 +4,7 @@ import { useAuth } from './contexts/useAuth.js'
 import { ChangelogProvider } from './contexts/ChangelogContext.jsx'
 import { SubAppProvider } from './contexts/SubAppContext.jsx'
 import { AssistantProvider } from './components/Assistants/index.jsx'
+import PageLoader from './components/PageLoader/index.jsx'
 import Layout from './layouts/Layout.jsx'
 import './App.scss'
 
@@ -134,15 +135,7 @@ if (typeof window !== 'undefined') {
   })
 }
 
-/* —— 加载态 —— */
-function PageLoading() {
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
-      <div style={{ width: 32, height: 32, border: '3px solid var(--c-border-soft, #f0f0f0)', borderTopColor: 'var(--c-primary, #1677ff)', borderRadius: '50%', animation: 'spin 0.6s linear infinite' }} />
-      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
-    </div>
-  )
-}
+/* —— 加载态：跃迁主题（脉冲主星 + 轨道），见 components/PageLoader —— */
 
 /**
  * 路由守卫：未登录跳转 /login，并记住来源路径，登录后原路返回。
@@ -168,7 +161,7 @@ function App() {
     <ChangelogProvider>
       <SubAppProvider>
         <AssistantProvider>
-        <Suspense fallback={<PageLoading />}>
+        <Suspense fallback={<PageLoader />}>
           <Routes>
           <Route path="/login" element={<Login />} />
         <Route
