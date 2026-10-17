@@ -1,0 +1,9 @@
+{
+  "title": "Feature Version Timeline",
+  "all": "All",
+  "items": "{n} items",
+  "allVersions": "All Versions",
+  "changesCount": "{n} changes",
+  "changedAt": "updated {date}",
+  "batchTip": "Release: {date} · {title}"
+}

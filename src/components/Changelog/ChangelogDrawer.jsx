@@ -2,6 +2,7 @@ import { Drawer, Segmented, Timeline, Tag } from 'antd'
 import { RELEASES, getRelease } from './releases.js'
 import { useChangelog } from '../../contexts/ChangelogContext.jsx'
 import { PeriodTag } from './PeriodTag.jsx'
+import { useI18n, pickText } from '../../i18n/index.js'
 import './Changelog.scss'
 
 /**
@@ -11,13 +12,14 @@ import './Changelog.scss'
  */
 export function ChangelogDrawer() {
   const { open, closeChangelog, selected, setSelected } = useChangelog()
+  const { lang, t } = useI18n()
   const list = selected === 'all' ? RELEASES : [getRelease(selected)].filter(Boolean)
 
   return (
     <Drawer
       open={open}
       onClose={closeChangelog}
-      title="功能版本时间轴"
+      title={t('changelog.title')}
       width={460}
       destroyOnClose
     >
@@ -26,7 +28,7 @@ export function ChangelogDrawer() {
         value={selected}
         onChange={setSelected}
         options={[
-          { label: '全部', value: 'all' },
+          { label: t('changelog.all'), value: 'all' },
           ...RELEASES.map((r) => ({ label: r.short, value: r.id })),
         ]}
       />
@@ -37,12 +39,12 @@ export function ChangelogDrawer() {
             <div className="changelog-release__head">
               <span className="changelog-release__dot" style={{ background: r.color }} />
               <span className="changelog-release__date">{r.label}</span>
-              <span className="changelog-release__title">{r.title}</span>
+              <span className="changelog-release__title">{pickText(r.title, lang)}</span>
               <Tag
                 bordered={false}
                 style={{ marginLeft: 'auto', color: r.color, background: `${r.color}1a` }}
               >
-                {r.changes.length} 项
+                {t('changelog.items', { n: r.changes.length })}
               </Tag>
             </div>
 
@@ -52,13 +54,13 @@ export function ChangelogDrawer() {
                 children: (
                   <div className="changelog-change">
                     <div className="changelog-change__title">
-                      {c.title}
+                      {pickText(c.title, lang)}
                       {typeof c.route === 'string' && c.route.startsWith('/') && (
                         <PeriodTag route={c.route} showLabel={false} as="inline" />
                       )}
                     </div>
-                    <div className="changelog-change__desc">{c.desc}</div>
-                    <div className="changelog-change__time">{c.changedAt} 改动</div>
+                    <div className="changelog-change__desc">{pickText(c.desc, lang)}</div>
+                    <div className="changelog-change__time">{t('changelog.changedAt', { date: c.changedAt })}</div>
                   </div>
                 ),
               }))}

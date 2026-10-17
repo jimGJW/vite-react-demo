@@ -1,3 +1,4 @@
+import { useI18n, pickText } from '../../i18n/index.js'
 import { ROUTE_LATEST, getRelease } from './releases.js'
 import './Changelog.scss'
 
@@ -12,6 +13,7 @@ import './Changelog.scss'
  *  - as:        'subscript'（上标，默认）| 'inline'（行内药丸）
  */
 export function PeriodTag({ route, releaseId, showLabel = true, as = 'subscript' }) {
+  const { lang, t } = useI18n()
   const id = releaseId || (route ? ROUTE_LATEST[route] : undefined)
   if (!id) return null
   const r = getRelease(id)
@@ -21,7 +23,7 @@ export function PeriodTag({ route, releaseId, showLabel = true, as = 'subscript'
     <span
       className={`period-tag period-tag--${as}`}
       style={{ '--pt-color': r.color }}
-      title={`改动批次：${r.label} · ${r.title}`}
+      title={t('changelog.batchTip', { date: r.label, title: pickText(r.title, lang) })}
     >
       <span className="period-tag__dot" />
       {showLabel && <span className="period-tag__label">{r.short}</span>}

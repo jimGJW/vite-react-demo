@@ -2,6 +2,7 @@ import { Button, Dropdown } from 'antd'
 import { HistoryOutlined } from '@ant-design/icons'
 import { RELEASES, TOTAL_CHANGES } from './releases.js'
 import { useChangelog } from '../../contexts/ChangelogContext.jsx'
+import { useI18n, pickText } from '../../i18n/index.js'
 import './Changelog.scss'
 
 /**
@@ -11,6 +12,7 @@ import './Changelog.scss'
  */
 export function ChangelogMenu() {
   const { openChangelog, selected } = useChangelog()
+  const { lang, t } = useI18n()
 
   const items = [
     {
@@ -18,8 +20,8 @@ export function ChangelogMenu() {
       label: (
         <span className="cl-menu-item">
           <span className="cl-menu-item__dot cl-menu-item__dot--all" />
-          <span className="cl-menu-item__title">全部版本</span>
-          <span className="cl-menu-item__count">{TOTAL_CHANGES} 项改动</span>
+          <span className="cl-menu-item__title">{t('changelog.allVersions')}</span>
+          <span className="cl-menu-item__count">{t('changelog.changesCount', { n: TOTAL_CHANGES })}</span>
         </span>
       ),
     },
@@ -30,7 +32,7 @@ export function ChangelogMenu() {
         <span className="cl-menu-item">
           <span className="cl-menu-item__dot" style={{ background: r.color }} />
           <span className="cl-menu-item__title">{r.label}</span>
-          <span className="cl-menu-item__sub">{r.title}</span>
+          <span className="cl-menu-item__sub">{pickText(r.title, lang)}</span>
           <span className="cl-menu-item__count">{r.changes.length}</span>
         </span>
       ),
