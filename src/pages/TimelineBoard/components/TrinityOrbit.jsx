@@ -25,8 +25,6 @@ const ORBIT = {
   ocean: { rx: 136, ry: 48, tilt: 35, dur: 18 },
 }
 
-const CHAR = { astro: '天', geo: '地', ocean: '海' }
-
 /** 健康度 → 描边色（绿 / 青 / 橙 / 红） */
 function healthTone(ok, total) {
   if (total === 0) return '#ff4d4f'
@@ -40,6 +38,7 @@ function healthTone(ok, total) {
 export default function TrinityOrbit({ boards, totalOk, totalSrc, theme = 'dark' }) {
   const { t } = useI18n()
   const navigate = useNavigate()
+  const CHAR = { astro: t('timeline.orbitCharAstro'), geo: t('timeline.orbitCharGeo'), ocean: t('timeline.orbitCharOcean') }
 
   const isDark = theme !== 'light'
   const coreFill = isDark ? '#0e1830' : '#eef3fb'

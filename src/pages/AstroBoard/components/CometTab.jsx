@@ -17,10 +17,10 @@ import { Panel } from './ui.jsx'
 import { useI18n } from '../../../i18n/index.js'
 
 /** 周期(天) → 人类可读：超过 2 年用「年」，否则保留「天」更精确 */
-function perText(per) {
+function perText(per, t) {
   if (per == null) return '—'
   const y = per / 365.25
-  return y >= 2 ? `${y.toFixed(1)} 年` : `${Math.round(per)} 天`
+  return y >= 2 ? `${y.toFixed(1)} ${t('astro.unitYr')}` : `${Math.round(per)} ${t('astro.unitDay')}`
 }
 
 /** 数值单元格：缺测显示 —（上游大量字段为空，不能画成 0） */
@@ -69,7 +69,7 @@ export default function CometTab({ comet, cometData }) {
       ),
       dataIndex: 'per',
       width: 110,
-      render: (per) => perText(per),
+      render: (per) => perText(per, t),
     },
     { title: t('astro.cometPeriDist'), dataIndex: 'q', width: 110, render: (v) => <Cell value={v} /> },
     { title: t('astro.cometApoDist'), dataIndex: 'ad', width: 110, render: (v) => <Cell value={v} /> },

@@ -343,5 +343,12 @@
     "dark": "{hours} h de nuit astronomique",
     "geo": "Kp {kp} ({level})",
     "noData": "Données manquantes"
-  }
+  },
+  "unitLy": "光年",
+  "unitBillionStars": "十亿颗",
+  "unitYr": "年",
+  "unitDay": "天",
+  "gfArms": "{n} 条旋臂（英仙臂 / 人马臂 / 盾牌臂 / 矩尺臂）",
+  "skyMaxAlt": "最高高度 {n}°",
+  "gfStarTotalVal": "约 1000 亿 ~ 1 万亿颗（1e11 ~ 1e12）"
 }

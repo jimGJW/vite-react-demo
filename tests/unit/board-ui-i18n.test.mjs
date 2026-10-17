@@ -182,4 +182,43 @@ export default [
       ok(seen.size >= 8, `一个朔望月内应覆盖八个月相（实际 ${seen.size}）`)
     },
   ],
+  [
+    'astro/timeline 单位与看板标识键：10 语种齐备、英文已翻译、{n} 占位符保留',
+    () => {
+      // astro 侧：量纲 / 单位 / 银河事实值键，被 GalaxyFacts / CometTab / SkyTab 直接 t() 消费。
+      const ASTRO_KEYS = ['gfArms', 'gfStarTotalVal', 'skyMaxAlt', 'unitBillionStars', 'unitDay', 'unitLy', 'unitYr']
+      // timeline 侧：三看板轨道标识（天 / 地 / 海 → Sky / Earth / Sea），被 TrinityOrbit 直接消费。
+      const TIMELINE_KEYS = ['orbitCharAstro', 'orbitCharGeo', 'orbitCharOcean']
+      for (const lang of LANGS) {
+        const a = readNs(lang, 'astro')
+        const t = readNs(lang, 'timeline')
+        for (const k of ASTRO_KEYS) {
+          ok(typeof a[k] === 'string' && a[k].trim().length > 0, `${lang}.astro.${k} 缺失或为空`)
+        }
+        for (const k of TIMELINE_KEYS) {
+          ok(typeof t[k] === 'string' && t[k].trim().length > 0, `${lang}.timeline.${k} 缺失或为空`)
+        }
+      }
+      /* 英文稿质检：单位与看板标识是真正的翻译，不得残留中文或与简体同形
+         （批量回填脚本最容易把中文铺满全语种而不报错） */
+      const zhA = readNs('zh-CN', 'astro')
+      const enA = readNs('en', 'astro')
+      const zhT = readNs('zh-CN', 'timeline')
+      const enT = readNs('en', 'timeline')
+      for (const k of ASTRO_KEYS) {
+        ok(!HAS_CJK.test(enA[k]), `en.astro.${k} 残留中文：${enA[k]}`)
+        ok(enA[k] !== zhA[k], `en.astro.${k} 未翻译（与简体相同）`)
+      }
+      for (const k of TIMELINE_KEYS) {
+        ok(!HAS_CJK.test(enT[k]), `en.timeline.${k} 残留中文：${enT[k]}`)
+        ok(enT[k] !== zhT[k], `en.timeline.${k} 未翻译（与简体相同）`)
+      }
+      /* 带插值的键：{n} 占位符必须保留，否则页面会渲染出「条旋臂」而非「{n} 条旋臂」 */
+      for (const lang of LANGS) {
+        const a = readNs(lang, 'astro')
+        ok(a.gfArms.includes('{n}'), `${lang}.astro.gfArms 丢失 {n} 占位符`)
+        ok(a.skyMaxAlt.includes('{n}'), `${lang}.astro.skyMaxAlt 丢失 {n} 占位符`)
+      }
+    },
+  ],
 ]

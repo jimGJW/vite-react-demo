@@ -343,5 +343,12 @@
     "dark": "{hours} h astronomical night",
     "geo": "Kp {kp} ({level})",
     "noData": "No data"
-  }
+  },
+  "unitLy": "ly",
+  "unitBillionStars": "billion stars",
+  "unitYr": "yr",
+  "unitDay": "days",
+  "gfArms": "{n} spiral arms (Perseus / Sagittarius / Scutum / Norma)",
+  "skyMaxAlt": "Max altitude {n}°",
+  "gfStarTotalVal": "≈ 100–1000 billion stars (1e11–1e12)"
 }

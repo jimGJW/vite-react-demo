@@ -44,5 +44,8 @@
   "clearAll": "清空（{count}）",
   "moduleEmpty": "从上方下拉勾选若干个模块，即可在同一视图里并排查看它们的实时内容",
   "removeTip": "移除该模块",
-  "glossarySearch": "模糊搜索：名词 / 口径 / 含义…"
+  "glossarySearch": "模糊搜索：名词 / 口径 / 含义…",
+  "orbitCharAstro": "Sky",
+  "orbitCharGeo": "Earth",
+  "orbitCharOcean": "Sea"
 }

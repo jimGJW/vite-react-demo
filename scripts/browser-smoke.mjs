@@ -91,7 +91,10 @@ function createCdp(ws) {
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
 async function waitForTargetReady() {
-  for (let i = 0; i < 60; i += 1) {
+  // 冷启动（尤其 headless Chrome 首次拉起）调试端口可能要 20~40s 才就绪，
+  // 写死 18s 会把偶发的慢启动误判成「脚本故障」。放宽到 50s 并允许环境变量覆盖。
+  const LIMIT = Number(process.env.CDP_WAIT) || 160
+  for (let i = 0; i < LIMIT; i += 1) {
     try {
       const res = await fetch(`http://127.0.0.1:${DEBUG_PORT}/json/version`)
       if (res.ok) return true

@@ -186,7 +186,7 @@ export default function SkyTab({
                 <div className="astro-sky-consts">
                   {visibleConsts.length ? (
                     visibleConsts.slice(0, 24).map((c) => (
-                      <span key={c.abbr} className="astro-sky-const" title={`最高高度 ${c.maxAlt.toFixed(0)}°`}>
+                      <span key={c.abbr} className="astro-sky-const" title={t('astro.skyMaxAlt', { n: c.maxAlt.toFixed(0) })}>
                         {c.zh || c.en}
                         <i>{c.maxAlt.toFixed(0)}°</i>
                       </span>
