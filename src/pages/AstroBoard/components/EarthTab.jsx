@@ -7,13 +7,13 @@ import { AimOutlined, MoonOutlined, RocketOutlined } from '@ant-design/icons'
 import { useI18n } from '../../../i18n/index.js'
 import { MARK_COLOR, Metric, MoonSVG, Panel, fmtLatLon, pad } from './ui.jsx'
 import { OBSERVERS, footprintRadius } from '../../../lib/astro/orbital.js'
-import { KPI_DEFS } from '../../../lib/astro/glossary'
+import { getAstroKpi } from '../../../lib/astro/glossary'
 import WorldTrackMap from '../../../components/AstroBoard/WorldTrackMap.jsx'
 
 export default function EarthTab({
   iss, stations, selected, setSelected, positions, active, track, sun, moon, visibleTo, passes, passCity, setPassCity,
 }) {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   return (
     <>
               <div className="astro-tab-content">
@@ -94,11 +94,11 @@ export default function EarthTab({
               onSelect={setSelected}
             />
             <div className="astro-map-legend">
-              <span><i className="astro-dot astro-dot--cn" />中国</span>
-              <span><i className="astro-dot astro-dot--intl" />国际</span>
-              <span><i className="astro-dot astro-dot--track" />日照段轨迹</span>
-              <span><i className="astro-dot astro-dot--dark" />阴影段轨迹</span>
-              <span><i className="astro-dot astro-dot--sun" />太阳直射点</span>
+              <span><i className="astro-dot astro-dot--cn" />{t('astro.earthLegendCn')}</span>
+              <span><i className="astro-dot astro-dot--intl" />{t('astro.earthLegendIntl')}</span>
+              <span><i className="astro-dot astro-dot--track" />{t('astro.earthLegendSunTrack')}</span>
+              <span><i className="astro-dot astro-dot--dark" />{t('astro.earthLegendDarkTrack')}</span>
+              <span><i className="astro-dot astro-dot--sun" />{t('astro.earthLegendSunPoint')}</span>
             </div>
           </div>
 
@@ -128,31 +128,31 @@ export default function EarthTab({
                   <Tag bordered={false} className="astro-cn-tag">{active.country}</Tag>
                 </div>
                 <div className="astro-detail__grid">
-                  <Metric label="纬度" value={active.lat.toFixed(2)} unit="°" info="inclination" />
-                  <Metric label="经度" value={active.lon.toFixed(2)} unit="°" />
-                  <Metric label="轨道高度" value={active.alt.toFixed(0)} unit="km" />
-                  <Metric label="轨道速度" value={active.speed.toFixed(2)} unit="km/s" info="gyro" />
-                  <Metric label="轨道周期" value={active.period.toFixed(1)} unit="min" info="period" />
-                  <Metric label="轨道倾角" value={active.inclination.toFixed(2)} unit="°" info="inclination" />
+                  <Metric label={t('astro.earthLat')} value={active.lat.toFixed(2)} unit="°" info="inclination" />
+                  <Metric label={t('astro.earthLon')} value={active.lon.toFixed(2)} unit="°" />
+                  <Metric label={t('astro.earthOrbitAlt')} value={active.alt.toFixed(0)} unit="km" />
+                  <Metric label={t('astro.earthOrbitSpeed')} value={active.speed.toFixed(2)} unit="km/s" info="gyro" />
+                  <Metric label={t('astro.earthOrbitPeriod')} value={active.period.toFixed(1)} unit="min" info="period" />
+                  <Metric label={t('astro.earthOrbitIncl')} value={active.inclination.toFixed(2)} unit="°" info="inclination" />
                   <Metric
-                    label="覆盖半径"
+                    label={t('astro.earthFootprint')}
                     value={footprintRadius(active.alt).toFixed(0)}
                     unit="km"
                     info="footprint"
                   />
                   <Metric
-                    label="日照状态"
-                    value={active.sunlit === null ? '—' : active.sunlit ? '受照' : '阴影'}
+                    label={t('astro.earthSunlitStatus')}
+                    value={active.sunlit === null ? '—' : active.sunlit ? t('astro.sunlit') : t('astro.shadow')}
                     tone={active.sunlit ? 'var(--a-track)' : 'var(--a-accent-icon)'}
                     info="sunlit"
                   />
                 </div>
                 <div className="astro-visible">
-                  <AimOutlined /> 当前可见地面站
+                  <AimOutlined /> {t('astro.earthVisibleStations')}
                   {visibleTo.length ? (
                     <span className="astro-visible__list">
                       {visibleTo.slice(0, 8).map((v) => (
-                        <Tooltip key={v.name} title={`观测仰角 ${v.elev.toFixed(1)}° ${KPI_DEFS.elevation.what}`}>
+                        <Tooltip key={v.name} title={`${t('astro.earthElevTip')} ${v.elev.toFixed(1)}° ${getAstroKpi('elevation', lang).what}`}>
                           <Tag bordered={false} className="astro-vis-tag">
                             {v.name} {v.elev.toFixed(0)}°
                           </Tag>
@@ -160,7 +160,7 @@ export default function EarthTab({
                       ))}
                     </span>
                   ) : (
-                    <span className="astro-visible__none">此刻所有站点均在背面</span>
+                    <span className="astro-visible__none">{t('astro.earthNoVisible')}</span>
                   )}
                 </div>
               </div>
@@ -168,11 +168,11 @@ export default function EarthTab({
 
             {iss.data?.ok && (
               <div className="astro-crosscheck">
-                <span className="astro-crosscheck__tag">ISS 接口实测</span>
+                <span className="astro-crosscheck__tag">{t('astro.earthIssRealtime')}</span>
                 {fmtLatLon(iss.data.lat, iss.data.lon)}
                 <span className="astro-crosscheck__dim">
                   · {iss.data.alt.toFixed(0)} km · {(iss.data.speedKmh ?? 0).toFixed(0)} km/h
-                  · {iss.data.visibility === 'daylight' ? '日照区' : '阴影区'}
+                  · {iss.data.visibility === 'daylight' ? t('astro.sunlitZone') : t('astro.shadowZone')}
                 </span>
               </div>
             )}
@@ -182,8 +182,8 @@ export default function EarthTab({
 
       {/* 卫星过境预报 */}
       <Panel
-        title="卫星可见过境预报（未来 6 小时）"
-        source="TLE + SGP4 本地推算（与空间站面板同一套轨道根数）"
+        title={t('astro.earthPassTitle')}
+        source={t('astro.earthPassSource')}
         icon={<AimOutlined />}
         extra={
           <Select
@@ -198,8 +198,7 @@ export default function EarthTab({
       >
         {passes.length === 0 ? (
           <div className="astro-loading">
-            <Spin size="small" /> 正在计算未来 6 小时内 {passCity} 的可见过境…
-            （若无结果说明该时段内目标均在背面或地平线下）
+            <Spin size="small" /> {t('astro.earthPassLoading', { city: passCity })}
           </div>
         ) : (
           <div className="astro-pass-list">
@@ -208,27 +207,27 @@ export default function EarthTab({
                 <div className="astro-pass-group__head">
                   <span className="astro-target__dot" data-cn={s.country === '中国' ? '1' : '0'} />
                   <strong>{s.label}</strong>
-                  <span className="astro-pass-group__cnt">{s.passes.length} 次可见过境</span>
+                  <span className="astro-pass-group__cnt">{t('astro.earthPassCount', { n: s.passes.length })}</span>
                 </div>
                 {s.passes.map((p, i) => {
-                  const t = new Date(p.startTime.getTime() + 8 * 3600 * 1000)
-                  const mt = new Date(p.maxTime.getTime() + 8 * 3600 * 1000)
+                  const startT = new Date(p.startTime.getTime() + 8 * 3600 * 1000)
+                  const maxT = new Date(p.maxTime.getTime() + 8 * 3600 * 1000)
                   return (
                     <div key={i} className="astro-pass-item">
                       <div className="astro-pass-time">
                         <span className="astro-pass-time__start">
-                          {pad(t.getUTCHours())}:{pad(t.getUTCMinutes())}
+                          {pad(startT.getUTCHours())}:{pad(startT.getUTCMinutes())}
                         </span>
                         <span className="astro-pass-time__arrow">→</span>
                         <span className="astro-pass-time__end">
-                          {pad(new Date(t.getTime() + p.durationMin * 60000).getUTCHours())}:
-                          {pad(new Date(t.getTime() + p.durationMin * 60000).getUTCMinutes())}
+                          {pad(new Date(startT.getTime() + p.durationMin * 60000).getUTCHours())}:
+                          {pad(new Date(startT.getTime() + p.durationMin * 60000).getUTCMinutes())}
                         </span>
                       </div>
                       <div className="astro-pass-detail">
-                        <span>峰值仰角 <strong style={{ color: p.maxElev > 30 ? '#52c41a' : p.maxElev > 10 ? '#faad14' : '#8c8c8c' }}>{p.maxElev.toFixed(0)}°</strong></span>
-                        <span>峰值时间 {pad(mt.getUTCHours())}:{pad(mt.getUTCMinutes())}</span>
-                        <span>持续 {p.durationMin} 分钟</span>
+                        <span>{t('astro.earthPassMaxElev')} <strong style={{ color: p.maxElev > 30 ? '#52c41a' : p.maxElev > 10 ? '#faad14' : '#8c8c8c' }}>{p.maxElev.toFixed(0)}°</strong></span>
+                        <span>{t('astro.earthPassMaxTime')} {pad(maxT.getUTCHours())}:{pad(maxT.getUTCMinutes())}</span>
+                        <span>{t('astro.earthPassDuration', { n: p.durationMin })}</span>
                       </div>
                     </div>
                   )

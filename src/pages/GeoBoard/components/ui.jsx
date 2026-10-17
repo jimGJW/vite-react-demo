@@ -33,8 +33,8 @@ function fmtUTC(d) {
 }
 
 /** 震级 → 颜色（沿用分档色阶，M5–6 中震橙、M6+ 强震红） */
-function magColor(mag) {
-  return magBand(mag).color
+function magColor(mag, lang = 'zh-CN') {
+  return magBand(mag, lang).color
 }
 
 export { depthClass, aqiLevel }

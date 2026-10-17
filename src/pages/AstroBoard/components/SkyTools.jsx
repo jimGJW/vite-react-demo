@@ -41,7 +41,7 @@ export function SkyBodyRow({ name, h, color, extra }) {
  * ——「现在最高的是哪个」。
  */
 export function MessierTable({ catalog, lat, lon, now }) {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   const [sortBy, setSortBy] = useState('alt')
 
   const rows = useMemo(() => {
@@ -79,7 +79,7 @@ export function MessierTable({ catalog, lat, lon, now }) {
       </div>
       <div className="astro-messier__grid">
         {rows.map((r) => {
-          const dt = zhDsoType(r.type)
+          const dt = zhDsoType(r.type, lang)
           const ob = observability(r.alt)
           return (
             <div key={r.id} className="astro-messier__item">

@@ -21,14 +21,14 @@ async function checkImport(path) {
 export const CASES = [
   // —— 数据完整性 ——
   {
-    id: 'd1', group: '数据完整性', name: 'STARS 恒星总数 = 365',
+    id: 'd1', groupKey: 'testCenter.cases.groupData', nameKey: 'testCenter.cases.d1',
     run: async () => {
       const { STARS } = await import('../../../components/StarArray/stars-data.js')
       return { pass: STARS.length === 365, detail: `实际 ${STARS.length} 颗` }
     },
   },
   {
-    id: 'd2', group: '数据完整性', name: 'STARS 名称全部唯一',
+    id: 'd2', groupKey: 'testCenter.cases.groupData', nameKey: 'testCenter.cases.d2',
     run: async () => {
       const { STARS } = await import('../../../components/StarArray/stars-data.js')
       const dup = STARS.length - new Set(STARS.map((s) => s.name)).size
@@ -36,7 +36,7 @@ export const CASES = [
     },
   },
   {
-    id: 'd3', group: '数据完整性', name: '每颗星字段完整（tag/mag/distance/color/note）',
+    id: 'd3', groupKey: 'testCenter.cases.groupData', nameKey: 'testCenter.cases.d3',
     run: async () => {
       const { STARS } = await import('../../../components/StarArray/stars-data.js')
       const miss = STARS.filter(
@@ -46,7 +46,7 @@ export const CASES = [
     },
   },
   {
-    id: 'd4', group: '数据完整性', name: '著名星含通俗标签（非光谱型术语）',
+    id: 'd4', groupKey: 'testCenter.cases.groupData', nameKey: 'testCenter.cases.d4',
     run: async () => {
       const { STARS } = await import('../../../components/StarArray/stars-data.js')
       const sirius = STARS.find((s) => s.name === '天狼星')
@@ -56,22 +56,22 @@ export const CASES = [
   },
 
   // —— 组件可导入 ——
-  { id: 'c1', group: '组件可导入', name: 'CommandPalette 命令面板',
+  { id: 'c1', groupKey: 'testCenter.cases.groupImport', nameKey: 'testCenter.cases.c1',
     run: () => checkImport('../../../components/CommandPalette/index.js') },
-  { id: 'c2', group: '组件可导入', name: 'Charts SVG 图表',
+  { id: 'c2', groupKey: 'testCenter.cases.groupImport', nameKey: 'testCenter.cases.c2',
     run: () => checkImport('../../../components/Charts/index.js') },
-  { id: 'c3', group: '组件可导入', name: 'ThemeProvider 主题系统',
+  { id: 'c3', groupKey: 'testCenter.cases.groupImport', nameKey: 'testCenter.cases.c3',
     run: () => checkImport('../../../components/ThemeProvider/index.js') },
-  { id: 'c4', group: '组件可导入', name: 'Notification 通知中心',
+  { id: 'c4', groupKey: 'testCenter.cases.groupImport', nameKey: 'testCenter.cases.c4',
     run: () => checkImport('../../../components/Notification/index.js') },
-  { id: 'c5', group: '组件可导入', name: 'DataTable 高级表格',
+  { id: 'c5', groupKey: 'testCenter.cases.groupImport', nameKey: 'testCenter.cases.c5',
     run: () => checkImport('../../../components/DataTable/index.js') },
-  { id: 'c6', group: '组件可导入', name: 'TestCenter 测试中心（自身）',
+  { id: 'c6', groupKey: 'testCenter.cases.groupImport', nameKey: 'testCenter.cases.c6',
     run: () => checkImport('../../../components/TestCenter/index.js') },
 
   // —— 路由配置 ——
   {
-    id: 'r1', group: '路由配置', name: '路由表覆盖全部 14 条页面路由',
+    id: 'r1', groupKey: 'testCenter.cases.groupRoute', nameKey: 'testCenter.cases.r1',
     run: async () => {
       const src = (await import('../../../App.jsx?raw')).default
       const expected = [
@@ -89,7 +89,7 @@ export const CASES = [
     },
   },
   {
-    id: 'r2', group: '路由配置', name: '受保护路由使用 RequireAuth 守卫',
+    id: 'r2', groupKey: 'testCenter.cases.groupRoute', nameKey: 'testCenter.cases.r2',
     run: async () => {
       const src = (await import('../../../App.jsx?raw')).default
       return {
@@ -101,7 +101,7 @@ export const CASES = [
 
   // —— 小功能集 Utils（浏览器侧断言，补齐 node 单测覆盖不到的 DOM/计时/存储）——
   {
-    id: 'u1', group: '小功能集 Utils', name: 'Utils 导出完整（工具函数 + Hooks）',
+    id: 'u1', groupKey: 'testCenter.cases.groupUtils', nameKey: 'testCenter.cases.u1',
     run: async () => {
       const mod = await import('../../../components/Utils/index.js')
       const fns = ['formatDate', 'formatRelativeTime', 'debounce', 'throttle', 'mask', 'exportCsv',
@@ -121,7 +121,7 @@ export const CASES = [
     },
   },
   {
-    id: 'u2', group: '小功能集 Utils', name: '字符串 / 颜色工具行为正确',
+    id: 'u2', groupKey: 'testCenter.cases.groupUtils', nameKey: 'testCenter.cases.u2',
     run: async () => {
       const { classNames, escapeHtml, hexToRgba, camelToKebab, kebabToCamel } =
         await import('../../../components/Utils/utils.js')
@@ -134,7 +134,7 @@ export const CASES = [
     },
   },
   {
-    id: 'u3', group: '小功能集 Utils', name: 'storage 读写 / 过期 / 删除',
+    id: 'u3', groupKey: 'testCenter.cases.groupUtils', nameKey: 'testCenter.cases.u3',
     run: async () => {
       const { setStorage, getStorage, removeStorage } = await import('../../../components/Utils/utils.js')
       const key = '__utils_test_key__'
@@ -151,7 +151,7 @@ export const CASES = [
     },
   },
   {
-    id: 'u4', group: '小功能集 Utils', name: 'debounce / throttle 计时行为',
+    id: 'u4', groupKey: 'testCenter.cases.groupUtils', nameKey: 'testCenter.cases.u4',
     run: async () => {
       const { debounce, throttle } = await import('../../../components/Utils/utils.js')
       let d = 0
@@ -171,7 +171,7 @@ export const CASES = [
     },
   },
   {
-    id: 'u5', group: '小功能集 Utils', name: '新增页面路由已注册（/utils /templates）',
+    id: 'u5', groupKey: 'testCenter.cases.groupUtils', nameKey: 'testCenter.cases.u5',
     run: async () => {
       const src = (await import('../../../App.jsx?raw')).default
       const hasUtils = src.includes('path="utils"')

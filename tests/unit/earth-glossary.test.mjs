@@ -40,8 +40,11 @@ import {
   zhVolcanoAlert,
   zhAviationCode,
   zhTsunamiCategory,
+  getEarthKpi,
+  getEarthKpiGroups,
 } from '../../src/lib/earth/glossary.js'
 import { eq, ok, notEq } from './harness.mjs'
+import { pickText } from '../../src/i18n/translate.mjs'
 
 /** 真实上游枚举快照（2026-10 从 NHC CurrentStorms.json 实抓） */
 const LIVE_CYCLONE_CLASSES = ['HU', 'TS', 'PTC', 'TD', 'LO']
@@ -61,7 +64,7 @@ export default [
     const miss = lookup('ZZZ_NOT_EXIST', CYCLONE_CLASSES)
     eq(miss.zh, 'ZZZ_NOT_EXIST', '未收录枚举应原样透出 zh')
     eq(miss.en, 'ZZZ_NOT_EXIST', '未收录枚举应保留原文 en')
-    ok(miss.desc && miss.desc.length > 0, '未收录枚举也要有非空 desc，避免 UI 出现空行')
+    ok(pickText(miss.desc, 'zh-CN').length > 0, '未收录枚举也要有非空 desc，避免 UI 出现空行')
   }],
 
   ['null / 空串直接返回 null', () => {
@@ -115,7 +118,7 @@ export default [
       const entries = Object.entries(bands)
       ok(entries.length >= 3, `${name} 分档数量过少`)
       for (const [key, b] of entries) {
-        ok(typeof b.zh === 'string' && b.zh.length > 0, `${name}.${key} 缺 zh`)
+        ok(pickText(b.zh, 'zh-CN').length > 0, `${name}.${key} 缺 zh`)
         ok(/^#[0-9a-f]{6}$/i.test(b.color), `${name}.${key} 的 color 必须是 6 位 hex，实际 ${b.color}`)
         ok(b.min !== undefined, `${name}.${key} 缺 min（末档会渲染成「> undefined」）`)
         ok(b.max !== undefined, `${name}.${key} 缺 max`)
@@ -187,8 +190,8 @@ export default [
       eq(entries.length, 4, `${name} 应为 4 级`)
       const ranks = []
       for (const [key, b] of entries) {
-        ok(b.zh && b.zh.length > 0, `${name}.${key} 缺 zh`)
-        ok(b.desc && b.desc.length > 5, `${name}.${key} 释义过短`)
+        ok(pickText(b.zh, 'zh-CN').length > 0, `${name}.${key} 缺 zh`)
+        ok(pickText(b.desc, 'zh-CN').length > 5, `${name}.${key} 释义过短`)
         ok(/^#[0-9a-f]{6}$/i.test(b.color), `${name}.${key} 的 color 必须是 6 位 hex`)
         ok(Number.isFinite(b.rank), `${name}.${key} 的 rank 必须是数字`)
         ranks.push(b.rank)
@@ -226,18 +229,21 @@ export default [
     ok(keys.length >= 25, `KPI 词条数量偏少：${keys.length}`)
     const seen = new Set()
     for (const g of EARTH_KPI_GROUPS) {
-      ok(g.title && g.icon, `分组「${g.title}」缺标题或图标`)
-      ok(g.items.length > 0, `分组「${g.title}」为空`)
+      // title / alias 已是 { 'zh-CN':…, en:… }，取原文再校验
+      const title = pickText(g.title, 'zh-CN')
+      ok(title && g.icon, `分组「${title}」缺标题或图标`)
+      ok(g.items.length > 0, `分组「${title}」为空`)
       for (const [key, alias] of g.items) {
         const d = EARTH_KPI_DEFS[key]
-        ok(d, `分组「${g.title}」引用了不存在的词条 key：${key}`)
-        ok(alias && alias.length > 0, `${key} 缺别名`)
+        ok(d, `分组「${title}」引用了不存在的词条 key：${key}`)
+        ok(pickText(alias, 'zh-CN').length > 0, `${key} 缺别名`)
         seen.add(key)
         for (const field of ['zh', 'unit', 'what', 'scale', 'soWhat']) {
-          ok(d[field] && String(d[field]).length > 0, `${key} 缺字段 ${field}`)
+          ok(pickText(d[field], 'zh-CN').length > 0, `${key} 缺字段 ${field}`)
         }
         // 释义里混进 undefined / NaN 说明模板串拼错
-        ok(!/undefined|NaN/.test(d.what + d.scale + d.soWhat), `${key} 的释义里出现 undefined/NaN`)
+        const prose = ['what', 'scale', 'soWhat'].map((f) => pickText(d[f], 'zh-CN')).join('')
+        ok(!/undefined|NaN/.test(prose), `${key} 的释义里出现 undefined/NaN`)
       }
     }
     // 每个词条至少被一个分组引用，否则它在页面上永远看不到
@@ -246,7 +252,7 @@ export default [
 
   ['海洋看板过滤出的分组都能取到', () => {
     const OCEAN_TITLES = ['海浪', '潮汐', '海温与气候振荡', '热带气旋', '冰冻圈']
-    const ocean = EARTH_KPI_GROUPS.filter((g) => OCEAN_TITLES.includes(g.title))
+    const ocean = EARTH_KPI_GROUPS.filter((g) => OCEAN_TITLES.includes(pickText(g.title, 'zh-CN')))
     eq(ocean.length, OCEAN_TITLES.length, '海洋看板过滤出的分组数量应与清单一致')
     const n = ocean.reduce((s, g) => s + g.items.length, 0)
     ok(n >= 15, `海洋词典条目偏少：${n}`)
@@ -258,10 +264,56 @@ export default [
   }],
 
   ['火山与海啸分组能取到', () => {
-    const g = EARTH_KPI_GROUPS.find((x) => x.title === '火山与海啸')
+    const g = EARTH_KPI_GROUPS.find((x) => pickText(x.title, 'zh-CN') === '火山与海啸')
     ok(g, '应存在「火山与海啸」分组')
     for (const key of ['volcanoAlert', 'aviationColor', 'tsunami', 'tsunamiSpeed']) {
       ok(g.items.some(([k]) => k === key), `火山与海啸分组应含 ${key}`)
     }
+  }],
+
+  ['枚举 / 分档表的文案字段都有中英两稿', () => {
+    const TABLES = {
+      CYCLONE_CLASSES, SAFFIR_SIMPSON, AQI_LEVELS, UV_LEVELS, MAGNITUDE_BANDS,
+      DEPTH_ZONES, WAVE_STATES, TIDE_DATUMS, OSCILLATIONS,
+      VOLCANO_ALERTS, AVIATION_CODES, TSUNAMI_CATEGORIES,
+    }
+    for (const [name, dict] of Object.entries(TABLES)) {
+      for (const [key, b] of Object.entries(dict)) {
+        ok(pickText(b.zh, 'en').length > 0, `${name}.${key} 缺英文译名`)
+        ok(pickText(b.zh, 'en') !== pickText(b.zh, 'zh-CN'), `${name}.${key} 英文与中文相同（漏译？）`)
+        if (b.desc !== undefined) ok(pickText(b.desc, 'en').length > 0, `${name}.${key} 缺英文释义`)
+        if (b.advice !== undefined) ok(pickText(b.advice, 'en').length > 0, `${name}.${key} 缺英文建议`)
+      }
+    }
+  }],
+
+  ['切英文时取值函数返回英文，且字段是字符串不是对象', () => {
+    const b = aqiLevel(35, 'en')
+    eq(typeof b.zh, 'string', 'zh 必须是字符串，不能是 {lang} 对象（否则 React 会抛错）')
+    ok(b.zh.length > 0 && !/[一-鿿]/.test(b.zh), 'AQI 等级应为英文')
+    ok(aqiLevel(35, 'en').desc.length > 0, 'desc 应为非空字符串')
+    ok(magBand(7.7, 'en').zh.length > 0, '震级分档英文非空')
+    ok(depthClass(10, 'en').zh.length > 0, '深度分带英文非空')
+    ok(waveLevel(2.8, 'en').zh.length > 0, '海况等级英文非空')
+    ok(uvLevel(11, 'en').advice.length > 0, '紫外线建议英文非空')
+    ok(zhCycloneClass('HU', 'en').zh.length > 0, 'NHC 分类英文非空')
+    ok(!/[一-鿿]/.test(zhCycloneClass('HU', 'en').zh), 'NHC 分类英文不应残留中文')
+    ok(zhTsunamiCategory('Warning', 'en').zh.length > 0, '海啸等级英文非空')
+    // 未收录枚举在英文下也要有兜底释义，不能渲染出空
+    ok(zhAviationCode('PURPLE', 'en').desc.length > 0, '未收录色码的英文兜底释义非空')
+    // KPI 词典
+    const kpi = getEarthKpi('oni', 'en')
+    ok(kpi && kpi.what.length > 0 && !/[一-鿿]/.test(kpi.what), 'ONI 英文释义非空且无中文残留')
+    ok(kpi.zh.length > 0, 'ONI 英文名称非空')
+    const groups = getEarthKpiGroups('en')
+    ok(groups.length > 0 && typeof groups[0].title === 'string', '分组标题必须是字符串')
+    ok(
+      groups.every((g) => g.items.every(([, a]) => typeof a === 'string' && a.length > 0)),
+      '分组别名必须是非空字符串',
+    )
+    // 未翻译语种（如 de）应落英文而不是落中文
+    ok(!/[一-鿿]/.test(aqiLevel(35, 'de').zh), '未翻译语种应回退英文，而不是回退中文')
+    // zh-TW 未单独翻译时应回退简体中文
+    ok(/[一-鿿]/.test(aqiLevel(35, 'zh-TW').zh), 'zh-TW 应回退简体中文')
   }],
 ]

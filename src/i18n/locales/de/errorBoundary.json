@@ -41,6 +41,8 @@
     "timerErr": "Ein im Timer geworfener Fehler — von der Grenze gefangen",
     "promiseErr": "Ein in einer Promise geworfener Fehler — von der Grenze gefangen",
     "naiveBtn": "Direkt werfen (nicht fassbar)",
-    "naiveErr": "Direktes Werfen: Grenzen sehen es nicht (die Konsole zeigt den Fehler, aber die Seite degradiert nicht)"
+    "naiveErr": "Direktes Werfen: Grenzen sehen es nicht (die Konsole zeigt den Fehler, aber die Seite degradiert nicht)",
+    "case1Label": "案例①",
+    "case4Label": "案例④"
   }
 }

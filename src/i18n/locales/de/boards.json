@@ -1,0 +1,65 @@
+{
+  "dict": {
+    "what": "Was ist das",
+    "how": "Wie lesen",
+    "soWhat": "Was heißt das",
+    "unit": "Einheit",
+    "explain": "Erklärung zu „{name}“"
+  },
+  "related": {
+    "title": "Verknüpfte Daten",
+    "subtitle": "Diese Module lassen sich nebeneinander lesen — Karte aufklappen für die Hintergründe",
+    "monitor": "Monitoring der drei Boards",
+    "watching": "Beobachtet: {list}",
+    "selfHealth": "Dieses Board: {ok}/{total} Quellen normal",
+    "goBoard": "Zum Board {name}",
+    "goTab": "Zum Board {board} · {tab}",
+    "detail": "Hintergründe",
+    "detailClose": "Hintergründe einklappen",
+    "termCount": "{n} Begriffe",
+    "termsHead": "Verwandte Begriffe",
+    "dictTip": "Vollständige Definition und Suche im Datenwörterbuch",
+    "dictGo": "Wörterbuch →",
+    "scale": "Größenordnung",
+    "how": "Wie lesen"
+  },
+  "keyTerm": {
+    "tag": "Schlüsselbegriff",
+    "scale": "Größenordnung",
+    "how": "Wie lesen",
+    "foot": "Vollständige Definition und Suche: Seitenleiste „Zeitarchiv“ → Datenwörterbuch"
+  },
+  "gscale": {
+    "G0": {
+      "label": "Ruhig",
+      "desc": "Kp < 4. Ruhige geomagnetische Aktivität, keine Auswirkungen des Weltraumwetters, Satelliten brauchen keine Schutzmaßnahmen."
+    },
+    "G1": {
+      "label": "Gering",
+      "desc": "Kp 4. Schwache magnetische Störung; Polarlicht kann in hohen Breiten auftreten, praktisch ohne Folgen für Satelliten."
+    },
+    "G2": {
+      "label": "Leicht erhöht",
+      "desc": "Kp 5. Polarlicht breitet sich äquatorwärts aus, Satelliten brauchen ggf. Lageregelung, Transformatoren erwärmen sich gelegentlich induktiv."
+    },
+    "G3": {
+      "label": "Mäßig",
+      "desc": "Kp 6. Oberflächenaufladung niedrig fliegender Satelliten nimmt zu, Lagestörungen können Grenzwerte überschreiten und Eingriffe erfordern."
+    },
+    "G4": {
+      "label": "Stark",
+      "desc": "Kp 7. Satellitenverfolgung wird schwierig, einzelne Satelliten können verloren gehen, Stromnetz und Kommunikation zeigen Anomalien."
+    },
+    "G5": {
+      "label": "Schwer",
+      "desc": "Kp 8. Die GPS-Genauigkeit sinkt deutlich oder der Dienst fällt aus; Raumfahrer müssen in das Innere des Moduls."
+    },
+    "G6p": {
+      "label": "Extrem",
+      "desc": "Kp 9. Historisch selten; GPS kann über lange Zeit ausfallen, Stromnetz und Kommunikation sind bedroht."
+    }
+  },
+  "ui": {
+    "moonAria": "Mondphasendiagramm"
+  }
+}

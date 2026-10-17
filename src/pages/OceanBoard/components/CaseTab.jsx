@@ -52,8 +52,8 @@ const CASES = [
 ]
 
 export default function CaseTab({ theme = 'dark' }) {
-  const { t } = useI18n()
-  const keyTerm = getTerm('earth', 'waveHeight')
+  const { t, lang } = useI18n()
+  const keyTerm = getTerm('earth', 'waveHeight', lang)
   return (
     <div className="o-case-list">
       <KeyTermCard term={keyTerm} theme={theme} />

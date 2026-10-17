@@ -54,8 +54,8 @@ const CASES = [
 ]
 
 export default function CaseTab({ theme = 'dark' }) {
-  const { t } = useI18n()
-  const keyTerm = getTerm('astro', 'sunspot')
+  const { t, lang } = useI18n()
+  const keyTerm = getTerm('astro', 'sunspot', lang)
   return (
     <div className="astro-case-list">
       <KeyTermCard term={keyTerm} theme={theme} />

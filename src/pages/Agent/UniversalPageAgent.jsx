@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react'
 import useWhisperRecorder from '../../hooks/useWhisperRecorder'
+import { useI18n } from '../../i18n/index.js'
 import { AGENT_PROTOCOL, executeActions, normalizeVoiceText, parseToActions } from './lib/nlp.js'
 import { createDirectBridge } from './lib/directBridge.js'
 import { createIframeBridge } from './lib/iframeBridge.js'
@@ -31,14 +32,15 @@ const UniversalPageAgent = ({
     pendingTask,
     onPendingTaskConsumed,
 }) => {
+    const { t } = useI18n()
     const [inputValue, setInputValue] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     const [history, setHistory] = useState([])
     const [mode, setMode] = useState(externalMode || 'direct')
     const [statusMsg, setStatusMsg] = useState(
         (externalMode || 'direct') === 'direct'
-            ? '直接模式：操作当前页面 DOM'
-            : 'iframe 模式：等待连接...',
+            ? t('agent.status.directMode')
+            : t('agent.status.iframeWaiting'),
     )
     const internalIframeRef = useRef(null)
     const agentIdRef = useRef(0)
@@ -61,7 +63,7 @@ const UniversalPageAgent = ({
 
     const sendBridgeMessage = useCallback((command, payload = {}) => {
         if (!activeIframeRef?.current?.contentWindow) {
-            return Promise.reject(new Error('iframe 未就绪'))
+            return Promise.reject(new Error(t('agent.errors.iframeNotReady')))
         }
         const id = ++agentIdRef.current
         const msg = { protocol: AGENT_PROTOCOL, id, command, payload }
@@ -69,7 +71,7 @@ const UniversalPageAgent = ({
         return new Promise((resolve) => {
             const timer = setTimeout(() => {
                 pendingHandlersRef.current.delete(id)
-                resolve({ ok: false, error: '超时（5s）' })
+                resolve({ ok: false, error: t('agent.errors.timeout') })
             }, 5000)
             pendingHandlersRef.current.set(id, (result) => {
                 clearTimeout(timer)
@@ -77,13 +79,13 @@ const UniversalPageAgent = ({
                 resolve(result)
             })
         })
-    }, [activeIframeRef])
+    }, [activeIframeRef, t])
 
     useEffect(() => {
         const handler = (ev) => {
             if (!ev.data || ev.data.protocol !== AGENT_PROTOCOL) return
             if (ev.data.type === 'ready') {
-                setStatusMsg('iframe 已连接')
+                setStatusMsg(t('agent.status.iframeConnected'))
                 return
             }
             const resolve = pendingHandlersRef.current.get(ev.data.id)
@@ -91,7 +93,7 @@ const UniversalPageAgent = ({
         }
         window.addEventListener('message', handler)
         return () => window.removeEventListener('message', handler)
-    }, [])
+    }, [t])
 
     /** 核心执行逻辑：解析并执行一段指令文本 */
     const runTask = useCallback(async (taskText, source = 'input') => {
@@ -101,7 +103,7 @@ const UniversalPageAgent = ({
         const bridge = mode === 'direct' ? createDirectBridge(router) : createIframeBridge(sendBridgeMessage)
         setIsLoading(true)
         setInputValue('')
-        setStatusMsg(`🔄 正在解析「${task.length > 20 ? `${task.slice(0, 20)}…` : task}」...`)
+        setStatusMsg(t('agent.status.parsing', { task: task.length > 20 ? `${task.slice(0, 20)}…` : task }))
 
         const appendHistory = (item) =>
             setHistory((prev) => [
@@ -117,29 +119,29 @@ const UniversalPageAgent = ({
 
             const summary =
                 failCount === 0 && actions.length > 0
-                    ? `✓ 全部成功 · ${actions.length} 个动作`
+                    ? t('agent.summary.allSuccess', { count: actions.length })
                     : failCount > 0 && successCount === 0
-                      ? `✗ 全部失败 · ${actions.length} 个动作`
-                      : `部分成功 · ${successCount}/${actions.length}`
+                      ? t('agent.summary.allFail', { count: actions.length })
+                      : t('agent.summary.partial', { success: successCount, total: actions.length })
 
             appendHistory({ task, actions, results, summary })
             onExecute?.(task, { actions, results, successCount, failCount })
             onAgentExecute?.(task, { actions, results, successCount, failCount })
             setStatusMsg(
                 failCount === 0 && successCount > 0
-                    ? `✅ 完成：${summary}`
+                    ? t('agent.status.done', { summary })
                     : successCount === 0 && failCount > 0
-                      ? `❌ 失败：${summary}`
-                      : `⚠️ 完成：${summary}`,
+                      ? t('agent.status.failed', { summary })
+                      : t('agent.status.partialDone', { summary }),
             )
         } catch (error) {
             console.error('执行错误:', error)
             appendHistory({ task, error: error.message })
-            setStatusMsg(`❌ 错误：${error.message}`)
+            setStatusMsg(t('agent.status.error', { message: error.message }))
         } finally {
             setIsLoading(false)
         }
-    }, [onExecute, onAgentExecute, mode, router, sendBridgeMessage])
+    }, [onExecute, onAgentExecute, mode, router, sendBridgeMessage, t])
 
     const executeTask = useCallback(async () => {
         if (!inputValue.trim()) return
@@ -156,12 +158,15 @@ const UniversalPageAgent = ({
         onResult: (text) => {
             const normalized = normalizeVoiceText(text)
             setInputValue(normalized)
-            setStatusMsg(`🎙️ 识别：${normalized}${normalized !== text ? `（已修正：${text}）` : ''}`)
+            setStatusMsg(
+                t('agent.status.recognized', { text: normalized }) +
+                    (normalized !== text ? t('agent.status.corrected', { text }) : ''),
+            )
             // 识别完成后自动执行（标记来源为 voice）
             setTimeout(() => runTaskRef.current(normalized, 'voice'), 120)
         },
         onError: (e) => {
-            setStatusMsg(`❌ 语音识别失败：${e?.message || e}`)
+            setStatusMsg(t('agent.status.voiceFailed', { message: e?.message || e }))
         },
     })
 
@@ -181,9 +186,9 @@ const UniversalPageAgent = ({
         setMode(next)
         setHistory([])
         setStatusMsg(
-            next === 'direct' ? '直接模式：操作当前页面 DOM' : 'iframe 模式：等待连接...',
+            next === 'direct' ? t('agent.status.directMode') : t('agent.status.iframeWaiting'),
         )
-    }, [mode])
+    }, [mode, t])
 
     // —— 统计（成功率、语音次数等）—— //
     const stats = useMemo(() => {
@@ -209,10 +214,10 @@ const UniversalPageAgent = ({
 
     const handleCopy = useCallback((task) => {
         navigator.clipboard?.writeText(task).then(
-            () => setStatusMsg(`📋 已复制「${task}」`),
-            () => setStatusMsg('❌ 复制失败'),
+            () => setStatusMsg(t('agent.status.copied', { task })),
+            () => setStatusMsg(t('agent.status.copyFailed')),
         )
-    }, [])
+    }, [t])
 
     const handleRedo = useCallback((task) => {
         runTaskRef.current(task, 'redo')
@@ -237,8 +242,8 @@ const UniversalPageAgent = ({
 
             {mode === 'iframe' && (
                 <div className="agent-iframe-config">
-                    <input type="text" placeholder="嵌入页面地址（iframe 模式）" className="agent-iframe-input" />
-                    <span className="agent-iframe-hint">iframe 模式下需配置目标页面地址</span>
+                    <input type="text" placeholder={t('agent.iframe.placeholder')} className="agent-iframe-input" />
+                    <span className="agent-iframe-hint">{t('agent.iframe.hint')}</span>
                 </div>
             )}
 

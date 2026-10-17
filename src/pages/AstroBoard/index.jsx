@@ -72,7 +72,7 @@ export default function AstroBoard({ lockedTab = null } = {}) {
   const [galaxyView, setGalaxyView] = useState('结构')
   const [passCity, setPassCity] = useState('北京')
   const [theme, setTheme] = useTheme()
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
 
   /* 页签与 URL 同步：别处「关联数据」跳 ?tab=xxx 过来时要能直接落到目标页签，
      否则读完关联理由点进去却停在默认页，等于白跳。非法参数回落到默认页签。 */
@@ -138,7 +138,7 @@ export default function AstroBoard({ lockedTab = null } = {}) {
   const sun = useMemo(() => subsolarPoint(now), [now])
   const planets = useMemo(() => planetPositions(now), [now])
   // 月球信息：纯本地计算，每分钟更新一次足够（月相变化极慢）
-  const moon = useMemo(() => moonInfo(now), [now])
+  const moon = useMemo(() => moonInfo(now, lang), [now, lang])
 
   // 观测地标：谁能看到当前选中的目标
   const visibleTo = useMemo(() => {
@@ -170,7 +170,7 @@ export default function AstroBoard({ lockedTab = null } = {}) {
 
   const sw = spaceWeather.data
   const kp = sw?.kp?.ok ? sw.kp.kp : null
-  const kpInfo = kpLevel(kp)
+  const kpInfo = kpLevel(kp, lang)
 
   const Chinese = positions.filter((p) => p.country === '中国')
   const neoData = neo.data
@@ -250,12 +250,34 @@ export default function AstroBoard({ lockedTab = null } = {}) {
     return {
       total, grade, tone, adviceKey,
       factors: [
-        { name: 'moon', score: Math.round(moonScore * 100), detail: moon ? `照亮度 ${(moon.illumination * 100).toFixed(0)}%（${moon.phaseName}）` : '—', weight: 40 },
-        { name: 'dark', score: Math.round(darkScore * 100), detail: `${(stargazing.darknessMin / 60).toFixed(1)} 小时天文黑夜`, weight: 35 },
-        { name: 'geo', score: Math.round(geoScore * 100), detail: kp != null ? `Kp ${kp.toFixed(1)}（${kpInfo.label}）` : '数据缺失', weight: 25 },
+        {
+          name: 'moon',
+          score: Math.round(moonScore * 100),
+          detail: moon
+            ? t('astro.obsFactor.moon', {
+              pct: (moon.illumination * 100).toFixed(0),
+              phase: moon.phaseName,
+            })
+            : '—',
+          weight: 40,
+        },
+        {
+          name: 'dark',
+          score: Math.round(darkScore * 100),
+          detail: t('astro.obsFactor.dark', { hours: (stargazing.darknessMin / 60).toFixed(1) }),
+          weight: 35,
+        },
+        {
+          name: 'geo',
+          score: Math.round(geoScore * 100),
+          detail: kp != null
+            ? t('astro.obsFactor.geo', { kp: kp.toFixed(1), level: kpInfo.label })
+            : t('astro.obsFactor.noData'),
+          weight: 25,
+        },
       ],
     }
-  }, [moon, stargazing, kp, kpInfo])
+  }, [moon, stargazing, kp, kpInfo, t])
 
   // 流星雨年历：8 场年度流星雨 + 各自状态
   const nowHour = Math.floor(now.getTime() / 3600_000)

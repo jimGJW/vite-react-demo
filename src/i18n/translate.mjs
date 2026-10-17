@@ -40,3 +40,50 @@ export function pickLang(obj, lang) {
   if (!obj || typeof obj !== 'object') return ''
   return obj[lang] || obj[DEFAULT_LANG] || ''
 }
+
+/**
+ * 数据模块（术语词典 / 关联表 / 模板库…）文案字段取值。
+ *
+ * 与 pickLang 的差别：数据词典只维护 zh-CN + en 两稿（其余语种按「语族」兜底），
+ * 所以兜底链是：本语种 → 中文族回简体 → 英文 → 简体。
+ * 直接用 pickLang 会让德语用户看到简体中文（缺 de 键时落 zh-CN），这里修正为落英文。
+ *
+ * 同时容忍「尚未改造的字段仍是字符串」——数据模块是分批迁移的，不能一改全炸。
+ *
+ * @param {string|Record<string,string>} field 文案字段（字符串或 {lang:text}）
+ * @param {string} lang 目标语种
+ * @returns {string}
+ */
+export function pickText(field, lang) {
+  if (typeof field === 'string') return field
+  if (!field || typeof field !== 'object') return ''
+  if (field[lang]) return field[lang]
+  if (typeof lang === 'string' && lang.startsWith('zh')) return field['zh-CN'] || field.en || ''
+  return field.en || field['zh-CN'] || ''
+}
+
+/** 数据模块里可能被多语化的字段名（localize 只处理这些，数值/颜色/枚举码原样保留） */
+export const DATA_TEXT_KEYS = [
+  'zh', 'desc', 'advice', 'unit', 'what', 'scale', 'soWhat',
+  'title', 'label', 'alias', 'scope', 'why', 'detail', 'name', 'period', 'region',
+]
+
+/**
+ * 把一条词典条目的文案字段就地解析成当前语种的字符串，其余字段原样透传。
+ * 取值函数统一走它，调用方拿到的永远是「可直接渲染的字符串」而不是 {lang:text} 对象
+ * ——否则 React 会抛 "Objects are not valid as a React child"。
+ *
+ * @template T
+ * @param {T} item 词典条目
+ * @param {string} [lang] 目标语种，缺省 zh-CN（未改造的消费方因此不受影响）
+ * @param {string[]} [keys] 需要解析的字段，缺省 DATA_TEXT_KEYS
+ * @returns {T} 浅拷贝，文案字段已解析
+ */
+export function localize(item, lang, keys = DATA_TEXT_KEYS) {
+  if (!item || typeof item !== 'object') return item
+  const out = { ...item }
+  for (const k of keys) {
+    if (out[k] !== undefined) out[k] = pickText(out[k], lang)
+  }
+  return out
+}

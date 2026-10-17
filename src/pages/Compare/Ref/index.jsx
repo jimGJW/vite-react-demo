@@ -140,22 +140,22 @@ function ReactDemo() {
         </div>
       </Card>
 
-      <Card size="small" title={<><Tag color="magenta">② forwardRef + useImperativeHandle：命令式组件 API</Tag></>}>
+      <Card size="small" title={<><Tag color="magenta">{t('compare.ref.imperativeCard')}</Tag></>}>
         <VideoPlayer ref={playerRef} />
         <Divider style={{ margin: '12px 0' }} />
         <Space wrap>
-          <Button type="primary" onClick={() => playerRef.current?.play()}>▶ play()</Button>
-          <Button onClick={() => playerRef.current?.pause()}>⏸ pause()</Button>
-          <Button onClick={() => playerRef.current?.seek(30)}>⏭ seek(30s)</Button>
-          <Button onClick={() => playerRef.current?.seek(playerRef.current?.getState()?.duration ?? 120)}>⏩ 跳到结尾</Button>
-          <Button danger onClick={() => playerRef.current?.reset()}>⟲ reset()</Button>
+          <Button type="primary" onClick={() => playerRef.current?.play()}>{t('compare.ref.playBtn')}</Button>
+          <Button onClick={() => playerRef.current?.pause()}>{t('compare.ref.pauseBtn')}</Button>
+          <Button onClick={() => playerRef.current?.seek(30)}>{t('compare.ref.seekBtn')}</Button>
+          <Button onClick={() => playerRef.current?.seek(playerRef.current?.getState()?.duration ?? 120)}>{t('compare.ref.jumpEnd')}</Button>
+          <Button danger onClick={() => playerRef.current?.reset()}>{t('compare.ref.resetBtn')}</Button>
           <Button
             onClick={() => append('getState(): ' + JSON.stringify(playerRef.current?.getState() ?? {}))}
-          >getState() → 打印</Button>
+          >{t('compare.ref.getStateBtn')}</Button>
         </Space>
         <Paragraph type="secondary" style={{ fontSize: 12, margin: '8px 0 0' }}>
-          父组件无法直接读取子组件内部 state；必须通过 <Text code>useImperativeHandle</Text>
-          显式暴露方法。和 Vue 3 的 <Text code>defineExpose</Text> 一一对应。
+          {t('compare.ref.imperativeNote1')} <Text code>useImperativeHandle</Text>
+          {t('compare.ref.imperativeNote2')} <Text code>defineExpose</Text> {t('compare.ref.imperativeNote3')}
         </Paragraph>
       </Card>
     </Space>
@@ -164,24 +164,25 @@ function ReactDemo() {
 
 /* ========== 页面 ========== */
 export default function CompareRef() {
+  const { t } = useI18n()
   return (
     <CompareLayout
-      title="Ref / DOM 操作"
-      subtitle={'React：useRef（DOM/变量）+ forwardRef + useImperativeHandle（命令式 API）；Vue：ref="x" + defineExpose 暴露方法。'}
+      title={t('compare.ref.title')}
+      subtitle={t('compare.ref.subtitle')}
       tags={[
-        { label: 'useRef vs ref' },
-        { label: '命令式 API', color: 'cyan' },
-        { label: 'forwardRef / defineExpose' },
+        { label: t('compare.ref.tagRef') },
+        { label: t('compare.ref.tagImperative'), color: 'cyan' },
+        { label: t('compare.ref.tagForward') },
       ]}
       reactDemo={<ReactDemo />}
       vueAppPath="/pattern/ref"
       diffRows={[
-        { title: 'DOM 引用声明', antd: 'const r = useRef(null); <input ref={r}/>', vue: 'const r = ref(null); <input ref="r" /> （同名即可绑定）' },
-        { title: '跨组件传递 ref', antd: 'forwardRef(MyComp(props, ref))', vue: '子组件默认 ref 指向根 DOM；或 $refs（option API）' },
-        { title: '暴露命令式 API', antd: 'useImperativeHandle(ref, () => ({ play, ... }), deps)', vue: 'defineExpose({ play, pause, getState })' },
-        { title: '读取 / 写入 ref 值', antd: 'r.current 读写，.current 修改不触发渲染', vue: 'r.value 读写；ref(reactive) 自动响应式' },
-        { title: '多个 ref：列表', antd: 'ref={el => arr[i] = el}（回调 ref）或 useRef([])', vue: '<div v-for="i in 5" :ref="el => list[i]=el" /> 或 :ref="keyed"' },
-        { title: '「副作用」DOM 操作', antd: '在 useEffect 里操作（挂载后 / 依赖变化后）', vue: 'onMounted 钩子中' },
+        { title: t('compare.ref.diff.domRef.title'), antd: t('compare.ref.diff.domRef.antd'), vue: t('compare.ref.diff.domRef.vue') },
+        { title: t('compare.ref.diff.crossRef.title'), antd: t('compare.ref.diff.crossRef.antd'), vue: t('compare.ref.diff.crossRef.vue') },
+        { title: t('compare.ref.diff.exposeApi.title'), antd: t('compare.ref.diff.exposeApi.antd'), vue: t('compare.ref.diff.exposeApi.vue') },
+        { title: t('compare.ref.diff.readWrite.title'), antd: t('compare.ref.diff.readWrite.antd'), vue: t('compare.ref.diff.readWrite.vue') },
+        { title: t('compare.ref.diff.multiRef.title'), antd: t('compare.ref.diff.multiRef.antd'), vue: t('compare.ref.diff.multiRef.vue') },
+        { title: t('compare.ref.diff.sideEffect.title'), antd: t('compare.ref.diff.sideEffect.antd'), vue: t('compare.ref.diff.sideEffect.vue') },
       ]}
       code={{
         antdCode:

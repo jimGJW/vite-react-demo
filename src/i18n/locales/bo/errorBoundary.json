@@ -41,6 +41,8 @@
     "timerErr": "An error thrown in a timer — caught by the boundary",
     "promiseErr": "An error thrown in a Promise — caught by the boundary",
     "naiveBtn": "Throw directly (uncontainable)",
-    "naiveErr": "Direct throw: boundaries cannot see it (console logs it, page does not degrade)"
+    "naiveErr": "Direct throw: boundaries cannot see it (console logs it, page does not degrade)",
+    "case1Label": "案例①",
+    "case4Label": "案例④"
   }
 }

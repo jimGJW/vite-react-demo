@@ -2,15 +2,17 @@ import { useMemo } from 'react'
 import { treeToArray, arrayToTree, findTreeNode } from '../../../components/Utils/index.js'
 import DemoCard from './DemoCard.jsx'
 import { SAMPLE_TREE, FLAT_LIST } from './sampleData.js'
+import { useI18n } from '../../../i18n/index.js'
 
 /** 树结构：平铺 / 还原 / 深度查找 */
 export default function TreeDemos() {
+  const { t } = useI18n()
   const tree = useMemo(() => arrayToTree(FLAT_LIST), [])
   return (
     <>
       <DemoCard
-        title="treeToArray · 平铺"
-        desc="树结构拍平为一维数组，便于搜索 / 统计。"
+        title={t('utilsdemo.treeFlatTitle')}
+        desc={t('utilsdemo.treeFlatDesc')}
         usage="treeToArray(tree)"
       >
         <div className="utils-demo__out">
@@ -19,16 +21,16 @@ export default function TreeDemos() {
       </DemoCard>
 
       <DemoCard
-        title="arrayToTree · 建树"
-        desc="按 id / parentId 还原层级，常用于接口平铺数据。"
+        title={t('utilsdemo.treeBuildTitle')}
+        desc={t('utilsdemo.treeBuildDesc')}
         usage="arrayToTree(list, { id, parentId })"
       >
         <pre className="utils-demo__json">{JSON.stringify(tree, null, 2)}</pre>
       </DemoCard>
 
       <DemoCard
-        title="findTreeNode · 深度查找"
-        desc="深度优先按 id 查节点，未找到返回 null。"
+        title={t('utilsdemo.treeFindTitle')}
+        desc={t('utilsdemo.treeFindDesc')}
         usage="findTreeNode(tree, 'n3')"
       >
         <div className="utils-demo__out">

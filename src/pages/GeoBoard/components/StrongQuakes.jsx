@@ -11,7 +11,7 @@ import { magBand } from '../../../lib/earth/glossary.js'
 import { useI18n } from '../../../i18n/index.js'
 
 export default function StrongQuakes({ byDay, quakes, count, perDay, strongest, windowDays = 30 }) {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   if (!byDay?.length) return <Empty description={t('geo.strong.empty')} />
   // 补齐 30 天日期轴（缺失日为 0），否则柱子会挤在一起看不出节奏
   const start = new Date(`${byDay[0].day}T00:00:00Z`).getTime()
@@ -42,7 +42,7 @@ export default function StrongQuakes({ byDay, quakes, count, perDay, strongest, 
         </Tooltip>
         {strongest && (
           <span className="geo-strong__stat">
-            {t('geo.strong.strongest')} <b style={{ color: magBand(strongest.mag).color }}>M{strongest.mag.toFixed(1)}</b>{' '}
+            {t('geo.strong.strongest')} <b style={{ color: magBand(strongest.mag, lang).color }}>M{strongest.mag.toFixed(1)}</b>{' '}
             {strongest.place}
           </span>
         )}
@@ -89,7 +89,7 @@ export default function StrongQuakes({ byDay, quakes, count, perDay, strongest, 
             sorter: (a, b) => a.mag - b.mag,
             defaultSortOrder: 'descend',
             render: (m) => {
-              const b = magBand(m)
+              const b = magBand(m, lang)
               return (
                 <Tag style={{ color: b.color, borderColor: b.color }}>
                   M{m?.toFixed(1)} · {b.label}
@@ -104,8 +104,8 @@ export default function StrongQuakes({ byDay, quakes, count, perDay, strongest, 
             width: 120,
             align: 'right',
             render: (d) => (
-              <span style={{ color: depthClass(d).color }}>
-                {d != null ? `${d.toFixed(0)} km · ${depthClass(d).label}` : '—'}
+              <span style={{ color: depthClass(d, lang).color }}>
+                {d != null ? `${d.toFixed(0)} km · ${depthClass(d, lang).label}` : '—'}
               </span>
             ),
           },

@@ -1,4 +1,4 @@
-import { useMemo, useReducer } from 'react'
+import { useReducer } from 'react'
 import { Button, Card, Slider, Space, Tag, Timeline, Tooltip, Typography } from 'antd'
 import { NodeIndexOutlined } from '@ant-design/icons'
 import {
@@ -56,7 +56,7 @@ export default function StateMachineDemo() {
 
   const now = current(history)
   const meta = TICKET.metaOf(now)
-  const available = useMemo(() => TICKET.eventsOf(now), [now])
+  const available = TICKET.eventsOf(now)
 
   return (
     <div className="smd">

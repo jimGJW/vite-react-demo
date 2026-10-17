@@ -2,36 +2,37 @@ import { Tabs } from 'antd'
 import ContextCase from './ContextCase.jsx'
 import ApiBasics from './ApiBasics.jsx'
 import NewFeatures from './NewFeatures.jsx'
+import { useI18n } from '../../i18n/index.js'
 import './index.scss'
 
 const CORE_APIS = [
-  { name: 'createContext', desc: '创建跨层数据通道' },
-  { name: 'useContext', desc: '订阅并读取上下文' },
-  { name: 'useMemo', desc: '缓存计算结果与引用' },
-  { name: 'useCallback', desc: '稳定函数引用' },
+  { name: 'createContext', descKey: 'hooks.index.coreApis.createContext' },
+  { name: 'useContext', descKey: 'hooks.index.coreApis.useContext' },
+  { name: 'useMemo', descKey: 'hooks.index.coreApis.useMemo' },
+  { name: 'useCallback', descKey: 'hooks.index.coreApis.useCallback' },
 ]
 
 export default function ReactHooksDemo() {
+  const { t } = useI18n()
   const items = [
-    { key: 'case', label: '① 四件套综合案例', children: <ContextCase /> },
-    { key: 'basics', label: '② 逐个 API 讲解', children: <ApiBasics /> },
-    { key: 'features', label: '③ React 19 新特性', children: <NewFeatures /> },
+    { key: 'case', label: t('hooks.index.tabCase'), children: <ContextCase /> },
+    { key: 'basics', label: t('hooks.index.tabBasics'), children: <ApiBasics /> },
+    { key: 'features', label: t('hooks.index.tabFeatures'), children: <NewFeatures /> },
   ]
 
   return (
     <div className="rh-page">
       <header className="rh-page__header">
-        <h1>React 核心 API 与 19 新特性</h1>
+        <h1>{t('hooks.index.title')}</h1>
         <p className="rh-page__lead">
-          一页跑通 <b>Context 跨层传值</b> 与 <b>渲染性能</b> 的关键组合，再跟进 React 19 的新玩具。
-          所有演示都带「渲染计数」徽标与「使用方法」代码，结论可以自己动手复现，而不是背文档。
+          {t('hooks.index.lead')}
         </p>
 
         <div className="rh-page__apis">
           {CORE_APIS.map((api) => (
             <span key={api.name} className="rh-api-pill">
               <code>{api.name}</code>
-              <em>{api.desc}</em>
+              <em>{t(api.descKey)}</em>
             </span>
           ))}
         </div>

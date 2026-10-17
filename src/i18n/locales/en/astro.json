@@ -336,5 +336,12 @@
   "neoColDiam": "Diameter (m)",
   "neoColHazard": "Hazard",
   "galaxyAria": "Milky Way structure (schematic)",
-  "galaxySun": "Sun"
+  "galaxySun": "Sun",
+  "earthElevTip": "观测仰角",
+  "obsFactor": {
+    "moon": "Illumination {pct}% ({phase})",
+    "dark": "{hours} h astronomical night",
+    "geo": "Kp {kp} ({level})",
+    "noData": "No data"
+  }
 }

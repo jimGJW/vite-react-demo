@@ -41,6 +41,8 @@
     "timerErr": " 错误ที่โยนในตัวจับเวลา —— 被 boundary จับแล้ว",
     "promiseErr": " 错误ที่โยนใน Promise —— 被 boundary จับแล้ว",
     "naiveBtn": " throw ตรงๆ (จับไม่ได้)",
-    "naiveErr": " throw ตรงๆ: boundary มองไม่เห็น (คอนโซลแสดง错误 แต่หน้าไม่降级)"
+    "naiveErr": " throw ตรงๆ: boundary มองไม่เห็น (คอนโซลแสดง错误 แต่หน้าไม่降级)",
+    "case1Label": "案例①",
+    "case4Label": "案例④"
   }
 }

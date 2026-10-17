@@ -11,6 +11,8 @@
 
 const ICON = { astro: '🛰️', geo: '🌍', ocean: '🌊' }
 
+import { useI18n } from '../../../i18n/index.js'
+
 export default function DataSummary({
   boards,
   ages = {},
@@ -20,17 +22,18 @@ export default function DataSummary({
   totalWait,
   theme = 'dark',
 }) {
+  const { t } = useI18n()
   const isDark = theme !== 'light'
 
   return (
     <div className={`tl-summary${isDark ? '' : ' light'}`}>
       <div className="tl-summary__head">
-        <h3 className="tl-summary__title">三方数据总结</h3>
+        <h3 className="tl-summary__title">{t('timeline.summaryTitle')}</h3>
         <div className="tl-summary__meta">
-          <span>数据源 <b>{totalSrc}</b></span>
-          <span className="ok">正常 <b>{totalOk}</b></span>
-          <span className="bad">故障 <b>{totalBad}</b></span>
-          <span className="wait">等待 <b>{totalWait}</b></span>
+          <span>{t('timeline.summaryDataSource')} <b>{totalSrc}</b></span>
+          <span className="ok">{t('timeline.summaryOk')} <b>{totalOk}</b></span>
+          <span className="bad">{t('timeline.summaryFault')} <b>{totalBad}</b></span>
+          <span className="wait">{t('timeline.summaryWait')} <b>{totalWait}</b></span>
         </div>
       </div>
 
@@ -61,8 +64,8 @@ export default function DataSummary({
               </ul>
 
               <footer className="tl-summary__cft">
-                <span>最新 <b>{age.freshest || '—'}</b></span>
-                <span>最旧 <b>{age.oldest || '—'}</b></span>
+                <span>{t('timeline.summaryNewest')} <b>{age.freshest || '—'}</b></span>
+                <span>{t('timeline.summaryOldest')} <b>{age.oldest || '—'}</b></span>
               </footer>
             </section>
           )

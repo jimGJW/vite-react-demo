@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import './index.scss'
+import { useI18n } from '../../i18n/index.js'
 import VideoCarousel from './components/VideoCarousel.jsx'
 import DocViewer from './components/DocViewer.jsx'
 import PythonRunner from './components/PythonRunner.jsx'
@@ -23,6 +24,7 @@ import { POLL_MS, VIDEO_RE, CAN_PICK_DIR, readSavedDir, saveDir } from './compon
 const EMPTY = { videos: [], images: [], docs: [], pythons: [] }
 
 export default function NotVideos() {
+  const { t } = useI18n()
   const [mode, setMode] = useState(() => (readSavedDir() ? 'server' : 'none')) // none | picker | server
   const [pickerName, setPickerName] = useState('')
   const [pathInput, setPathInput] = useState(() => readSavedDir())
@@ -47,7 +49,7 @@ export default function NotVideos() {
 
   /* ---------- 通道 1：目录选择器（客户端直读，仅视频，不经后端） ---------- */
   const scanPicker = useCallback(async (handle) => {
-    if (!handle) throw new Error('还没有选择文件夹')
+    if (!handle) throw new Error(t('notvideos.errNoFolder'))
     const cache = cacheRef.current
     const alive = new Set()
     const list = []
@@ -79,7 +81,7 @@ export default function NotVideos() {
     }
     list.sort((a, b) => b.mtime - a.mtime)
     return list
-  }, [])
+  }, [t])
 
   /* ---------- 通道 2：路径直填（后端全分类：视频/图片/文档/脚本） ---------- */
   const scanServer = useCallback(async (dir) => {
@@ -90,11 +92,11 @@ export default function NotVideos() {
     const res = await fetch(`/api/not-videos?dir=${encodeURIComponent(dir)}`, { cache: 'no-store', headers })
     if (res.status === 304) return null
     const data = await res.json()
-    if (!data.ok) throw new Error(data.error || '读取失败')
+    if (!data.ok) throw new Error(data.error || t('notvideos.errRead'))
     // 旧版中间件识别：Vite 只热重载 vite.config.js 本身，不重载它 import 的 vite-local-media.mjs，
     // 改了中间件不重启 dev 就静默留在旧行为（平铺扫描/无模块方式/无解释器探测）——给明确指引
     if (!data.caps || !data.caps.recursive) {
-      throw new Error('后端还是旧版中间件（看不到子目录、无法模块方式运行 Python）。请重启 dev server：Ctrl+C 停止，然后重新 npm run dev')
+      throw new Error(t('notvideos.errOldMiddleware'))
     }
     etagRef.current = res.headers.get('ETag') || ''
     const q = encodeURIComponent(dir)
@@ -106,7 +108,7 @@ export default function NotVideos() {
       docs: withUrl(data.docs),
       pythons: withUrl(data.pythons),
     }
-  }, [])
+  }, [t])
 
   /* ---------- 轮询：两个通道都是每 8 秒重扫，目录变了自动反映 ---------- */
   useEffect(() => {
@@ -179,7 +181,7 @@ export default function NotVideos() {
   const applyPath = useCallback(() => {
     const p = pathInput.trim()
     if (!p) {
-      setErr('请填写目录的绝对路径')
+      setErr(t('notvideos.errEmptyPath'))
       return
     }
     dropObjectUrls()
@@ -187,7 +189,7 @@ export default function NotVideos() {
     setActiveDir(p)
     setMode('server')
     setErr(null)
-  }, [pathInput, dropObjectUrls])
+  }, [pathInput, dropObjectUrls, t])
 
   const counts =
     mode === 'picker'
@@ -205,29 +207,29 @@ export default function NotVideos() {
     <div className="notvideos">
       <header className="notvideos__head">
         <div className="notvideos__title">
-          <span className="notvideos__badge">隐藏</span>
-          <h2>本地媒体中心</h2>
+          <span className="notvideos__badge">{t('notvideos.badge')}</span>
+          <h2>{t('notvideos.title')}</h2>
         </div>
         {total ? (
           <div className="notvideos__stat">
             {counts.videos ? (
               <span>
-                视频 <b>{counts.videos}</b>
+                {t('notvideos.catVideos')} <b>{counts.videos}</b>
               </span>
             ) : null}
             {counts.images ? (
               <span>
-                图片 <b>{counts.images}</b>
+                {t('notvideos.catImages')} <b>{counts.images}</b>
               </span>
             ) : null}
             {counts.docs ? (
               <span>
-                文档 <b>{counts.docs}</b>
+                {t('notvideos.catDocs')} <b>{counts.docs}</b>
               </span>
             ) : null}
             {counts.pythons ? (
               <span>
-                脚本 <b>{counts.pythons}</b>
+                {t('notvideos.catScripts')} <b>{counts.pythons}</b>
               </span>
             ) : null}
             <button
@@ -236,7 +238,7 @@ export default function NotVideos() {
               onClick={() => setNonce((n) => n + 1)}
               disabled={busy}
             >
-              {busy ? '扫描中…' : '重新扫描'}
+              {busy ? t('notvideos.scanning') : t('notvideos.rescan')}
             </button>
           </div>
         ) : null}
@@ -246,11 +248,11 @@ export default function NotVideos() {
       <section className="notvideos__source">
         {CAN_PICK_DIR ? (
           <button type="button" className="notvideos__pick" onClick={pickDir}>
-            选择文件夹
+            {t('notvideos.pickDir')}
           </button>
         ) : (
           <span className="notvideos__noPick">
-            当前浏览器不支持原生目录选择器（Chrome / Edge 支持），请用下方路径直填
+            {t('notvideos.noPick')}
           </span>
         )}
 
@@ -258,23 +260,23 @@ export default function NotVideos() {
           <input
             className="notvideos__input"
             value={pathInput}
-            placeholder="填目录绝对路径（含子目录；可看文档 / 运行 Python），例如：/Users/你/Movies/Clip"
+            placeholder={t('notvideos.phPath')}
             onChange={(e) => setPathInput(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') applyPath()
             }}
           />
           <button type="button" className="notvideos__btn" onClick={applyPath}>
-            连接
+            {t('notvideos.connect')}
           </button>
         </div>
 
         {sourceLabel ? (
           <div className="notvideos__sourceNow">
             <span>
-              当前目录：<b>{sourceLabel}</b>
+              {t('notvideos.currentDir')}<b>{sourceLabel}</b>
             </span>
-            <span className="notvideos__mode">{mode === 'picker' ? '目录选择器' : '路径直填'}</span>
+            <span className="notvideos__mode">{mode === 'picker' ? t('notvideos.modePicker') : t('notvideos.modeServer')}</span>
             {mode === 'server' && pickerName ? (
               <button
                 type="button"
@@ -285,7 +287,7 @@ export default function NotVideos() {
                   setMode('picker')
                 }}
               >
-                切回选择器目录
+                {t('notvideos.backToPicker')}
               </button>
             ) : null}
           </div>
@@ -294,16 +296,16 @@ export default function NotVideos() {
         {err ? <div className="notvideos__err">{err}</div> : null}
         {mode === 'picker' ? (
           <div className="notvideos__tip">
-            选择器模式仅支持视频轮播（浏览器拿不到绝对路径，无法读取文档 / 运行 Python）；需要这两项请用上方路径直填。
+            {t('notvideos.tipPicker')}
           </div>
         ) : null}
       </section>
 
       {mode === 'none' ? (
         <div className="notvideos__hint">
-          <p>先选一个文件夹，页面会按其中内容自动分区：视频轮播 / 图片 / 文档 / Python 效果。</p>
+          <p>{t('notvideos.hint1')}</p>
           <p className="notvideos__dir">
-            不会读取任何固定路径，选到哪儿就放哪儿；目录里新增内容后页面会自动跟着变。
+            {t('notvideos.hint2')}
           </p>
         </div>
       ) : mode === 'picker' ? (
@@ -311,8 +313,8 @@ export default function NotVideos() {
           <VideoCarousel videos={pickerVideos} />
         ) : (
           <div className="notvideos__hint">
-            <p>这个目录里还没有视频，或读取失败。</p>
-            <p className="notvideos__tip">需要看文档 / 跑 Python 效果？请改用上方「路径直填」——选择器模式浏览器拿不到绝对路径，只有它能轮播视频。</p>
+            <p>{t('notvideos.pickerEmpty1')}</p>
+            <p className="notvideos__tip">{t('notvideos.pickerEmpty2')}</p>
             {err ? <p className="notvideos__err">{err}</p> : null}
           </div>
         )
@@ -324,7 +326,7 @@ export default function NotVideos() {
           {serverData.images.length ? (
             <section className="notvideos__section">
               <div className="notvideos__secHead">
-                <h3>🖼️ 图片</h3>
+                <h3>🖼️ {t('notvideos.catImages')}</h3>
                 <span className="notvideos__secCount">{serverData.images.length}</span>
               </div>
               <ImageGrid images={serverData.images} />
@@ -337,13 +339,13 @@ export default function NotVideos() {
         </div>
       ) : (
         <div className="notvideos__hint">
-          <p>这个目录里没有可展示的媒体 / 文档 / 脚本。</p>
+          <p>{t('notvideos.serverEmpty')}</p>
           {err ? <p className="notvideos__err">{err}</p> : null}
         </div>
       )}
 
       <footer className="notvideos__foot">
-        <span>每 {POLL_MS / 1000} 秒自动扫描一次 · 视频支持 ← → 切换</span>
+        <span>{t('notvideos.footer', { sec: POLL_MS / 1000 })}</span>
       </footer>
     </div>
   )

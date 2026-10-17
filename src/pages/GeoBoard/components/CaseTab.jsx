@@ -55,8 +55,8 @@ const CASES = [
 ]
 
 export default function CaseTab({ theme = 'dark' }) {
-  const { t } = useI18n()
-  const keyTerm = getTerm('earth', 'depth')
+  const { t, lang } = useI18n()
+  const keyTerm = getTerm('earth', 'depth', lang)
   return (
     <div className="geo-case-list">
       <KeyTermCard term={keyTerm} theme={theme} />

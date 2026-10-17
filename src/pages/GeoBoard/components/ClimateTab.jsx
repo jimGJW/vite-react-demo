@@ -12,7 +12,7 @@ import TempTrend from './TempTrend.jsx'
 import SeaIceTrend from './SeaIceTrend.jsx'
 
 export default function ClimateTab({ env, envData, ghg, ghgData, temp, tempData, seaIce, iceData }) {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   return (
     <div className="geo-tab-content">
       {/* 城市环境 */}
@@ -65,7 +65,7 @@ export default function ClimateTab({ env, envData, ghg, ghgData, temp, tempData,
                 width: 96,
                 align: 'right',
                 render: (v) => {
-                  const lv = uvLevel(v)
+                  const lv = uvLevel(v, lang)
                   return v != null ? (
                     <Tooltip title={lv.advice}>
                       <span className="is-info" style={{ color: lv.color, fontWeight: 600 }}>
@@ -106,7 +106,7 @@ export default function ClimateTab({ env, envData, ghg, ghgData, temp, tempData,
                 width: 104,
                 align: 'right',
                 render: (v) => {
-                  const lv = aqiLevel(v)
+                  const lv = aqiLevel(v, lang)
                   return v != null ? (
                     <Tooltip title={lv.desc}>
                       <span className="is-info" style={{ color: lv.color, fontWeight: 600 }}>

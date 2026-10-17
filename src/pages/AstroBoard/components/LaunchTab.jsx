@@ -23,8 +23,8 @@ export default function LaunchTab({ launches, launchData }) {
       >
         <div className="astro-launch-list">
           {launchData?.items?.map((l, i) => {
-            const st = zhLaunchStatus(l.status, l.statusAbbr)
-            const mtype = zhMissionType(l.missionType)
+            const st = zhLaunchStatus(l.status, l.statusAbbr, lang)
+            const mtype = zhMissionType(l.missionType, lang)
             return (
               <div key={i} className="astro-launch-item">
                 <div className="astro-launch-item__time">

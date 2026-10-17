@@ -16,8 +16,8 @@ import { zhOscillation } from '../../../lib/earth/glossary.js'
 
 /** 一条振荡指数的概况条 */
 function OscHead({ osc }) {
-  const { t } = useI18n()
-  const dict = zhOscillation(osc.key)
+  const { t, lang } = useI18n()
+  const dict = zhOscillation(osc.key, lang)
   const positive = osc.last12 > 0
   return (
     <div className="o-osc-head">

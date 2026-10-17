@@ -336,5 +336,12 @@
   "neoColDiam": "直徑(m)",
   "neoColHazard": "危險",
   "galaxyAria": "銀河系結構示意",
-  "galaxySun": "太陽"
+  "galaxySun": "太陽",
+  "earthElevTip": "观测仰角",
+  "obsFactor": {
+    "moon": "照亮度 {pct}%（{phase}）",
+    "dark": "{hours} 小時天文黑夜",
+    "geo": "Kp {kp}（{level}）",
+    "noData": "資料缺失"
+  }
 }

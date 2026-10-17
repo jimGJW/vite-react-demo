@@ -12,7 +12,7 @@ import { zhCycloneClass, zhCycloneScale } from '../../../lib/earth/glossary.js'
 import { useI18n } from '../../../i18n/index.js'
 
 export default function CycloneTab({ cyclones, cycData }) {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   const dirText = (deg) => {
     if (!Number.isFinite(deg)) return '—'
     const i = Math.round((((deg % 360) + 360) % 360) / 45) % 8
@@ -77,7 +77,7 @@ export default function CycloneTab({ cyclones, cycData }) {
                     dataIndex: 'class',
                     width: 120,
                     render: (v, r) => {
-                      const c = zhCycloneClass(v)
+                      const c = zhCycloneClass(v, lang)
                       return (
                         <Tooltip title={c?.desc}>
                           <Tag bordered={false} className="is-info">{r.classZh}</Tag>
@@ -107,7 +107,7 @@ export default function CycloneTab({ cyclones, cycData }) {
                     width: 110,
                     render: (s) =>
                       s ? (
-                        <Tooltip title={zhCycloneScale(s.level)?.desc}>
+                        <Tooltip title={zhCycloneScale(s.level, lang)?.desc}>
                           <span className="is-info" style={{ color: s.color, fontWeight: 600 }}>
                             {s.zh}
                           </span>

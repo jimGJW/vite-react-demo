@@ -4,6 +4,7 @@ import { CloseOutlined, DeleteOutlined } from '@ant-design/icons'
 import AstroBoard from '../../AstroBoard/index.jsx'
 import GeoBoard from '../../GeoBoard/index.jsx'
 import OceanBoard from '../../OceanBoard/index.jsx'
+import { useI18n } from '../../../i18n/index.js'
 import './ModuleView.scss'
 
 /* 可选模块：按看板分组，value 用 `${看板}:${tabKey}` 作为唯一标识 */
@@ -71,6 +72,7 @@ const BOARD_COMPONENT = { astro: AstroBoard, geo: GeoBoard, ocean: OceanBoard }
  * 看板自身的头部 / 指标条 / 页脚 / 三方监控条 / 切换栏，只露出内容本体。
  */
 export default function ModuleView() {
+  const { t } = useI18n()
   const [picks, setPicks] = useState([])
 
   const removePick = (v) => setPicks(picks.filter((x) => x !== v))
@@ -83,7 +85,7 @@ export default function ModuleView() {
           mode="multiple"
           allowClear
           className="mv__select"
-          placeholder="勾选要查看的模块（深空 / 地球 / 海洋各 tab 任选）"
+          placeholder={t('timeline.modulePlaceholder')}
           options={SELECT_OPTIONS}
           value={picks}
           onChange={setPicks}
@@ -91,7 +93,7 @@ export default function ModuleView() {
         />
         {picks.length > 0 && (
           <Button icon={<DeleteOutlined />} onClick={clearAll}>
-            清空（{picks.length}）
+            {t('timeline.clearAll', { count: picks.length })}
           </Button>
         )}
       </div>
@@ -99,7 +101,7 @@ export default function ModuleView() {
       {picks.length === 0 ? (
         <Empty
           className="mv__empty"
-          description="从上方下拉勾选若干个模块，即可在同一视图里并排查看它们的实时内容"
+          description={t('timeline.moduleEmpty')}
         />
       ) : (
         <div className="mv__grid">
@@ -114,7 +116,7 @@ export default function ModuleView() {
                   <span className="mv-card__title">
                     {bMeta.icon} {bMeta.title} · {tMeta.label}
                   </span>
-                  <Tooltip title="移除该模块">
+                  <Tooltip title={t('timeline.removeTip')}>
                     <Button
                       size="small"
                       type="text"

@@ -41,6 +41,8 @@
     "timerErr": "Une erreur levée dans un minuteur — attrapée par la limite",
     "promiseErr": "Une erreur levée dans une Promesse — attrapée par la limite",
     "naiveBtn": "Lever directement (non attrapable)",
-    "naiveErr": "Throw direct : les limites ne le voient pas (la console affiche l’erreur, mais la page ne se dégrade pas)"
+    "naiveErr": "Throw direct : les limites ne le voient pas (la console affiche l’erreur, mais la page ne se dégrade pas)",
+    "case1Label": "案例①",
+    "case4Label": "案例④"
   }
 }

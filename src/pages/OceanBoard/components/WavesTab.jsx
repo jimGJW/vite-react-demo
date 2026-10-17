@@ -10,7 +10,7 @@ import WaveForecast from './WaveForecast.jsx'
 import GlobalWavesTable from './GlobalWavesTable.jsx'
 
 export default function WavesTab({ waves, waveData, globalWaves, globalWavesData }) {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   return (
     <div className="o-tab-content">
       <Panel
@@ -36,7 +36,7 @@ export default function WavesTab({ waves, waveData, globalWaves, globalWavesData
                 width: 130,
                 align: 'right',
                 render: (v) => {
-                  const lv = waveLevel(v)
+                  const lv = waveLevel(v, lang)
                   return v != null ? (
                     <span style={{ color: lv.color, fontWeight: 600 }}>
                       {v.toFixed(2)} m · {lv.label}

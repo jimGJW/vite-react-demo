@@ -33,7 +33,7 @@ function StationWeather({ wx }) {
 }
 
 export default function TideTab({ tides, tideData, tidePred, predData, stationWeather, wxData }) {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   return (
     <div className="o-tab-content">
       <Panel
@@ -109,7 +109,7 @@ export default function TideTab({ tides, tideData, tidePred, predData, stationWe
         <div className="o-prose">
           <p>
             {t('ocean.tide.prose1a')}
-            <Tooltip title={zhTideDatum('MLLW')?.desc}>
+            <Tooltip title={zhTideDatum('MLLW', lang)?.desc}>
               <b className="is-info">MLLW（{t('ocean.tide.mllw')}）</b>
             </Tooltip>
             {t('ocean.tide.prose1b')}

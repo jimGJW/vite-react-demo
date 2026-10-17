@@ -40,8 +40,8 @@ export default function AssistantDemo() {
 
       <Method
         index={1}
-        title="useAssistants Hook（React 组件内推荐）"
-        desc="在 Layout 挂载 <Assistants /> 后，任意页面组件都可以通过 Hook 读取并控制助手面板。"
+        title={t('assistantDemo.method.m1Title')}
+        desc={t('assistantDemo.method.m1Desc')}
         code={`import { useAssistants } from '@/components/Assistants'
 
 const { isOpen, open, close, toggle, sendToAgent } = useAssistants()
@@ -51,23 +51,23 @@ const { isOpen, open, close, toggle, sendToAgent } = useAssistants()
 <button onClick={() => sendToAgent('滚动到底部')}>把指令交给 Agent</button>`}
       >
         <Button type="primary" onClick={() => assistants?.open('voice')}>
-          🎙️ 打开语音助手
+          {t('assistantDemo.demo.openVoice')}
         </Button>
         <Button onClick={() => assistants?.toggle('agent')}>
-          🤖 {agentOn ? '关闭' : '打开'} AI Agent
+          {t('assistantDemo.demo.agentPrefix')}{agentOn ? t('assistantDemo.demo.closeBtn') : t('assistantDemo.demo.openBtn')}{t('assistantDemo.demo.agentSuffix')}
         </Button>
         <Button onClick={() => assistants?.sendToAgent('帮我分析当前页面有哪些按钮')}>
-          ➡️ 指令交给 Agent
+          {t('assistantDemo.demo.sendToAgent')}
         </Button>
         <Button danger onClick={() => assistants?.close()}>
-          全部关闭
+          {t('assistantDemo.demo.closeAll')}
         </Button>
       </Method>
 
       <Method
         index={2}
-        title="命令式 API（任意 JS / Vue 页面可用）"
-        desc="不依赖 React 上下文，Vue SFC、原生 JS、浏览器控制台里都能直接调用。"
+        title={t('assistantDemo.method.m2Title')}
+        desc={t('assistantDemo.method.m2Desc')}
         code={`import { openAssistant, closeAssistant, controlAssistant } from '@/components/Assistants'
 
 openAssistant('voice')                             // 打开语音助手
@@ -77,14 +77,14 @@ controlAssistant('agent', 'fill', { text: '点一下提交按钮' })  // 打开 
         <Button onClick={() => openAssistant('voice')}>openAssistant('voice')</Button>
         <Button onClick={() => closeAssistant('voice')}>closeAssistant('voice')</Button>
         <Button onClick={() => controlAssistant('agent', 'fill', { text: '滚动到页面底部' })}>
-          Agent 填入「滚动到页面底部」
+          {t('assistantDemo.demo.fillAgentBtn', { text: '滚动到页面底部' })}
         </Button>
       </Method>
 
       <Method
         index={3}
-        title="window 原生事件（跨框架 / 跨技术栈）"
-        desc="Vue、Angular 页面或 iframe 内都可以用这条事件唤起助手，与项目里已有的 app:navigate 用法一致。"
+        title={t('assistantDemo.method.m3Title')}
+        desc={t('assistantDemo.method.m3Desc')}
         code={`window.dispatchEvent(
   new CustomEvent('app:assistant', { detail: { action: 'open', target: 'voice' } })
 )
@@ -98,7 +98,7 @@ controlAssistant('agent', 'fill', { text: '点一下提交按钮' })  // 打开 
             )
           }
         >
-          dispatchEvent → 打开语音助手
+          {t('assistantDemo.demo.dispatchOpen')}
         </Button>
         <Button
           onClick={() =>
@@ -107,14 +107,14 @@ controlAssistant('agent', 'fill', { text: '点一下提交按钮' })  // 打开 
             )
           }
         >
-          dispatchEvent → 开关 AI Agent
+          {t('assistantDemo.demo.dispatchToggle')}
         </Button>
       </Method>
 
       <Method
         index={4}
-        title="组件内嵌（脱离助手中心独立受控）"
-        desc="语音助手面板本身就是一个普通受控组件，也可以只在某个页面里单独使用，配合自己的 state。"
+        title={t('assistantDemo.method.m4Title')}
+        desc={t('assistantDemo.method.m4Desc')}
         code={`const [open, setOpen] = useState(false)
 
 <VoiceAssistantPanel
@@ -124,7 +124,7 @@ controlAssistant('agent', 'fill', { text: '点一下提交按钮' })  // 打开 
 />`}
       >
         <Button type="primary" onClick={() => setStandaloneOpen(true)}>
-          打开独立语音助手面板
+          {t('assistantDemo.demo.standaloneBtn')}
         </Button>
       </Method>
 
@@ -136,7 +136,7 @@ controlAssistant('agent', 'fill', { text: '点一下提交按钮' })  // 打开 
           assistants?.sendToAgent(text)
         }}
         persistKey="demo-standalone"
-        title="语音助手（独立实例）"
+        title={t('assistantDemo.demo.standaloneTitle')}
       />
     </div>
   )

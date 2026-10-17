@@ -1,4 +1,5 @@
 import { memo, useCallback, useState } from 'react'
+import { useI18n } from '../../../i18n/index.js'
 import { fmtSize } from './notVideoUtils.js'
 
 /**
@@ -9,6 +10,7 @@ import { fmtSize } from './notVideoUtils.js'
  * 而不是留一块空白让用户猜。
  */
 function DocViewerImpl({ docs, dir }) {
+  const { t } = useI18n()
   const [activeRel, setActiveRel] = useState(null)
   const [view, setView] = useState(null) // { kind:'text'|'frame'|'download', name, text?, url? }
   const [loading, setLoading] = useState(false)
@@ -27,7 +29,7 @@ function DocViewerImpl({ docs, dir }) {
             cache: 'no-store',
           })
           const data = await res.json()
-          if (!data.ok) throw new Error(data.error || '读取失败')
+          if (!data.ok) throw new Error(data.error || t('notvideos.errRead'))
           setView({ kind: 'text', name: doc.rel, text: data.text })
         } catch (e) {
           setErr(String((e && e.message) || e))
@@ -40,7 +42,7 @@ function DocViewerImpl({ docs, dir }) {
         setView({ kind: 'download', name: doc.rel, url: fileUrl })
       }
     },
-    [dir],
+    [dir, t],
   )
 
   if (!docs.length) return null
@@ -48,7 +50,7 @@ function DocViewerImpl({ docs, dir }) {
   return (
     <section className="notvideos__section">
       <div className="notvideos__secHead">
-        <h3>📄 文档</h3>
+        <h3>📄 {t('notvideos.catDocs')}</h3>
         <span className="notvideos__secCount">{docs.length}</span>
       </div>
       <div className="notvideos__docBody">
@@ -67,25 +69,25 @@ function DocViewerImpl({ docs, dir }) {
           ))}
         </div>
         <div className="notvideos__docView">
-          {loading ? <div className="notvideos__hint">读取中…</div> : null}
+          {loading ? <div className="notvideos__hint">{t('notvideos.reading')}</div> : null}
           {err ? <div className="notvideos__err">{err}</div> : null}
-          {!loading && !err && !view ? <div className="notvideos__hint">选择左侧文档查看</div> : null}
+          {!loading && !err && !view ? <div className="notvideos__hint">{t('notvideos.docPickHint')}</div> : null}
           {view && view.kind === 'text' ? <pre className="notvideos__docText">{view.text}</pre> : null}
           {view && view.kind === 'frame' ? (
             <>
               <iframe className="notvideos__docFrame" src={view.url} title={view.name} />
               <div className="notvideos__docBar">
-                <a href={view.url} target="_blank" rel="noreferrer">
-                  新窗口打开
-                </a>
+                  <a href={view.url} target="_blank" rel="noreferrer">
+                    {t('notvideos.openNew')}
+                  </a>
               </div>
             </>
           ) : null}
           {view && view.kind === 'download' ? (
             <div className="notvideos__hint">
-              <p>浏览器无法直接预览 {view.name}（Word / Excel / PPT 二进制格式）</p>
+              <p>{t('notvideos.cannotPreview', { name: view.name })}</p>
               <a className="notvideos__btn" href={view.url} target="_blank" rel="noreferrer" download>
-                下载 / 用本地软件打开
+                {t('notvideos.downloadOpen')}
               </a>
             </div>
           ) : null}

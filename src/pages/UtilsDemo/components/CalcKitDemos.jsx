@@ -9,16 +9,18 @@ import {
 } from '../../../components/Utils/index.js'
 import DemoCard from './DemoCard.jsx'
 import { SAMPLE_ROWS, NUMS, BASE_DATE } from './sampleData.js'
+import { useI18n } from '../../../i18n/index.js'
 
 /** 数值统计 / 集合运算 / 对象路径 / 日期增强 */
 export default function CalcKitDemos() {
+  const { t } = useI18n()
   const [dice, setDice] = useState([1, 2, 3, 4, 5])
 
   return (
     <>
       <DemoCard
-        title="数值统计"
-        desc="求和、均值、中位数、占比、区间判断、小数位、毫秒转中文时长。中位数会自动忽略非数字。"
+        title={t('utilsdemo.calcStatTitle')}
+        desc={t('utilsdemo.calcStatDesc')}
         usage="sum(arr) · avg(arr) · median(arr) · percentOf(part, total) · inRange(n, min, max) · roundTo(n, d) · formatDuration(ms)"
       >
         <div className="utils-demo__out">
@@ -31,15 +33,15 @@ export default function CalcKitDemos() {
       </DemoCard>
 
       <DemoCard
-        title="集合运算（均返回新数组，不改原数组）"
-        desc="分块、序列、洗牌、抽样、差/交/并集、去 falsy、移动元素、按字段计数与求和。"
+        title={t('utilsdemo.calcSetTitle')}
+        desc={t('utilsdemo.calcSetDesc')}
         usage="chunk · range · shuffle · sample · difference · intersection · union · compact · move · countBy · sumBy"
       >
         <Space wrap>
-          <Button size="small" onClick={() => setDice(shuffle(dice))}>洗牌</Button>
-          <Button size="small" onClick={() => setDice(sample([1, 2, 3, 4, 5], 3))}>随机抽 3 个</Button>
-          <Button size="small" onClick={() => setDice(move(dice, 0, dice.length - 1))}>首位移到末尾</Button>
-          <Button size="small" onClick={() => setDice([1, 2, 3, 4, 5])}>重置</Button>
+          <Button size="small" onClick={() => setDice(shuffle(dice))}>{t('utilsdemo.calcShuffle')}</Button>
+          <Button size="small" onClick={() => setDice(sample([1, 2, 3, 4, 5], 3))}>{t('utilsdemo.calcSample3')}</Button>
+          <Button size="small" onClick={() => setDice(move(dice, 0, dice.length - 1))}>{t('utilsdemo.calcMove')}</Button>
+          <Button size="small" onClick={() => setDice([1, 2, 3, 4, 5])}>{t('utilsdemo.calcReset')}</Button>
         </Space>
         <div className="utils-demo__out">
           当前 → [{dice.join(', ')}]<br />
@@ -55,8 +57,8 @@ export default function CalcKitDemos() {
       </DemoCard>
 
       <DemoCard
-        title="对象路径存取"
-        desc="支持 'a.b[0].c' 写法。get 取不到返回兜底值不抛错；set 是不可变写入，返回新对象。"
+        title={t('utilsdemo.calcPathTitle')}
+        desc={t('utilsdemo.calcPathDesc')}
         usage="get(obj, path, fallback) · set(obj, path, value) · has(obj, path) · invert(obj) · mapValues(obj, fn)"
       >
         <div className="utils-demo__out">
@@ -70,8 +72,8 @@ export default function CalcKitDemos() {
       </DemoCard>
 
       <DemoCard
-        title="日期增强"
-        desc="起止时刻、加减天数、同日判断、中文星期、某月天数、闰年判断。"
+        title={t('utilsdemo.calcDateTitle')}
+        desc={t('utilsdemo.calcDateDesc')}
         usage="startOfDay · endOfDay · addDays · isSameDay · weekdayOf · daysInMonth(year, month) · isLeapYear(year)"
       >
         <div className="utils-demo__out">

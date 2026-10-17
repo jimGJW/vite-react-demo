@@ -6,8 +6,20 @@
  * 写错一个字母不会让构建失败，只会让某个模块底部的关联卡片悄悄消失（或跳到不存在的页签）。
  * 这和此前 /timeline 把 ghg 写成 co2 是同一类错配，必须在 CI 里钉死。
  */
-import { BOARD_META, BOARD_SCOPE, TAB_LABELS, TAB_KEYS, getRelated, getTerm } from '../../src/lib/boards/relations.js'
+import {
+  BOARD_META,
+  BOARD_SCOPE,
+  TAB_LABELS,
+  TAB_KEYS,
+  RELATIONS,
+  getRelated,
+  getTerm,
+  getTabLabel,
+  getBoardMeta,
+  getBoardScope,
+} from '../../src/lib/boards/relations.js'
 import { healthOf } from '../../src/lib/boards/health.js'
+import { pickText } from '../../src/i18n/translate.mjs'
 import { eq, ok } from './harness.mjs'
 
 /** 辅助页签：案例本身不参与数据关联，允许没有关联项（名词解释已集中到 /timeline） */
@@ -21,7 +33,8 @@ export default [
     for (const key of ['astro', 'geo', 'ocean']) {
       const m = BOARD_META[key]
       ok(m, `缺看板元信息 ${key}`)
-      ok(m.title && m.title.length > 0, `${key} 缺标题`)
+      // title 已是 { 'zh-CN':…, en:… }，取原文再校验长度
+      ok(pickText(m.title, 'zh-CN').length > 0, `${key} 缺标题`)
       ok(m.icon && m.icon.length > 0, `${key} 缺图标`)
       ok(/^#[0-9a-f]{6}$/i.test(m.color), `${key} 主色必须是 6 位 hex，实际 ${m.color}`)
       ok(m.path.startsWith('/'), `${key} 的 path 应以 / 开头`)
@@ -151,9 +164,9 @@ export default [
     for (const key of ['astro', 'geo', 'ocean']) {
       const s = BOARD_SCOPE[key]
       ok(s, `缺 ${key} 的监控范围`)
-      ok(s.scope && s.scope.length >= 8, `${key} 的监控范围描述过短`)
+      ok(pickText(s.scope, 'zh-CN').length >= 8, `${key} 的监控范围描述过短`)
       ok(Array.isArray(s.watch) && s.watch.length >= 4, `${key} 的监控要点少于 4 条`)
-      for (const w of s.watch) ok(w && w.length > 0, `${key} 的监控要点里有空字符串`)
+      for (const w of s.watch) ok(pickText(w, 'zh-CN').length > 0, `${key} 的监控要点里有空字符串`)
     }
   }],
 
@@ -181,5 +194,48 @@ export default [
       const [b, t] = to.split('.')
       ok(getRelated(b, t).length > 0, `${to} 被别人关联，但自己没有任何关联（成了死胡同）`)
     }
+  }],
+
+  ['关联表双语完整：每条 why / detail 都有中英两稿', () => {
+    let n = 0
+    for (const [board, list] of Object.entries(RELATIONS)) {
+      for (const it of list) {
+        n += 1
+        for (const field of ['why', 'detail']) {
+          const v = it[field]
+          ok(v && typeof v === 'object', `${board} → ${it.to} 的 ${field} 应是 {lang:text} 对象`)
+          ok(pickText(v, 'zh-CN').length > 0, `${board} → ${it.to} 的 ${field} 缺中文`)
+          ok(pickText(v, 'en').length > 0, `${board} → ${it.to} 的 ${field} 缺英文`)
+          ok(
+            pickText(v, 'en') !== pickText(v, 'zh-CN'),
+            `${board} → ${it.to} 的 ${field} 英文与中文相同（漏译？）`,
+          )
+        }
+      }
+    }
+    ok(n >= 80, `关联条目数偏少：${n}`)
+  }],
+
+  ['切英文时关联卡片整体变英文（取值函数 lang 参数生效）', () => {
+    const cn = getRelated('astro', 'earth')
+    const en = getRelated('astro', 'earth', 'en')
+    eq(en.length, cn.length, '英文版关联条数应与中文一致')
+    for (let i = 0; i < cn.length; i += 1) {
+      ok(typeof en[i].why === 'string' && en[i].why.length > 0, `${en[i].to} 的 why 应是非空字符串`)
+      ok(typeof en[i].detail === 'string' && en[i].detail.length > 0, `${en[i].to} 的 detail 应是非空字符串`)
+      ok(en[i].why !== cn[i].why, `${en[i].to} 切英文后 why 未变化`)
+      ok(!/[一-鿿]/.test(en[i].why), `${en[i].to} 的英文 why 里残留中文`)
+    }
+    // 页签名 / 看板名 / 监控范围 / 名词释义同样跟随语种
+    eq(getTabLabel('astro', 'earth'), '地球附近', '缺省语种应给简体页签名')
+    ok(getTabLabel('astro', 'earth', 'en').length > 0, '英文页签名不应为空')
+    ok(!/[一-鿿]/.test(getTabLabel('astro', 'earth', 'en')), '英文页签名不应残留中文')
+    ok(getBoardMeta('en').ocean.title.length > 0, '英文看板名不应为空')
+    const sc = getBoardScope('ocean', 'en')
+    ok(sc.scope.length > 0 && !/[一-鿿]/.test(sc.scope), '英文监控范围不应为空或残留中文')
+    ok(sc.watch.every((w) => w.length > 0 && !/[一-鿿]/.test(w)), '英文监控要点不应为空或残留中文')
+    const term = getTerm('earth', 'oni', 'en')
+    ok(term && term.what.length > 0 && !/[一-鿿]/.test(term.what), '英文名词释义不应为空或残留中文')
+    ok(term.zh.length > 0, '英文名词也要有名称')
   }],
 ]

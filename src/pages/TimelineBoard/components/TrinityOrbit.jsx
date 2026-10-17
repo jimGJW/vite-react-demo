@@ -14,6 +14,7 @@
  */
 
 import { useNavigate } from 'react-router-dom'
+import { useI18n } from '../../../i18n/index.js'
 
 const C = 240 // 画布中心（viewBox 480）
 const R = 28 // 行星半径
@@ -37,6 +38,7 @@ function healthTone(ok, total) {
 }
 
 export default function TrinityOrbit({ boards, totalOk, totalSrc, theme = 'dark' }) {
+  const { t } = useI18n()
   const navigate = useNavigate()
 
   const isDark = theme !== 'light'
@@ -49,7 +51,7 @@ export default function TrinityOrbit({ boards, totalOk, totalSrc, theme = 'dark'
       className={`tl-trinity${isDark ? '' : ' light'}`}
       viewBox="0 0 480 480"
       role="img"
-      aria-label="深空、地球、海洋三块看板实时数据三位一体轨道"
+      aria-label={t('timeline.orbitAria')}
     >
       <defs>
         {boards.map((b) => (
@@ -67,7 +69,7 @@ export default function TrinityOrbit({ boards, totalOk, totalSrc, theme = 'dark'
         <animate attributeName="opacity" values="0.6;0.15;0.6" dur="3.6s" repeatCount="indefinite" />
       </circle>
       <text x={C} y={C - 6} textAnchor="middle" className="tl-core-num">{totalOk}/{totalSrc}</text>
-      <text x={C} y={C + 16} textAnchor="middle" className="tl-core-label">实时数据</text>
+      <text x={C} y={C + 16} textAnchor="middle" className="tl-core-label">{t('timeline.orbitCoreLabel')}</text>
 
       {/* 三条轨道 + 三颗行星 */}
       {boards.map((b) => {
@@ -102,7 +104,7 @@ export default function TrinityOrbit({ boards, totalOk, totalSrc, theme = 'dark'
                 transform={`translate(${C + cfg.rx} ${C})`}
                 onClick={() => navigate(`/${b.key}`)}
               >
-                <title>{`${b.title}：正常 ${b.ok}/${b.total}，故障 ${b.bad}，等待 ${b.wait} —— 点击进入`}</title>
+                <title>{t('timeline.orbitTip', { title: b.title, ok: b.ok, total: b.total, bad: b.bad, wait: b.wait })}</title>
                 <g className="tl-planet">
                   {/* 反向自转保持文字正立 */}
                   <animateTransform

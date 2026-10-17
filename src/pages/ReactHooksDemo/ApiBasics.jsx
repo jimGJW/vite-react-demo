@@ -2,6 +2,16 @@ import { createContext, memo, useCallback, useContext, useMemo, useState } from 
 import { Button, Switch, Tag, message } from 'antd'
 import RenderBadge from './RenderBadge.jsx'
 import CodeBlock from './CodeBlock.jsx'
+import { useI18n } from '../../i18n/index.js'
+
+// 每个 API 的 purpose / points 文案已在 i18n 中；用静态映射把 name 对应到字面量 key，
+// 避免使用变量拼接 key（规则禁止动态构造 key）。
+const API_KEYS = {
+  createContext: { purpose: 'hooks.api.purpose.createContext', points: 'hooks.api.points.createContext' },
+  useContext: { purpose: 'hooks.api.purpose.useContext', points: 'hooks.api.points.useContext' },
+  useMemo: { purpose: 'hooks.api.purpose.useMemo', points: 'hooks.api.points.useMemo' },
+  useCallback: { purpose: 'hooks.api.purpose.useCallback', points: 'hooks.api.points.useCallback' },
+}
 
 /* ══════════════════════════════════════════════════════════════════
    以下 Context 均在本文件模块顶层创建且不做 export：
@@ -19,6 +29,7 @@ function UnitReader() {
 }
 
 function CreateContextDemo() {
+  const { t } = useI18n()
   const [unit, setUnit] = useState('rem（Provider 注入值）')
   const [withProvider, setWithProvider] = useState(true)
 
@@ -26,12 +37,12 @@ function CreateContextDemo() {
     <div className="rh-demo">
       <div className="rh-split">
         <div className="rh-split__item">
-          <Tag>无 Provider</Tag>
+          <Tag>{t('hooks.api.noProvider')}</Tag>
           <UnitReader />
-          <p className="rh-hint">回落到 createContext 的默认值</p>
+          <p className="rh-hint">{t('hooks.api.fallbackDefault')}</p>
         </div>
         <div className="rh-split__item">
-          <Tag color="blue">有 Provider</Tag>
+          <Tag color="blue">{t('hooks.api.withProvider')}</Tag>
           {withProvider ? (
             <UnitContext value={unit}>
               <UnitReader />
@@ -39,7 +50,7 @@ function CreateContextDemo() {
           ) : (
             <UnitReader />
           )}
-          <p className="rh-hint">读取 Provider 注入的值</p>
+          <p className="rh-hint">{t('hooks.api.readInjected')}</p>
         </div>
       </div>
 
@@ -47,14 +58,14 @@ function CreateContextDemo() {
         <Switch
           checked={withProvider}
           onChange={setWithProvider}
-          checkedChildren="挂载 Provider"
-          unCheckedChildren="移除 Provider"
+          checkedChildren={t('hooks.api.mountProvider')}
+          unCheckedChildren={t('hooks.api.removeProvider')}
         />
         <Button
           size="small"
           onClick={() => setUnit((v) => (v.startsWith('rem') ? 'em（Provider 注入值）' : 'rem（Provider 注入值）'))}
         >
-          改写 Provider 的值
+          {t('hooks.api.rewriteProvider')}
         </Button>
       </div>
     </div>
@@ -79,6 +90,7 @@ function DeepOne() {
 }
 
 function UseContextDemo() {
+  const { t } = useI18n()
   const [name, setName] = useState('Ada')
   const value = useMemo(() => ({ name }), [name])
 
@@ -86,15 +98,15 @@ function UseContextDemo() {
     <div className="rh-demo">
       <div className="rh-row">
         <Button onClick={() => setName((n) => (n === 'Ada' ? 'Linus' : 'Ada'))}>
-          切换用户名
+          {t('hooks.api.switchUser')}
         </Button>
         <span className="rh-hint">
-          当前注入：<code>{name}</code>
+          {t('hooks.api.injectingNow')}<code>{name}</code>
         </span>
       </div>
 
       <UserContext value={value}>
-        <p className="rh-hint">下面三层嵌套，中间两层没有出现任何 props：</p>
+        <p className="rh-hint">{t('hooks.api.nestedNoProps')}</p>
         <div className="rh-nest">
           <DeepOne />
         </div>
@@ -105,18 +117,19 @@ function UseContextDemo() {
 
 /* ─────────────────────────── ③ useMemo ─────────────────────────── */
 
-const MemoConfigChild = memo(function MemoConfigChild({ config }) {
+const MemoConfigChild = memo(function MemoConfigChild({ config, t }) {
   return (
     <div className="rh-child">
       <span>
-        子组件收到 config.key = <code>{config.key}</code>
+        {t('hooks.api.memoChildReceived')} <code>{config.key}</code>
       </span>
-      <RenderBadge name="memo 子组件" />
+      <RenderBadge name={t('hooks.api.memoChildName')} />
     </div>
   )
 })
 
 function UseMemoDemo() {
+  const { t } = useI18n()
   const [tick, setTick] = useState(0)
   const [enabled, setEnabled] = useState(true)
 
@@ -132,15 +145,15 @@ function UseMemoDemo() {
         <Switch
           checked={enabled}
           onChange={setEnabled}
-          checkedChildren="启用 useMemo"
-          unCheckedChildren="关闭 useMemo"
+          checkedChildren={t('hooks.api.enableUseMemo')}
+          unCheckedChildren={t('hooks.api.disableUseMemo')}
         />
-        <Button size="small" onClick={() => setTick((t) => t + 1)}>
-          触发父组件重渲染（第 {tick + 1} 次）
+        <Button size="small" onClick={() => setTick((n) => n + 1)}>
+          {t('hooks.api.rerenderTick', { n: tick + 1 })}
         </Button>
       </div>
 
-      <MemoConfigChild config={config} />
+      <MemoConfigChild config={config} t={t} />
 
       <p className="rh-hint">
         子组件被 <code>memo</code> 包裹，只有 props 引用变化才会重渲染。
@@ -152,28 +165,29 @@ function UseMemoDemo() {
 
 /* ─────────────────────────── ④ useCallback ─────────────────────────── */
 
-const MemoActionChild = memo(function MemoActionChild({ onAction, note }) {
+const MemoActionChild = memo(function MemoActionChild({ onAction, note, t }) {
   return (
     <div className="rh-child">
       <Button size="small" onClick={onAction}>
-        点我（回调来自父组件）
+        {t('hooks.api.clickFromParent')}
       </Button>
       <span className="rh-hint">{note}</span>
-      <RenderBadge name="memo 子组件" />
+      <RenderBadge name={t('hooks.api.memoChildName')} />
     </div>
   )
 })
 
 function UseCallbackDemo() {
+  const { t } = useI18n()
   const [tick, setTick] = useState(0)
   const [enabled, setEnabled] = useState(true)
 
   const stableAction = useCallback(() => {
-    message.success('稳定回调：引用不变，子组件不会跟着白渲染')
-  }, [])
+    message.success(t('hooks.api.stableCallback'))
+  }, [t])
 
   const inlineAction = () => {
-    message.warning('内联回调：每次渲染都是新函数，memo 子组件必然重渲染')
+    message.warning(t('hooks.api.inlineCallback'))
   }
 
   const onAction = enabled ? stableAction : inlineAction
@@ -184,22 +198,22 @@ function UseCallbackDemo() {
         <Switch
           checked={enabled}
           onChange={setEnabled}
-          checkedChildren="启用 useCallback"
-          unCheckedChildren="关闭 useCallback"
+          checkedChildren={t('hooks.api.enableUseCallback')}
+          unCheckedChildren={t('hooks.api.disableUseCallback')}
         />
-        <Button size="small" onClick={() => setTick((t) => t + 1)}>
-          触发父组件重渲染（第 {tick + 1} 次）
+        <Button size="small" onClick={() => setTick((n) => n + 1)}>
+          {t('hooks.api.rerenderTick', { n: tick + 1 })}
         </Button>
       </div>
 
       <MemoActionChild
         onAction={onAction}
-        note={enabled ? 'useCallback 保证引用稳定' : '每次都是新函数'}
+        note={enabled ? t('hooks.api.callbackStable') : t('hooks.api.callbackInline')}
+        t={t}
       />
 
       <p className="rh-hint">
-        注意 <code>tick</code> 本身没有参与任何 props —— 它只是用来「逼父组件重渲染」的。
-        这正是 useCallback 的价值：父组件因为别的原因重渲染时，不要连累 memo 子组件。
+        {t('hooks.api.tickNote')}
       </p>
     </div>
   )
@@ -207,7 +221,11 @@ function UseCallbackDemo() {
 
 /* ─────────────────────────── 讲解骨架 ─────────────────────────── */
 
-function ApiSection({ index, name, purpose, usage, points, children }) {
+function ApiSection({ index, name, usage, children }) {
+  const { t } = useI18n()
+  const k = API_KEYS[name]
+  const purpose = t(k.purpose)
+  const points = t(k.points).split('；')
   return (
     <section className="rh-api">
       <header className="rh-api__head">
@@ -220,7 +238,7 @@ function ApiSection({ index, name, purpose, usage, points, children }) {
         </div>
       </header>
 
-      <CodeBlock title={`${name} 使用方法`} lang="jsx" code={usage} collapsible />
+      <CodeBlock title={`${name} ${t('hooks.api.usageTitle')}`} lang="jsx" code={usage} collapsible />
 
       <div className="rh-api__demo">{children}</div>
 
@@ -236,20 +254,19 @@ function ApiSection({ index, name, purpose, usage, points, children }) {
 }
 
 export default function ApiBasics() {
+  const { t } = useI18n()
   return (
     <div className="rh-basics">
       <div className="rh-case__intro">
-        <h2>四个 API 逐个拆解</h2>
+        <h2>{t('hooks.api.introTitle')}</h2>
         <p>
-          先看各自的「使用方法」，再动手验证结论。每个演示里的渲染计数都来自{' '}
-          <code>RenderBadge</code>（用 ref + effect 写入 DOM，不污染渲染结果）。
+          {t('hooks.api.introDesc')}
         </p>
       </div>
 
       <ApiSection
         index="01"
         name="createContext"
-        purpose="创建一个「数据通道」，让任意深度的子组件都能读同一份数据，而不必逐层传 props。"
         usage={`// 1. 模块顶层创建（❗不要在组件内部创建）
 export const TodoContext = createContext(null)
 
@@ -263,11 +280,6 @@ const { todos } = useContext(TodoContext)
 
 // 参数 defaultValue 只在「完全找不到 Provider」时生效
 const UnitContext = createContext('px')`}
-        points={[
-          'defaultValue 容易被误当成「初始值」——它只在没有 Provider 时兜底，不会被子组件 setState 修改。',
-          '必须在模块顶层创建；写在组件内部会每次渲染生成新 Context，消费组件被强制重挂载。',
-          'React 19 起可直接用 <Context value={...}>，不再强制写 <Context.Provider>。',
-        ]}
       >
         <CreateContextDemo />
       </ApiSection>
@@ -275,7 +287,6 @@ const UnitContext = createContext('px')`}
       <ApiSection
         index="02"
         name="useContext"
-        purpose="订阅某个 Context 的当前值。值一变，所有读取它的组件都会重渲染 —— 与组件嵌套多深无关。"
         usage={`const value = useContext(TodoContext)
 
 // 惯用封装：把「必须在 Provider 内使用」的校验收敛到一处
@@ -284,11 +295,6 @@ export function useTodos() {
   if (!ctx) throw new Error('useTodos 必须在 <TodoProvider> 内使用')
   return ctx
 }`}
-        points={[
-          'Context 值变化会穿透 memo：被 memo 包裹的消费组件照样重渲染。',
-          '因此高频变动的字段建议拆到单独的 Context，避免「改一个字段，全树重渲染」。',
-          'useContext 读取的组件也必须在 Provider 的子树内，否则只会拿到默认值。',
-        ]}
       >
         <UseContextDemo />
       </ApiSection>
@@ -296,7 +302,6 @@ export function useTodos() {
       <ApiSection
         index="03"
         name="useMemo"
-        purpose="缓存计算结果，依赖不变时复用上一次的值 —— 用来保住「引用」或跳过昂贵计算。"
         usage={`// ① 缓存对象/数组引用（保引用，配合 memo 子组件）
 const config = useMemo(() => ({ size: 12, color: 'blue' }), [])
 
@@ -308,11 +313,6 @@ const stats = useMemo(() => ({
 
 // 依赖数组写法与 useEffect 一致：空数组 = 只算一次
 const sorted = useMemo(() => [...list].sort(), [list])`}
-        points={[
-          'useMemo 不是「数据缓存」而是「引用兜底」：依赖变了，它照样重新计算。',
-          '只有配合 memo / 依赖比较，缓存的引用才有意义；否则计算结果一样会被丢弃。',
-          '不要什么都包 useMemo —— 计算本身很便宜时，包装成本可能更高。',
-        ]}
       >
         <UseMemoDemo />
       </ApiSection>
@@ -320,7 +320,6 @@ const sorted = useMemo(() => [...list].sort(), [list])`}
       <ApiSection
         index="04"
         name="useCallback"
-        purpose="缓存函数本身，让多次渲染之间拿到同一个函数引用，避免 memo 子组件被无谓刷新。"
         usage={`// 依赖为空 → 函数引用在整个生命周期内恒定
 const handleAdd = useCallback((text) => {
   setTodos((prev) => [{ id: nextId(), text }, ...prev])
@@ -332,11 +331,6 @@ const handleSearch = useCallback(() => {
 }, [keyword])
 
 // 等价写法：useCallback(fn, deps) === useMemo(() => fn, deps)`}
-        points={[
-          'useCallback(fn, deps) 等价于 useMemo(() => fn, deps)，前者更语义化。',
-          '回调里用到的外部变量必须放进依赖数组，否则会拿到陈旧闭包值。',
-          'setState 的函数式写法 setX(prev => …) 可以让你把依赖写成空数组，是最常用的组合。',
-        ]}
       >
         <UseCallbackDemo />
       </ApiSection>

@@ -1,23 +1,25 @@
 import { memo } from 'react'
+import { useI18n } from '../../../i18n/index.js'
 
 /** 执行统计条：成功/失败动作数、语音次数、成功率 */
 function AgentStatsBar({ stats, onClear }) {
+    const { t } = useI18n()
     return (
         <div className="agent-stats-bar">
             <span className="agent-stat-chip total">
-                执行 <strong>{stats.total}</strong> 次
+                {t('agent.stats.execPre')}<strong>{stats.total}</strong>{t('agent.stats.execPost')}
             </span>
             <span className="agent-stat-chip success">
-                成功 <strong>{stats.successActions}</strong>
+                {t('agent.stats.successPre')}<strong>{stats.successActions}</strong>
             </span>
             {stats.failActions > 0 && (
                 <span className="agent-stat-chip fail">
-                    失败 <strong>{stats.failActions}</strong>
+                    {t('agent.stats.failPre')}<strong>{stats.failActions}</strong>
                 </span>
             )}
             {stats.voiceCount > 0 && (
                 <span className="agent-stat-chip voice">
-                    语音 <strong>{stats.voiceCount}</strong>
+                    {t('agent.stats.voicePre')}<strong>{stats.voiceCount}</strong>
                 </span>
             )}
             {stats.successRate != null && (
@@ -28,13 +30,13 @@ function AgentStatsBar({ stats, onClear }) {
                             stats.successRate >= 90 ? '#ecfdf5' : stats.successRate >= 60 ? '#fffbeb' : '#fef2f2',
                     }}
                 >
-                    成功率 <strong>{stats.successRate}%</strong>
+                    {t('agent.stats.ratePre')}<strong>{stats.successRate}{t('agent.stats.ratePost')}</strong>
                 </span>
             )}
             <span className="agent-stat-spacer" />
             {stats.total > 0 && (
-                <button type="button" className="agent-clear-btn" onClick={onClear} title="清空历史">
-                    🗑 清空
+                <button type="button" className="agent-clear-btn" onClick={onClear} title={t('agent.stats.clearTitle')}>
+                    {t('agent.stats.clear')}
                 </button>
             )}
         </div>

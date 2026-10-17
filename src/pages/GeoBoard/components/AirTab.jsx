@@ -19,7 +19,8 @@ import { useI18n } from '../../../i18n/index.js'
 
 /** AQI 数值 → 带底色的胶囊（颜色与等级名都来自词典，不在组件里重复定义阈值） */
 function AqiPill({ v }) {
-  const b = aqiLevel(v)
+  const { lang } = useI18n()
+  const b = aqiLevel(v, lang)
   return (
     <Tooltip title={b.desc || b.zh}>
       <span className="geo-air-pill" style={{ background: b.color }}>
@@ -42,7 +43,7 @@ function Cell({ v, digits = 1, unit }) {
 }
 
 export default function AirTab({ air, airData }) {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   const items = airData?.items || []
   const worst = items[0]
   const avgPm25 = (() => {
@@ -71,7 +72,7 @@ export default function AirTab({ air, airData }) {
       dataIndex: 'uv',
       width: 110,
       render: (v) => {
-        const b = uvLevel(v)
+        const b = uvLevel(v, lang)
         return (
           <Tooltip title={b.advice || b.desc || b.zh}>
             <span style={{ color: b.color, fontWeight: 600 }}>

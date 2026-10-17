@@ -25,6 +25,7 @@ import TrinityOrbit from './components/TrinityOrbit.jsx'
 import DataSummary from './components/DataSummary.jsx'
 import GlossaryHub from './components/GlossaryHub.jsx'
 import ModuleView from './components/ModuleView.jsx'
+import { useI18n } from '../../i18n/index.js'
 import './components/TrinityOrbit.scss'
 import './components/DataSummary.scss'
 import './index.scss'
@@ -180,6 +181,7 @@ const BOARD_COLOR = { astro: '#722ed1', geo: '#13c2c2', ocean: '#1677ff' }
 /* ---------- 页面 ---------- */
 
 export default function TimelineBoard() {
+  const { t } = useI18n()
   const [theme, setTheme] = useState(readTheme)
   const astro = useAstroData()
   const geo = useGeoData()
@@ -288,7 +290,7 @@ export default function TimelineBoard() {
   /** 表格列定义（三块共用） */
   const columns = [
     {
-      title: '数据源',
+      title: t('timeline.colSource'),
       dataIndex: 'name',
       render: (_, r) => (
         <Tooltip title={r.desc}>
@@ -296,9 +298,9 @@ export default function TimelineBoard() {
         </Tooltip>
       ),
     },
-    { title: '轮换周期', dataIndex: 'cycle', width: 96, render: (v) => fmtCycle(v) },
+    { title: t('timeline.colCycle'), dataIndex: 'cycle', width: 96, render: (v) => fmtCycle(v) },
     {
-      title: '抓取时刻',
+      title: t('timeline.colFetched'),
       key: 'fetched',
       width: 210,
       render: (_, r) =>
@@ -312,7 +314,7 @@ export default function TimelineBoard() {
         ),
     },
     {
-      title: '数据时刻',
+      title: t('timeline.colMoment'),
       key: 'moment',
       width: 250,
       render: (_, r) => {
@@ -322,18 +324,18 @@ export default function TimelineBoard() {
       },
     },
     {
-      title: '状态',
+      title: t('timeline.colStatus'),
       key: 'status',
       width: 90,
       render: (_, r) => {
-        if (r.error) return <Tag color="red">出错</Tag>
-        if (r.data?.stale) return <Tag color="orange">过期</Tag>
-        if (!r.data) return <Tag color="processing">{r.loading ? '等待' : '无数据'}</Tag>
-        return <Tag color="green">正常</Tag>
+        if (r.error) return <Tag color="red">{t('timeline.statusError')}</Tag>
+        if (r.data?.stale) return <Tag color="orange">{t('timeline.statusStale')}</Tag>
+        if (!r.data) return <Tag color="processing">{r.loading ? t('timeline.statusWaiting') : t('timeline.statusNone')}</Tag>
+        return <Tag color="green">{t('timeline.statusNormal')}</Tag>
       },
     },
     {
-      title: '操作',
+      title: t('timeline.colOp'),
       key: 'op',
       width: 70,
       render: (_, r) => (
@@ -348,13 +350,13 @@ export default function TimelineBoard() {
         {/* 顶部：标题 + 主题切换 + 一键刷新 */}
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
           <div style={{ flex: 1 }}>
-            <h1 style={{ margin: 0, fontSize: 'clamp(22px, 3vw, 30px)' }}>🕰️ 时空档案</h1>
+            <h1 style={{ margin: 0, fontSize: 'clamp(22px, 3vw, 30px)' }}>{t('timeline.title')}</h1>
             <p style={{ margin: '6px 0 0', opacity: 0.72 }}>
-              深空 · 地球 · 海洋三大看板的数据时间档案与名词库——三位一体轨道动画、数据现状总结、实时新鲜度，以及全部名词释义统一检索。
+              {t('timeline.subtitle')}
             </p>
           </div>
           <Button icon={<ReloadOutlined />} onClick={reloadAll} loading={anyLoading}>
-            全部刷新
+            {t('timeline.refreshAll')}
           </Button>
           <Button
             icon={theme === 'dark' ? <BulbOutlined /> : <MoonOutlined />}
@@ -369,7 +371,7 @@ export default function TimelineBoard() {
           items={[
             {
               key: 'overview',
-              label: '📊 概览',
+              label: t('timeline.tabOverview'),
               children: (
                 <>
                   {/* 三位一体动画：天 · 地 · 海 绕核心旋转 */}
@@ -381,7 +383,7 @@ export default function TimelineBoard() {
                       theme={theme}
                     />
                     <p style={{ textAlign: 'center', margin: '4px 0 0', fontSize: 12, opacity: 0.55 }}>
-                      天（深空）· 地（地球）· 海（海洋）—— 三位一体，点击任一行星进入对应看板
+                      {t('timeline.orbitCaption')}
                     </p>
                   </Card>
 
@@ -400,17 +402,17 @@ export default function TimelineBoard() {
                   <Card size="small" style={{ marginTop: 16 }}>
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px 48px' }}>
                       <Statistic
-                        title="本地时间"
+                        title={t('timeline.clockLocal')}
                         valueStyle={{ fontVariantNumeric: 'tabular-nums', fontSize: 'clamp(24px, 3vw, 34px)' }}
                         value={fmtClock(now.getTime())}
                       />
                       <Statistic
-                        title="UTC"
+                        title={t('timeline.clockUtc')}
                         valueStyle={{ fontVariantNumeric: 'tabular-nums', fontSize: 'clamp(24px, 3vw, 34px)' }}
                         value={`${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}`}
                       />
                       <Statistic
-                        title="儒略日 JD"
+                        title={t('timeline.clockJulian')}
                         valueStyle={{ fontVariantNumeric: 'tabular-nums', fontSize: 'clamp(24px, 3vw, 34px)' }}
                         value={(now.getTime() / 86400000 + 2440587.5).toFixed(5)}
                       />
@@ -419,18 +421,18 @@ export default function TimelineBoard() {
 
                   {/* 健康度概览 */}
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12, marginTop: 16 }}>
-                    <Card size="small"><Statistic title="数据源总数" value={rows.length} /></Card>
-                    <Card size="small"><Statistic title="正常" value={totalOk} valueStyle={{ color: '#52c41a' }} /></Card>
-                    <Card size="small"><Statistic title="出错" value={totalBad} valueStyle={{ color: totalBad ? '#ff4d4f' : undefined }} /></Card>
-                    <Card size="small"><Statistic title="等待中" value={totalWait} /></Card>
+                    <Card size="small"><Statistic title={t('timeline.statTotalSrc')} value={rows.length} /></Card>
+                    <Card size="small"><Statistic title={t('timeline.statOk')} value={totalOk} valueStyle={{ color: '#52c41a' }} /></Card>
+                    <Card size="small"><Statistic title={t('timeline.statError')} value={totalBad} valueStyle={{ color: totalBad ? '#ff4d4f' : undefined }} /></Card>
+                    <Card size="small"><Statistic title={t('timeline.statWaiting')} value={totalWait} /></Card>
                     <Card size="small">
                       <Statistic
-                        title="最新鲜"
-                        value={stats.freshest == null ? '—' : stats.freshest < 1000 ? '刚刚' : fmtAgo(stats.freshest, now)}
+                        title={t('timeline.statFreshest')}
+                        value={stats.freshest == null ? '—' : stats.freshest < 1000 ? t('timeline.justNow') : fmtAgo(stats.freshest, now)}
                       />
                     </Card>
                     <Card size="small">
-                      <Statistic title="最陈旧" value={stats.oldest == null ? '—' : fmtAgo(stats.oldest, now)} />
+                      <Statistic title={t('timeline.statOldest')} value={stats.oldest == null ? '—' : fmtAgo(stats.oldest, now)} />
                     </Card>
                   </div>
                 </>
@@ -438,7 +440,7 @@ export default function TimelineBoard() {
             },
             {
               key: 'sources',
-              label: '🗂️ 数据档案',
+              label: t('timeline.tabSources'),
               children: (
                 <Tabs
                   defaultActiveKey={BOARDS[0].key}
@@ -448,7 +450,7 @@ export default function TimelineBoard() {
                     children: (
                       <div style={{ marginTop: 12 }}>
                         <p style={{ margin: '0 0 10px', fontSize: 13, opacity: 0.65 }}>
-                          {b.title} · 共 {b.sources.length} 个数据源 · 轮换周期与实时新鲜度
+                          {b.title} · {t('timeline.boardSummary', { count: b.sources.length })}
                         </p>
                         <Table
                           size="small"
@@ -465,21 +467,19 @@ export default function TimelineBoard() {
             },
             {
               key: 'glossary',
-              label: '📖 名词库',
+              label: t('timeline.tabGlossary'),
               children: <GlossaryHub theme={theme} />,
             },
             {
               key: 'modules',
-              label: '🧩 模块视图',
+              label: t('timeline.tabModules'),
               children: <ModuleView />,
             },
           ]}
         />
 
         <footer style={{ marginTop: 36, fontSize: 12, opacity: 0.55 }}>
-          「抓取时刻」是本站代理最近一次成功拉取该源的时间（dev server 内存缓存到期后自动重抓）；
-          「数据时刻」是载荷自身声明的时间字段，因源而异（发布日 / 采样时刻 / 观测时刻），
-          没有自然时间字段的源（如轨道根数、统计档案）以「—」表示。全部数据来自公开免费接口，仅用于科普展示。
+          {t('timeline.footer')}
         </footer>
       </div>
     </ConfigProvider>

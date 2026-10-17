@@ -1,0 +1,65 @@
+{
+  "dict": {
+    "what": "What it is",
+    "how": "How to read",
+    "soWhat": "So what",
+    "unit": "Unit",
+    "explain": "Explain “{name}”"
+  },
+  "related": {
+    "title": "Related data",
+    "subtitle": "Read these modules side by side — expand a card for the background notes",
+    "monitor": "Three-board monitoring",
+    "watching": "Watching: {list}",
+    "selfHealth": "This board: {ok}/{total} feeds healthy",
+    "goBoard": "Go to the {name} board",
+    "goTab": "Go to the {board} board · {tab}",
+    "detail": "Background notes",
+    "detailClose": "Hide notes",
+    "termCount": "{n} terms",
+    "termsHead": "Related terms",
+    "dictTip": "Full definition and search in the data dictionary",
+    "dictGo": "Dictionary →",
+    "scale": "Scale",
+    "how": "How to read"
+  },
+  "keyTerm": {
+    "tag": "Key term",
+    "scale": "Scale",
+    "how": "How to read",
+    "foot": "Full definition and search: side panel “Time archive” → Data dictionary"
+  },
+  "gscale": {
+    "G0": {
+      "label": "Quiet",
+      "desc": "Kp < 4. Geomagnetic activity is quiet, there is no space weather impact, and satellites need no protective action."
+    },
+    "G1": {
+      "label": "Minor",
+      "desc": "Kp 4. Weak magnetic disturbance; aurora may show at high latitudes, with virtually no effect on satellites."
+    },
+    "G2": {
+      "label": "Light-moderate",
+      "desc": "Kp 5. Aurora spreads equatorward, satellites may need attitude correction, grid transformers see occasional induced heating."
+    },
+    "G3": {
+      "label": "Moderate",
+      "desc": "Kp 6. Surface charging on low-orbit satellites intensifies, attitude disturbance can exceed limits and needs active intervention."
+    },
+    "G4": {
+      "label": "Strong",
+      "desc": "Kp 7. Satellite tracking becomes difficult, some low-orbit satellites may be lost, power grid and communications show anomalies."
+    },
+    "G5": {
+      "label": "Severe",
+      "desc": "Kp 8. GPS accuracy drops sharply or service is unavailable, astronauts must shelter inside the module."
+    },
+    "G6p": {
+      "label": "Extreme",
+      "desc": "Kp 9. Rare in recorded history; GPS may be lost for a long time, power grids and communications are under threat."
+    }
+  },
+  "ui": {
+    "moonAria": "Moon phase diagram"
+  }
+}

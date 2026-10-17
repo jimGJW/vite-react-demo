@@ -24,8 +24,8 @@ import {
 
 /** 航空色码 Tag：色即等级（绿/黄/橙/红），悬停给完整定义 */
 function ColorTag({ code }) {
-  const { t } = useI18n()
-  const info = zhAviationCode(code)
+  const { t, lang } = useI18n()
+  const info = zhAviationCode(code, lang)
   return (
     <Tooltip title={info?.desc || t('geo.volcano.unknownAviation')}>
       <Tag color={info?.color} bordered={false}>
@@ -37,8 +37,8 @@ function ColorTag({ code }) {
 
 /** 地面警报级 Tag */
 function AlertTag({ level }) {
-  const { t } = useI18n()
-  const info = zhVolcanoAlert(level)
+  const { t, lang } = useI18n()
+  const info = zhVolcanoAlert(level, lang)
   return (
     <Tooltip title={info?.desc || t('geo.volcano.unknownGround')}>
       <Tag color={info?.color} bordered={false}>
@@ -50,8 +50,8 @@ function AlertTag({ level }) {
 
 /** 海啸公告等级 Tag：等级的中译与颜色一律来自词典，服务端只给 Category 原文 */
 function TsunamiTag({ category }) {
-  const { t } = useI18n()
-  const info = zhTsunamiCategory(category)
+  const { t, lang } = useI18n()
+  const info = zhTsunamiCategory(category, lang)
   return (
     <Tooltip title={info?.desc || t('geo.volcano.unknownTsu')}>
       <Tag color={info?.color} bordered={false}>
@@ -76,12 +76,12 @@ function StatRow({ items }) {
 }
 
 export default function VolcanoTab({ volcanoes, volcanoData, tsunami, tsunamiData }) {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   const volList = volcanoData?.volcanoes || []
   // 服务端只给 Category 原文与发布时间，等级的中译/rank/颜色全部由词典补齐后再排序。
   // 这样「哪个更危险」只有一处定义（glossary.js），不会前后端各说一套。
   const tsuEvents = (tsunamiData?.events || [])
-    .map((e) => ({ ...e, level: zhTsunamiCategory(e.category) }))
+    .map((e) => ({ ...e, level: zhTsunamiCategory(e.category, lang) }))
     .sort((a, b) => (b.level?.rank ?? 0) - (a.level?.rank ?? 0) || (b.updatedUnix || 0) - (a.updatedUnix || 0))
   // 只有「注意」及以上才算真威胁；信息声明是「已排除」，不该计入
   const threatCount = tsuEvents.filter((e) => (e.level?.rank ?? 0) >= 2).length
@@ -110,9 +110,9 @@ export default function VolcanoTab({ volcanoes, volcanoData, tsunami, tsunamiDat
                   {
                     label: t('geo.volcano.statHighest'),
                     value: volcanoData.highest
-                      ? `${volcanoData.highest.cn || volcanoData.highest.name} · ${zhAviationCode(volcanoData.highest.colorCode).zh}`
+                      ? `${volcanoData.highest.cn || volcanoData.highest.name} · ${zhAviationCode(volcanoData.highest.colorCode, lang).zh}`
                       : '—',
-                    tone: volcanoData.highest ? zhAviationCode(volcanoData.highest.colorCode).color : undefined,
+                    tone: volcanoData.highest ? zhAviationCode(volcanoData.highest.colorCode, lang).color : undefined,
                   },
                   {
                     label: t('geo.volcano.statUpdated'),
@@ -262,7 +262,7 @@ export default function VolcanoTab({ volcanoes, volcanoData, tsunami, tsunamiDat
           {Object.entries(TSUNAMI_CATEGORIES).map(([k, v]) => (
             <span key={k}>
               <span className="geo-alert-legend__dot" style={{ background: v.color }} />
-              {v.zh}
+              {zhTsunamiCategory(k, lang).zh}
               <span className="geo-alert-legend__en">{k}</span>
             </span>
           ))}
@@ -270,14 +270,14 @@ export default function VolcanoTab({ volcanoes, volcanoData, tsunami, tsunamiDat
           {Object.entries(AVIATION_CODES).map(([k, v]) => (
             <span key={k}>
               <span className="geo-alert-legend__dot" style={{ background: v.color }} />
-              {t('geo.volcano.legendAviation')} {v.zh}
+              {t('geo.volcano.legendAviation')} {zhAviationCode(k, lang).zh}
             </span>
           ))}
           <span className="geo-alert-legend__sep" />
           {Object.entries(VOLCANO_ALERTS).map(([k, v]) => (
             <span key={k}>
               <span className="geo-alert-legend__dot" style={{ background: v.color }} />
-              {t('geo.volcano.legendGround')} {v.zh}
+              {t('geo.volcano.legendGround')} {zhVolcanoAlert(k, lang).zh}
             </span>
           ))}
         </div>

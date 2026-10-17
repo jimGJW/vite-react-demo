@@ -1,14 +1,16 @@
 import { groupBy, unique, sortBy, arrayToObject, flatten, deepMerge, pick, omit } from '../../../components/Utils/index.js'
 import DemoCard from './DemoCard.jsx'
 import { SAMPLE_ROWS } from './sampleData.js'
+import { useI18n } from '../../../i18n/index.js'
 
 /** 数组与对象：分组 / 去重 / 排序 / 建索引 / 扁平化 / 合并 / 裁剪 */
 export default function ArrayDemos() {
+  const { t } = useI18n()
   return (
     <>
       <DemoCard
-        title="groupBy / unique / sortBy"
-        desc="按字段分组、去重、排序；均返回新数组，不改原数据。"
+        title={t('utilsdemo.arrGroupTitle')}
+        desc={t('utilsdemo.arrGroupDesc')}
         usage="groupBy(rows, 'group')  sortBy(rows, 'value', 'desc')"
       >
         <div className="utils-demo__out">分组：{Object.keys(groupBy(SAMPLE_ROWS, 'group')).join(' / ')}</div>
@@ -21,8 +23,8 @@ export default function ArrayDemos() {
       </DemoCard>
 
       <DemoCard
-        title="arrayToObject · 建索引"
-        desc="数组按 key 转成对象，O(1) 查找。"
+        title={t('utilsdemo.arrIndexTitle')}
+        desc={t('utilsdemo.arrIndexDesc')}
         usage="arrayToObject(list, 'id')"
       >
         <pre className="utils-demo__json">
@@ -31,8 +33,8 @@ export default function ArrayDemos() {
       </DemoCard>
 
       <DemoCard
-        title="flatten · 扁平化"
-        desc="按深度展开嵌套数组，Infinity 全展开。"
+        title={t('utilsdemo.arrFlattenTitle')}
+        desc={t('utilsdemo.arrFlattenDesc')}
         usage="flatten([1,[2,[3,[4]]]], 2)"
       >
         <div className="utils-demo__out">{JSON.stringify(flatten([1, [2, [3, [4]]]], 2))}</div>
@@ -40,8 +42,8 @@ export default function ArrayDemos() {
       </DemoCard>
 
       <DemoCard
-        title="deepMerge / pick / omit"
-        desc="递归合并与字段裁剪，均不修改入参。"
+        title={t('utilsdemo.arrMergeTitle')}
+        desc={t('utilsdemo.arrMergeDesc')}
         usage="deepMerge(a, b)   pick(obj, ['x'])   omit(obj, ['y'])"
       >
         <div className="utils-demo__out">

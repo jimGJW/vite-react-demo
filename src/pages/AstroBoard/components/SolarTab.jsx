@@ -6,14 +6,14 @@ import { Table, Tag, Tooltip } from 'antd'
 import { AlertOutlined, CompassOutlined } from '@ant-design/icons'
 import { KpiHint, Panel } from './ui.jsx'
 import { AU_LIGHT_MINUTES } from '../../../lib/astro/orbital.js'
-import { KPI_DEFS } from '../../../lib/astro/glossary'
+import { getAstroKpi } from '../../../lib/astro/glossary'
 import SolarSystemView from '../../../components/AstroBoard/SolarSystemView.jsx'
 import { useI18n } from '../../../i18n/index.js'
 
 export default function SolarTab({
   stations, selected, setSelected, neo, neoData, planets,
 }) {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   return (
     <>
               <div className="astro-tab-content">
@@ -108,7 +108,7 @@ export default function SolarTab({
                 <span>{t('astro.neoVelocity', { v: neoData.nearest.velocityKmh.toLocaleString() })}</span>
                 <span>{t('astro.neoApproachTime', { time: neoData.nearest.date.replace('T', ' ').slice(0, 16) })}</span>
                 {neoData.nearest.hazardous && (
-                  <Tooltip title={KPI_DEFS.hz.what}>
+                  <Tooltip title={getAstroKpi('hz', lang).what}>
                     <span className="astro-neo-hazard">{t('astro.neoHazardLabel')}</span>
                   </Tooltip>
                 )}

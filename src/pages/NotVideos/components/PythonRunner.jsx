@@ -1,12 +1,13 @@
 import { memo, useCallback, useEffect, useState } from 'react'
+import { useI18n } from '../../../i18n/index.js'
 import { fmtSize, splitArgs } from './notVideoUtils.js'
 
 const TIMEOUT_OPTIONS = [
-  { v: 60, label: '60 秒' },
-  { v: 180, label: '3 分钟' },
-  { v: 300, label: '5 分钟' },
-  { v: 600, label: '10 分钟' },
-  { v: 900, label: '15 分钟' },
+  { v: 60, label: '60 秒', labelKey: 'notvideos.to60' },
+  { v: 180, label: '3 分钟', labelKey: 'notvideos.to180' },
+  { v: 300, label: '5 分钟', labelKey: 'notvideos.to300' },
+  { v: 600, label: '10 分钟', labelKey: 'notvideos.to600' },
+  { v: 900, label: '15 分钟', labelKey: 'notvideos.to900' },
 ]
 const POLL_MS = 800
 
@@ -25,6 +26,7 @@ const POLL_MS = 800
  * 4. **附加参数**：效果脚本普遍支持 --frames 之类，填 `--frames 30` 先快速试跑，再跑全量。
  */
 function PythonRunnerImpl({ pythons, dir, onRefresh }) {
+  const { t } = useI18n()
   /* 解释器探测结果带上 dir 归属：渲染时发现不属于当前目录就当空处理，
      不必在 effect 里同步 setState 清一场（那会引发连环渲染） */
   const [probe, setProbe] = useState({ dir: '', interpreters: [], defaultBin: '' })
@@ -46,7 +48,7 @@ function PythonRunnerImpl({ pythons, dir, onRefresh }) {
       .then((d) => {
         if (stopped) return
         if (!d.ok) {
-          setErr(d.error || '解释器探测失败')
+          setErr(d.error || t('notvideos.errProbe'))
           return
         }
         setProbe({ dir, interpreters: d.interpreters || [], defaultBin: d.defaultBin || '' })
@@ -57,7 +59,7 @@ function PythonRunnerImpl({ pythons, dir, onRefresh }) {
     return () => {
       stopped = true
     }
-  }, [dir])
+  }, [dir, t])
 
   /* ---------- 运行：POST 起任务，拿 jobId 后转入轮询 ---------- */
   const run = useCallback(
@@ -97,7 +99,7 @@ function PythonRunnerImpl({ pythons, dir, onRefresh }) {
         const res = await fetch(`/api/run-python/status?jobId=${encodeURIComponent(jobId)}`, { cache: 'no-store' })
         const d = await res.json()
         if (stopped) return
-        if (!d.ok) throw new Error(d.error || '状态读取失败')
+        if (!d.ok) throw new Error(d.error || t('notvideos.errStatus'))
         setStatus(d)
         if (d.running) {
           timer = window.setTimeout(tick, POLL_MS)
@@ -117,7 +119,7 @@ function PythonRunnerImpl({ pythons, dir, onRefresh }) {
       stopped = true
       window.clearTimeout(timer)
     }
-  }, [jobId, onRefresh])
+  }, [jobId, onRefresh, t])
 
   const cancel = useCallback(async () => {
     if (!jobId) return
@@ -139,38 +141,38 @@ function PythonRunnerImpl({ pythons, dir, onRefresh }) {
   return (
     <section className="notvideos__section">
       <div className="notvideos__secHead">
-        <h3>🐍 Python 效果</h3>
+        <h3>🐍 {t('notvideos.pyTitle')}</h3>
         <span className="notvideos__secCount">{pythons.length}</span>
       </div>
 
       {/* ---------- 运行参数：解释器 + 附加参数 + 超时，对每次运行都生效 ---------- */}
       <div className="notvideos__pyForm">
         <label className="notvideos__pyField">
-          <span>解释器</span>
+          <span>{t('notvideos.lblInterpreter')}</span>
           <select className="notvideos__select" value={py} onChange={(e) => setPyChoice(e.target.value)} disabled={!interpreters.length}>
             {interpreters.map((p) => (
               <option key={p.bin} value={p.bin}>
                 {p.bin} · {p.version} · {p.hasNumpy ? '✓ numpy' : '✗ 缺 numpy'}（{p.source}）
               </option>
             ))}
-            {!interpreters.length ? <option value="">探测中…</option> : null}
+            {!interpreters.length ? <option value="">{t('notvideos.probing')}</option> : null}
           </select>
         </label>
         <label className="notvideos__pyField notvideos__pyField--args">
-          <span>附加参数</span>
+          <span>{t('notvideos.lblArgs')}</span>
           <input
             className="notvideos__input"
             value={argsText}
-            placeholder="如 --frames 30（先少帧试跑）；留空用脚本默认值"
+            placeholder={t('notvideos.phArgs')}
             onChange={(e) => setArgsText(e.target.value)}
           />
         </label>
         <label className="notvideos__pyField">
-          <span>超时</span>
+          <span>{t('notvideos.lblTimeout')}</span>
           <select className="notvideos__select" value={timeoutSec} onChange={(e) => setTimeoutSec(Number(e.target.value))}>
             {TIMEOUT_OPTIONS.map((o) => (
               <option key={o.v} value={o.v}>
-                {o.label}
+                {o.labelKey ? t(o.labelKey) : o.label}
               </option>
             ))}
           </select>
@@ -178,13 +180,11 @@ function PythonRunnerImpl({ pythons, dir, onRefresh }) {
       </div>
       {noNumpy ? (
         <div className="notvideos__err">
-          这些解释器都没装 numpy / Pillow，跑不了这类效果工程。请先执行
-          <code> pip install -r requirements.txt </code>
-          （或在工程目录建 .venv 后重试）
+          {t('notvideos.noNumpy')}
         </div>
       ) : null}
       {pyDefault && py && py !== pyDefault ? (
-        <div className="notvideos__tip">当前解释器非默认推荐（{pyDefault}），若报缺模块请切回推荐项。</div>
+        <div className="notvideos__tip">{t('notvideos.nonDefaultPy', { py: pyDefault })}</div>
       ) : null}
 
       <div className="notvideos__pyList">
@@ -195,7 +195,7 @@ function PythonRunnerImpl({ pythons, dir, onRefresh }) {
             </span>
             <span className="notvideos__itemSub">{fmtSize(p.size)}</span>
             <button type="button" className="notvideos__btn" disabled={running} onClick={() => run(p.rel)}>
-              {running && status && status.file === p.rel ? '运行中…' : '▶ 运行'}
+              {running && status && status.file === p.rel ? t('notvideos.running') : t('notvideos.run')}
             </button>
           </div>
         ))}
@@ -209,22 +209,22 @@ function PythonRunnerImpl({ pythons, dir, onRefresh }) {
             <span className="notvideos__pyCmd" title={status.cmd}>
               $ {status.cmd}
             </span>
-            {status.module ? <span className="notvideos__tag">模块方式 -m</span> : null}
+            {status.module ? <span className="notvideos__tag">{t('notvideos.moduleMode')}</span> : null}
           </div>
           <div className="notvideos__pyMeta">
             <span>
-              状态 <b>{status.running ? `运行中 ${Math.round(status.durationMs / 1000)}s` : `已结束 ${Math.round(status.durationMs / 1000)}s`}</b>
+              {t('notvideos.lblStatus')} <b>{status.running ? t('notvideos.statusRunning', { s: Math.round(status.durationMs / 1000) }) : t('notvideos.statusEnded', { s: Math.round(status.durationMs / 1000) })}</b>
             </span>
             <span>
-              退出码 <b>{status.exitCode ?? '—'}</b>
+              {t('notvideos.lblExit')} <b>{status.exitCode ?? '—'}</b>
             </span>
             <span>
-              解释器 <b>{status.python}</b>
+              {t('notvideos.lblInterpreter')} <b>{status.python}</b>
             </span>
-            {status.killed ? <span className="notvideos__err">已超时终止</span> : null}
+            {status.killed ? <span className="notvideos__err">{t('notvideos.killed')}</span> : null}
             {status.running ? (
               <button type="button" className="notvideos__btn notvideos__btn--stop" onClick={cancel}>
-                ■ 停止
+                {t('notvideos.stop')}
               </button>
             ) : null}
           </div>
@@ -232,7 +232,7 @@ function PythonRunnerImpl({ pythons, dir, onRefresh }) {
           {status.error ? <pre className="notvideos__pyErr">{status.error}</pre> : null}
           {status.artifacts && status.artifacts.length ? (
             <div className="notvideos__artifacts">
-              <div className="notvideos__pyMeta">本次新生成 {status.artifacts.length} 个效果产物：</div>
+              <div className="notvideos__pyMeta">{t('notvideos.artifacts', { n: status.artifacts.length })}</div>
               <div className="notvideos__artifactGrid">
                 {status.artifacts.map((a) =>
                   a.kind === 'image' ? (

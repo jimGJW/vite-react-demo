@@ -7,6 +7,7 @@ import {
 } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
 import { Card, Segmented } from 'antd'
+import { useI18n } from '../../../i18n/index.js'
 
 echarts.use([
   BarChart, LineChart, PieChart, RadarChart, ScatterChart,
@@ -58,6 +59,7 @@ export function useChart(option) {
 
 /* —— 1. 柱状图 —— */
 export function BarChartCard() {
+  const { t } = useI18n()
   const [stack, setStack] = useState(false)
   const option = useMemo(() => ({
     tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
@@ -75,8 +77,8 @@ export function BarChartCard() {
   const ref = useChart(option)
   return (
     <Card
-      title="柱状图 · 季度营收"
-      extra={<Segmented options={[{ label: '分组', value: false }, { label: '堆叠', value: true }]} value={stack} onChange={setStack} />}
+      title={t('echarts.barTitle')}
+      extra={<Segmented options={[{ label: t('echarts.barSegGroup'), value: false }, { label: t('echarts.barSegStack'), value: true }]} value={stack} onChange={setStack} />}
     >
       <div ref={ref} className="echart-box" />
     </Card>
@@ -85,6 +87,7 @@ export function BarChartCard() {
 
 /* —— 2. 折线图 —— */
 export function LineChartCard() {
+  const { t } = useI18n()
   const [smooth, setSmooth] = useState(true)
   const option = useMemo(() => ({
     tooltip: { trigger: 'axis' },
@@ -101,8 +104,8 @@ export function LineChartCard() {
   const ref = useChart(option)
   return (
     <Card
-      title="折线图 · 周流量趋势"
-      extra={<Segmented options={[{ label: '平滑', value: true }, { label: '折线', value: false }]} value={smooth} onChange={setSmooth} />}
+      title={t('echarts.lineTitle')}
+      extra={<Segmented options={[{ label: t('echarts.lineSegSmooth'), value: true }, { label: t('echarts.lineSegLine'), value: false }]} value={smooth} onChange={setSmooth} />}
     >
       <div ref={ref} className="echart-box" />
     </Card>
@@ -111,6 +114,7 @@ export function LineChartCard() {
 
 /* —— 3. 饼图 —— */
 export function PieChartCard() {
+  const { t } = useI18n()
   const [ring, setRing] = useState(true)
   const option = useMemo(() => ({
     tooltip: { trigger: 'item', formatter: '{a} <br/>{b}: {c} ({d}%)' },
@@ -133,8 +137,8 @@ export function PieChartCard() {
   const ref = useChart(option)
   return (
     <Card
-      title="饼图 · 访问来源占比"
-      extra={<Segmented options={[{ label: '环形', value: true }, { label: '饼图', value: false }]} value={ring} onChange={setRing} />}
+      title={t('echarts.pieTitle')}
+      extra={<Segmented options={[{ label: t('echarts.pieSegRing'), value: true }, { label: t('echarts.pieSegPie'), value: false }]} value={ring} onChange={setRing} />}
     >
       <div ref={ref} className="echart-box" />
     </Card>
@@ -143,6 +147,7 @@ export function PieChartCard() {
 
 /* —— 4. 雷达图 —— */
 export function RadarChartCard() {
+  const { t } = useI18n()
   const option = useMemo(() => ({
     tooltip: {},
     legend: { data: ['预算分配', '实际开销'], top: 0 },
@@ -167,7 +172,7 @@ export function RadarChartCard() {
 
   const ref = useChart(option)
   return (
-    <Card title="雷达图 · 预算 vs 开销">
+    <Card title={t('echarts.radarTitle')}>
       <div ref={ref} className="echart-box" />
     </Card>
   )
@@ -175,6 +180,7 @@ export function RadarChartCard() {
 
 /* —— 5. 散点图 —— */
 export function ScatterChartCard() {
+  const { t } = useI18n()
   const data = SCATTER_DATA
 
   const option = useMemo(() => ({
@@ -186,7 +192,7 @@ export function ScatterChartCard() {
 
   const ref = useChart(option)
   return (
-    <Card title="散点图 · 气泡数据分布">
+    <Card title={t('echarts.scatterTitle')}>
       <div ref={ref} className="echart-box" />
     </Card>
   )

@@ -13,10 +13,11 @@ import { useMemo, useState } from 'react'
 import { Input } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import DictView from '../../../components/DictView/index.jsx'
+import { useI18n, localize } from '../../../i18n/index.js'
 import '../../../components/DictView/index.scss'
 import {
   EARTH_KPI_DEFS,
-  EARTH_KPI_GROUPS,
+  getEarthKpiGroups,
   MAGNITUDE_BANDS,
   DEPTH_ZONES,
   AQI_LEVELS,
@@ -29,9 +30,19 @@ import {
   AVIATION_CODES,
   TSUNAMI_CATEGORIES,
 } from '../../../lib/earth/glossary.js'
-import { KPI_DEFS, KPI_GROUPS } from '../../../lib/astro/glossary.js'
+import { KPI_DEFS, getAstroKpiGroups } from '../../../lib/astro/glossary.js'
 
 const norm = (s) => (s == null ? '' : String(s)).toLowerCase()
+
+/**
+ * 整本词典按语种解析一份：搜索命中判断与渲染都吃这一份。
+ * 直接把原始表丢进 DOM 会渲染出 [object Object]（词条字段现在是 {lang:text}）。
+ */
+const localizeDict = (dict, lang) =>
+  Object.fromEntries(Object.entries(dict).map(([k, v]) => [k, localize(v, lang)]))
+
+/** 速查表同理：转成 [key, 已解析条目] 数组 */
+const localizeEntries = (dict, lang) => Object.entries(dict).map(([k, v]) => [k, localize(v, lang)])
 
 function defHit(def, q, alias) {
   if (!q) return true
@@ -85,42 +96,52 @@ function NameList({ title, unit, entries, q, rangeFn }) {
 }
 
 export default function GlossaryHub({ theme = 'dark' }) {
+  const { t, lang } = useI18n()
   const [q, setQ] = useState('')
   const needle = norm(q)
 
-  const astroGroups = useMemo(() => filterGroups(KPI_GROUPS, KPI_DEFS, needle), [needle])
-  const earthGroups = useMemo(() => filterGroups(EARTH_KPI_GROUPS, EARTH_KPI_DEFS, needle), [needle])
+  const astroDefs = useMemo(() => localizeDict(KPI_DEFS, lang), [lang])
+  const earthDefs = useMemo(() => localizeDict(EARTH_KPI_DEFS, lang), [lang])
+
+  const astroGroups = useMemo(
+    () => filterGroups(getAstroKpiGroups(lang), astroDefs, needle),
+    [lang, astroDefs, needle],
+  )
+  const earthGroups = useMemo(
+    () => filterGroups(getEarthKpiGroups(lang), earthDefs, needle),
+    [lang, earthDefs, needle],
+  )
 
   const bandTables = useMemo(
     () => [
-      { title: '震级分档', unit: 'M', entries: Object.entries(MAGNITUDE_BANDS), rangeFn: bandRange },
-      { title: '震源深度分带', unit: 'km', entries: Object.entries(DEPTH_ZONES), rangeFn: bandRange },
-      { title: '空气质量（欧标）', unit: 'AQI', entries: Object.entries(AQI_LEVELS), rangeFn: bandRange },
-      { title: '紫外线指数', unit: 'UVI', entries: Object.entries(UV_LEVELS), rangeFn: bandRange },
-      { title: '海况等级', unit: 'm（有效波高 Hs）', entries: Object.entries(WAVE_STATES), rangeFn: bandRange },
+      { title: '震级分档', unit: 'M', entries: localizeEntries(MAGNITUDE_BANDS, lang), rangeFn: bandRange },
+      { title: '震源深度分带', unit: 'km', entries: localizeEntries(DEPTH_ZONES, lang), rangeFn: bandRange },
+      { title: '空气质量（欧标）', unit: 'AQI', entries: localizeEntries(AQI_LEVELS, lang), rangeFn: bandRange },
+      { title: '紫外线指数', unit: 'UVI', entries: localizeEntries(UV_LEVELS, lang), rangeFn: bandRange },
+      { title: '海况等级', unit: 'm（有效波高 Hs）', entries: localizeEntries(WAVE_STATES, lang), rangeFn: bandRange },
       {
         title: '萨菲尔–辛普森飓风等级',
         unit: 'kt / m/s',
-        entries: Object.entries(SAFFIR_SIMPSON),
+        entries: localizeEntries(SAFFIR_SIMPSON, lang),
         rangeFn: (s) => `${s.kt} kt · ${s.ms} m/s`,
       },
-      { title: '潮位基准面', unit: 'NOAA CO-OPS', entries: Object.entries(TIDE_DATUMS) },
+      { title: '潮位基准面', unit: 'NOAA CO-OPS', entries: localizeEntries(TIDE_DATUMS, lang) },
       {
         title: '气候振荡模态',
         unit: '时间尺度',
-        entries: Object.entries(OSCILLATIONS),
+        entries: localizeEntries(OSCILLATIONS, lang),
         rangeFn: (o) => o.period,
       },
       {
         title: '火山地面警报级',
         unit: 'rank',
-        entries: Object.entries(VOLCANO_ALERTS),
+        entries: localizeEntries(VOLCANO_ALERTS, lang),
         rangeFn: (v) => `rank ${v.rank}`,
       },
-      { title: '火山航空色码', entries: Object.entries(AVIATION_CODES) },
-      { title: '海啸公告等级', entries: Object.entries(TSUNAMI_CATEGORIES) },
+      { title: '火山航空色码', entries: localizeEntries(AVIATION_CODES, lang) },
+      { title: '海啸公告等级', entries: localizeEntries(TSUNAMI_CATEGORIES, lang) },
     ],
-    [],
+    [lang],
   )
 
   const hitCount = useMemo(
@@ -144,7 +165,7 @@ export default function GlossaryHub({ theme = 'dark' }) {
         <Input
           allowClear
           prefix={<SearchOutlined />}
-          placeholder="模糊搜索：名词 / 口径 / 含义…"
+          placeholder={t('timeline.glossarySearch')}
           value={q}
           onChange={(e) => setQ(e.target.value)}
           className="gh-search"
@@ -159,12 +180,12 @@ export default function GlossaryHub({ theme = 'dark' }) {
 
       <div className="gh-block">
         <h3 className="gh-block__h">🛰️ 深空</h3>
-        <DictView theme={theme} groups={astroGroups} defs={KPI_DEFS} />
+        <DictView theme={theme} groups={astroGroups} defs={astroDefs} />
       </div>
 
       <div className="gh-block">
         <h3 className="gh-block__h">🌍 地球 · 海洋（共用一套词典）</h3>
-        <DictView theme={theme} groups={earthGroups} defs={EARTH_KPI_DEFS} />
+        <DictView theme={theme} groups={earthGroups} defs={earthDefs} />
       </div>
 
       <div className="gh-block">

@@ -1,0 +1,65 @@
+{
+  "dict": {
+    "what": "Ce que c'est",
+    "how": "Comment le lire",
+    "soWhat": "Et alors",
+    "unit": "Unité",
+    "explain": "Explication de « {name} »"
+  },
+  "related": {
+    "title": "Données liées",
+    "subtitle": "Ces modules se lisent côte à côte — dépliez une carte pour les notes explicatives",
+    "monitor": "Supervision des trois tableaux",
+    "watching": "Sous surveillance : {list}",
+    "selfHealth": "Ce tableau : {ok}/{total} sources normales",
+    "goBoard": "Aller au tableau {name}",
+    "goTab": "Aller au tableau {board} · {tab}",
+    "detail": "Notes explicatives",
+    "detailClose": "Masquer les notes",
+    "termCount": "{n} termes",
+    "termsHead": "Termes liés",
+    "dictTip": "Définition complète et recherche dans le dictionnaire de données",
+    "dictGo": "Dictionnaire →",
+    "scale": "Ordre de grandeur",
+    "how": "Comment le lire"
+  },
+  "keyTerm": {
+    "tag": "Terme clé",
+    "scale": "Ordre de grandeur",
+    "how": "Comment le lire",
+    "foot": "Définition complète et recherche : panneau latéral « Archives temporelles » → Dictionnaire de données"
+  },
+  "gscale": {
+    "G0": {
+      "label": "Calme",
+      "desc": "Kp < 4. Activité géomagnétique calme, aucun impact de la météorologie spatiale, les satellites n'ont aucune mesure de protection à prendre."
+    },
+    "G1": {
+      "label": "Mineur",
+      "desc": "Kp 4. Faible perturbation magnétique ; des aurores peuvent apparaître à haute latitude, sans effet sur la quasi-totalité des satellites."
+    },
+    "G2": {
+      "label": "Assez fort",
+      "desc": "Kp 5. Les aurores s'étendent vers l'équateur, les satellites peuvent nécessiter une correction d'attitude, les transformateurs chauffent parfois par induction."
+    },
+    "G3": {
+      "label": "Modéré",
+      "desc": "Kp 6. La charge de surface des satellites en orbite basse s'intensifie, les perturbations d'attitude peuvent dépasser les limites et exiger une intervention."
+    },
+    "G4": {
+      "label": "Fort",
+      "desc": "Kp 7. Le suivi des satellites devient difficile, certains peuvent être perdus, le réseau électrique et les communications montrent des anomalies."
+    },
+    "G5": {
+      "label": "Très fort",
+      "desc": "Kp 8. La précision du GPS chute nettement ou le service est indisponible ; les astronautes doivent se réfugier à l'intérieur du module."
+    },
+    "G6p": {
+      "label": "Exceptionnel",
+      "desc": "Kp 9. Rare dans l'histoire ; le GPS peut être perdu longtemps, réseaux électriques et communications sont menacés."
+    }
+  },
+  "ui": {
+    "moonAria": "Diagramme de phase lunaire"
+  }
+}

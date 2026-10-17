@@ -18,9 +18,9 @@
  */
 import { createContext, useCallback, useContext } from 'react'
 import { MESSAGES } from './locales/index.js'
-import { DEFAULT_LANG, translate, pickLang } from './translate.mjs'
+import { DEFAULT_LANG, translate, pickLang, pickText, localize } from './translate.mjs'
 
-export { DEFAULT_LANG, translate, pickLang }
+export { DEFAULT_LANG, translate, pickLang, pickText, localize }
 
 /** 语种元数据：code 与 locales/ 下的文件夹一一对应 */
 export const LANGUAGES = [

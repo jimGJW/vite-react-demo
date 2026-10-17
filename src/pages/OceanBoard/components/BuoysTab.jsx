@@ -25,7 +25,7 @@ function Cell({ value, unit, digits = 1, color }) {
 }
 
 export default function BuoysTab({ buoys, buoyData }) {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   /** 风向度数 → 八方位中文 */
   const dirText = (deg) => {
     if (deg == null) return null
@@ -124,7 +124,7 @@ export default function BuoysTab({ buoys, buoyData }) {
                     width: 130,
                     align: 'right',
                     render: (v) => {
-                      const lv = waveLevel(v)
+                      const lv = waveLevel(v, lang)
                       return <Cell value={v} unit=" m" digits={2} color={lv.color} />
                     },
                   },
@@ -199,7 +199,7 @@ export default function BuoysTab({ buoys, buoyData }) {
         <div className="o-buoy-legend">
           {[t('ocean.buoy.legend0'), t('ocean.buoy.legend1'), t('ocean.buoy.legend2'), t('ocean.buoy.legend3'), t('ocean.buoy.legend4')].map((label, i) => {
             const probe = [0.1, 0.5, 1.0, 2.0, 3.0][i]
-            const lv = waveLevel(probe)
+            const lv = waveLevel(probe, lang)
             return (
               <Tag key={label} color={lv.color} bordered={false}>
                 {label}

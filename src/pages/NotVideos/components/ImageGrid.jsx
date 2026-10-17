@@ -1,4 +1,5 @@
 import { memo, useEffect, useRef, useState } from 'react'
+import { useI18n } from '../../../i18n/index.js'
 import { fmtSize } from './notVideoUtils.js'
 
 /**
@@ -17,6 +18,7 @@ const PAGE = 48
 const NEAR_BOTTOM = 400
 
 function ImageGridImpl({ images }) {
+  const { t } = useI18n()
   const [shown, setShown] = useState(PAGE)
   const sentinelRef = useRef(null)
 
@@ -54,7 +56,7 @@ function ImageGridImpl({ images }) {
       </div>
       {shown < images.length ? (
         <div ref={sentinelRef} className="notvideos__imgMore">
-          还有 {images.length - shown} 张，下滑继续加载
+          {t('notvideos.imgMore', { n: images.length - shown })}
         </div>
       ) : null}
     </>

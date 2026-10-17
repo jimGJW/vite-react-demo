@@ -19,6 +19,7 @@ import {
   degreesLong,
   sunPos,
 } from 'satellite.js'
+import { pickText } from '../../i18n/translate.mjs'
 
 export const DEG = Math.PI / 180
 /** 地球平均半径 (km) */
@@ -192,16 +193,75 @@ export const OBSERVERS = [
 
 /* ============ 空间天气等级换算 ============ */
 
-/** Kp 指数 → 等级描述（NOAA 标准 G 级别） */
-export function kpLevel(kp) {
-  if (kp == null || Number.isNaN(kp)) return { level: '-', label: '无数据', color: '#8c8c8c', desc: '' }
-  if (kp < 4) return { level: 'G0', label: '平静', color: '#52c41a', desc: '无空间天气影响' }
-  if (kp < 5) return { level: 'G1', label: '轻微', color: '#a0d911', desc: '可能出现极光' }
-  if (kp < 6) return { level: 'G2', label: '轻中', color: '#faad14', desc: '高纬极光，卫星姿态可能需修正' }
-  if (kp < 7) return { level: 'G3', label: '中等', color: '#fa8c16', desc: '低轨卫星可能受影响' }
-  if (kp < 8) return { level: 'G4', label: '强', color: '#ff7a45', desc: '卫星姿态与地面跟踪受影响' }
-  if (kp < 9) return { level: 'G5', label: '极强', color: '#ff4d4f', desc: 'GPS 精度下降，可能无服务' }
-  return { level: 'G6+', label: '极端', color: '#a8071a', desc: 'GPS 不可用，电网与通信受威胁' }
+/**
+ * Kp 指数 → 等级描述（NOAA 标准 G 级别）。
+ *
+ * label / desc 是文案，所以写成 {lang:text} 双稿、经 pickText 按语种解析；
+ * level / color 是数据与样式，保持原样不参与翻译（被误改会直接错位）。
+ * 第二参 lang 缺省简体：历史调用方大多只用到 level / color，加参不会打破它们。
+ */
+export function kpLevel(kp, lang = 'zh-CN') {
+  if (kp == null || Number.isNaN(kp)) {
+    return { level: '-', color: '#8c8c8c', noData: true, ...kpText('-', lang) }
+  }
+  const tier =
+    kp < 4 ? 'G0' : kp < 5 ? 'G1' : kp < 6 ? 'G2' : kp < 7 ? 'G3'
+      : kp < 8 ? 'G4' : kp < 9 ? 'G5' : 'G6+'
+  return { level: tier, color: KP_COLOR[tier], ...kpText(tier, lang) }
+}
+
+/** G 级配色：与 UI 的 G 级对照表共用同一份，避免两处漂移 */
+const KP_COLOR = {
+  '-': '#8c8c8c',
+  G0: '#52c41a',
+  G1: '#a0d911',
+  G2: '#faad14',
+  G3: '#fa8c16',
+  G4: '#ff7a45',
+  G5: '#ff4d4f',
+  'G6+': '#a8071a',
+}
+
+/** Kp 等级双语文案。放在这里（而不是调用方）是为了让纯函数本身自洽，单测可直接断言 */
+const KP_TEXT = {
+  '-': {
+    label: { 'zh-CN': '无数据', en: 'No data' },
+    desc: { 'zh-CN': '', en: '' },
+  },
+  G0: {
+    label: { 'zh-CN': '平静', en: 'Quiet' },
+    desc: { 'zh-CN': '无空间天气影响', en: 'No space weather impact' },
+  },
+  G1: {
+    label: { 'zh-CN': '轻微', en: 'Minor' },
+    desc: { 'zh-CN': '可能出现极光', en: 'Aurora may appear' },
+  },
+  G2: {
+    label: { 'zh-CN': '轻中', en: 'Light-moderate' },
+    desc: { 'zh-CN': '高纬极光，卫星姿态可能需修正', en: 'High-latitude aurora, satellite attitude may need correction' },
+  },
+  G3: {
+    label: { 'zh-CN': '中等', en: 'Moderate' },
+    desc: { 'zh-CN': '低轨卫星可能受影响', en: 'Low-orbit satellites may be affected' },
+  },
+  G4: {
+    label: { 'zh-CN': '强', en: 'Strong' },
+    desc: { 'zh-CN': '卫星姿态与地面跟踪受影响', en: 'Satellite attitude and ground tracking affected' },
+  },
+  G5: {
+    label: { 'zh-CN': '极强', en: 'Severe' },
+    desc: { 'zh-CN': 'GPS 精度下降，可能无服务', en: 'GPS accuracy degrades, service may be unavailable' },
+  },
+  'G6+': {
+    label: { 'zh-CN': '极端', en: 'Extreme' },
+    desc: { 'zh-CN': 'GPS 不可用，电网与通信受威胁', en: 'GPS unusable, power grid and communications under threat' },
+  },
+}
+
+/** 取某 G 级的双语文案（已按语种解析成字符串） */
+function kpText(tier, lang) {
+  const item = KP_TEXT[tier]
+  return { label: pickText(item.label, lang), desc: pickText(item.desc, lang) }
 }
 
 /** F10.7 太阳射电流量 → 活动水平 */
@@ -464,7 +524,7 @@ export const GALAXY = {
  * 参考历元：2000-01-06 18:14 UTC（新月，JD 2451550.1）。
  * 朔望月（synodic month）取 29.53058867 天（现代值）。
  */
-export function moonInfo(date) {
+export function moonInfo(date, lang = 'zh-CN') {
   const jd = toJulianDate(date)
   const synodic = 29.53058867
 
@@ -487,16 +547,12 @@ export function moonInfo(date) {
   // 视直径（角分）
   const angularDiam = (3474.2 / dist) * (180 / Math.PI) * 60
 
-  // 月相名称
-  let phaseName
-  if (age < 1.84566) phaseName = '新月'
-  else if (age < 5.53699) phaseName = '蛾眉月'
-  else if (age < 9.22831) phaseName = '上弦月'
-  else if (age < 12.91963) phaseName = '盈凸月'
-  else if (age < 16.61096) phaseName = '满月'
-  else if (age < 20.30228) phaseName = '亏凸月'
-  else if (age < 23.99361) phaseName = '下弦月'
-  else phaseName = '残月'
+  // 月相名称（八相）。文案双语，和照亮度/月龄这些数值分开处理。
+  const phaseKey =
+    age < 1.84566 ? 'new' : age < 5.53699 ? 'waxingCrescent' : age < 9.22831 ? 'firstQuarter'
+      : age < 12.91963 ? 'waxingGibbous' : age < 16.61096 ? 'full' : age < 20.30228 ? 'waningGibbous'
+        : age < 23.99361 ? 'lastQuarter' : 'waningCrescent'
+  const phaseName = pickText(MOON_PHASE_TEXT[phaseKey], lang)
 
   // 距下次满月/新月的天数
   const fullAge = synodic / 2
@@ -508,10 +564,10 @@ export function moonInfo(date) {
   const anomalistic = 27.55455
   const daysSincePerigee = jd - 2451557.0
   const anomAge = ((daysSincePerigee % anomalistic) + anomalistic) % anomalistic
-  let distLabel
-  if (anomAge < 2 || anomAge > anomalistic - 2) distLabel = '近地点附近'
-  else if (Math.abs(anomAge - anomalistic / 2) < 2) distLabel = '远地点附近'
-  else distLabel = '正常'
+  const distKey =
+    anomAge < 2 || anomAge > anomalistic - 2 ? 'nearPerigee'
+      : Math.abs(anomAge - anomalistic / 2) < 2 ? 'nearApogee' : 'normal'
+  const distLabel = pickText(MOON_DIST_TEXT[distKey], lang)
 
   return {
     age,
@@ -526,6 +582,28 @@ export function moonInfo(date) {
     distLabel,
     isWaxing: phaseFraction < 0.5,
   }
+}
+
+/**
+ * 月相八相的双语文案。key 是几何判定用的代号（数值相关的分支写在 moonInfo 里），
+ * 文案单独一张表，新增语种只需补这里。
+ */
+const MOON_PHASE_TEXT = {
+  new: { 'zh-CN': '新月', en: 'New Moon' },
+  waxingCrescent: { 'zh-CN': '蛾眉月', en: 'Waxing Crescent' },
+  firstQuarter: { 'zh-CN': '上弦月', en: 'First Quarter' },
+  waxingGibbous: { 'zh-CN': '盈凸月', en: 'Waxing Gibbous' },
+  full: { 'zh-CN': '满月', en: 'Full Moon' },
+  waningGibbous: { 'zh-CN': '亏凸月', en: 'Waning Gibbous' },
+  lastQuarter: { 'zh-CN': '下弦月', en: 'Last Quarter' },
+  waningCrescent: { 'zh-CN': '残月', en: 'Waning Crescent' },
+}
+
+/** 月地距离档位的双语文案 */
+const MOON_DIST_TEXT = {
+  nearPerigee: { 'zh-CN': '近地点附近', en: 'Near perigee' },
+  nearApogee: { 'zh-CN': '远地点附近', en: 'Near apogee' },
+  normal: { 'zh-CN': '正常', en: 'Normal' },
 }
 
 /**

@@ -11,7 +11,7 @@ import GalaxyFacts from './GalaxyFacts.jsx'
 import { useI18n } from '../../../i18n/index.js'
 
 export default function DeepTab({ exoplanets, galaxyView, setGalaxyView }) {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   return (
     <>
               <div className="astro-tab-content">
@@ -36,7 +36,7 @@ export default function DeepTab({ exoplanets, galaxyView, setGalaxyView }) {
             </div>
             <div className="astro-exo-methods">
               {exoplanets.data?.methods?.map((m) => {
-                const zm = zhMethod(m.name)
+                const zm = zhMethod(m.name, lang)
                 return (
                   <TermTip key={m.name} zh={zm.zh} en={zm.en} desc={zm.desc}>
                     <div className="astro-exo-method">
@@ -62,7 +62,7 @@ export default function DeepTab({ exoplanets, galaxyView, setGalaxyView }) {
             {exoplanets.data?.latest?.length ? (
               <div className="astro-exo-list">
                 {exoplanets.data.latest.map((p) => {
-                  const mt = zhMethod(p.method)
+                  const mt = zhMethod(p.method, lang)
                   return (
                     <div key={p.name} className="astro-exo-item">
                       <div className="astro-exo-item__name">{p.name}</div>

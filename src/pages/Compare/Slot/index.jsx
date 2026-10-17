@@ -4,6 +4,7 @@ import {
   UserOutlined, SettingOutlined, HeartOutlined,
 } from '@ant-design/icons'
 import CompareLayout from '../../../utils/CompareLayout.jsx'
+import { useI18n } from '../../../i18n/index.js'
 
 const { Text } = Typography
 
@@ -46,8 +47,9 @@ function PageCard({ title, subtitle, extra, children, footer, avatar }) {
 }
 
 // 3. 作用域插槽（render-item / render prop）
-function DataList({ dataSource, renderItem, empty = '暂无数据' }) {
-  if (!dataSource?.length) return <div className="slot-empty">{empty}</div>
+function DataList({ dataSource, renderItem, empty }) {
+  const { t } = useI18n()
+  if (!dataSource?.length) return <div className="slot-empty">{empty ?? t('compare.slot.noData')}</div>
   return (
     <ul className="slot-list">
       {dataSource.map((row, idx) => (
@@ -60,12 +62,13 @@ function DataList({ dataSource, renderItem, empty = '暂无数据' }) {
 }
 
 function ReactDemo() {
+  const { t } = useI18n()
   const [liked, setLiked] = useState(false)
   const [rate, setRate] = useState(4)
   const products = [
-    { id: 'A1', name: '键盘', price: 199, rating: 5 },
-    { id: 'B2', name: '鼠标', price: 129, rating: 4 },
-    { id: 'C3', name: '显示器', price: 1499, rating: 5 },
+    { id: 'A1', name: t('compare.slot.productKeyboard'), price: 199, rating: 5 },
+    { id: 'B2', name: t('compare.slot.productMouse'), price: 129, rating: 4 },
+    { id: 'C3', name: t('compare.slot.productMonitor'), price: 1499, rating: 5 },
     { id: 'D4', name: 'USB Hub', price: 89, rating: 3 },
   ]
 
@@ -73,60 +76,60 @@ function ReactDemo() {
     <Space direction="vertical" style={{ width: '100%' }} size="large">
 
       <div>
-        <Tag color="blue">① 默认插槽：children</Tag>
-        <CardContainer title="🎯 欢迎来到你的工作台" style={{ marginTop: 6 }}>
+        <Tag color="blue">{t('compare.slot.defaultSlot')}</Tag>
+        <CardContainer title={t('compare.slot.welcome')} style={{ marginTop: 6 }}>
           <Space direction="vertical" style={{ width: '100%' }}>
-            <Text>今天是美好的一天。子组件通过 props.children 直接渲染这整段。</Text>
+            <Text>{t('compare.slot.todayText')}</Text>
             <Space>
-              <Button>开始工作</Button>
-              <Button type="primary">查看通知 3</Button>
+              <Button>{t('compare.slot.startWork')}</Button>
+              <Button type="primary">{t('compare.slot.viewNotify')}</Button>
             </Space>
           </Space>
         </CardContainer>
       </div>
 
       <div>
-        <Tag color="magenta">② 命名插槽：多 ReactNode props（title / extra / footer / children）</Tag>
+        <Tag color="magenta">{t('compare.slot.namedSlot')}</Tag>
         <div style={{ marginTop: 6 }}>
           <PageCard
             avatar={<Avatar icon={<UserOutlined />} style={{ backgroundColor: '#1677ff' }} />}
             title="Alice Chen"
-            subtitle="前端工程师 · 5 年经验"
+            subtitle={t('compare.slot.subtitle2')}
             extra={
               <Space>
-                <Button size="small" icon={<SettingOutlined />}>设置</Button>
+                <Button size="small" icon={<SettingOutlined />}>{t('compare.slot.setting')}</Button>
                 <Button size="small" type="primary" danger ghost
                   onClick={() => setLiked(v => !v)}
                   icon={liked ? <HeartOutlined style={{ color: '#eb2f96' }} /> : <HeartOutlined />}
                 >
-                  {liked ? '已关注' : '关注'}
+                  {liked ? t('compare.slot.followed') : t('compare.slot.follow')}
                 </Button>
               </Space>
             }
             footer={
               <div style={{ display: 'flex', gap: 16, fontSize: 12, color: '#666' }}>
-                <span>💬 评论：128</span>
-                <span>🔁 转发：54</span>
-                <span>👀 浏览：2.3k</span>
+                <span>{t('compare.slot.comment')}</span>
+                <span>{t('compare.slot.repost')}</span>
+                <span>{t('compare.slot.view')}</span>
                 <Rate value={rate} onChange={setRate} style={{ fontSize: 14 }} count={5} />
               </div>
             }
           >
             <p style={{ margin: 0, lineHeight: 1.8 }}>
-              正在写一个 <Tag>React</Tag> + <Tag>Vite</Tag> + <Tag color="blue">Vue SFC</Tag> 混合项目，
-              使用 <Text code>children / extra / footer</Text> 命名插槽分发内容，
-              与 Vue 的 <Text code>&lt;slot name="..."&gt;</Text> 对应。
+              {t('compare.slot.bodyPre')} <Tag>React</Tag> + <Tag>Vite</Tag> + <Tag color="blue">Vue SFC</Tag> {t('compare.slot.bodyMid1')}
+              {t('compare.slot.bodyUse')} <Text code>children / extra / footer</Text> {t('compare.slot.bodyMid2')}
+              {t('compare.slot.bodyVue')} <Text code>&lt;slot name="..."&gt;</Text> {t('compare.slot.bodyEnd')}
             </p>
           </PageCard>
         </div>
       </div>
 
       <div>
-        <Tag color="purple">③ 作用域插槽：renderItem（render-prop）</Tag>
+        <Tag color="purple">{t('compare.slot.scopedSlot')}</Tag>
         <div style={{ marginTop: 6 }}>
           <DataList
             dataSource={products}
-            empty="商品已售罄"
+            empty={t('compare.slot.soldOut')}
             renderItem={(it, idx) => (
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
@@ -146,24 +149,25 @@ function ReactDemo() {
 
 /* ========== 页面 ========== */
 export default function CompareSlot() {
+  const { t } = useI18n()
   return (
     <CompareLayout
-      title="插槽 / Children 分发"
-      subtitle="React：children / 多 ReactNode props（named）/ renderItem render-prop（scoped）；Vue：默认 slot / named slot / scoped slot 带数据暴露。"
+      title={t('compare.slot.title')}
+      subtitle={t('compare.slot.subtitle')}
       tags={[
-        { label: 'children · named · scoped' },
-        { label: 'renderItem = scoped slot', color: 'volcano' },
-        { label: '内容分发' },
+        { label: t('compare.slot.tagChildren') },
+        { label: t('compare.slot.tagRender'), color: 'volcano' },
+        { label: t('compare.slot.tagDistribute') },
       ]}
       reactDemo={<ReactDemo />}
       vueAppPath="/pattern/slot"
       diffRows={[
-        { title: '默认插槽', antd: 'props.children', vue: '<slot />' },
-        { title: '命名插槽', antd: '多 props：title / header / footer 都是 ReactNode', vue: '<slot name="header" />\n<template #header>...</template>' },
-        { title: '作用域插槽（列表渲染）', antd: 'renderItem={(row, idx) => <Item />} 或 itemRender 属性', vue: '<template #default="{ row, $index }">\n  直接使用 row / $index\n</template>' },
-        { title: '回退内容（fallback）', antd: '在容器组件里写：children || 默认节点', vue: '<slot>默认内容</slot>' },
-        { title: '多 slot + 数据', antd: '各 slot prop 接收 (scope) => ReactNode（函数式 slot）', vue: '<slot name="foot" :total="total" :count="count" />\n<template #foot="{ total, count }">' },
-        { title: '应用场景', antd: '通用 Card / Modal / Table column / List itemRender', vue: '同左 + v-slot 指令全家桶' },
+        { title: t('compare.slot.diff.default.title'), antd: t('compare.slot.diff.default.antd'), vue: t('compare.slot.diff.default.vue') },
+        { title: t('compare.slot.diff.named.title'), antd: t('compare.slot.diff.named.antd'), vue: t('compare.slot.diff.named.vue') },
+        { title: t('compare.slot.diff.scoped.title'), antd: t('compare.slot.diff.scoped.antd'), vue: t('compare.slot.diff.scoped.vue') },
+        { title: t('compare.slot.diff.fallback.title'), antd: t('compare.slot.diff.fallback.antd'), vue: t('compare.slot.diff.fallback.vue') },
+        { title: t('compare.slot.diff.multiSlot.title'), antd: t('compare.slot.diff.multiSlot.antd'), vue: t('compare.slot.diff.multiSlot.vue') },
+        { title: t('compare.slot.diff.scenario.title'), antd: t('compare.slot.diff.scenario.antd'), vue: t('compare.slot.diff.scenario.vue') },
       ]}
       code={{
         antdCode:

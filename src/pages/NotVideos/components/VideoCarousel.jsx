@@ -1,4 +1,5 @@
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useI18n } from '../../../i18n/index.js'
 import { fmtSize, fmtTime } from './notVideoUtils.js'
 
 /**
@@ -13,6 +14,7 @@ import { fmtSize, fmtTime } from './notVideoUtils.js'
  * 3. muted 是 DOM property 不是 attribute，React 不会可靠同步，手动补一刀。
  */
 function VideoCarouselImpl({ videos }) {
+  const { t } = useI18n()
   const [currentName, setCurrentName] = useState(null)
   const [muted, setMuted] = useState(true)
   const [playing, setPlaying] = useState(false)
@@ -91,16 +93,16 @@ function VideoCarouselImpl({ videos }) {
         </div>
         <div className="notvideos__controls">
           <button type="button" className="notvideos__btn" onClick={() => step(-1)}>
-            上一个
+            {t('notvideos.prev')}
           </button>
           <button type="button" className="notvideos__btn" onClick={togglePlay}>
-            {playing ? '暂停' : '播放'}
+            {playing ? t('notvideos.pause') : t('notvideos.play')}
           </button>
           <button type="button" className="notvideos__btn" onClick={() => step(1)}>
-            下一个
+            {t('notvideos.next')}
           </button>
           <button type="button" className="notvideos__btn" onClick={() => setMuted((m) => !m)}>
-            {muted ? '取消静音' : '静音'}
+            {muted ? t('notvideos.unmute') : t('notvideos.mute')}
           </button>
         </div>
       </div>

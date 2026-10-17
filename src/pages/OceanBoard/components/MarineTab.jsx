@@ -15,8 +15,9 @@ import { Panel, waveLevel } from './ui.jsx'
 
 /** 逐日浪高单元格：底色与文字都来自分档结果 */
 function WaveCell({ v }) {
+  const { lang } = useI18n()
   if (v == null) return <span className="o-marine-none">—</span>
-  const b = waveLevel(v)
+  const b = waveLevel(v, lang)
   return (
     <Tooltip title={`${b.zh}：${b.desc || ''}`}>
       <span className="o-marine-wave" style={{ color: b.color }}>

@@ -1,10 +1,11 @@
 import { useState, useRef, useCallback } from 'react'
 import './index.scss'
-
+import { useI18n } from '../../i18n/index.js'
 
 import { devicePresets, MODES } from './components/embedData.js'
 
 function Embed() {
+  const { t } = useI18n()
   const [url, setUrl] = useState('')
   const [currentUrl, setCurrentUrl] = useState('')
   const [mode, setMode] = useState('window')
@@ -101,13 +102,13 @@ function Embed() {
           <input
             type="text"
             className="embed-url-input"
-            placeholder="输入项目地址，例如 https://example.com 或 localhost:3000"
+            placeholder={t('embed.phUrl')}
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             onKeyDown={handleKeyDown}
           />
           <button type="button" className="btn embed-load-btn" onClick={handleLoad}>
-            加载
+            {t('embed.load')}
           </button>
           <button
             type="button"
@@ -115,7 +116,7 @@ function Embed() {
             onClick={() => runFrameCheck(currentUrl || normalizeUrl(url))}
             disabled={frameCheck?.checking}
           >
-            {frameCheck?.checking ? '检测中…' : '检测可否内嵌'}
+            {frameCheck?.checking ? t('embed.detectChecking') : t('embed.detectEmbed')}
           </button>
         </div>
 
@@ -130,8 +131,8 @@ function Embed() {
                 onClick={() => setMode(m.key)}
               >
                 <span className="embed-mode-icon">{m.icon}</span>
-                <span className="embed-mode-label">{m.label}</span>
-                <span className="embed-mode-desc">{m.desc}</span>
+                <span className="embed-mode-label">{t(m.labelKey)}</span>
+                <span className="embed-mode-desc">{t(m.descKey)}</span>
               </button>
             ))}
           </div>
@@ -143,48 +144,48 @@ function Embed() {
             const r = frameCheck.result
             if (!r.ok) {
               return (
-                <div className="embed-check-banner err">❌ 探测失败：{r.error || '未知错误'}</div>
+                <div className="embed-check-banner err">❌ {t('embed.detectFail')}: {r.error || t('embed.unknownError')}</div>
               )
             }
             if (r.statusBlocked) {
               const reason =
                 r.status === 401
-                  ? '目标需要登录（HTTP 401），请先登录再预览'
+                  ? t('embed.reason401')
                   : r.status === 403
-                    ? '目标服务器拒绝访问（HTTP 403），可能因防盗链 / Referer 校验 / IP 限制'
-                    : `目标服务器返回错误（HTTP ${r.status}）`
+                    ? t('embed.reason403')
+                    : t('embed.reasonErr', { status: r.status })
               return (
                 <div className="embed-check-banner err">
-                  ❌ {reason} —— 即使检测无嵌套限制，iframe 也可能加载失败，建议「新窗口预览」
+                  ❌ {reason} —— {t('embed.reasonErrHint')}
                 </div>
               )
             }
             if (!r.allowsFrame) {
               return (
                 <div className="embed-check-banner warn">
-                  ⚠️ 该站点禁止被内嵌
+                  ⚠️ {t('embed.forbiddenEmbed')}
                   {r.xFrameOptions && (
-                    <span className="embed-check-detail">（X-Frame-Options: {r.xFrameOptions}）</span>
+                    <span className="embed-check-detail">{t('embed.xFrameDetail', { opt: r.xFrameOptions })}</span>
                   )}
                   {r.frameAncestors && (
                     <span className="embed-check-detail">
-                      （CSP frame-ancestors: {r.frameAncestors}）
+                      {t('embed.cspDetail', { anc: r.frameAncestors })}
                     </span>
                   )}
-                  —— 建议使用「新窗口预览」模式
+                  —— {t('embed.useWindowMode')}
                 </div>
               )
             }
             return (
               <div className="embed-check-banner ok">
-                ✅ 该站点允许被内嵌 · HTTP {r.status}，两种模式均可使用
+                ✅ {t('embed.allowEmbed', { status: r.status })}
               </div>
             )
           })()}
 
         {/* 设备选择 */}
         <div className="embed-device-row">
-          <span className="embed-device-label">设备尺寸:</span>
+          <span className="embed-device-label">{t('embed.deviceSize')}</span>
           <div className="embed-device-list">
             {devicePresets.map((device) => (
               <button
@@ -198,7 +199,7 @@ function Embed() {
                 title={`${device.width} × ${device.height}`}
               >
                 <span className="embed-device-icon">{device.icon}</span>
-                <span className="embed-device-name">{device.label}</span>
+                <span className="embed-device-name">{t(device.labelKey)}</span>
                 <span className="embed-device-size">
                   {device.width}×{device.height}
                 </span>
@@ -210,11 +211,11 @@ function Embed() {
               onClick={() => setShowCustom(!showCustom)}
             >
               <span className="embed-device-icon">✏️</span>
-              <span className="embed-device-name">自定义</span>
+              <span className="embed-device-name">{t('embed.deviceCustom')}</span>
               <span className="embed-device-size">
                 {showCustom && customWidth && customHeight
                   ? `${customWidth}×${customHeight}`
-                  : '宽×高'}
+                  : t('embed.customWH')}
               </span>
             </button>
           </div>
@@ -224,7 +225,7 @@ function Embed() {
                 type="number"
                 min="100"
                 max="3840"
-                placeholder="宽"
+                placeholder={t('embed.phWidth')}
                 value={customWidth}
                 onChange={(e) => setCustomWidth(e.target.value)}
               />
@@ -233,7 +234,7 @@ function Embed() {
                 type="number"
                 min="100"
                 max="2160"
-                placeholder="高"
+                placeholder={t('embed.phHeight')}
                 value={customHeight}
                 onChange={(e) => setCustomHeight(e.target.value)}
               />
@@ -250,17 +251,17 @@ function Embed() {
             <>
               <div className="embed-window-action">
                 <button type="button" className="btn embed-window-open-btn" onClick={openWindow}>
-                  🪟 打开 {activeWidth}×{activeHeight} 新窗口
+                  🪟 {t('embed.openWindow', { w: activeWidth, h: activeHeight })}
                 </button>
                 <span className="embed-window-hint">
-                  以「{activeDevice.label}」尺寸打开真实浏览器窗口，完整支持登录、SPA、WebSocket 等一切能力
+                  {t('embed.windowHint', { device: t(activeDevice.labelKey) })}
                 </span>
               </div>
 
               {windows.length > 0 && (
                 <div className="embed-window-list">
                   <div className="embed-window-list-title">
-                    已打开 {windows.length} 个预览窗口
+                    {t('embed.openedWindows', { n: windows.length })}
                   </div>
                   {windows.map((w) => (
                     <div key={w.id} className="embed-window-item">
@@ -273,10 +274,10 @@ function Embed() {
                         {new Date(w.openedAt).toLocaleTimeString('zh-CN', { hour12: false })}
                       </span>
                       <button type="button" className="btn embed-window-mini" onClick={() => focusWindow(w.id)}>
-                        聚焦
+                        {t('embed.focus')}
                       </button>
                       <button type="button" className="btn embed-window-mini danger" onClick={() => closeWindow(w.id)}>
-                        关闭
+                        {t('embed.close')}
                       </button>
                     </div>
                   ))}
@@ -285,9 +286,9 @@ function Embed() {
             </>
           ) : (
             <div className="embed-empty">
-              <p>输入项目地址并点击「加载」，然后以设备尺寸在新窗口打开</p>
+              <p>{t('embed.emptyLoad')}</p>
               <p className="embed-empty-hint">
-                新窗口是真实浏览器窗口，不会被安全策略拦截，所有项目都能正常打开
+                {t('embed.emptyHint1')}
               </p>
             </div>
           )}
@@ -304,7 +305,7 @@ function Embed() {
                   {iframeLoading && (
                     <div className="embed-loading">
                       <div className="embed-loading-spinner" />
-                      <span>加载中...</span>
+                      <span>{t('embed.loading')}</span>
                     </div>
                   )}
                   <iframe
@@ -326,21 +327,21 @@ function Embed() {
                     className={`embed-check-banner ${frameCheck.result.statusBlocked ? 'err' : 'warn'} embed-frame-tip`}
                   >
                     {frameCheck.result.statusBlocked
-                      ? `❌ 服务器返回 HTTP ${frameCheck.result.status}，iframe 无法加载 —— 建议切换到「新窗口预览」`
-                      : '⚠️ 站点禁止被内嵌，iframe 可能显示空白 —— 建议切换到「新窗口预览」'}
+                      ? `❌ ${t('embed.frameErr', { status: frameCheck.result.status })}`
+                      : `⚠️ ${t('embed.frameWarn')}`}
                   </div>
                 )}
               <div className="embed-info">
-                <span>尺寸: {activeWidth} × {activeHeight} px</span>
-                <span className="embed-info-mode">内嵌模式（直接 iframe）</span>
+                <span>{t('embed.sizeLabel')} {activeWidth} × {activeHeight} px</span>
+                <span className="embed-info-mode">{t('embed.embedMode')}</span>
                 <span className="embed-info-url">{currentUrl}</span>
               </div>
             </>
           ) : (
             <div className="embed-empty">
-              <p>请在上方输入地址并点击「加载」按钮</p>
+              <p>{t('embed.emptyAddr')}</p>
               <p className="embed-empty-hint">
-                只有允许被嵌套的站点才能内嵌显示，禁止嵌套的站点请使用新窗口模式
+                {t('embed.emptyHint2')}
               </p>
             </div>
           )}

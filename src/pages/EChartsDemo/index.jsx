@@ -6,6 +6,7 @@ import {
 } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
 import {  Space, Tag, Typography } from 'antd'
+import { useI18n } from '../../i18n/index.js'
 import './index.scss'
 
 echarts.use([
@@ -22,12 +23,13 @@ const { Title, Paragraph } = Typography
 import {  BarChartCard, LineChartCard, PieChartCard, RadarChartCard, ScatterChartCard } from './components/echartsParts.jsx'
 
 export default function EChartsDemo() {
+  const { t } = useI18n()
   return (
     <div className="echarts-demo-page">
       <Typography>
-        <Title level={2}>ECharts 图表演示</Title>
+        <Title level={2}>{t('echarts.title')}</Title>
         <Paragraph type="secondary">
-          基于 ECharts 6 + Ant Design 5 的数据可视化展示，支持实时交互切换图表样式。
+          {t('echarts.subtitle')}
         </Paragraph>
       </Typography>
 

@@ -7,8 +7,14 @@
  * 主题为什么用 props 传而不是读 CSS 变量：
  *   GeoBoard 用 --g-*、OceanBoard 用 --o-*、AstroBoard 用 --a-*，变量名各不相同，
  *   共用组件去猜父级变量不可靠。直接传 theme 让样式走 data 属性选择器最稳。
+ *
+ * 文案为什么查 boards 命名空间：三块看板共用同一个「是什么 / 怎么读 / 所以呢」骨架，
+ * 各写一份就必然漂移（改一处忘两处），抽出共享命名空间后翻译也只需写一次。
  */
+import { useI18n } from '../../i18n/index.js'
+
 export default function DictView({ theme = 'light', intro, groups, defs, children }) {
+  const { t } = useI18n()
   return (
     <div className="dv-root" data-dv-theme={theme}>
       <div className="dv-intro">{intro}</div>
@@ -30,11 +36,11 @@ export default function DictView({ theme = 'light', intro, groups, defs, childre
                     <span className="dv-card__unit">{d.unit}</span>
                   </div>
                   <dl>
-                    <dt>是什么</dt>
+                    <dt>{t('boards.dict.what')}</dt>
                     <dd>{d.what}</dd>
-                    <dt>怎么读</dt>
+                    <dt>{t('boards.dict.how')}</dt>
                     <dd>{d.scale}</dd>
-                    <dt>所以呢</dt>
+                    <dt>{t('boards.dict.soWhat')}</dt>
                     <dd>{d.soWhat}</dd>
                   </dl>
                 </div>

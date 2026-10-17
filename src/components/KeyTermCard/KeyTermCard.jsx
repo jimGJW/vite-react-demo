@@ -9,9 +9,11 @@
  *   <KeyTermCard term={getTerm('earth', 'depth')} />
  */
 
+import { useI18n } from '../../i18n/index.js'
 import './KeyTermCard.scss'
 
 export default function KeyTermCard({ term, theme = 'dark' }) {
+  const { t } = useI18n()
   if (!term) return null
   const isDark = theme !== 'light'
   return (
@@ -20,7 +22,7 @@ export default function KeyTermCard({ term, theme = 'dark' }) {
         <span className="kterm__pin" aria-hidden>📌</span>
         <span className="kterm__name">{term.zh}</span>
         {term.unit ? <span className="kterm__unit">{term.unit}</span> : null}
-        <span className="kterm__tag">关键名词</span>
+        <span className="kterm__tag">{t('boards.keyTerm.tag')}</span>
       </div>
 
       {term.what ? <p className="kterm__what">{term.what}</p> : null}
@@ -28,19 +30,19 @@ export default function KeyTermCard({ term, theme = 'dark' }) {
       <div className="kterm__rows">
         {term.scale ? (
           <div className="kterm__row">
-            <span className="kterm__row-h">量级</span>
+            <span className="kterm__row-h">{t('boards.keyTerm.scale')}</span>
             <span className="kterm__row-b">{term.scale}</span>
           </div>
         ) : null}
         {term.soWhat ? (
           <div className="kterm__row">
-            <span className="kterm__row-h">怎么读</span>
+            <span className="kterm__row-h">{t('boards.keyTerm.how')}</span>
             <span className="kterm__row-b">{term.soWhat}</span>
           </div>
         ) : null}
       </div>
 
-      <p className="kterm__foot">完整释义与检索见侧边「时空档案」→ 数据词典</p>
+      <p className="kterm__foot">{t('boards.keyTerm.foot')}</p>
     </aside>
   )
 }

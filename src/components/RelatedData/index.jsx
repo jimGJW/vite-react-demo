@@ -18,7 +18,8 @@
 
 import { useCallback, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { BOARD_META, BOARD_SCOPE, getRelated, getTerm } from '../../lib/boards/relations.js'
+import { getBoardMeta, getBoardScope, getRelated, getTerm } from '../../lib/boards/relations.js'
+import { useI18n } from '../../i18n/index.js'
 import './index.scss'
 
 export default function RelatedData({
@@ -29,45 +30,55 @@ export default function RelatedData({
   monAt = 'bottom',
 }) {
   const navigate = useNavigate()
+  const { t, lang } = useI18n()
   const [open, setOpen] = useState({})
 
-  /** 关联项 + 名词释义（只在切换看板/页签时重算） */
+  /** 看板元信息（含跳转路径）按语种解析：title 已是 {lang} 字段，必须走 getBoardMeta */
+  const metaMap = useMemo(() => getBoardMeta(lang), [lang])
+
+  /** 关联项 + 名词释义（切换看板 / 页签 / 语种时重算） */
   const items = useMemo(
     () =>
-      getRelated(board, tab).map((it) => ({
+      getRelated(board, tab, lang).map((it) => ({
         ...it,
-        terms: it.terms.map(({ b, k }) => getTerm(b, k)).filter(Boolean),
+        terms: it.terms.map(({ b, k }) => getTerm(b, k, lang)).filter(Boolean),
       })),
-    [board, tab],
+    [board, tab, lang],
   )
 
   const toggle = useCallback((key) => {
     setOpen((m) => ({ ...m, [key]: !m[key] }))
   }, [])
 
-  const goBoard = useCallback((b) => navigate(BOARD_META[b].path), [navigate])
+  const goBoard = useCallback((b) => navigate(metaMap[b].path), [navigate, metaMap])
 
-  const goTab = useCallback((b, t) => navigate(`${BOARD_META[b].path}?tab=${t}`), [navigate])
+  const goTab = useCallback(
+    (b, t) => navigate(`${metaMap[b].path}?tab=${t}`),
+    [navigate, metaMap],
+  )
 
   // 名词解释、案例这类辅助页签没有关联数据 → 整块不渲染，不留空标题
   if (!items.length) return null
 
   const isDark = theme !== 'light'
-  const boards = Object.values(BOARD_META)
+  const boards = Object.values(metaMap)
 
   /** 三方监控：底部一行细条，三块各占一小格，常态平铺「在盯什么」 */
   const monitor = (
     <footer className="rd__mon">
       <span className="rd__mon-h">
         <i className="rd__pulse" aria-hidden />
-        三方监控
+        {t('boards.related.monitor')}
       </span>
       <div className="rd__mon-list">
         {boards.map((m) => {
-          const scope = BOARD_SCOPE[m.key]
+          const scope = getBoardScope(m.key, lang)
+          if (!scope) return null
           const self = m.key === board
-          const tip = [m.title, scope.scope, `在盯：${scope.watch.join(' · ')}`]
-          if (self && health) tip.push(`本板数据源 ${health.ok}/${health.total} 正常`)
+          const tip = [m.title, scope.scope, t('boards.related.watching', { list: scope.watch.join(' · ') })]
+          if (self && health) {
+            tip.push(t('boards.related.selfHealth', { ok: health.ok, total: health.total }))
+          }
           return (
             <button
               key={m.key}
@@ -76,7 +87,7 @@ export default function RelatedData({
               style={{ '--rd-accent': m.color }}
               onClick={() => goBoard(m.key)}
               title={tip.join('\n')}
-              aria-label={`前往${m.title}看板`}
+              aria-label={t('boards.related.goBoard', { name: m.title })}
             >
               <span className="rd__mon-top">
                 <i className="rd__mon-dot" aria-hidden />
@@ -102,8 +113,8 @@ export default function RelatedData({
       {/* ① 关联数据：为什么相关 + 展开后的资料解释与名词 */}
       <h4 className="rd__h">
         <span className="rd__hicon">🔗</span>
-        关联数据
-        <span className="rd__hsub">这些模块的数据可以对照着看，点开有资料解释</span>
+        {t('boards.related.title')}
+        <span className="rd__hsub">{t('boards.related.subtitle')}</span>
       </h4>
       <div className="rd__list">
         {items.map((it) => {
@@ -115,7 +126,7 @@ export default function RelatedData({
                 className="rd__top"
                 style={{ '--rd-accent': it.color }}
                 onClick={() => goTab(it.board, it.tab)}
-                title={`前往${it.title}看板 · ${it.label}`}
+                title={t('boards.related.goTab', { board: it.title, tab: it.label })}
               >
                 <span className="rd__icon" aria-hidden>{it.icon}</span>
                 <span className="rd__board">{it.title}</span>
@@ -131,10 +142,10 @@ export default function RelatedData({
                 onClick={() => toggle(it.to)}
                 aria-expanded={isOpen}
               >
-                {isOpen ? '收起资料解释' : '资料解释'}
+                {isOpen ? t('boards.related.detailClose') : t('boards.related.detail')}
                 <span className="rd__chev" aria-hidden>{isOpen ? '▲' : '▼'}</span>
                 {!isOpen && it.terms.length ? (
-                  <span className="rd__tn">{it.terms.length} 个名词</span>
+                  <span className="rd__tn">{t('boards.related.termCount', { n: it.terms.length })}</span>
                 ) : null}
               </button>
 
@@ -144,31 +155,33 @@ export default function RelatedData({
 
                   {it.terms.length ? (
                     <div className="rd__terms">
-                      <span className="rd__terms-h">相关名词</span>
-                      {it.terms.map((t) => (
+                      <span className="rd__terms-h">{t('boards.related.termsHead')}</span>
+                      {/* 形参必须避开 t：i18n 的 t 在本组件作用域内已被占用，
+                          写成 map((t) => …) 会静默遮蔽，编译/单测都绿、只有运行才炸 */}
+                      {it.terms.map((term) => (
                         <button
-                          key={t.key}
+                          key={term.key}
                           type="button"
                           className="rd__term"
                           onClick={() => navigate('/timeline')}
-                          title="在数据词典中查看完整释义与检索"
+                          title={t('boards.related.dictTip')}
                         >
                           <span className="rd__term-hd">
-                            <span className="rd__term-zh">{t.zh}</span>
-                            {t.unit ? <span className="rd__term-unit">{t.unit}</span> : null}
-                            <span className="rd__term-go" aria-hidden>词典 →</span>
+                            <span className="rd__term-zh">{term.zh}</span>
+                            {term.unit ? <span className="rd__term-unit">{term.unit}</span> : null}
+                            <span className="rd__term-go" aria-hidden>{t('boards.related.dictGo')}</span>
                           </span>
-                          {t.what ? <span className="rd__term-what">{t.what}</span> : null}
-                          {t.scale ? (
+                          {term.what ? <span className="rd__term-what">{term.what}</span> : null}
+                          {term.scale ? (
                             <span className="rd__term-scale">
-                              <b>量级</b>
-                              {t.scale}
+                              <b>{t('boards.related.scale')}</b>
+                              {term.scale}
                             </span>
                           ) : null}
-                          {t.soWhat ? (
+                          {term.soWhat ? (
                             <span className="rd__term-so">
-                              <b>怎么读</b>
-                              {t.soWhat}
+                              <b>{t('boards.related.how')}</b>
+                              {term.soWhat}
                             </span>
                           ) : null}
                         </button>

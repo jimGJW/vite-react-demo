@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import './TestCenter.scss'
+import { useI18n } from '../../i18n/index.js'
 
 /**
  * @typedef {Object} TestCase
@@ -23,6 +24,7 @@ import './TestCenter.scss'
  * @param {string}    [props.className]     额外类名
  */
 function TestCenter({ cases = [], pythonScript = '', runCommand = '', className = '' }) {
+  const { t } = useI18n()
   // results: { [id]: { status: 'idle'|'running'|'pass'|'fail', detail?: string } }
   const [results, setResults] = useState(() =>
     Object.fromEntries(cases.map((c) => [c.id, { status: 'idle' }])),
@@ -39,14 +41,14 @@ function TestCenter({ cases = [], pythonScript = '', runCommand = '', className 
       const r = await tc.run()
       update(tc.id, {
         status: r.pass ? 'pass' : 'fail',
-        detail: r.detail ?? (r.pass ? '通过' : '失败'),
+        detail: r.detail ?? (r.pass ? t('testCenter.component.passDefault') : t('testCenter.component.failDefault')),
       })
       return !!r.pass
     } catch (e) {
       update(tc.id, { status: 'fail', detail: String(e?.message || e) })
       return false
     }
-  }, [])
+  }, [t])
 
   const runAll = useCallback(async () => {
     setRunning(true)
@@ -72,8 +74,8 @@ function TestCenter({ cases = [], pythonScript = '', runCommand = '', className 
   const groups = useMemo(() => {
     const m = new Map()
     for (const c of cases) {
-      if (!m.has(c.group)) m.set(c.group, [])
-      m.get(c.group).push(c)
+      if (!m.has(c.groupKey)) m.set(c.groupKey, [])
+      m.get(c.groupKey).push(c)
     }
     return [...m.entries()]
   }, [cases])
@@ -111,12 +113,12 @@ function TestCenter({ cases = [], pythonScript = '', runCommand = '', className 
           onClick={runAll}
           disabled={running}
         >
-          {running ? `运行中 ${stats.done}/${stats.total}` : '运行全部测试'}
+          {running ? t('testCenter.component.running', { done: stats.done, total: stats.total }) : t('testCenter.component.runAll')}
         </button>
         <div className="tc-stats">
-          <span className="tc-stat tc-stat-pass">通过 {stats.pass}</span>
-          <span className="tc-stat tc-stat-fail">失败 {stats.fail}</span>
-          <span className="tc-stat tc-stat-total">合计 {stats.total}</span>
+          <span className="tc-stat tc-stat-pass">{t('testCenter.component.passStat', { count: stats.pass })}</span>
+          <span className="tc-stat tc-stat-fail">{t('testCenter.component.failStat', { count: stats.fail })}</span>
+          <span className="tc-stat tc-stat-total">{t('testCenter.component.totalStat', { count: stats.total })}</span>
         </div>
         <div className="tc-progress" aria-hidden="true">
           <div className="tc-progress-bar" style={{ width: `${progress}%` }} />
@@ -127,7 +129,7 @@ function TestCenter({ cases = [], pythonScript = '', runCommand = '', className 
       <div className="tc-groups">
         {groups.map(([group, list]) => (
           <section className="tc-group" key={group}>
-            <h3 className="tc-group-title">{group}</h3>
+            <h3 className="tc-group-title">{t(group)}</h3>
             <ul className="tc-list">
               {list.map((tc) => {
                 const st = results[tc.id]?.status || 'idle'
@@ -136,7 +138,7 @@ function TestCenter({ cases = [], pythonScript = '', runCommand = '', className 
                     <span className="tc-mark" aria-hidden="true">
                       {st === 'pass' ? '✓' : st === 'fail' ? '✗' : st === 'running' ? '⟳' : '•'}
                     </span>
-                    <span className="tc-name">{tc.name}</span>
+                    <span className="tc-name">{t(tc.nameKey)}</span>
                     {(results[tc.id]?.detail) && (
                       <span className="tc-detail">{results[tc.id].detail}</span>
                     )}
@@ -144,10 +146,10 @@ function TestCenter({ cases = [], pythonScript = '', runCommand = '', className 
                       type="button"
                       className="tc-run-one"
                       onClick={() => runOne(tc)}
-                      disabled={running}
-                    >
-                      运行
-                    </button>
+                        disabled={running}
+                      >
+                        {t('testCenter.component.runOne')}
+                      </button>
                   </li>
                 )
               })}
@@ -160,29 +162,26 @@ function TestCenter({ cases = [], pythonScript = '', runCommand = '', className 
       {pythonScript && (
         <section className="tc-script">
           <div className="tc-script-head">
-            <h3 className="tc-script-title">Python E2E 测试脚本</h3>
+            <h3 className="tc-script-title">{t('testCenter.component.scriptTitle')}</h3>
             <div className="tc-script-actions">
               <button type="button" className="tc-action" onClick={() => copyText(pythonScript, 'script')}>
-                {copied === 'script' ? '已复制' : '复制脚本'}
+                {copied === 'script' ? t('testCenter.component.copiedScript') : t('testCenter.component.copyScript')}
               </button>
-              <button type="button" className="tc-action" onClick={downloadScript}>
-                下载 .py
-              </button>
+          <button type="button" className="tc-action" onClick={downloadScript}>
+            {t('testCenter.component.download')}
+          </button>
             </div>
           </div>
           {runCommand && (
             <div className="tc-cmd">
               <code>{runCommand}</code>
               <button type="button" className="tc-action" onClick={() => copyText(runCommand, 'cmd')}>
-                {copied === 'cmd' ? '已复制' : '复制'}
+                {copied === 'cmd' ? t('testCenter.component.copied') : t('testCenter.component.copy')}
               </button>
             </div>
           )}
           <pre className="tc-code"><code>{pythonScript}</code></pre>
-          <p className="tc-tip">
-            浏览器无法直接执行 Python。上述前端测试即时验证逻辑层；Python 脚本在终端运行，
-            用 Playwright 自动启动 dev server、登录并逐页验证渲染与交互。
-          </p>
+          <p className="tc-tip">{t('testCenter.component.tip')}</p>
         </section>
       )}
     </div>

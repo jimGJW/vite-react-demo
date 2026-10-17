@@ -4,17 +4,19 @@ import {
   formatDate, formatRelativeTime, diffDays, formatFileSize, formatThousands, formatPercent, mask,
 } from '../../../components/Utils/index.js'
 import DemoCard from './DemoCard.jsx'
+import { useI18n } from '../../../i18n/index.js'
 
 /** 格式化与脱敏：日期 / 相对时间 / 体积 / 千分位 / 百分比 / 打码 */
 export default function FormatDemos() {
+  const { t } = useI18n()
   const [phone, setPhone] = useState('13800138000')
   const now = new Date(2024, 0, 10, 12, 0, 0).getTime()
 
   return (
     <>
       <DemoCard
-        title="formatDate · 日期格式化"
-        desc="支持 YYYY/YY/MM/M/DD/D/HH/H/mm/m/ss/s 占位符。"
+        title={t('utilsdemo.fmtDateTitle')}
+        desc={t('utilsdemo.fmtDateDesc')}
         usage="formatDate(date, 'YYYY-MM-DD HH:mm:ss')"
       >
         <div className="utils-demo__out">{formatDate(new Date(2024, 0, 2, 3, 4, 5))}</div>
@@ -22,8 +24,8 @@ export default function FormatDemos() {
       </DemoCard>
 
       <DemoCard
-        title="formatRelativeTime · 相对时间"
-        desc="刚刚 / x 分钟前 / x 小时前 / x 天前，超过 30 天回落日期。"
+        title={t('utilsdemo.fmtRelativeTitle')}
+        desc={t('utilsdemo.fmtRelativeDesc')}
         usage="formatRelativeTime(time, now)"
       >
         <div className="utils-demo__out">30 秒前 → {formatRelativeTime(now - 30_000, now)}</div>
@@ -32,8 +34,8 @@ export default function FormatDemos() {
       </DemoCard>
 
       <DemoCard
-        title="diffDays · 相差天数"
-        desc="两个日期相差整天数，非法输入返回 0。"
+        title={t('utilsdemo.fmtDiffTitle')}
+        desc={t('utilsdemo.fmtDiffDesc')}
         usage="diffDays(start, end)"
       >
         <div className="utils-demo__out">
@@ -43,8 +45,8 @@ export default function FormatDemos() {
       </DemoCard>
 
       <DemoCard
-        title="formatFileSize / formatThousands / formatPercent"
-        desc="文件体积、千分位、百分比三组常用格式化。"
+        title={t('utilsdemo.fmtFileTitle')}
+        desc={t('utilsdemo.fmtFileDesc')}
         usage="formatFileSize(1536) // '1.50 KB'"
       >
         <Space wrap size={[8, 4]}>
@@ -56,8 +58,8 @@ export default function FormatDemos() {
       </DemoCard>
 
       <DemoCard
-        title="mask · 字符串脱敏"
-        desc="保留首尾、中间打码，常用于手机号 / 证件号展示。"
+        title={t('utilsdemo.fmtMaskTitle')}
+        desc={t('utilsdemo.fmtMaskDesc')}
         usage="mask('13800138000') // '138****8000'"
       >
         <Input value={phone} onChange={(e) => setPhone(e.target.value)} style={{ maxWidth: 220 }} />

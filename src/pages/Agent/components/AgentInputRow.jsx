@@ -1,10 +1,12 @@
 import { memo } from 'react'
+import { useI18n } from '../../../i18n/index.js'
 
 /**
  * 指令输入行：麦克风按钮 + 多行输入 + 执行按钮。
  * Enter 执行、Shift+Enter 换行。
  */
 function AgentInputRow({ value, onChange, onExecute, onKeyDown, isLoading, whisper }) {
+    const { t } = useI18n()
     const micDisabled = isLoading || !whisper.supported || whisper.recognizing
 
     return (
@@ -16,10 +18,10 @@ function AgentInputRow({ value, onChange, onExecute, onKeyDown, isLoading, whisp
                 disabled={micDisabled}
                 title={
                     !whisper.supported
-                        ? '当前浏览器不支持麦克风录音'
+                        ? t('agent.input.micUnsupported')
                         : whisper.recording
-                          ? '停止录音并开始识别'
-                          : '🎤 语音控制页面：说指令自动执行（点击/跳转/滚动/输入）'
+                          ? t('agent.input.micStopTip')
+                          : t('agent.input.micTip')
                 }
             >
                 {whisper.recognizing ? '⏳' : whisper.recording ? '⏹' : '🎤'}
@@ -28,7 +30,7 @@ function AgentInputRow({ value, onChange, onExecute, onKeyDown, isLoading, whisp
                 value={value}
                 onChange={onChange}
                 onKeyDown={onKeyDown}
-                placeholder="输入或粘贴指令…Enter 执行 · Shift+Enter 换行 · 也可点 🎤 语音"
+                placeholder={t('agent.input.placeholder')}
                 disabled={isLoading}
                 rows={2}
                 className="agent-input"
@@ -42,10 +44,10 @@ function AgentInputRow({ value, onChange, onExecute, onKeyDown, isLoading, whisp
                 {isLoading ? (
                     <>
                         <span className="agent-exec-spinner" />
-                        执行中
+                        {t('agent.input.executing')}
                     </>
                 ) : (
-                    <>▶ 执行</>
+                    <>{t('agent.input.execute')}</>
                 )}
             </button>
         </div>

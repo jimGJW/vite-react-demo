@@ -41,6 +41,8 @@
     "timerErr": "타이머에서 던진 오류 —— 경계가 잡았습니다",
     "promiseErr": "Promise에서 던진 오류 —— 경계가 잡았습니다",
     "naiveBtn": "직접 throw(못 잡음)",
-    "naiveErr": "직접 throw: 경계가 보지 못합니다(콘솔에 오류가 뜨지만 페이지는 대체되지 않습니다)"
+    "naiveErr": "직접 throw: 경계가 보지 못합니다(콘솔에 오류가 뜨지만 페이지는 대체되지 않습니다)",
+    "case1Label": "案例①",
+    "case4Label": "案例④"
   }
 }

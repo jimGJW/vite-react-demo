@@ -7,7 +7,7 @@
  */
 import { Tooltip } from 'antd'
 import { GREENHOUSE_GASES } from '../../../lib/earth/glossary.js'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n, localize } from '../../../i18n/index.js'
 
 /** 单气体的迷你折线（纯 SVG，无依赖） */
 function Spark({ history, color }) {
@@ -33,8 +33,8 @@ function Spark({ history, color }) {
 }
 
 function GasCard({ gas }) {
-  const { t } = useI18n()
-  const dict = GREENHOUSE_GASES[gas.key]
+  const { t, lang } = useI18n()
+  const dict = localize(GREENHOUSE_GASES[gas.key], lang)
   return (
     <div className="geo-ghg-card">
       <div className="geo-ghg-card__head">

@@ -1,11 +1,20 @@
 import { useState } from 'react'
 import { Form, Button, message, Tabs, Switch, Select, Input, Checkbox, Empty } from 'antd'
 import FormBuilder from 'antd-form-builder'
+import { useI18n } from '../../i18n/index.js'
 import './index.scss'
 
 import { WIDGET_OPTIONS, PRESETS, stringifyMeta } from './components/formPresets.js'
 
+const PRESET_LABEL_KEYS = {
+  login: 'formbuilder.presetLogin',
+  register: 'formbuilder.presetRegister',
+  profile: 'formbuilder.presetProfile',
+  survey: 'formbuilder.presetSurvey',
+}
+
 function FormBuilderDemo() {
+  const { t } = useI18n()
   const [form] = Form.useForm()
   const [activePreset, setActivePreset] = useState('login')
   const [meta, setMeta] = useState(PRESETS.login.meta)
@@ -38,16 +47,16 @@ function FormBuilderDemo() {
     try {
       obj = JSON.parse(jsonText)
     } catch (e) {
-      setJsonError(`JSON 解析失败：${e.message}`)
+      setJsonError(t('formbuilder.jsonParseError', { msg: e.message }))
       return
     }
     if (!obj || typeof obj !== 'object' || !Array.isArray(obj.fields)) {
-      setJsonError('配置结构错误：必须是对象且包含 fields 数组')
+      setJsonError(t('formbuilder.configStructError'))
       return
     }
     setActivePreset('') // 手动编辑后脱离预设高亮
     applyMeta(obj)
-    message.success('配置已应用')
+    message.success(t('formbuilder.configApplied'))
   }
 
   const formatJson = () => {
@@ -55,7 +64,7 @@ function FormBuilderDemo() {
       setJsonText(stringifyMeta(JSON.parse(jsonText)))
       setJsonError('')
     } catch (e) {
-      setJsonError(`JSON 解析失败：${e.message}`)
+      setJsonError(t('formbuilder.jsonParseError', { msg: e.message }))
     }
   }
 
@@ -77,11 +86,11 @@ function FormBuilderDemo() {
   const addField = () => {
     const key = draft.key.trim()
     if (!/^[a-zA-Z][\w.-]*$/.test(key)) {
-      setDraftError('key 必填，字母开头，可含数字/下划线/点号')
+      setDraftError(t('formbuilder.keyRule'))
       return
     }
     if (meta.fields.some((f) => (f.key || f.name) === key)) {
-      setDraftError(`字段 "${key}" 已存在`)
+      setDraftError(t('formbuilder.fieldExists', { key }))
       return
     }
     const field = { key }
@@ -99,28 +108,28 @@ function FormBuilderDemo() {
     updateFields([...meta.fields, field])
     setDraft({ key: '', label: '', widget: 'input', required: false, placeholder: '', options: '' })
     setDraftError('')
-    message.success(`已添加字段 "${key}"`)
+    message.success(t('formbuilder.fieldAdded', { key }))
   }
 
   const onFinish = (values) => {
     setResult(values)
-    message.success('表单提交成功，结果已展示在下方')
+    message.success(t('formbuilder.submitSuccess'))
   }
 
-  const presetChips = Object.entries(PRESETS).map(([key, p]) => (
+  const presetChips = Object.entries(PRESETS).map(([key]) => (
     <button
       key={key}
       type="button"
       className={`fb-preset-chip ${activePreset === key ? 'active' : ''}`}
       onClick={() => switchPreset(key)}
     >
-      {p.label}
+      {t(PRESET_LABEL_KEYS[key])}
     </button>
   ))
 
   const widgetTable = WIDGET_OPTIONS.map((w) => (
     <span key={w.value} className="fb-widget-tag">
-      {w.label}
+      {t(w.labelKey)}
     </span>
   ))
 
@@ -129,26 +138,26 @@ function FormBuilderDemo() {
       <header className="fb-header">
         <div className="fb-title">
           <span className="fb-title-icon">🧩</span>
-          <h1>可配置化表单</h1>
+          <h1>{t('formbuilder.title')}</h1>
         </div>
         <p className="fb-subtitle">
-          基于 <code>antd-form-builder</code> 的配置驱动表单：左侧编辑 JSON 或可视化调整字段，右侧实时预览渲染效果
+          {t('formbuilder.subtitle')}
         </p>
         <div className="fb-presets">
-          <span className="fb-presets-label">预设模板</span>
+          <span className="fb-presets-label">{t('formbuilder.presetsLabel')}</span>
           {presetChips}
         </div>
       </header>
 
       <div className="fb-body">
         <section className="fb-panel fb-config">
-          <h2 className="fb-panel-title">⚙️ 表单配置</h2>
+          <h2 className="fb-panel-title">{t('formbuilder.panelConfig')}</h2>
           <Tabs
             defaultActiveKey="json"
             items={[
               {
                 key: 'json',
-                label: 'JSON 配置',
+                label: t('formbuilder.tabJson'),
                 children: (
                   <div className="fb-json">
                     <textarea
@@ -163,24 +172,24 @@ function FormBuilderDemo() {
                     {jsonError ? <div className="fb-json-error">⚠️ {jsonError}</div> : null}
                     <div className="fb-json-actions">
                       <Button type="primary" size="small" onClick={applyJson}>
-                        应用配置
+                        {t('formbuilder.applyConfig')}
                       </Button>
                       <Button size="small" onClick={formatJson}>
-                        格式化
+                        {t('formbuilder.format')}
                       </Button>
-                      <span className="fb-json-hint">columns 控制列数；formItemLayout: [6,16] 控制标签占比（多列时设为 null）</span>
+                      <span className="fb-json-hint">{t('formbuilder.jsonHint')}</span>
                     </div>
                   </div>
                 ),
               },
               {
                 key: 'visual',
-                label: '可视化编辑',
+                label: t('formbuilder.tabVisual'),
                 children: (
                   <div className="fb-visual">
                     <div className="fb-field-list">
                       {meta.fields.length === 0 ? (
-                        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description="暂无字段，请在下方添加" />
+                        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('formbuilder.emptyFields')} />
                       ) : (
                         meta.fields.map((f, i) => (
                           <div key={(f.key || f.name || '') + i} className="fb-field-row">
@@ -188,20 +197,20 @@ function FormBuilderDemo() {
                             <span className="fb-field-key">{f.key || (Array.isArray(f.name) ? f.name.join('.') : f.name)}</span>
                             <span className="fb-field-label">{f.label || '—'}</span>
                             <span className="fb-field-widget">{f.widget || 'input'}</span>
-                            {f.required ? <span className="fb-field-required">必填</span> : null}
+                            {f.required ? <span className="fb-field-required">{t('formbuilder.required')}</span> : null}
                             <span className="fb-field-ops">
-                              <button type="button" title="上移" onClick={() => moveField(i, -1)} disabled={i === 0}>
+                              <button type="button" title={t('formbuilder.moveUp')} onClick={() => moveField(i, -1)} disabled={i === 0}>
                                 ↑
                               </button>
                               <button
                                 type="button"
-                                title="下移"
+                                title={t('formbuilder.moveDown')}
                                 onClick={() => moveField(i, 1)}
                                 disabled={i === meta.fields.length - 1}
                               >
                                 ↓
                               </button>
-                              <button type="button" title="删除" className="del" onClick={() => removeField(i)}>
+                              <button type="button" title={t('formbuilder.remove')} className="del" onClick={() => removeField(i)}>
                                 ✕
                               </button>
                             </span>
@@ -211,29 +220,29 @@ function FormBuilderDemo() {
                     </div>
 
                     <div className="fb-add-field">
-                      <h3 className="fb-add-title">＋ 添加字段</h3>
+                      <h3 className="fb-add-title">{t('formbuilder.addFieldTitle')}</h3>
                       <div className="fb-add-grid">
                         <Input
                           size="small"
-                          placeholder="key（如 phone）"
+                          placeholder={t('formbuilder.phKey')}
                           value={draft.key}
                           onChange={(e) => setDraft({ ...draft, key: e.target.value })}
                         />
                         <Input
                           size="small"
-                          placeholder="label（如 手机号）"
+                          placeholder={t('formbuilder.phLabel')}
                           value={draft.label}
                           onChange={(e) => setDraft({ ...draft, label: e.target.value })}
                         />
                         <Select
                           size="small"
                           value={draft.widget}
-                          options={WIDGET_OPTIONS}
+                          options={WIDGET_OPTIONS.map((w) => ({ ...w, label: t(w.labelKey) }))}
                           onChange={(v) => setDraft({ ...draft, widget: v })}
                         />
                         <Input
                           size="small"
-                          placeholder="placeholder（可选）"
+                          placeholder={t('formbuilder.phPlaceholder')}
                           value={draft.placeholder}
                           onChange={(e) => setDraft({ ...draft, placeholder: e.target.value })}
                         />
@@ -241,19 +250,19 @@ function FormBuilderDemo() {
                           <Input
                             size="small"
                             className="fb-add-options"
-                            placeholder="选项，用逗号分隔（如 男,女）"
+                            placeholder={t('formbuilder.phOptions')}
                             value={draft.options}
                             onChange={(e) => setDraft({ ...draft, options: e.target.value })}
                           />
                         ) : null}
                         <label className="fb-add-required">
                           <Checkbox checked={draft.required} onChange={(e) => setDraft({ ...draft, required: e.target.checked })} />
-                          必填
+                          {t('formbuilder.required')}
                         </label>
                       </div>
                       {draftError ? <div className="fb-json-error">{draftError}</div> : null}
                       <Button type="primary" size="small" block onClick={addField}>
-                        添加到表单
+                        {t('formbuilder.addToForm')}
                       </Button>
                     </div>
                   </div>
@@ -265,14 +274,14 @@ function FormBuilderDemo() {
 
         <section className="fb-panel fb-preview">
           <div className="fb-preview-bar">
-            <h2 className="fb-panel-title">👁️ 实时预览</h2>
+            <h2 className="fb-panel-title">{t('formbuilder.panelPreview')}</h2>
             <div className="fb-preview-switches">
               <label>
-                <span>只读模式</span>
+                <span>{t('formbuilder.readOnly')}</span>
                 <Switch size="small" checked={viewMode} onChange={setViewMode} />
               </label>
               <label>
-                <span>整体禁用</span>
+                <span>{t('formbuilder.disableAll')}</span>
                 <Switch size="small" checked={disabled} onChange={setDisabled} />
               </label>
             </div>
@@ -283,7 +292,7 @@ function FormBuilderDemo() {
             {!viewMode ? (
               <div className="fb-actions">
                 <Button type="primary" htmlType="submit">
-                  提交表单
+                  {t('formbuilder.submit')}
                 </Button>
                 <Button
                   onClick={() => {
@@ -292,30 +301,29 @@ function FormBuilderDemo() {
                     setResult(null)
                   }}
                 >
-                  重置
+                  {t('formbuilder.reset')}
                 </Button>
               </div>
             ) : null}
           </Form>
 
           <div className="fb-result">
-            <h3 className="fb-result-title">📋 提交结果</h3>
+            <h3 className="fb-result-title">{t('formbuilder.resultTitle')}</h3>
             {result ? (
               <pre>{JSON.stringify(result, null, 2)}</pre>
             ) : (
-              <p className="fb-result-empty">提交表单后，这里将展示收集到的字段值（JSON）</p>
+              <p className="fb-result-empty">{t('formbuilder.resultEmpty')}</p>
             )}
           </div>
         </section>
       </div>
 
       <section className="fb-panel fb-widgets">
-        <h2 className="fb-panel-title">🧰 支持的 widget 类型</h2>
-        <div className="fb-widget-tags">{widgetTable}</div>
-        <p className="fb-widgets-note">
-          ★ 号为通过 <code>FormBuilder.defineWidget()</code> 扩展注册的自定义 widget，其余为内置类型；此外任何 antd
-          组件都可直接作为 <code>widget</code> 传入。
-        </p>
+          <h2 className="fb-panel-title">{t('formbuilder.panelWidgets')}</h2>
+          <div className="fb-widget-tags">{widgetTable}</div>
+          <p className="fb-widgets-note">
+            {t('formbuilder.widgetsNote')}
+          </p>
       </section>
     </div>
   )

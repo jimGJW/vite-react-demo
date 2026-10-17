@@ -4,7 +4,7 @@
  */
 import { Empty, Tag, Tooltip } from 'antd'
 import { AlertOutlined, CompassOutlined, ThunderboltOutlined } from '@ant-design/icons'
-import { FLARE_TONE, G_SCALE_ROWS, KpiCard, KpiHint, Panel, TermTip, flareLevelOf } from './ui.jsx'
+import { FLARE_TONE, KpiCard, KpiHint, Panel, TermTip, flareLevelOf, gScaleRows } from './ui.jsx'
 import SolarCycleChart from './SolarCycleChart.jsx'
 import Sparkline from './Sparkline.jsx'
 import { f107Level, solarWindLevel } from '../../../lib/astro/orbital.js'
@@ -14,7 +14,7 @@ import { useI18n } from '../../../i18n/index.js'
 export default function SunTab({
   spaceWeather, solarActivity, aurora, solarCycle, sw, kp, kpInfo, solar, xr, proton, alertData, auroraData, cycleData,
 }) {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   return (
     <>
               <div className="astro-tab-content">
@@ -73,7 +73,7 @@ export default function SunTab({
             <div className="astro-gscale">
               <div className="astro-chart__title">{t('astro.sunGTable')}</div>
               <div className="astro-gscale-grid">
-                {G_SCALE_ROWS.map((r) => (
+                {gScaleRows(t).map((r) => (
                   <Tooltip key={r.level} title={r.desc}>
                     <div
                       className={`astro-gscale-cell${kpInfo.level === r.level ? ' is-active' : ''}`}
@@ -158,7 +158,7 @@ export default function SunTab({
               <div className="astro-flare-kpi">
                 <span>{t('astro.sunFlareCurLevel')}</span>
                 <strong style={{ color: FLARE_TONE[xr.currentClass.letter] }}>
-                  {zhFlareClass(xr.currentClass.letter).zh}
+                  {zhFlareClass(xr.currentClass.letter, lang).zh}
                   <KpiHint kpiKey="flare" />
                 </strong>
                 <em>{xr.currentFlux.toExponential(2)} W/m²</em>
@@ -166,7 +166,7 @@ export default function SunTab({
               <div className="astro-flare-kpi">
                 <span>{t('astro.sun24hPeak')}</span>
                 <strong style={{ color: FLARE_TONE[xr.peakClass.letter] }}>
-                  {zhFlareClass(xr.peakClass.letter).zh}
+                  {zhFlareClass(xr.peakClass.letter, lang).zh}
                 </strong>
                 <em>{new Date(xr.peakTime).toLocaleString('zh-CN', { hour12: false })}</em>
               </div>
@@ -187,14 +187,14 @@ export default function SunTab({
                 data={xr.history.map((h) => h.v)}
                 max={Math.max(xr.peakFlux, 1e-8) * 1.1}
                 color="var(--a-sun)"
-                format={(v) => zhFlareClass(flareLevelOf(v)).zh}
+                format={(v) => zhFlareClass(flareLevelOf(v), lang).zh}
               />
             )}
 
             <div className="astro-flare-list">
               {xr.events?.length ? (
                 xr.events.slice(0, 8).map((e, i) => {
-                  const fc = zhFlareClass(e.cls)
+                  const fc = zhFlareClass(e.cls, lang)
                   return (
                     <div key={`${e.start}-${i}`} className="astro-flare-item">
                       <span className="astro-flare-item__cls" style={{ background: e.tone }}>
@@ -239,19 +239,19 @@ export default function SunTab({
                 <em>pfu</em>
               </div>
               <TermTip
-                zh={zhProtonScale(proton.currentLevel).zh}
+                zh={zhProtonScale(proton.currentLevel, lang).zh}
                 en={proton.currentLevel}
-                desc={zhProtonScale(proton.currentLevel).desc}
+                desc={zhProtonScale(proton.currentLevel, lang).desc}
               >
-                <Tag bordered={false} color={zhProtonScale(proton.currentLevel).tone}>
-                  {zhProtonScale(proton.currentLevel).zh}
+                <Tag bordered={false} color={zhProtonScale(proton.currentLevel, lang).tone}>
+                  {zhProtonScale(proton.currentLevel, lang).zh}
                   <KpiHint kpiKey="proton" />
                 </Tag>
               </TermTip>
               <div className="astro-proton-stat">
                 <span>{t('astro.sun24hPeak')}</span>
-                <strong style={{ color: zhProtonScale(proton.peakLevel).tone }}>
-                  {proton.peak} <em>pfu · {zhProtonScale(proton.peakLevel).zh}</em>
+                <strong style={{ color: zhProtonScale(proton.peakLevel, lang).tone }}>
+                  {proton.peak} <em>pfu · {zhProtonScale(proton.peakLevel, lang).zh}</em>
                 </strong>
               </div>
             </div>
@@ -368,7 +368,7 @@ export default function SunTab({
         {alertData?.items?.length ? (
           <div className="astro-alert-list">
             {alertData.items.map((a, i) => {
-              const lv = zhAlertLevel(a.level)
+              const lv = zhAlertLevel(a.level, lang)
               return (
                 <div key={`${a.productId}-${i}`} className="astro-alert-item">
                   <div className="astro-alert-item__head">

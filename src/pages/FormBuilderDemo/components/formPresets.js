@@ -12,20 +12,20 @@ try {
 }
 
 export const WIDGET_OPTIONS = [
-  { value: 'input', label: 'input 输入框' },
-  { value: 'password', label: 'password 密码框' },
-  { value: 'textarea', label: 'textarea 多行文本' },
-  { value: 'number', label: 'number 数字输入' },
-  { value: 'select', label: 'select 下拉选择' },
-  { value: 'radio-group', label: 'radio-group 单选组' },
-  { value: 'checkbox-group', label: 'checkbox-group 多选组' },
-  { value: 'switch', label: 'switch 开关' },
-  { value: 'checkbox', label: 'checkbox 勾选' },
-  { value: 'radio', label: 'radio 单选' },
-  { value: 'date-picker', label: 'date-picker 日期' },
-  { value: 'time-picker', label: 'time-picker 时间 ★' },
-  { value: 'slider', label: 'slider 滑块 ★' },
-  { value: 'rate', label: 'rate 评分 ★' },
+  { value: 'input', labelKey: 'formbuilder.widgetInput' },
+  { value: 'password', labelKey: 'formbuilder.widgetPassword' },
+  { value: 'textarea', labelKey: 'formbuilder.widgetTextarea' },
+  { value: 'number', labelKey: 'formbuilder.widgetNumber' },
+  { value: 'select', labelKey: 'formbuilder.widgetSelect' },
+  { value: 'radio-group', labelKey: 'formbuilder.widgetRadioGroup' },
+  { value: 'checkbox-group', labelKey: 'formbuilder.widgetCheckboxGroup' },
+  { value: 'switch', labelKey: 'formbuilder.widgetSwitch' },
+  { value: 'checkbox', labelKey: 'formbuilder.widgetCheckbox' },
+  { value: 'radio', labelKey: 'formbuilder.widgetRadio' },
+  { value: 'date-picker', labelKey: 'formbuilder.widgetDatePicker' },
+  { value: 'time-picker', labelKey: 'formbuilder.widgetTimePicker' },
+  { value: 'slider', labelKey: 'formbuilder.widgetSlider' },
+  { value: 'rate', labelKey: 'formbuilder.widgetRate' },
 ]
 
 export const PRESETS = {

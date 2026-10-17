@@ -46,7 +46,7 @@ export default function GeoBoard({ lockedTab = null } = {}) {
     quakes, epic, env, eonet, ghg, seaIce, tempAnomaly, bigQuakes, volcanoes, tsunami, air, weather, archive, reloadAll,
   } = useGeoData()
   const [theme, setTheme] = useState(readTheme)
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
 
   /* 页签与 URL 同步：别处「关联数据」跳 ?tab=xxx 过来时要能直接落到目标页签，
      否则读完关联理由点进去却停在默认页，等于白跳。非法参数回落到默认页签。 */
@@ -92,8 +92,8 @@ export default function GeoBoard({ lockedTab = null } = {}) {
   // 海啸威胁数：服务端只给 Category 原文，等级 rank 由词典判定（唯一真源）
   const tsunamiThreat = useMemo(() => {
     if (!tsunamiData?.events) return null
-    return tsunamiData.events.filter((e) => (zhTsunamiCategory(e.category)?.rank ?? 0) >= 2).length
-  }, [tsunamiData])
+    return tsunamiData.events.filter((e) => (zhTsunamiCategory(e.category, lang)?.rank ?? 0) >= 2).length
+  }, [tsunamiData, lang])
 
   /** antd 主题：默认白昼算法，夜航时切 darkAlgorithm 并注入深色 token */
   const antdThemeCfg = useMemo(
@@ -168,14 +168,14 @@ export default function GeoBoard({ lockedTab = null } = {}) {
           <Metric
             label={t('geo.m.maxMag')}
             value={quakeStats ? `M${quakeStats.strongest.mag?.toFixed(1)}` : '—'}
-            tone={quakeStats ? magColor(quakeStats.strongest.mag) : undefined}
+            tone={quakeStats ? magColor(quakeStats.strongest.mag, lang) : undefined}
             info={t('geo.m.maxMagInfo')}
           />
           <Metric
             label={t('geo.m.maxDepth')}
             value={quakeStats ? `${quakeStats.deepest.depth?.toFixed(0)}` : '—'}
             unit={quakeStats ? 'km' : ''}
-            tone={quakeStats ? depthClass(quakeStats.deepest.depth).color : undefined}
+            tone={quakeStats ? depthClass(quakeStats.deepest.depth, lang).color : undefined}
             info={t('geo.m.maxDepthInfo')}
           />
           <Metric

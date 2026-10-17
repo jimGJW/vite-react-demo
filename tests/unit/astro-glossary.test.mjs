@@ -24,8 +24,11 @@ import {
   zhLaunchStatus,
   zhGalaxyType,
   lookup,
+  getAstroKpi,
+  getAstroKpiGroups,
 } from '../../src/lib/astro/glossary.js'
 import { eq, ok } from './harness.mjs'
+import { pickText } from '../../src/i18n/translate.mjs'
 
 /**
  * 真实上游枚举快照（2026-10 从接口实抓）。
@@ -106,26 +109,29 @@ export default [
   /* ---------- KPI 词典：四要素齐全 ---------- */
   ['每条 KPI 都有中文名/单位/是什么/怎么读/所以呢', () => {
     Object.entries(KPI_DEFS).forEach(([k, d]) => {
-      ok(d.zh, `${k} 缺中文名`)
-      ok(d.unit, `${k} 缺单位`)
-      ok(d.what && d.what.length > 15, `${k} 「是什么」缺失或过短`)
-      ok(d.scale, `${k} 缺「怎么读」`)
-      ok(d.soWhat && d.soWhat.length > 15, `${k} 「所以呢」缺失或过短`)
+      // 字段现在是 { 'zh-CN':…, en:… }，取原文再判断长度
+      ok(pickText(d.zh, 'zh-CN'), `${k} 缺中文名`)
+      ok(pickText(d.unit, 'zh-CN'), `${k} 缺单位`)
+      ok(pickText(d.what, 'zh-CN').length > 15, `${k} 「是什么」缺失或过短`)
+      ok(pickText(d.scale, 'zh-CN'), `${k} 缺「怎么读」`)
+      ok(pickText(d.soWhat, 'zh-CN').length > 15, `${k} 「所以呢」缺失或过短`)
     })
   }],
 
   ['单位字段只放单位，不塞解释', () => {
     Object.entries(KPI_DEFS).forEach(([k, d]) => {
-      ok(d.unit.length <= 30, `${k} 单位字段被写成了解释: "${d.unit}"`)
+      const unit = pickText(d.unit, 'zh-CN')
+      ok(unit.length <= 30, `${k} 单位字段被写成了解释: "${unit}"`)
     })
   }],
 
   ['用户点名的 G 级语义已收录', () => {
     // 用户明确提过「go 代表平静」这类需求，这几条必须钉死
     ok(KPI_DEFS.gscale, '缺 gscale')
-    ok(KPI_DEFS.gscale.scale.includes('G0'), 'gscale 未解释 G0')
-    ok(KPI_DEFS.gscale.scale.includes('平静'), 'gscale 未说明「平静」')
-    ok(KPI_DEFS.kp.what.length > 15, 'kp 未解释')
+    const gscale = pickText(KPI_DEFS.gscale.scale, 'zh-CN')
+    ok(gscale.includes('G0'), 'gscale 未解释 G0')
+    ok(gscale.includes('平静'), 'gscale 未说明「平静」')
+    ok(pickText(KPI_DEFS.kp.what, 'zh-CN').length > 15, 'kp 未解释')
   }],
 
   /* ---------- 分组完整性 ---------- */
@@ -159,8 +165,9 @@ export default [
     ]) {
       ok(Object.keys(dict).length > 0, `${label} 词典为空`)
       for (const [en, item] of Object.entries(dict)) {
-        ok(item && item.zh, `${label} 的 ${en} 缺中文名`)
-        ok(item.desc && item.desc.length >= 6, `${label} 的 ${en} 释义过短：${item.desc}`)
+        ok(item && pickText(item.zh, 'zh-CN'), `${label} 的 ${en} 缺中文名`)
+        const desc = pickText(item.desc, 'zh-CN')
+        ok(desc.length >= 6, `${label} 的 ${en} 释义过短：${desc}`)
       }
     }
   }],
@@ -174,9 +181,10 @@ export default [
       [GALAXY_TYPE, '星系类型'],
     ]) {
       for (const [en, item] of Object.entries(dict)) {
-        ok(item && item.zh, `${label} 的 ${en} 缺中文名`)
+        ok(item && pickText(item.zh, 'zh-CN'), `${label} 的 ${en} 缺中文名`)
         // 释义要能独立讲清「这是个啥」，太短（如「不载人的任务。」）没有信息量
-        ok(item.desc && item.desc.length > 8, `${label} 的 ${en} 释义过短: "${item.desc}"`)
+        const desc = pickText(item.desc, 'zh-CN')
+        ok(desc.length > 8, `${label} 的 ${en} 释义过短: "${desc}"`)
       }
     }
   }],
@@ -196,7 +204,12 @@ export default [
     pairs.forEach(([abbr, full]) => {
       ok(LAUNCH_STATUS[abbr], `缺缩写 ${abbr}`)
       ok(LAUNCH_STATUS[full], `缺全名 ${full}`)
-      eq(LAUNCH_STATUS[abbr].zh, LAUNCH_STATUS[full].zh, `${abbr} 与 ${full} 译名应一致`)
+      // 比较的是「译名」而不是字段对象：两条 key 各自持有独立的 {lang} 对象
+      eq(
+        pickText(LAUNCH_STATUS[abbr].zh, 'zh-CN'),
+        pickText(LAUNCH_STATUS[full].zh, 'zh-CN'),
+        `${abbr} 与 ${full} 译名应一致`,
+      )
     })
   }],
 
@@ -205,5 +218,55 @@ export default [
     ok(DISCOVERY_METHODS['Transit Timing Variations'], '多词 key 丢失')
     ok(LAUNCH_STATUS['Go for Launch'], '多词 key 丢失')
     ok(GALAXY_TYPE['Barred Spiral'], '多词 key 丢失')
+  }],
+
+  /* ---------- 双语完整性（数据词典多语化后新增） ---------- */
+  ['各词典表的文案字段都有中英两稿', () => {
+    for (const [dict, label] of [
+      [DISCOVERY_METHODS, '发现方法'],
+      [MISSION_TYPES, '任务类型'],
+      [LAUNCH_STATUS, '发射状态'],
+      [GALAXY_TYPE, '星系类型'],
+      [FLARE_CLASSES, '耀斑等级'],
+      [PROTON_SCALES, '质子事件等级'],
+      [ALERT_LEVELS, '警报级别'],
+      [DSO_TYPES, '深空天体类型'],
+    ]) {
+      for (const [en, item] of Object.entries(dict)) {
+        ok(pickText(item.zh, 'en').length > 0, `${label} 的 ${en} 缺英文译名`)
+        ok(pickText(item.zh, 'en') !== pickText(item.zh, 'zh-CN'), `${label} 的 ${en} 英文与中文相同（漏译？）`)
+        ok(pickText(item.desc, 'en').length > 0, `${label} 的 ${en} 缺英文释义`)
+      }
+    }
+    for (const [k, d] of Object.entries(KPI_DEFS)) {
+      ok(pickText(d.zh, 'en').length > 0, `KPI ${k} 缺英文名`)
+      ok(pickText(d.what, 'en').length > 0, `KPI ${k} 缺英文「是什么」`)
+      ok(pickText(d.soWhat, 'en').length > 0, `KPI ${k} 缺英文「所以呢」`)
+    }
+  }],
+
+  ['切英文时取值函数返回英文字符串（不是 {lang} 对象）', () => {
+    const m = zhMethod('Transit', 'en')
+    eq(typeof m.zh, 'string', 'zh 必须是字符串，不能是 {lang} 对象（否则 React 会抛错）')
+    ok(m.zh.length > 0 && !/[一-鿿]/.test(m.zh), '发现方法应为英文')
+    ok(m.desc.length > 0 && !/[一-鿿]/.test(m.desc), '发现方法释义应为英文')
+    ok(zhGalaxyType('Barred Spiral', 'en').zh.length > 0, '星系类型英文非空')
+    ok(zhLaunchStatus('Go for Launch', 'Go', 'en').zh.length > 0, '发射状态英文非空')
+    // 未收录枚举在英文下仍要原样透出且带英文兜底释义
+    const miss = zhMethod('Some Brand New NASA Method 2099', 'en')
+    eq(miss.zh, 'Some Brand New NASA Method 2099', '未收录枚举应原样透出')
+    ok(miss.desc.length > 0 && !/[一-鿿]/.test(miss.desc), '未收录枚举的英文兜底释义非空')
+    // KPI 取值
+    const kpi = getAstroKpi('kp', 'en')
+    ok(kpi && kpi.what.length > 0 && !/[一-鿿]/.test(kpi.what), 'Kp 英文释义非空且无中文残留')
+    const groups = getAstroKpiGroups('en')
+    ok(groups.length > 0 && typeof groups[0].title === 'string', '分组标题必须是字符串')
+    ok(
+      groups.every((g) => g.items.every(([, a]) => typeof a === 'string' && a.length > 0)),
+      '分组别名必须是非空字符串',
+    )
+    // 未翻译语种（如 de）应落英文而不是落中文
+    ok(!/[一-鿿]/.test(zhMethod('Transit', 'de').zh), '未翻译语种应回退英文，而不是回退中文')
+    ok(/[一-鿿]/.test(zhMethod('Transit', 'zh-TW').zh), 'zh-TW 应回退简体中文')
   }],
 ]

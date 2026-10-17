@@ -9,8 +9,10 @@ import {
 import './index.scss'
 
 import {  makeData } from './components/chartData.js'
+import { useI18n } from '../../i18n/index.js'
 
 function ChartsDemo() {
+  const { t } = useI18n()
   const [data, setData] = useState(makeData)
   // 刷新即重挂载图表，重放入场动画
   const [refreshKey, setRefreshKey] = useState(0)
@@ -26,19 +28,17 @@ function ChartsDemo() {
     <div className="page-card charts-demo">
       <header className="charts-demo-header">
         <div>
-          <h1>SVG 图表组件</h1>
+          <h1>{t('charts.title')}</h1>
           <p>
-            纯 React + 原生 SVG，零依赖可移植。统一开放
-            title / subtitle / description / actions / legend / loading / onPointClick 等参数，
-            样式全部带 fallback，复制到其他项目可直接使用。
+            {t('charts.desc')}
           </p>
         </div>
         <div className="charts-demo-actions">
           <button type="button" className="btn" onClick={() => setLoading((v) => !v)}>
-            {loading ? '显示数据' : '加载骨架'}
+            {t(loading ? 'charts.showData' : 'charts.loadSkeleton')}
           </button>
           <button type="button" className="btn charts-demo-refresh" onClick={onRefresh}>
-            <span>⟳</span>实时刷新
+            <span>⟳</span>{t('charts.refresh')}
           </button>
         </div>
       </header>
@@ -47,8 +47,8 @@ function ChartsDemo() {
         <ChartCard key={`line-${refreshKey}`}>
           <LineChart
             data={data.line} height={300} unit=" 次"
-            title="访问趋势" subtitle="最近 7 天日均访问量"
-            description="渐变面积填充 + 描边绘制入场，悬停查看每日数据，点击选中"
+            title={t('charts.lineTitle')} subtitle={t('charts.lineSubtitle')}
+            description={t('charts.lineDesc')}
             legend loading={loading}
             actions={<button type="button" className="btn" onClick={onRefresh} aria-label="刷新">↻</button>}
             onPointClick={(item) => setPicked(item)}
@@ -58,8 +58,8 @@ function ChartsDemo() {
         <ChartCard key={`bar-${refreshKey}`}>
           <BarChart
             data={data.bar} height={300} unit=" 单位"
-            title="月度对比" subtitle="上半年各月产量"
-            description="自底向上生长入场，点击柱体查看详情"
+            title={t('charts.barTitle')} subtitle={t('charts.barSubtitle')}
+            description={t('charts.barDesc')}
             legend loading={loading}
             onPointClick={(item) => setPicked(item)}
           />
@@ -68,8 +68,8 @@ function ChartsDemo() {
         <ChartCard key={`pie-${refreshKey}`}>
           <PieChart
             data={data.pie} size={320} unit=" 访客"
-            title="流量来源" subtitle="各渠道占比"
-            description="扇区 + 图例联动，悬停外推，点击扇区选中"
+            title={t('charts.pieTitle')} subtitle={t('charts.pieSubtitle')}
+            description={t('charts.pieDesc')}
             loading={loading}
             onPointClick={(item) => setPicked(item)}
           />
@@ -78,8 +78,8 @@ function ChartsDemo() {
         <ChartCard key={`gauge-${refreshKey}`} className="charts-demo-card-sm">
           <GaugeChart
             value={data.gauge.value} max={data.gauge.max} size={240}
-            label="目标达成" unit="%" formatValue={(v) => `${v}`}
-            title="完成率" subtitle="本季度目标进度"
+            label={t('charts.gaugeLabel')} unit="%" formatValue={(v) => `${v}`}
+            title={t('charts.gaugeTitle')} subtitle={t('charts.gaugeSubtitle')}
             loading={loading}
           />
         </ChartCard>
@@ -87,8 +87,8 @@ function ChartsDemo() {
         <ChartCard key={`radar-${refreshKey}`} className="charts-demo-card-sm">
           <RadarChart
             data={data.radar} size={320} unit=" 分"
-            title="多维评估" subtitle="产品能力雷达"
-            description="网格环 + 数据多边形缩放入场，点击顶点查看维度"
+            title={t('charts.radarTitle')} subtitle={t('charts.radarSubtitle')}
+            description={t('charts.radarDesc')}
             loading={loading}
             onPointClick={(item) => setPicked(item)}
           />
@@ -98,8 +98,8 @@ function ChartsDemo() {
         <ChartCard key={`mline-${refreshKey}`}>
           <MultiLineChart
             series={data.multiLine} height={300} unit=" 次"
-            title="多维趋势" subtitle="本季 / 上季 / 目标 三线对比"
-            description="多系列折线，首系列渐变面积填充；开启 showLabel 演示数据标签"
+            title={t('charts.mlineTitle')} subtitle={t('charts.mlineSubtitle')}
+            description={t('charts.mlineDesc')}
             showLabel loading={loading}
             onPointClick={(item) => setPicked(item)}
           />
@@ -108,8 +108,8 @@ function ChartsDemo() {
         <ChartCard key={`mbar-${refreshKey}`}>
           <MultiBarChart
             series={data.multiBar} height={300} unit=" 单位"
-            title="分组柱状" subtitle="各月三系列并列对比"
-            description="同类别多系列并列柱，悬停高亮整系列；点击柱体选中"
+            title={t('charts.mbarTitle')} subtitle={t('charts.mbarSubtitle')}
+            description={t('charts.mbarDesc')}
             loading={loading}
             onPointClick={(item) => setPicked(item)}
           />
@@ -118,8 +118,8 @@ function ChartsDemo() {
         <ChartCard key={`stack-${refreshKey}`}>
           <StackedBarChart
             series={data.stacked} height={300} unit=" 单位"
-            title="堆叠柱状" subtitle="各季度三系列累计堆叠"
-            description="多系列自底向上累计堆叠；开启 showLabel 演示各段数值"
+            title={t('charts.stackTitle')} subtitle={t('charts.stackSubtitle')}
+            description={t('charts.stackDesc')}
             showLabel loading={loading}
             onPointClick={(item) => setPicked(item)}
           />
@@ -128,8 +128,8 @@ function ChartsDemo() {
         <ChartCard key={`mpie-${refreshKey}`} className="charts-demo-card-sm">
           <MultiPieChart
             groups={data.multiPie} size={240} unit=" 访客"
-            title="多组饼图" subtitle="三区域渠道占比并列"
-            description="多个独立饼图共享图例；悬停联动高亮同色扇区"
+            title={t('charts.mpieTitle')} subtitle={t('charts.mpieSubtitle')}
+            description={t('charts.mpieDesc')}
             loading={loading}
             onPointClick={(item) => setPicked(item)}
           />
@@ -138,8 +138,8 @@ function ChartsDemo() {
         <ChartCard key={`npie-${refreshKey}`} className="charts-demo-card-sm">
           <NestedPieChart
             data={data.drillRegionChannel} size={320} unit=" 单" donut showLabel
-            title="二级饼图" subtitle="点击扇区进入子级渠道"
-            description="钻取 Drill-down：先显示区域一级扇区（带 ▾ 提示），点击后切换为该区域各渠道子级数据，返回按钮回到一级"
+            title={t('charts.npieTitle')} subtitle={t('charts.npieSubtitle')}
+            description={t('charts.npieDesc')}
             loading={loading}
             onPointClick={(item) => setPicked(item)}
           />
@@ -148,8 +148,8 @@ function ChartsDemo() {
         <ChartCard key={`dbar-${refreshKey}`} className="charts-demo-card-sm">
           <DrilledBarChart
             data={data.drillCategoryMonth} height={300} unit=" 件" showLabel
-            title="二级柱状图" subtitle="点击柱子进入子级月度"
-            description="钻取 Drill-down：先显示品类一级柱子（带 ▾ 提示），点击后切换为该品类各月度子级数据，返回按钮回到一级"
+            title={t('charts.dbarTitle')} subtitle={t('charts.dbarSubtitle')}
+            description={t('charts.dbarDesc')}
             loading={loading}
             onPointClick={(item) => setPicked(item)}
           />
@@ -160,8 +160,8 @@ function ChartsDemo() {
           <SwitchableChart
             data={data.line} types={['line', 'bar', 'pie']} defaultType="line"
             unit=" 次" height={300} size={280}
-            title="图标切换图表 · 三色" subtitle="折线 / 柱状 / 饼图 来回切换"
-            description="右上角图标按钮切换同一数据的显示类型；切换时自动重放对应图表的入场动画，颜色一致"
+            title={t('charts.sw1Title')} subtitle={t('charts.sw1Subtitle')}
+            description={t('charts.sw1Desc')}
             showLabel loading={loading}
             onSwitch={(t) => console.log('切图:', t)}
             onPointClick={(item) => setPicked(item)}
@@ -173,8 +173,8 @@ function ChartsDemo() {
             data={data.radar.map((r) => ({ label: r.label, value: r.value, max: r.max }))}
             types={['bar', 'pie', 'radar', 'line']} defaultType="radar"
             unit=" 分" height={280} size={280}
-            title="图标切换图表 · 四选" subtitle="柱状 / 饼图 / 雷达 / 折线"
-            description="同一份能力评估数据，四种视图任意切换；支持受控 type/onTypeChange，可与外部筛选器联动"
+            title={t('charts.sw2Title')} subtitle={t('charts.sw2Subtitle')}
+            description={t('charts.sw2Desc')}
             showLegend loading={loading}
             onPointClick={(item) => setPicked(item)}
           />
@@ -182,24 +182,24 @@ function ChartsDemo() {
 
         {/* ChartCard 包装自定义内容示例 */}
         <ChartCard
-          title="ChartCard 通用容器"
-          subtitle="可包装任意图表或自定义内容"
-          description="上述每个图表都用 ChartCard 包裹以获得卡片背景；此卡展示纯自定义内容用法。"
+          title={t('charts.cardTitle')}
+          subtitle={t('charts.cardSubtitle')}
+          description={t('charts.cardDesc')}
         >
           <div className="charts-demo-stats">
             <div className="charts-demo-stat">
               <span className="charts-demo-stat-value">
                 {data.line.reduce((s, d) => s + d.value, 0).toLocaleString()}
               </span>
-              <span className="charts-demo-stat-label">周总访问</span>
+              <span className="charts-demo-stat-label">{t('charts.statWeek')}</span>
             </div>
             <div className="charts-demo-stat">
               <span className="charts-demo-stat-value">{data.gauge.value}%</span>
-              <span className="charts-demo-stat-label">完成率</span>
+              <span className="charts-demo-stat-label">{t('charts.statRate')}</span>
             </div>
             <div className="charts-demo-stat">
               <span className="charts-demo-stat-value">{data.bar.length}</span>
-              <span className="charts-demo-stat-label">月份数</span>
+              <span className="charts-demo-stat-label">{t('charts.statMonths')}</span>
             </div>
           </div>
         </ChartCard>
@@ -207,9 +207,9 @@ function ChartsDemo() {
 
       {picked && (
         <div className="charts-demo-picked">
-          已选中：<b>{picked.label}</b> = {picked.value}
-          {picked.pct != null ? `（占比 ${(picked.pct * 100).toFixed(1)}%）` : ''}
-          <button type="button" className="btn" onClick={() => setPicked(null)}>清除</button>
+          {t('charts.pickedPrefix')}<b>{picked.label}</b> = {picked.value}
+          {picked.pct != null ? t('charts.pickedPct', { pct: (picked.pct * 100).toFixed(1) }) : ''}
+          <button type="button" className="btn" onClick={() => setPicked(null)}>{t('charts.clear')}</button>
         </div>
       )}
 
@@ -221,9 +221,7 @@ function ChartsDemo() {
           SwitchableChart, ChartTypeSwitch, ChartLineIcon, ChartBarIcon &#125; from '@/components/Charts'
         </code>
         <span className="charts-demo-tip">
-          选中数据点可查看详情 · 「加载骨架」演示 loading 态 · 「实时刷新」重放动画 ·
-          <b> 二级饼图/柱状图：点击一级进入子级返回上一级</b> ·
-          <b> SwitchableChart：右上角折线/柱状/饼图/雷达图标一键来回切换</b>
+          {t('charts.footTip')}
         </span>
       </footer>
     </div>

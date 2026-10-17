@@ -54,7 +54,7 @@ export default function ErrorBoundaryDemo() {
                 </div>
               )}
             >
-              <Bomb armed={armed} label="案例①" />
+              <Bomb armed={armed} label={t('errorBoundary.parts.case1Label')} />
             </ErrorBoundary>
             <Space>
               <Button danger onClick={() => setArmed(true)}>{t('errorBoundary.triggerRender')}</Button>
@@ -129,7 +129,7 @@ onClick={() => throwError(e)}      // 事件`}</pre>
                 </div>
               )}
             >
-              <Bomb armed={armedKeyed} label="案例④" />
+              <Bomb armed={armedKeyed} label={t('errorBoundary.parts.case4Label')} />
             </ErrorBoundary>
             <Space wrap>
               <Button danger onClick={() => setArmedKeyed(true)}>{t('errorBoundary.triggerError')}</Button>

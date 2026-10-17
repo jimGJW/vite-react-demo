@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Button, Popover, Spin, Tag, Tooltip } from 'antd'
 import { QuestionCircleOutlined } from '@ant-design/icons'
-import { KPI_DEFS } from '../../../lib/astro/glossary'
+import { getAstroKpi } from '../../../lib/astro/glossary'
 import { useI18n } from '../../../i18n/index.js'
 
 /* ---------- 小工具 ---------- */
@@ -85,7 +85,8 @@ function Metric({ label, value, unit, tone, info }) {
  * 每处都写一遍 Tooltip 结构既啰嗦又容易漏 aria 属性。
  */
 function KpiHint({ kpiKey }) {
-  const def = KPI_DEFS[kpiKey]
+  const { t, lang } = useI18n()
+  const def = getAstroKpi(kpiKey, lang)
   if (!def) return null
   return (
     <Popover
@@ -99,7 +100,7 @@ function KpiHint({ kpiKey }) {
         size="small"
         icon={<QuestionCircleOutlined />}
         className="astro-kpi-hint"
-        aria-label={`解释「${def.zh}」`}
+        aria-label={t('boards.dict.explain', { name: def.zh })}
       />
     </Popover>
   )
@@ -107,19 +108,20 @@ function KpiHint({ kpiKey }) {
 
 /** 释义气泡内容：是什么 / 量纲 / 怎么读 / 所以呢 */
 function KpiCard({ kpiKey }) {
-  const def = KPI_DEFS[kpiKey]
+  const { t, lang } = useI18n()
+  const def = getAstroKpi(kpiKey, lang)
   if (!def) return null
   return (
     <div className="astro-kpi-card">
       <div className="astro-kpi-card__title">{def.zh}</div>
       <dl className="astro-kpi-card__rows">
-        <dt>单位</dt>
+        <dt>{t('boards.dict.unit')}</dt>
         <dd>{def.unit}</dd>
-        <dt>是什么</dt>
+        <dt>{t('boards.dict.what')}</dt>
         <dd>{def.what}</dd>
-        <dt>怎么读</dt>
+        <dt>{t('boards.dict.how')}</dt>
         <dd>{def.scale}</dd>
-        <dt>所以呢</dt>
+        <dt>{t('boards.dict.soWhat')}</dt>
         <dd>{def.soWhat}</dd>
       </dl>
     </div>
@@ -159,6 +161,7 @@ function TermTip({ zh, en, desc, children }) {
  * 上下弦 rx=0（直线）。蛾眉/盈凸则介于之间。
  */
 function MoonSVG({ phaseFraction, size = 130 }) {
+  const { t } = useI18n()
   const R = (size - 10) / 2
   const cx = size / 2
   const cy = size / 2
@@ -178,7 +181,7 @@ function MoonSVG({ phaseFraction, size = 130 }) {
   const litPath = `M ${cx},${top} A ${R},${R} 0 0 ${litSemiSweep} ${cx},${bottom} A ${rx},${R} 0 0 ${termSweep} ${cx},${top}`
 
   return (
-    <svg className="astro-moon" viewBox={`0 0 ${size} ${size}`} role="img" aria-label="月相图">
+    <svg className="astro-moon" viewBox={`0 0 ${size} ${size}`} role="img" aria-label={t('boards.ui.moonAria')}>
       <defs>
         <radialGradient id="moon-lit-grad" cx="40%" cy="38%">
           <stop offset="0%" stopColor="#fffaed" />
@@ -306,6 +309,22 @@ function flareLevelOf(flux) {
   { level: 'G5', label: '极强', range: '8–9', color: '#ff4d4f', desc: 'Kp 8。GPS 精度显著下降甚至无服务，航天员需进入舱避险。' },
   { level: 'G6+', label: '极端', range: '≥ 9', color: '#a8071a', desc: 'Kp 9。历史上罕见，可能长时间失去 GPS，电网与通信面临威胁。' },
 ]
+
+/**
+ * G 级对照表按语种解析（保留 level / range / color 这些与语言无关的字段）。
+ *
+ * 为什么是函数而不是常量直接导出：label 与 desc 是文案，必须跟着语种走；
+ * 而 range / color 是数据与样式，写死在常量里才不会在翻译时被误改。
+ * 键里的 `G6+` 的加号换成 `p`（boards.gscale.G6p），因为 i18n 键只认 [\w.-]，
+ * '+' 会让静态扫描与取值都不稳。
+ */
+export function gScaleRows(t) {
+  return G_SCALE_ROWS.map((r) => {
+    const key = 'boards.gscale.' + r.level.replace('+', 'p') + '.'
+    /* 第三参兜底：万一某语种漏了该键，退回常量里自带的中文，而不是把键名渲染给用户 */
+    return { ...r, label: t(key + 'label', {}, r.label), desc: t(key + 'desc', {}, r.desc) }
+  })
+}
 
 
 export { THEME_KEY, Panel, Metric, KpiHint, KpiCard, TermTip, MoonSVG, useNow, useTheme, pad, fmtUTC, fmtLocal, fmtLatLon, MARK_COLOR, FLARE_TONE, FLARE_LEVELS, flareLevelOf, G_SCALE_ROWS }
