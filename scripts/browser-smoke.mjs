@@ -96,7 +96,12 @@ async function waitForTargetReady() {
   const LIMIT = Number(process.env.CDP_WAIT) || 160
   for (let i = 0; i < LIMIT; i += 1) {
     try {
-      const res = await fetch(`http://127.0.0.1:${DEBUG_PORT}/json/version`)
+      // 给 fetch 加超时：某些环境下 localhost 会被 HTTP 代理拦截，
+      // 连接挂起却永不拒绝，没有超时就会无限卡死。
+      const ctrl = new AbortController()
+      const timer = setTimeout(() => ctrl.abort(), 3000)
+      const res = await fetch(`http://127.0.0.1:${DEBUG_PORT}/json/version`, { signal: ctrl.signal })
+      clearTimeout(timer)
       if (res.ok) return true
     } catch {
       /* 还没起来 */
@@ -174,12 +179,44 @@ await sleep(800)
 /* 开标签页：新起的实例偶尔会在「端口已就绪」之后才真正可用，
    单次的 fetch 失败直接退出会把偶发抖动误判成脚本故障，这里重试几次 */
 async function openTab() {
-  const tab = await (
-    await fetch(`http://127.0.0.1:${DEBUG_PORT}/json/new?${encodeURIComponent(BASE)}`, {
-      method: 'PUT',
-    })
-  ).json()
+  // 某些 Chrome 版本/环境下 /json/new 会挂起（创建 target 后同步导航导致），
+  // 必须给 fetch 加超时，否则脚本会无限卡死。
+  const ctrl = new AbortController()
+  const timer = setTimeout(() => ctrl.abort(), 8000)
+  let tab
+  try {
+    tab = await (
+      await fetch(`http://127.0.0.1:${DEBUG_PORT}/json/new?${encodeURIComponent(BASE)}`, {
+        method: 'PUT',
+        signal: ctrl.signal,
+      })
+    ).json()
+  } finally {
+    clearTimeout(timer)
+  }
   const ws = new WebSocket(tab.webSocketDebuggerUrl)
+  await new Promise((resolve, reject) => {
+    ws.addEventListener('open', resolve, { once: true })
+    ws.addEventListener('error', reject, { once: true })
+    setTimeout(() => reject(new Error('WebSocket 连接超时')), 10000)
+  })
+  return ws
+}
+
+/* /json/new 挂起时的兜底：直接复用已存在的 page target（about:blank），
+   后续用 Page.navigate 主动跳转，绕开「创建即导航」这一步。 */
+async function connectExisting() {
+  const ctrl = new AbortController()
+  const timer = setTimeout(() => ctrl.abort(), 8000)
+  let list
+  try {
+    list = await (await fetch(`http://127.0.0.1:${DEBUG_PORT}/json`, { signal: ctrl.signal })).json()
+  } finally {
+    clearTimeout(timer)
+  }
+  const target = (list || []).find((x) => x.type === 'page' && x.webSocketDebuggerUrl)
+  if (!target) throw new Error('没有可用的 page target')
+  const ws = new WebSocket(target.webSocketDebuggerUrl)
   await new Promise((resolve, reject) => {
     ws.addEventListener('open', resolve, { once: true })
     ws.addEventListener('error', reject, { once: true })
@@ -195,7 +232,13 @@ for (let attempt = 1; attempt <= 3 && !ws; attempt += 1) {
     ws = await openTab()
   } catch (e) {
     lastErr = e
-    await sleep(1000)
+    // /json/new 失败 → 退而求其次复用已有 target，再不行才放弃
+    try {
+      ws = await connectExisting()
+    } catch (e2) {
+      lastErr = e2
+      await sleep(1000)
+    }
   }
 }
 if (!ws) {

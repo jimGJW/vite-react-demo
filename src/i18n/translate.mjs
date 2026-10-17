@@ -54,7 +54,7 @@ export function pickLang(obj, lang) {
  * @param {string} lang 目标语种
  * @returns {string}
  */
-export function pickText(field, lang) {
+export function pickText(field, lang = 'zh-CN') {
   if (typeof field === 'string') return field
   if (!field || typeof field !== 'object') return ''
   if (field[lang]) return field[lang]

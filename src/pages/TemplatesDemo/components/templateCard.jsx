@@ -1,13 +1,13 @@
 import { Card, Tag, Typography, Tooltip } from 'antd'
 import { GithubOutlined, BranchesOutlined } from '@ant-design/icons'
 import { FRAMEWORK_COLOR } from '../../../components/Templates/index.js'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n, pickText } from '../../../i18n/index.js'
 
 const { Paragraph, Text } = Typography
 
 
 export function TemplateCard({ item }) {
-  const { t } = useI18n()
+  const { t, lang } = useI18n()
   const color = FRAMEWORK_COLOR[item.framework] || '#1677ff'
   return (
     <Card
@@ -20,18 +20,18 @@ export function TemplateCard({ item }) {
         <span className="tpl-card__fw" style={{ background: color }}>{item.framework}</span>
         <Text strong className="tpl-card__name">{item.name}</Text>
       </div>
-      <div className="tpl-card__cat">{item.category}</div>
-      <Paragraph type="secondary" className="tpl-card__desc">{item.desc}</Paragraph>
+      <div className="tpl-card__cat">{pickText(item.category, lang)}</div>
+      <Paragraph type="secondary" className="tpl-card__desc">{pickText(item.desc, lang)}</Paragraph>
 
       <ul className="tpl-card__feats">
         {item.features.map((f, i) => (
-          <li key={i}>{f}</li>
+          <li key={i}>{pickText(f, lang)}</li>
         ))}
       </ul>
 
       <div className="tpl-card__tags">
-        {item.tags.map((t) => (
-          <Tag key={t} bordered={false} className="tpl-card__tag">{t}</Tag>
+        {item.tags.map((tg, i) => (
+          <Tag key={i} bordered={false} className="tpl-card__tag">{pickText(tg, lang)}</Tag>
         ))}
       </div>
 
