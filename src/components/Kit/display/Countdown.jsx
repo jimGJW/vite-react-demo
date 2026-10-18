@@ -1,6 +1,6 @@
 import { useCountdown } from '../hooks.js'
 import { formatDuration } from '../utils.js'
-import { useI18n } from '../../../i18n'
+import { useI18n } from '@i18n'
 
 /**
  * Countdown · 倒计时

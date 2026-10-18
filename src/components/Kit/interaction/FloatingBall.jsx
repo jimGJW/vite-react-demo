@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { clamp } from '../utils.js'
-import { useI18n } from '../../../i18n'
+import { useI18n } from '@i18n'
 
 /**
  * FloatingBall · 可拖拽悬浮球

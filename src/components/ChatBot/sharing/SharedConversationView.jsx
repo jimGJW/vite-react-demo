@@ -28,7 +28,7 @@
 import { useCallback, useMemo } from 'react'
 import { Button, Result, Spin } from 'antd'
 import { EditOutlined, LinkOutlined } from '@ant-design/icons'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import ConversationList from './ConversationList.jsx'
 import useShareConversation from './useShareConversation.js'
 import { createSharedRenderers } from './sharedRenderers.jsx'

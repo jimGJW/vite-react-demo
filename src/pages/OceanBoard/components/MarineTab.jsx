@@ -10,7 +10,7 @@
  */
 import { ExperimentOutlined } from '@ant-design/icons'
 import { Empty, Table, Tooltip } from 'antd'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import { Panel, waveLevel } from './ui.jsx'
 
 /** 逐日浪高单元格：底色与文字都来自分档结果 */

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useInView } from '../hooks.js'
-import { useI18n } from '../../../i18n'
+import { useI18n } from '@i18n'
 
 /**
  * InfiniteScroll · 触底加载

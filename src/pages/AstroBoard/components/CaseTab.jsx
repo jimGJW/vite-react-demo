@@ -1,7 +1,7 @@
 import { Panel, Metric } from './ui.jsx'
-import { getTerm } from '../../../lib/boards/relations.js'
-import KeyTermCard from '../../../components/KeyTermCard/KeyTermCard.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import { getTerm } from '@lib/boards/relations.js'
+import KeyTermCard from '@components/KeyTermCard/KeyTermCard.jsx'
+import { useI18n } from '@i18n/index.js'
 
 /**
  * 深空看板「📚 真实案例」页签：用本看板的维度（发射窗口 / 月相 / 太阳活动周 / 流星雨）

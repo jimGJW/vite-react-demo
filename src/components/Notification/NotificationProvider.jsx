@@ -8,7 +8,7 @@ import {
   useState,
 } from 'react'
 import { createPortal } from 'react-dom'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import { NOTIFY_TYPES, DEFAULT_DURATION, NotificationContext } from './NotificationContext.js'
 
 /* =====================================================================

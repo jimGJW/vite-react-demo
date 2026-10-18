@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
-import DataTable from '../../components/DataTable/index.js'
-import { pickLang, useI18n } from '../../i18n/index.js'
+import DataTable from '@components/DataTable/index.js'
+import { pickLang, useI18n } from '@i18n/index.js'
 import './index.scss'
 
 
@@ -135,7 +135,7 @@ export default function DataTableDemo() {
         <h3>{t('dataTable.demo.importTitle')}</h3>
         <pre className="dt-demo-code">{`import DataTable from '@/components/DataTable'
 // 或
-import { DataTable } from '@/components/DataTable'`}</pre>
+import { DataTable } from '@components/DataTable'`}</pre>
       </section>
 
       <footer className="dt-demo-foot">

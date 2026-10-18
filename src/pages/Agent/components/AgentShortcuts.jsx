@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { SHORTCUTS } from '../lib/actionFormat.js'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /** 一键执行示例：既是快捷入口，也是给用户看的指令语法示例 */
 function AgentShortcuts({ onRun }) {

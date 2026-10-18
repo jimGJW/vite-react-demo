@@ -5,10 +5,10 @@ import {
   Countdown, Ellipsis,
   MiniArea, MiniBar, MiniProgress, NoticePanel,
   StatCard, TimelineChart, WaterWave,
-} from '../../../components/Kit/index.js'
+} from '@components/Kit/index.js'
 import { STAT_AREA, STAT_BAR, TIMELINE, NOTICE_TABS, COUNTDOWN_TARGET } from './KitData.js'
 import { ReloadOutlined } from '@ant-design/icons'
-import { useI18n, pickLang } from '../../../i18n/index.js'
+import { useI18n, pickLang } from '@i18n/index.js'
 
 export default function DisplayTab() {
   const { t, lang } = useI18n()

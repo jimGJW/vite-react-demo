@@ -12,7 +12,7 @@
 import { BookOutlined, GlobalOutlined, WarningOutlined } from '@ant-design/icons'
 import { Empty, Table, Tag, Tooltip } from 'antd'
 import { Panel, fmtBJT } from './ui.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import {
   AVIATION_CODES,
   TSUNAMI_CATEGORIES,
@@ -20,7 +20,7 @@ import {
   zhAviationCode,
   zhTsunamiCategory,
   zhVolcanoAlert,
-} from '../../../lib/earth/glossary.js'
+} from '@lib/earth/glossary.js'
 
 /** 航空色码 Tag：色即等级（绿/黄/橙/红），悬停给完整定义 */
 function ColorTag({ code }) {

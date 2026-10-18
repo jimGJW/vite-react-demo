@@ -5,11 +5,11 @@ import {
   NestedPieChart, // 二级饼图（钻取 Drill-down）
   DrilledBarChart, // 二级柱状图（钻取 Drill-down）
   SwitchableChart, // 图标切换 折线/柱状/饼图
-} from '../../components/Charts/index.js'
+} from '@components/Charts/index.js'
 import './index.scss'
 
 import {  makeData } from './components/chartData.js'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 function ChartsDemo() {
   const { t } = useI18n()

@@ -1,4 +1,4 @@
-import { DEMOS, DEMO_GROUPS } from '../../../creative/index.js'
+import { DEMOS, DEMO_GROUPS } from '@/creative/index.js'
 
 export const defaultsFor = (index) => Object.fromEntries(
   (DEMOS[index]?.params ?? []).map((p) => [p.key, p.value]),

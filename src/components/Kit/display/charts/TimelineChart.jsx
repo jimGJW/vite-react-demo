@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'react'
 import { useEcharts } from './useEcharts.js'
 import { AXIS_LINE, SPLIT_LINE, tooltipBase } from './chartBase.js'
-import { useI18n } from '../../../../i18n'
+import { useI18n } from '@i18n'
 
 /**
  * TimelineChart · 双折线时间趋势（带时间轴缩放滑块）

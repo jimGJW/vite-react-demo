@@ -4,10 +4,10 @@ import {
   truncate, wordCount, toHalfWidth, escapeRegExp, slugify, initials, trimAll,
   colorFromString, contrastColor,
   isEmail, isPhone, isIdCard, isUrl, isNumeric, isChinese,
-} from '../../../components/Utils/index.js'
+} from '@components/Utils/index.js'
 import DemoCard from './DemoCard.jsx'
 import { COLOR_SEEDS, CONTRAST_HEX } from './sampleData.js'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /** 字符串增强 / 常用校验 / 稳定配色 */
 export default function TextKitDemos() {

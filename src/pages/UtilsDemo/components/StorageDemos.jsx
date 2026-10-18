@@ -1,7 +1,7 @@
 import { Input, Tag } from 'antd'
-import { useLocalStorage, useOnline, useMediaQuery } from '../../../components/Utils/index.js'
+import { useLocalStorage, useOnline, useMediaQuery } from '@components/Utils/index.js'
 import DemoCard from './DemoCard.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /** 存储与环境：持久化 state / 网络状态 / 媒体查询 */
 export default function StorageDemos() {

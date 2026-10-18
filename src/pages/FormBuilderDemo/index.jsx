@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Form, Button, message, Tabs, Switch, Select, Input, Checkbox, Empty } from 'antd'
 import FormBuilder from 'antd-form-builder'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 import { WIDGET_OPTIONS, PRESETS, stringifyMeta } from './components/formPresets.js'

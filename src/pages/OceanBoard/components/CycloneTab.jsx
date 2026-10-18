@@ -8,8 +8,8 @@
 import { CompassOutlined, WarningOutlined } from '@ant-design/icons'
 import { Empty, Table, Tag, Tooltip } from 'antd'
 import { Panel } from './ui.jsx'
-import { zhCycloneClass, zhCycloneScale } from '../../../lib/earth/glossary.js'
-import { useI18n } from '../../../i18n/index.js'
+import { zhCycloneClass, zhCycloneScale } from '@lib/earth/glossary.js'
+import { useI18n } from '@i18n/index.js'
 
 export default function CycloneTab({ cyclones, cycData }) {
   const { t, lang } = useI18n()

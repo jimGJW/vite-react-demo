@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Button, Popover, Spin, Tag, Tooltip } from 'antd'
 import { QuestionCircleOutlined } from '@ant-design/icons'
-import { getAstroKpi } from '../../../lib/astro/glossary'
-import { useI18n } from '../../../i18n/index.js'
+import { getAstroKpi } from '@lib/astro/glossary'
+import { useI18n } from '@i18n/index.js'
 
 /* ---------- 小工具 ---------- */
 

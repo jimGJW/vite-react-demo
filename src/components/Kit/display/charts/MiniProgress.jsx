@@ -1,5 +1,5 @@
 import { Tooltip } from 'antd'
-import { useI18n } from '../../../../i18n'
+import { useI18n } from '@i18n'
 
 /**
  * MiniProgress · 细进度条（带目标值刻度）

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Menu, Tabs, Card, Typography } from 'antd'
 import { CodepenOutlined } from '@ant-design/icons'
 import { CATEGORIES, CodeBlock } from './components/StudioDemos.jsx'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import './StudioDemo.scss'
 
 const { Title, Paragraph, Text } = Typography

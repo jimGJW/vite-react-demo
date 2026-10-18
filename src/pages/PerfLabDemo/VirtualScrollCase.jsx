@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Card, Segmented, Tag, Typography } from 'antd'
 import { ThunderboltOutlined } from '@ant-design/icons'
-import { VirtualList } from '../../components/PerfLab/index.js'
-import { useI18n, pickLang } from '../../i18n/index.js'
+import { VirtualList } from '@components/PerfLab/index.js'
+import { useI18n, pickLang } from '@i18n/index.js'
 import './index.scss'
 
 const { Text } = Typography

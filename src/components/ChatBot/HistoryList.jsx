@@ -8,7 +8,7 @@
 import { memo } from 'react'
 import { Button, Drawer, Empty, List, Popconfirm, Space, Spin, Typography } from 'antd'
 import { ClearOutlined, DeleteOutlined, MessageOutlined, PlusOutlined } from '@ant-design/icons'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 const { Text } = Typography
 

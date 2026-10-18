@@ -1,7 +1,7 @@
-import { groupBy, unique, sortBy, arrayToObject, flatten, deepMerge, pick, omit } from '../../../components/Utils/index.js'
+import { groupBy, unique, sortBy, arrayToObject, flatten, deepMerge, pick, omit } from '@components/Utils/index.js'
 import DemoCard from './DemoCard.jsx'
 import { SAMPLE_ROWS } from './sampleData.js'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /** 数组与对象：分组 / 去重 / 排序 / 建索引 / 扁平化 / 合并 / 裁剪 */
 export default function ArrayDemos() {

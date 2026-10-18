@@ -5,7 +5,7 @@
 import { Button, Empty, Spin, Tag } from 'antd'
 import { BookOutlined, ReloadOutlined } from '@ant-design/icons'
 import { Panel } from './ui.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 export default function ApodTab({ apod, apodData }) {
   const { t } = useI18n()

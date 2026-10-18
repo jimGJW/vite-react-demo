@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Tag, Progress, Empty, Segmented } from 'antd'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import { WarningOutlined, InfoCircleOutlined, BugOutlined } from '@ant-design/icons'
 
 /**

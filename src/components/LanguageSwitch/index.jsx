@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { Dropdown, Tooltip } from 'antd'
 import { CheckOutlined } from '@ant-design/icons'
-import { useI18n, LANGUAGES } from '../../i18n/index.js'
+import { useI18n, LANGUAGES } from '@i18n/index.js'
 
 /** 国旗 emoji（有）或带 accent 的字母徽标（无国旗 emoji 的语种，如藏文） */
 function LangGlyph({ lang, size = 'sm' }) {

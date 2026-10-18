@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from 'react'
 import { Button, Space, Card, Typography, Tag } from 'antd'
-import CompareLayout from '../../../utils/CompareLayout.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import CompareLayout from '@/utils/CompareLayout.jsx'
+import { useI18n } from '@i18n/index.js'
 
 
 const { Text, Paragraph } = Typography

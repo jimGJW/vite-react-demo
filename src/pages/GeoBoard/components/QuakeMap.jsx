@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import { project, landPath, MAP_W, MAP_H } from '../../../components/AstroBoard/mapProjection.js'
+import { project, landPath, MAP_W, MAP_H } from '@components/AstroBoard/mapProjection.js'
 import { depthClass, fmtBJT } from './ui.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 export function QuakeMap({ quakes }) {
   const { t } = useI18n()

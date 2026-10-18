@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useFullscreen } from './useFullscreen.js'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /**
  * 全屏容器：把 children 包进可全屏的区域，并提供触发按钮（或用 renderTrigger 自定义）。

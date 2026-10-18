@@ -9,6 +9,7 @@ import { serveAstroData } from './vite-astro-proxy.mjs'
 import { serveGeoData } from './vite-geo-proxy.mjs'
 import { serveOceanData } from './vite-ocean-proxy.mjs'
 import { serveLocalMedia } from './vite-local-media.mjs'
+import { ROOT, VITE_ALIAS } from './scripts/aliases.mjs'
 
 /**
  * dev 环境下直接返回 public/ort/ 下的 onnxruntime wasm 运行时文件。
@@ -231,15 +232,23 @@ function trimAiVendorPreload() {
 export default defineConfig({
   resolve: {
     alias: {
+      // 源码路径别名：'@/xxx' 兜底 + '@i18n' / '@components' / '@lib' / '@root'，
+      // 免去 ../../../ 这类随目录层级膨胀的相对路径。定义集中在 scripts/aliases.mjs ——
+      // 那是唯一真源，npm test 的纯 Node 链路也读同一张表，避免三处各写一份后悄悄漂移。
+      // 两条边界务必守住：
+      //   1) micro-apps/ 子应用各有自己的 vite 配置，拿不到本别名，内部保持相对路径；
+      //   2) src/creative/ 会被 sync:demos 原样复制到 vue/angular 子应用，
+      //      子应用没有 components/Utils，也必须保持相对路径。
+      ...VITE_ALIAS,
       // 其他项目中直接 import '@myorg/react-svg-charts' 时：
       // 1. 本 monorepo 直接指向 workspace 包源码，零构建、HMR 实时生效
       // 2. 对外独立发布时，从 npm install 导入 dist/ 即可
-      '@myorg/react-svg-charts': path.resolve(
-        import.meta.dirname,
+      '@myorg/react-svg-charts': path.join(
+        ROOT,
         'packages/@myorg/react-svg-charts/src/index.js',
       ),
-      '@myorg/react-svg-charts/style.css': path.resolve(
-        import.meta.dirname,
+      '@myorg/react-svg-charts/style.css': path.join(
+        ROOT,
         'packages/@myorg/react-svg-charts/src/Charts.scss',
       ),
     },

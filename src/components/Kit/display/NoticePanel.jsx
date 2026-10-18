@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Badge, Button, Empty, Popover, Tabs } from 'antd'
 import { BellOutlined, CheckOutlined } from '@ant-design/icons'
-import { useI18n } from '../../../i18n'
+import { useI18n } from '@i18n'
 
 /**
  * NoticePanel · 通知面板

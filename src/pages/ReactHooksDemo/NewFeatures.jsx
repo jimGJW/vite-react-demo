@@ -1,7 +1,7 @@
 import { Suspense, use, useActionState, useDeferredValue, useEffect, useEffectEvent, useId, useOptimistic, useRef, useState, useSyncExternalStore, useTransition } from 'react'
 import { Button, Tag } from 'antd'
 import CodeBlock from './CodeBlock.jsx'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /* ══════════════════════════════════════════════════════════════════
    React 19 新特性 · 可在浏览器里真实跑通的案例集合

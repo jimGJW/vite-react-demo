@@ -26,8 +26,8 @@ import {
   createMockApi,
   createSharedRenderers,
   toShareRequest,
-} from '../../components/ChatBot/index.js'
-import { useI18n } from '../../i18n/index.js'
+} from '@components/ChatBot/index.js'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 const { Title, Paragraph, Text } = Typography

@@ -5,9 +5,9 @@ import {
   openAssistant,
   closeAssistant,
   controlAssistant,
-} from '../../components/Assistants/index.jsx'
-import VoiceAssistantPanel from '../../components/Assistants/VoiceAssistantPanel.jsx'
-import { useI18n } from '../../i18n/index.js'
+} from '@components/Assistants/index.jsx'
+import VoiceAssistantPanel from '@components/Assistants/VoiceAssistantPanel.jsx'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 const { Paragraph, Text, Title } = Typography

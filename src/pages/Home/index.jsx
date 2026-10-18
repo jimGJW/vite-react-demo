@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import StarArray from '../../components/StarArray/StarArray.jsx'
-import { useI18n } from '../../i18n/index.js'
+import StarArray from '@components/StarArray/StarArray.jsx'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 function Home() {

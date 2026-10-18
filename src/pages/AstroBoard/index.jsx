@@ -22,10 +22,10 @@ import {
   BulbOutlined,
 } from '@ant-design/icons'
 
-import { useStarCatalog } from '../../lib/astro/useStarCatalog.js'
-import { useVisibleConstellations } from '../../components/AstroBoard/skyHelpers.js'
-import { equatorialToHorizontal } from '../../lib/astro/skyProjection.js'
-import { useAstroData } from '../../lib/astro/useAstroData.js'
+import { useStarCatalog } from '@lib/astro/useStarCatalog.js'
+import { useVisibleConstellations } from '@components/AstroBoard/skyHelpers.js'
+import { equatorialToHorizontal } from '@lib/astro/skyProjection.js'
+import { useAstroData } from '@lib/astro/useAstroData.js'
 import {
   parseTLESet,
   propagateAt,
@@ -44,9 +44,9 @@ import {
   METEOR_SHOWERS,
   meteorShowerStatus,
   stargazingWindow,
-} from '../../lib/astro/orbital.js'
+} from '@lib/astro/orbital.js'
 import { useSearchParams } from 'react-router-dom'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 import { useNow, useTheme, fmtUTC, Metric } from './components/ui.jsx'
@@ -62,9 +62,9 @@ import CometTab from './components/CometTab.jsx'
 import ApproachTab from './components/ApproachTab.jsx'
 import ObserveTab from './components/ObserveTab.jsx'
 import CaseTab from './components/CaseTab.jsx'
-import RelatedData from '../../components/RelatedData/index.jsx'
-import { TAB_KEYS } from '../../lib/boards/relations.js'
-import { healthOf } from '../../lib/boards/health.js'
+import RelatedData from '@components/RelatedData/index.jsx'
+import { TAB_KEYS } from '@lib/boards/relations.js'
+import { healthOf } from '@lib/boards/health.js'
 
 export default function AstroBoard({ lockedTab = null } = {}) {
   const { iss, stations, spaceWeather, exoplanets, neo, launches, solarActivity, aurora, solarCycle, apod, comet, approach, observe, reloadAll } = useAstroData()

@@ -1,5 +1,5 @@
 import { memo, useCallback, useState } from 'react'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import { fmtSize } from './notVideoUtils.js'
 
 /**

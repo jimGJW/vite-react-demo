@@ -13,7 +13,7 @@ import { memo, useMemo, useState } from 'react'
 import { Button, Empty, Segmented, Space, Table } from 'antd'
 import LineChart from './LineChart.jsx'
 import { FIELD_LABELS } from '../config.js'
-import { useI18n, pickLang } from '../../../i18n/index.js'
+import { useI18n, pickLang } from '@i18n/index.js'
 import { buildColumns, downloadCSV, normalizeRows, toCSV } from './utils.js'
 
 export default memo(function DataTable({ data, title, shareState = false }) {

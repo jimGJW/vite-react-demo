@@ -4,8 +4,8 @@ import { NodeIndexOutlined } from '@ant-design/icons'
 import {
    createHistory, commit, undo, redo,
   current, canUndo, canRedo, jumpTo,
-} from '../../components/StateMachine/machine.js'
-import { useI18n, pickLang } from '../../i18n/index.js'
+} from '@components/StateMachine/machine.js'
+import { useI18n, pickLang } from '@i18n/index.js'
 import './index.scss'
 
 const { Title, Paragraph, Text } = Typography

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import useWhisperRecorder from '../../hooks/useWhisperRecorder.jsx'
-import { useI18n } from '../../i18n/index.js'
+import useWhisperRecorder from '@/hooks/useWhisperRecorder.jsx'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 /** 获取浏览器 SpeechRecognition 构造器（Chrome / Edge / Safari 等） */

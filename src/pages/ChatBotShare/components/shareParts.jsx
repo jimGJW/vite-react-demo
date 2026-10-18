@@ -1,7 +1,7 @@
 export const DEFAULT_SHARE_ID = 'demo-share'
 
 export const USAGE = `// 1) 最小可用：注入请求实例与接口地址
-import { SharedConversationView } from '../../components/ChatBot'
+import { SharedConversationView } from '@/pages/components/ChatBot'
 
 <SharedConversationView
   userShareId={query.get('userShareId')}
@@ -11,11 +11,11 @@ import { SharedConversationView } from '../../components/ChatBot'
 />
 
 // 2) 复用项目现成的请求客户端（createHttpApi / createMockApi）
-import { toShareRequest } from '../../components/ChatBot'
+import { toShareRequest } from '@/pages/components/ChatBot'
 export const request = toShareRequest(createHttpApi({ baseURL: '/gateway' }))
 
 // 3) 只要逻辑，UI 全自定义
-import { useShareConversation } from '../../components/ChatBot'
+import { useShareConversation } from '@/pages/components/ChatBot'
 export const { data, loading, error, sessionId, reload } = useShareConversation({ userShareId })
 
 // 4) 不要卡片依赖：renderers={{}} 即退化成 Markdown 渲染

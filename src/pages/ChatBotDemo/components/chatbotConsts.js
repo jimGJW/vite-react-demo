@@ -1,9 +1,9 @@
 export const USAGE = `// 1) 开箱即用：内置模拟后端，直接渲染即可
-import { ChatBot } from '../../components/ChatBot'
+import { ChatBot } from '@/pages/components/ChatBot'
 <ChatBot title="AI 助手" height={620} />
 
 // 2) 接入真实后端：注入自己的请求封装
-import { createHttpApi, ChatBot } from '../../components/ChatBot'
+import { createHttpApi, ChatBot } from '@/pages/components/ChatBot'
 export const api = createHttpApi({
   baseURL: '/gateway',
   getToken: () => localStorage.getItem('token'),
@@ -12,7 +12,7 @@ export const api = createHttpApi({
 <ChatBot api={api} userId={uid} title="AI 助手" />
 
 // 3) 只要逻辑，自己写 UI
-import { useMessage, createHttpApi } from '../../components/ChatBot'
+import { useMessage, createHttpApi } from '@/pages/components/ChatBot'
 export const chat = useMessage({ api: createHttpApi({ baseURL }) })`
 
 export const PROTOCOL = `① 状态帧  { type:"status", state:"body-reset"|其它, message:"正在查询…" }

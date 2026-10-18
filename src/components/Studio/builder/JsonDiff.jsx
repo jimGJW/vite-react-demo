@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Tag, Segmented } from 'antd'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /**
  * JsonDiff · 结构化对象对比

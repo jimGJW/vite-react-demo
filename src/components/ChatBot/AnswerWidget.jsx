@@ -20,7 +20,7 @@
 import { memo, useDeferredValue } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import ListCard from './cards/ListCard.jsx'
 import DataTable from './cards/DataTable.jsx'
 import TaskTable from './cards/TaskTable.jsx'

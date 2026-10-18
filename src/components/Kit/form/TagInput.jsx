@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { Tag } from 'antd'
-import { useI18n } from '../../../i18n'
+import { useI18n } from '@i18n'
 
 /**
  * TagInput · 标签输入

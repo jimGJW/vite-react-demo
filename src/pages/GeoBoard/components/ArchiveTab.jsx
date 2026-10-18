@@ -13,7 +13,7 @@
 import { ExperimentOutlined } from '@ant-design/icons'
 import { Empty, Statistic } from 'antd'
 import { Panel } from './ui.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /** 年均温 → 条形宽度与配色：以 10 年区间为标尺，冷暖用蓝红区分 */
 function barOf(v, min, max) {

@@ -1,6 +1,6 @@
-import { GALAXY } from "../../../lib/astro/orbital.js"
-import { zhGalaxyType } from "../../../lib/astro/glossary"
-import { useI18n } from '../../../i18n/index.js'
+import { GALAXY } from "@lib/astro/orbital.js"
+import { zhGalaxyType } from "@lib/astro/glossary"
+import { useI18n } from '@i18n/index.js'
 
 /* ---------- 银河系数据表 ---------- */
 

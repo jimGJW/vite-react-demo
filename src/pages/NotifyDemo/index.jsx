@@ -1,4 +1,4 @@
-import {  NotificationProvider } from '../../components/Notification'
+import {  NotificationProvider } from '@components/Notification'
 import './index.scss'
 
 /** 演示页内容：必须在 Provider 内调用 useNotification，因此拆出内部组件 */

@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 import { Alert, Button, Card, Space, Tag, Typography } from 'antd'
 import { ReloadOutlined } from '@ant-design/icons'
-import { MICRO_APPS } from '../../micros/config.js'
-import { useSubAppLoader } from '../../micros/useSubAppLoader.js'
-import { useI18n } from '../../i18n/index.js'
+import { MICRO_APPS } from '@/micros/config.js'
+import { useSubAppLoader } from '@/micros/useSubAppLoader.js'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 const { Title, Paragraph, Text } = Typography

@@ -9,7 +9,7 @@ import {
   HomeOutlined, UserOutlined, BarChartOutlined,
   ShoppingOutlined, ClockCircleOutlined,
 } from '@ant-design/icons'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /* Typography 家族按解构取用：Paragraph / Text 是本页主力排版组件 */
 const { Paragraph, Text } = Typography

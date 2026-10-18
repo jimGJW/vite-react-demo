@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /**
  * 指令输入行：麦克风按钮 + 多行输入 + 执行按钮。

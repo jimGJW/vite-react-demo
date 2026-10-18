@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Button, Card, Empty, Segmented, Slider, Space, Tag, Typography } from 'antd'
 import { ApartmentOutlined } from '@ant-design/icons'
-import { createWorker, crunch } from '../../components/PerfLab/index.js'
-import { useI18n } from '../../i18n/index.js'
+import { createWorker, crunch } from '@components/PerfLab/index.js'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 const { Text } = Typography

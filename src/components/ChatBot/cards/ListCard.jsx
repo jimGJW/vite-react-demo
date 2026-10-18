@@ -6,7 +6,7 @@
 
 import { memo, useMemo } from 'react'
 import { Tag } from 'antd'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import { parseArray } from './utils.js'
 
 export default memo(function ListCard({ data, onAsk, sessionDetailId }) {

@@ -5,7 +5,7 @@
  */
 
 import { FIELD_LABELS } from '../config.js'
-import { pickLang } from '../../../i18n/index.js'
+import { pickLang } from '@i18n/index.js'
 
 const MAX_COLUMNS = 8
 

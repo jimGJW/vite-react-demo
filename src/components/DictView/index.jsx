@@ -11,7 +11,7 @@
  * 文案为什么查 boards 命名空间：三块看板共用同一个「是什么 / 怎么读 / 所以呢」骨架，
  * 各写一份就必然漂移（改一处忘两处），抽出共享命名空间后翻译也只需写一次。
  */
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 export default function DictView({ theme = 'light', intro, groups, defs, children }) {
   const { t } = useI18n()

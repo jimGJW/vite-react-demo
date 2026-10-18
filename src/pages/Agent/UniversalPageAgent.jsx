@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef, useEffect, useMemo } from 'react'
-import useWhisperRecorder from '../../hooks/useWhisperRecorder'
-import { useI18n } from '../../i18n/index.js'
+import useWhisperRecorder from '@/hooks/useWhisperRecorder'
+import { useI18n } from '@i18n/index.js'
 import { AGENT_PROTOCOL, executeActions, normalizeVoiceText, parseToActions } from './lib/nlp.js'
 import { createDirectBridge } from './lib/directBridge.js'
 import { createIframeBridge } from './lib/iframeBridge.js'

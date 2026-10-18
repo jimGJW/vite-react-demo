@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Input, Empty } from 'antd'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /**
  * 树形表格：可逐级展开 / 收起，支持按名称检索。

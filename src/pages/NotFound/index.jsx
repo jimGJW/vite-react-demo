@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 function NotFound() {

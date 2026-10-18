@@ -5,10 +5,10 @@
 import { Empty, Segmented, Tag } from 'antd'
 import { AimOutlined, CompassOutlined } from '@ant-design/icons'
 import { Panel, TermTip } from './ui.jsx'
-import { zhMethod } from '../../../lib/astro/glossary'
+import { zhMethod } from '@lib/astro/glossary'
 import GalaxyDiagram from './GalaxyDiagram.jsx'
 import GalaxyFacts from './GalaxyFacts.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 export default function DeepTab({ exoplanets, galaxyView, setGalaxyView }) {
   const { t, lang } = useI18n()

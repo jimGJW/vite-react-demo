@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import QrScanBtn from '../../components/QrScanBtn'
-import { useI18n } from '../../i18n'
+import QrScanBtn from '@components/QrScanBtn'
+import { useI18n } from '@i18n'
 import './index.scss'
 
 export default function ScanDemo() {

@@ -22,7 +22,7 @@ import {
   NEW_CHAT_MARK,
 } from './chatStream.js'
 import { useAutoScroll } from './useAutoScroll.js'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /** 一条助手消息的初始形态 */
 function blankAssistant() {

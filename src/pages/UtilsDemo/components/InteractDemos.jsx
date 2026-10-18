@@ -2,9 +2,9 @@ import { useRef, useState } from 'react'
 import { Button, Space, Typography } from 'antd'
 import {
   useWatermark, useClickOutside, useHover, useSize, useKeyPress, useCopy,
-} from '../../../components/Utils/index.js'
+} from '@components/Utils/index.js'
 import DemoCard from './DemoCard.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 const { Text } = Typography
 

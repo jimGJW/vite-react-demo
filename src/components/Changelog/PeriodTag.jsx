@@ -1,4 +1,4 @@
-import { useI18n, pickText } from '../../i18n/index.js'
+import { useI18n, pickText } from '@i18n/index.js'
 import { ROUTE_LATEST, getRelease } from './releases.js'
 import './Changelog.scss'
 

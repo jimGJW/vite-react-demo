@@ -27,7 +27,7 @@ import {
   magToRadius,
   refractionDeg,
   skyToPixel,
-} from '../../lib/astro/skyProjection'
+} from '@lib/astro/skyProjection'
 import { azToCompass, observability, raToConstellation } from './skyHelpers.js'
 
 /** 地平线以下的高度角阈值（度）：略低于 0，留一点余量给大气折射 */

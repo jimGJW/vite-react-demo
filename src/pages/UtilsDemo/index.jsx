@@ -17,7 +17,7 @@ import ExportDemos from './components/ExportDemos.jsx'
 import TextKitDemos from './components/TextKitDemos.jsx'
 import CalcKitDemos from './components/CalcKitDemos.jsx'
 import NewHookDemos from './components/NewHookDemos.jsx'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 const { Title, Paragraph } = Typography

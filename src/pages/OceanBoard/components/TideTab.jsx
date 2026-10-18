@@ -4,10 +4,10 @@
  */
 import { CloudOutlined, DotChartOutlined, LineChartOutlined } from '@ant-design/icons'
 import { Empty, Table, Tag, Tooltip } from 'antd'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import { Panel, fmtSiteDay } from './ui.jsx'
 import TideCurve from './TideCurve.jsx'
-import { zhTideDatum } from '../../../lib/earth/glossary.js'
+import { zhTideDatum } from '@lib/earth/glossary.js'
 
 /** 站点气温概况条（与潮位同站，给「海陆温差」一个上下文） */
 function StationWeather({ wx }) {

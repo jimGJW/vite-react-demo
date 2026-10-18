@@ -1,5 +1,5 @@
 import { memo, useCallback, useEffect, useState } from 'react'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import { fmtSize, splitArgs } from './notVideoUtils.js'
 
 const TIMEOUT_OPTIONS = [

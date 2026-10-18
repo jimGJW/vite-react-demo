@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /** 执行统计条：成功/失败动作数、语音次数、成功率 */
 function AgentStatsBar({ stats, onClear }) {

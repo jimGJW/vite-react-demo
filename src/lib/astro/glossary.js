@@ -14,7 +14,7 @@
  *      `localize()`，因此调用方拿到的永远是「可直接渲染的字符串」而不是 {lang:text} 对象。
  */
 
-import { pickText, localize } from '../../i18n/translate.mjs'
+import { pickText, localize } from '@i18n/translate.mjs'
 
 /** 系外行星发现方法（NASA Exoplanet Archive 的 discoverymethod 字段） */
 export const DISCOVERY_METHODS = {

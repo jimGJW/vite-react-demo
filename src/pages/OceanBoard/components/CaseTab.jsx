@@ -1,8 +1,8 @@
 import { Panel, Metric } from './ui.jsx'
-import { waveLevel } from '../../../lib/earth/glossary.js'
-import { getTerm } from '../../../lib/boards/relations.js'
-import { useI18n } from '../../../i18n/index.js'
-import KeyTermCard from '../../../components/KeyTermCard/KeyTermCard.jsx'
+import { waveLevel } from '@lib/earth/glossary.js'
+import { getTerm } from '@lib/boards/relations.js'
+import { useI18n } from '@i18n/index.js'
+import KeyTermCard from '@components/KeyTermCard/KeyTermCard.jsx'
 
 /**
  * 海洋看板「📚 真实案例」页签：用本看板的维度（有效波高分级 / 飓风分级 / ONI 厄尔尼诺指数）

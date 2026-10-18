@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { clamp } from '../../utils.js'
+import { clamp } from '@components/Kit/utils.js'
 
 /**
  * WaterWave · 水波纹进度球

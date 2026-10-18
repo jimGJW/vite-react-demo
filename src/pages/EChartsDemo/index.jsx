@@ -6,7 +6,7 @@ import {
 } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
 import {  Space, Tag, Typography } from 'antd'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 echarts.use([

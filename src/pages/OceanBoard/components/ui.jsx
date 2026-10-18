@@ -1,7 +1,7 @@
 import { Spin, Tag, Tooltip } from 'antd'
 // 海况分级的阈值统一定义在词典里，这里只转发（与 GeoBoard/ui.jsx 同一套做法）
-import { waveLevel } from '../../../lib/earth/glossary.js'
-import { useI18n } from '../../../i18n/index.js'
+import { waveLevel } from '@lib/earth/glossary.js'
+import { useI18n } from '@i18n/index.js'
 
 /* ---------- 小工具 ---------- */
 

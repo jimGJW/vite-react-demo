@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Button, Slider } from 'antd'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /**
  * 帧序列播放器：按 fps 在若干「帧」之间循环播放，支持播放/暂停、逐帧、进度拖动。

@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Button, Space, Switch, Tag, Typography } from 'antd'
-import { useToggle, useCounter, useInterval } from '../../../components/Utils/index.js'
+import { useToggle, useCounter, useInterval } from '@components/Utils/index.js'
 import DemoCard from './DemoCard.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 const { Text } = Typography
 

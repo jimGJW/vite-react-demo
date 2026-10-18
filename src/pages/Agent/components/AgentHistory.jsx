@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { formatActionIcon, formatActionText } from '../lib/actionFormat.js'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /** 单条历史：指令 + 每个动作的成功/失败标记 */
 const HistoryItem = memo(function HistoryItem({ item, onCopy, onRedo }) {

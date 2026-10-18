@@ -2,7 +2,7 @@ import { clamp } from '../Utils/index.js'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAssistants } from './AssistantContext.jsx'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import './QuickAssistant.scss'
 
 const LS_POS = 'assistant.quick.pos'

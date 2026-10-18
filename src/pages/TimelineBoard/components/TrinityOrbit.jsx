@@ -14,7 +14,7 @@
  */
 
 import { useNavigate } from 'react-router-dom'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 const C = 240 // 画布中心（viewBox 480）
 const R = 28 // 行星半径

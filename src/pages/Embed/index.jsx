@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react'
 import './index.scss'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 import { devicePresets, MODES } from './components/embedData.js'
 

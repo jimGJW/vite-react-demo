@@ -1,8 +1,8 @@
-import TestCenter from '../../components/TestCenter/index.js'
+import TestCenter from '@components/TestCenter/index.js'
 // 以原始字符串导入真实 Python 脚本与 App 路由源码，保证展示内容与文件同步
-import pyScript from '../../../tests/test_pages.py?raw'
+import pyScript from '@root/tests/test_pages.py?raw'
 import { CASES } from './components/testCases.js'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 function TestCenterDemo() {

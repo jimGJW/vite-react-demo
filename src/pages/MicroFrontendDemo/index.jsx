@@ -1,8 +1,8 @@
 import { Alert, Button, Card, Space, Tag, Typography, Divider } from 'antd'
-import { MICRO_APP_LIST } from '../../micros/config.js'
-import { isInQiankun } from '../../micros/qiankunHost.js'
-import { useSubAppLoader } from '../../micros/useSubAppLoader.js'
-import { useI18n } from '../../i18n/index.js'
+import { MICRO_APP_LIST } from '@/micros/config.js'
+import { isInQiankun } from '@/micros/qiankunHost.js'
+import { useSubAppLoader } from '@/micros/useSubAppLoader.js'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 const { Title, Paragraph, Text } = Typography

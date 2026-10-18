@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Button, Input, Space, Empty } from 'antd'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import { DownOutlined, RightOutlined, TeamOutlined } from '@ant-design/icons'
 
 /**

@@ -1,7 +1,7 @@
-import { clamp } from '../../Utils/index.js'
+import { clamp } from '@components/Utils/index.js'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import AutoScrollList from './AutoScrollList.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /**
  * AdaptTable · 大屏自适应表格

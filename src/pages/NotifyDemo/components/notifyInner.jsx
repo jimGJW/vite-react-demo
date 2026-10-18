@@ -1,5 +1,5 @@
-import { NotificationDrawer, useNotification } from '../../../components/Notification'
-import { useI18n } from '../../../i18n/index.js'
+import { NotificationDrawer, useNotification } from '@components/Notification'
+import { useI18n } from '@i18n/index.js'
 
 /** 演示页内容：必须在 Provider 内调用 useNotification，因此拆出内部组件 */
 

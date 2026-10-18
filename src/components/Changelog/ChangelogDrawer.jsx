@@ -1,8 +1,8 @@
 import { Drawer, Segmented, Timeline, Tag } from 'antd'
 import { RELEASES, getRelease } from './releases.js'
-import { useChangelog } from '../../contexts/ChangelogContext.jsx'
+import { useChangelog } from '@/contexts/ChangelogContext.jsx'
 import { PeriodTag } from './PeriodTag.jsx'
-import { useI18n, pickText } from '../../i18n/index.js'
+import { useI18n, pickText } from '@i18n/index.js'
 import './Changelog.scss'
 
 /**

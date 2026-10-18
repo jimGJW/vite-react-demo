@@ -1,11 +1,11 @@
 import {  Space, Tag, Typography } from 'antd'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import {
   
   
   
   
-} from '../../../components/Assistants/index.jsx'
+} from '@components/Assistants/index.jsx'
 
 const { Paragraph, Title } = Typography
 

@@ -8,11 +8,11 @@
  */
 import { CompassOutlined, LineChartOutlined } from '@ant-design/icons'
 import { Empty, Tooltip } from 'antd'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import { Panel } from './ui.jsx'
 import OniChart from './OniChart.jsx'
 import AnomalyBars from './AnomalyBars.jsx'
-import { zhOscillation } from '../../../lib/earth/glossary.js'
+import { zhOscillation } from '@lib/earth/glossary.js'
 
 /** 一条振荡指数的概况条 */
 function OscHead({ osc }) {

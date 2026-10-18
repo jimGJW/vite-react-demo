@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Button, Tooltip, message } from 'antd'
 import { CodeOutlined, CopyOutlined, DownOutlined, RightOutlined } from '@ant-design/icons'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /**
  * 教学用代码块：默认展开、带语言标签与一键复制。

@@ -1,8 +1,8 @@
-import { clamp } from '../../Utils/index.js'
+import { clamp } from '@components/Utils/index.js'
 import { useRef, useState } from 'react'
 import { Button, Space, Input, Tag, Empty } from 'antd'
 import { ZoomInOutlined, ZoomOutOutlined, ReloadOutlined, EnvironmentOutlined, ClearOutlined } from '@ant-design/icons'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /**
  * ImageAnnotator · 图像标注与缩放平移

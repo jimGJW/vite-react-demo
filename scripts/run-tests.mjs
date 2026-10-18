@@ -11,7 +11,13 @@
  */
 import fs from 'node:fs'
 import path from 'node:path'
+import { register } from 'node:module'
 import { pathToFileURL } from 'node:url'
+
+// 纯 Node 环境下补上 '@/xxx' 别名解析（别名本体定义在 vite.config.js 的 resolve.alias，
+// 只对 dev / build / ssrLoadModule 这类 Vite 链路生效，Node 直接 import 时认不出来）。
+// 必须在动态 import 测试文件之前注册，否则 src 模块里的 '@/...' 会 ERR_MODULE_NOT_FOUND。
+register('./alias-loader.mjs', import.meta.url)
 
 const ROOT = path.resolve(import.meta.dirname, '..')
 const DIR = path.join(ROOT, 'tests', 'unit')

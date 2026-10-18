@@ -15,7 +15,7 @@
  *       调用方拿到的永远是字符串（zh 族落简体、其余落英文）。
  */
 
-import { pickText, localize } from '../../i18n/translate.mjs'
+import { pickText, localize } from '@i18n/translate.mjs'
 
 /* ============ 枚举 → 中文 ============ */
 

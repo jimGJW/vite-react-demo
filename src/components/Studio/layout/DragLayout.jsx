@@ -1,4 +1,4 @@
-import { clamp } from '../../Utils/index.js'
+import { clamp } from '@components/Utils/index.js'
 import { useEffect, useRef, useState } from 'react'
 
 

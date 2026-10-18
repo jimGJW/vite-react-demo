@@ -3,7 +3,7 @@ import { ThunderboltOutlined } from '@ant-design/icons'
 import InteractionTab from './components/InteractionTab.jsx'
 import DisplayTab from './components/DisplayTab.jsx'
 import FormTab from './components/FormTab.jsx'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 const { Paragraph, Text } = Typography

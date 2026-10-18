@@ -14,7 +14,7 @@
 import { ExperimentOutlined } from '@ant-design/icons'
 import { Empty, Table, Tag, Tooltip } from 'antd'
 import { Panel } from './ui.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /** 周期(天) → 人类可读：超过 2 年用「年」，否则保留「天」更精确 */
 function perText(per, t) {

@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
-import CommandPalette from '../../components/CommandPalette'
-import { useI18n } from '../../i18n/index.js'
+import CommandPalette from '@components/CommandPalette'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 /**

@@ -4,11 +4,11 @@
  */
 import { Menu, Select, Spin, Tag, Tooltip } from 'antd'
 import { AimOutlined, MoonOutlined, RocketOutlined } from '@ant-design/icons'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import { MARK_COLOR, Metric, MoonSVG, Panel, fmtLatLon, pad } from './ui.jsx'
-import { OBSERVERS, footprintRadius } from '../../../lib/astro/orbital.js'
-import { getAstroKpi } from '../../../lib/astro/glossary'
-import WorldTrackMap from '../../../components/AstroBoard/WorldTrackMap.jsx'
+import { OBSERVERS, footprintRadius } from '@lib/astro/orbital.js'
+import { getAstroKpi } from '@lib/astro/glossary'
+import WorldTrackMap from '@components/AstroBoard/WorldTrackMap.jsx'
 
 export default function EarthTab({
   iss, stations, selected, setSelected, positions, active, track, sun, moon, visibleTo, passes, passCity, setPassCity,

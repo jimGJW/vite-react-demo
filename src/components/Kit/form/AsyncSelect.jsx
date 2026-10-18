@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Select, Spin } from 'antd'
-import { useI18n } from '../../../i18n'
+import { useI18n } from '@i18n'
 
 /**
  * AsyncSelect · 异步选择器

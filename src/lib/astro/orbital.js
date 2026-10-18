@@ -19,7 +19,7 @@ import {
   degreesLong,
   sunPos,
 } from 'satellite.js'
-import { pickText } from '../../i18n/translate.mjs'
+import { pickText } from '@i18n/translate.mjs'
 
 export const DEG = Math.PI / 180
 /** 地球平均半径 (km) */

@@ -1,9 +1,9 @@
 import { Button, Space } from 'antd'
 import { DownloadOutlined } from '@ant-design/icons'
-import { exportCsv, copyText } from '../../../components/Utils/index.js'
+import { exportCsv, copyText } from '@components/Utils/index.js'
 import DemoCard from './DemoCard.jsx'
 import { SAMPLE_ROWS, CSV_COLUMNS } from './sampleData.js'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /** 导出与下载：CSV 导出（带 BOM）+ 文本复制 */
 export default function ExportDemos() {

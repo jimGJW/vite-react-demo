@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /**
  * 语音状态条：录音中 / 本地识别中 / 首次下载模型进度。

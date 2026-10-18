@@ -5,7 +5,7 @@ import TodoProvider from './TodoProvider.jsx'
 import { useTodos } from './todoContext.js'
 import RenderBadge from './RenderBadge.jsx'
 import CodeBlock from './CodeBlock.jsx'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 const CASE_CODE = `// ① 创建通道（模块顶层，只建一次）
 export const TodoContext = createContext(null)

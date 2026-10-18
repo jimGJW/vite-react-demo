@@ -12,9 +12,9 @@
 import { useMemo, useState } from 'react'
 import { Input } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
-import DictView from '../../../components/DictView/index.jsx'
-import { useI18n, localize } from '../../../i18n/index.js'
-import '../../../components/DictView/index.scss'
+import DictView from '@components/DictView/index.jsx'
+import { useI18n, localize } from '@i18n/index.js'
+import '@components/DictView/index.scss'
 import {
   EARTH_KPI_DEFS,
   getEarthKpiGroups,
@@ -29,8 +29,8 @@ import {
   VOLCANO_ALERTS,
   AVIATION_CODES,
   TSUNAMI_CATEGORIES,
-} from '../../../lib/earth/glossary.js'
-import { KPI_DEFS, getAstroKpiGroups } from '../../../lib/astro/glossary.js'
+} from '@lib/earth/glossary.js'
+import { KPI_DEFS, getAstroKpiGroups } from '@lib/astro/glossary.js'
 
 const norm = (s) => (s == null ? '' : String(s)).toLowerCase()
 

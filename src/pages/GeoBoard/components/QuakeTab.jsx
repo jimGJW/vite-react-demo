@@ -5,7 +5,7 @@
 import { AimOutlined } from '@ant-design/icons'
 import { Empty, Table, Tag } from 'antd'
 import { Panel, depthClass, fmtBJT, magColor } from './ui.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import QuakeMap from './QuakeMap.jsx'
 import StrongQuakes from './StrongQuakes.jsx'
 

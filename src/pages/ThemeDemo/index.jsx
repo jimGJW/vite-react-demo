@@ -1,5 +1,5 @@
-import { ThemeProvider, ThemeToggle, useTheme } from '../../components/ThemeProvider'
-import { useI18n } from '../../i18n/index.js'
+import { ThemeProvider, ThemeToggle, useTheme } from '@components/ThemeProvider'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 /** 读取并展示当前主题上下文值 */

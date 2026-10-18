@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
-import { treeToArray, arrayToTree, findTreeNode } from '../../../components/Utils/index.js'
+import { treeToArray, arrayToTree, findTreeNode } from '@components/Utils/index.js'
 import DemoCard from './DemoCard.jsx'
 import { SAMPLE_TREE, FLAT_LIST } from './sampleData.js'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /** 树结构：平铺 / 还原 / 深度查找 */
 export default function TreeDemos() {

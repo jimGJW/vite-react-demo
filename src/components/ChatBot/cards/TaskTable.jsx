@@ -12,7 +12,7 @@ import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { Button, Empty, Space, Table, Tag, Tooltip, message } from 'antd'
 import { parseArray } from './utils.js'
 import { FIELD_LABELS, POLL_INTERVAL, POLL_TIMEOUT } from '../config.js'
-import { useI18n, pickLang } from '../../../i18n/index.js'
+import { useI18n, pickLang } from '@i18n/index.js'
 
 const STATUS_COLOR = {
   已完成: 'success',

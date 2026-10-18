@@ -1,4 +1,4 @@
-import { createMachine } from "../../../components/StateMachine/machine.js"
+import { createMachine } from "@components/StateMachine/machine.js"
 export const TICKET = createMachine({
   initial: 'draft',
   states: {

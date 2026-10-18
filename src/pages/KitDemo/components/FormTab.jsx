@@ -5,9 +5,9 @@ import {
   AsyncSelect,
 
   TagInput, TimeRangeInput,
-} from '../../../components/Kit/index.js'
+} from '@components/Kit/index.js'
 import { DEFAULT_RANGES, OVERLAP_RANGES, INITIAL_TAGS, loadDevices } from './KitData.js'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 export default function FormTab() {
   const { t } = useI18n()

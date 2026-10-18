@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import {  Button, Card, Space, Tag, Typography } from 'antd'
 import { SafetyCertificateOutlined } from '@ant-design/icons'
-import ErrorBoundary from '../../components/ErrorBoundary/index.jsx'
-import { useI18n } from '../../i18n/index.js'
+import ErrorBoundary from '@components/ErrorBoundary/index.jsx'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 const { Title, Paragraph, Text } = Typography

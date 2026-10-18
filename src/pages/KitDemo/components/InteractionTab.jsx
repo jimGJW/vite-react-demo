@@ -5,10 +5,10 @@ import {
   AutoScrollText, FloatingBall, InfiniteScroll,
   PullToRefresh, SignaturePad,
   SortableList,
-} from '../../../components/Kit/index.js'
+} from '@components/Kit/index.js'
 import { INITIAL_CARDS, makeRows } from './KitData.js'
 import { ArrowUpOutlined } from '@ant-design/icons'
-import { useI18n, pickLang } from '../../../i18n/index.js'
+import { useI18n, pickLang } from '@i18n/index.js'
 
 export default function InteractionTab() {
   const { t, lang } = useI18n()

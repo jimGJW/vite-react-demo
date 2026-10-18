@@ -6,8 +6,8 @@
  * 所以按气体分卡，各自缩放，共享同一套视觉语言。
  */
 import { Tooltip } from 'antd'
-import { GREENHOUSE_GASES } from '../../../lib/earth/glossary.js'
-import { useI18n, localize } from '../../../i18n/index.js'
+import { GREENHOUSE_GASES } from '@lib/earth/glossary.js'
+import { useI18n, localize } from '@i18n/index.js'
 
 /** 单气体的迷你折线（纯 SVG，无依赖） */
 function Spark({ history, color }) {

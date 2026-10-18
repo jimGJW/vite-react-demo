@@ -1,6 +1,6 @@
 import { Alert, Button, Space } from 'antd'
-import { useAsyncError } from '../../../components/ErrorBoundary/useAsyncError.js'
-import { useI18n } from '../../../i18n/index.js'
+import { useAsyncError } from '@components/ErrorBoundary/useAsyncError.js'
+import { useI18n } from '@i18n/index.js'
 
 
 export function Bomb({ armed, label }) {

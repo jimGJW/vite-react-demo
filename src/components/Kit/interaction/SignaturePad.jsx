@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Button, Space, Tooltip } from 'antd'
 import { ClearOutlined, DownloadOutlined, UndoOutlined } from '@ant-design/icons'
-import { useI18n } from '../../../i18n'
+import { useI18n } from '@i18n'
 
 /**
  * SignaturePad · 电子签名板

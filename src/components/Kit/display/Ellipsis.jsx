@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { Tooltip } from 'antd'
 import { useOverflow } from '../hooks.js'
-import { useI18n } from '../../../i18n'
+import { useI18n } from '@i18n'
 
 /**
  * Ellipsis · 文本省略

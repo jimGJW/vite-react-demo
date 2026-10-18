@@ -1,6 +1,6 @@
 import { Component } from 'react'
 import { Button } from 'antd'
-import { I18nContext, translate, MESSAGES, DEFAULT_LANG } from '../../../i18n/index.js'
+import { I18nContext, translate, MESSAGES, DEFAULT_LANG } from '@i18n/index.js'
 
 /**
  * 错误边界：捕获子树渲染期异常，展示兜底 UI 并支持重试。

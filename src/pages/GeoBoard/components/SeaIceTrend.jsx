@@ -1,4 +1,4 @@
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 export function SeaIceTrend({ history, latest, avg1980s, avg2010s, declinePct, zh = '北极', monthLabel = '9 月' }) {
   const { t } = useI18n()

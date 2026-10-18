@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react'
 import { Empty, Segmented, Tag } from 'antd'
 import { KpiHint, TermTip } from './ui.jsx'
-import { azToCompass, observability } from '../../../components/AstroBoard/skyHelpers.js'
-import { equatorialToHorizontal } from '../../../lib/astro/skyProjection.js'
-import { zhDsoType } from '../../../lib/astro/glossary'
-import { useI18n } from '../../../i18n/index.js'
+import { azToCompass, observability } from '@components/AstroBoard/skyHelpers.js'
+import { equatorialToHorizontal } from '@lib/astro/skyProjection.js'
+import { zhDsoType } from '@lib/astro/glossary'
+import { useI18n } from '@i18n/index.js'
 
 /* ---------- 星图侧栏辅助 ---------- */
 

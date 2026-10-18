@@ -1,4 +1,4 @@
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 export function OniChart({ history, latest, state }) {
   const { t } = useI18n()

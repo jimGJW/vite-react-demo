@@ -14,8 +14,8 @@
 import { ExperimentOutlined } from '@ant-design/icons'
 import { Empty, Table, Tag, Tooltip } from 'antd'
 import { Panel, aqiLevel } from './ui.jsx'
-import { uvLevel } from '../../../lib/earth/glossary.js'
-import { useI18n } from '../../../i18n/index.js'
+import { uvLevel } from '@lib/earth/glossary.js'
+import { useI18n } from '@i18n/index.js'
 
 /** AQI 数值 → 带底色的胶囊（颜色与等级名都来自词典，不在组件里重复定义阈值） */
 function AqiPill({ v }) {

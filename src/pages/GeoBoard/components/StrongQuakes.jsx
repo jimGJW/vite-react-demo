@@ -7,8 +7,8 @@
  */
 import { Empty, Table, Tag, Tooltip } from 'antd'
 import { depthClass, fmtBJT } from './ui.jsx'
-import { magBand } from '../../../lib/earth/glossary.js'
-import { useI18n } from '../../../i18n/index.js'
+import { magBand } from '@lib/earth/glossary.js'
+import { useI18n } from '@i18n/index.js'
 
 export default function StrongQuakes({ byDay, quakes, count, perDay, strongest, windowDays = 30 }) {
   const { t, lang } = useI18n()

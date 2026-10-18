@@ -1,16 +1,16 @@
 import { useMemo, useRef, useState } from 'react'
 import { Button, Card, Input, Space, Table, Tag, Typography } from 'antd'
 import { ApiOutlined } from '@ant-design/icons'
-import { useCopy } from '../../components/Utils/index.js'
+import { useCopy } from '@components/Utils/index.js'
 import {
   useFullscreen, useWakeLock, useGeolocation,
   useNotification, useShare, useNetworkInfo, useVibrate,
-} from '../../components/WebApi/hooks.js'
+} from '@components/WebApi/hooks.js'
 import {
   detectCapabilities, networkTier, formatCoords, describePermission,
-} from '../../components/WebApi/device.js'
+} from '@components/WebApi/device.js'
 import './index.scss'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 const { Title, Paragraph, Text } = Typography
 

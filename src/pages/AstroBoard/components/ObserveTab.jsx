@@ -12,7 +12,7 @@
 import { ExperimentOutlined } from '@ant-design/icons'
 import { Empty, Tooltip } from 'antd'
 import { Panel } from './ui.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /** 分数 → 档位 key（颜色与建议经 t() 查找）。阈值是展示口径，与服务端评分权重配套 */
 function bandOf(score) {

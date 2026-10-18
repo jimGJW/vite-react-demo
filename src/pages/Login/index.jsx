@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../contexts/useAuth.js'
-import { useStyleMode } from '../../contexts/StyleModeContext.jsx'
-import { useI18n } from '../../i18n/index.js'
+import { useAuth } from '@/contexts/useAuth.js'
+import { useStyleMode } from '@/contexts/StyleModeContext.jsx'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 function Login() {

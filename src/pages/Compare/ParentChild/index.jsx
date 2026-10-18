@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Input, Button, List, Tag, Divider, message } from 'antd'
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
-import CompareLayout from '../../../utils/CompareLayout.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import CompareLayout from '@/utils/CompareLayout.jsx'
+import { useI18n } from '@i18n/index.js'
 
 
 /* =====================================================================

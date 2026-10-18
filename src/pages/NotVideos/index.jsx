@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import './index.scss'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import VideoCarousel from './components/VideoCarousel.jsx'
 import DocViewer from './components/DocViewer.jsx'
 import PythonRunner from './components/PythonRunner.jsx'

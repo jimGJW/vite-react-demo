@@ -1,8 +1,8 @@
 import { memo, useCallback, useMemo, useState } from 'react'
 import { Button, Card, Space, Tag, Typography } from 'antd'
 import { ExperimentOutlined } from '@ant-design/icons'
-import { RenderTally } from '../../components/PerfLab/index.js'
-import { useI18n, pickLang } from '../../i18n/index.js'
+import { RenderTally } from '@components/PerfLab/index.js'
+import { useI18n, pickLang } from '@i18n/index.js'
 import './index.scss'
 
 const { Text } = Typography

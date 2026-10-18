@@ -1,4 +1,4 @@
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import { fmtSiteDay, fmtSiteTime } from './ui.jsx'
 
 export function TideCurve({ series, latest, station }) {

@@ -6,7 +6,7 @@
  */
 
 import { useMemo } from 'react'
-import { equatorialToHorizontal } from '../../lib/astro/skyProjection.js'
+import { equatorialToHorizontal } from '@lib/astro/skyProjection.js'
 
 /** 方位角 → 中文方位名（16 方位罗盘） */
 const AZ_16 = ['北', '北北东', '东北', '东北东', '东', '东南东', '东南', '南南东',

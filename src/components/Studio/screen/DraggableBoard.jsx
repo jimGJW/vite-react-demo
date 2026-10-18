@@ -1,6 +1,6 @@
-import { clamp } from '../../Utils/index.js'
+import { clamp } from '@components/Utils/index.js'
 import { useRef, useState } from 'react'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /**
  * DraggableBoard · 可编排看板

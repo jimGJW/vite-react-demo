@@ -11,7 +11,7 @@
  */
 import { ExperimentOutlined } from '@ant-design/icons'
 import { Empty, Tooltip } from 'antd'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import { Panel } from './ui.jsx'
 
 /** 海温 → 冷暖色：26.5°C 是台风生成阈值，单独标出来 */

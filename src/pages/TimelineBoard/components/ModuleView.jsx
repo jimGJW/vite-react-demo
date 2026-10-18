@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import { Button, Empty, Select, Tooltip } from 'antd'
 import { CloseOutlined, DeleteOutlined } from '@ant-design/icons'
-import AstroBoard from '../../AstroBoard/index.jsx'
-import GeoBoard from '../../GeoBoard/index.jsx'
-import OceanBoard from '../../OceanBoard/index.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import AstroBoard from '@/pages/AstroBoard/index.jsx'
+import GeoBoard from '@/pages/GeoBoard/index.jsx'
+import OceanBoard from '@/pages/OceanBoard/index.jsx'
+import { useI18n } from '@i18n/index.js'
 import './ModuleView.scss'
 
 /* 可选模块：按看板分组，value 用 `${看板}:${tabKey}` 作为唯一标识 */

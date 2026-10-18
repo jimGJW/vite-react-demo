@@ -13,7 +13,7 @@
 import { ExperimentOutlined } from '@ant-design/icons'
 import { Empty, Table, Tooltip } from 'antd'
 import { Panel } from './ui.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /** CAD 的日期形如 "2026-Oct-15 00:01"，转成中文短格式 */
 function dateText(cd) {

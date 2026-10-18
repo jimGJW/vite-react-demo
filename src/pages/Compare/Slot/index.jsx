@@ -3,8 +3,8 @@ import { Button, Space, Tag, Typography, Rate, Avatar } from 'antd'
 import {
   UserOutlined, SettingOutlined, HeartOutlined,
 } from '@ant-design/icons'
-import CompareLayout from '../../../utils/CompareLayout.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import CompareLayout from '@/utils/CompareLayout.jsx'
+import { useI18n } from '@i18n/index.js'
 
 const { Text } = Typography
 

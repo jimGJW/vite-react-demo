@@ -11,7 +11,7 @@
 import { ExperimentOutlined } from '@ant-design/icons'
 import { Empty, Tooltip } from 'antd'
 import { Panel } from './ui.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /** 风向度数 → 八方位 i18n 键 */
 const DIR_KEYS = ['geo.wx.dir.n', 'geo.wx.dir.ne', 'geo.wx.dir.e', 'geo.wx.dir.se', 'geo.wx.dir.s', 'geo.wx.dir.sw', 'geo.wx.dir.w', 'geo.wx.dir.nw']

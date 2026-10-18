@@ -1,8 +1,8 @@
 import { Spin, Tag, Tooltip } from 'antd'
 // 震源深度分带 / AQI 分级 / 震级分档的阈值统一定义在词典里（唯一真源），
 // 这里只做转发——否则「名词解释」写的阈值和页面上的颜色会各说各话。
-import { depthClass, aqiLevel, magBand } from '../../../lib/earth/glossary.js'
-import { useI18n } from '../../../i18n/index.js'
+import { depthClass, aqiLevel, magBand } from '@lib/earth/glossary.js'
+import { useI18n } from '@i18n/index.js'
 
 /* ---------- 小工具 ---------- */
 

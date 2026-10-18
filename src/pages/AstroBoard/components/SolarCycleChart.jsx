@@ -10,7 +10,7 @@
  * X 轴是「距今月数」而非真实日期：观测（近 60 个月）与预测（未来 57 个月）
  * 在时间轴上首尾相接，用相对月数才能让两段共用一个刻度。
  */
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 export function SolarCycleChart({ data }) {
   const { t } = useI18n()

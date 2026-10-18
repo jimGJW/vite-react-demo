@@ -2,7 +2,7 @@ import { Tabs } from 'antd'
 import ContextCase from './ContextCase.jsx'
 import ApiBasics from './ApiBasics.jsx'
 import NewFeatures from './NewFeatures.jsx'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 const CORE_APIS = [

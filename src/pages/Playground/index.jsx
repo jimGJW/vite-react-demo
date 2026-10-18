@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { DEMOS, DEMO_GROUPS } from '../../creative/index.js'
+import { DEMOS, DEMO_GROUPS } from '@/creative/index.js'
 import './index.scss'
 
 /**

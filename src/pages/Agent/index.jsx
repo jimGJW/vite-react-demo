@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import UniversalPageAgent from './UniversalPageAgent'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 function Agent({ onAgentExecute }) {

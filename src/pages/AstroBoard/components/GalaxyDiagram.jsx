@@ -1,7 +1,7 @@
 /* ---------- 银河系示意图 ---------- */
-import { GALAXY } from "../../../lib/astro/orbital.js"
-import { zhGalaxyType } from "../../../lib/astro/glossary"
-import { useI18n } from '../../../i18n/index.js'
+import { GALAXY } from "@lib/astro/orbital.js"
+import { zhGalaxyType } from "@lib/astro/glossary"
+import { useI18n } from '@i18n/index.js'
 
 export function GalaxyDiagram() {
   const { t } = useI18n()

@@ -1,4 +1,4 @@
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 export function Co2Trend({ history, latest, growthPerYear }) {
   const { t } = useI18n()

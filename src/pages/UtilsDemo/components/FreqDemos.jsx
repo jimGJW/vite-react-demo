@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
 import { Input, Button, Space, Typography } from 'antd'
-import { debounce, throttle, retry, sleep, useDebounce, useThrottle } from '../../../components/Utils/index.js'
+import { debounce, throttle, retry, sleep, useDebounce, useThrottle } from '@components/Utils/index.js'
 import DemoCard from './DemoCard.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 const { Text } = Typography
 

@@ -1,6 +1,6 @@
 import { Alert, Card, Col, Row, Space, Tag, Typography } from 'antd'
-import { ChatBot } from '../../components/ChatBot/index.js'
-import { useI18n } from '../../i18n/index.js'
+import { ChatBot } from '@components/ChatBot/index.js'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 const { Title, Paragraph, Text } = Typography

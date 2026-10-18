@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /**
  * 顶部标题栏：显示当前模式并可切换。

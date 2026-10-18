@@ -20,7 +20,7 @@ import { Avatar, Divider, Empty } from 'antd'
 import { RobotOutlined, UserOutlined } from '@ant-design/icons'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import { isNewChatItem } from './shareProtocol.js'
 
 /* 插件数组是常量，提到模块级避免每次渲染新建数组、让 markdown 内部缓存失效 */

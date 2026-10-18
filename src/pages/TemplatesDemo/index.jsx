@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
 import {  Typography, Segmented, Empty } from 'antd'
 import {  AppstoreOutlined } from '@ant-design/icons'
-import { TEMPLATES, GROUPS } from '../../components/Templates/index.js'
-import { useI18n } from '../../i18n/index.js'
+import { TEMPLATES, GROUPS } from '@components/Templates/index.js'
+import { useI18n } from '@i18n/index.js'
 import './TemplatesDemo.scss'
 
 const { Title, Paragraph } = Typography

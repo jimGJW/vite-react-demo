@@ -2,7 +2,7 @@ import { createContext, memo, useCallback, useContext, useMemo, useState } from 
 import { Button, Switch, Tag, message } from 'antd'
 import RenderBadge from './RenderBadge.jsx'
 import CodeBlock from './CodeBlock.jsx'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 // 每个 API 的 purpose / points 文案已在 i18n 中；用静态映射把 name 对应到字面量 key，
 // 避免使用变量拼接 key（规则禁止动态构造 key）。

@@ -7,7 +7,7 @@ import {
 } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
 import { Card, Segmented } from 'antd'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 echarts.use([
   BarChart, LineChart, PieChart, RadarChart, ScatterChart,

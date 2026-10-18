@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Card, Segmented, Switch, Tag, Typography } from 'antd'
 import { DashboardOutlined } from '@ant-design/icons'
-import { useFps, summarizeFrames, toPolylinePoints } from '../../components/PerfLab/index.js'
-import { fib } from '../../components/PerfLab/workerClient.js'
-import { useI18n } from '../../i18n/index.js'
+import { useFps, summarizeFrames, toPolylinePoints } from '@components/PerfLab/index.js'
+import { fib } from '@components/PerfLab/workerClient.js'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 const { Text } = Typography

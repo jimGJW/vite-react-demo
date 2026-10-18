@@ -1,6 +1,6 @@
 import { ORBIT_DATA } from '../orbitData.js'
 
-import { clamp } from '../../../components/Utils/index.js'
+import { clamp } from '@components/Utils/index.js'
 
 export { clamp }
 

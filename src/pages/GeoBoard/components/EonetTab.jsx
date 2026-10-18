@@ -7,8 +7,8 @@ import { useMemo } from 'react'
 import { FireOutlined } from '@ant-design/icons'
 import { Empty, Table, Tag } from 'antd'
 import { Panel } from './ui.jsx'
-import { useI18n } from '../../../i18n/index.js'
-import { project, landPath, MAP_W, MAP_H } from '../../../components/AstroBoard/mapProjection.js'
+import { useI18n } from '@i18n/index.js'
+import { project, landPath, MAP_W, MAP_H } from '@components/AstroBoard/mapProjection.js'
 
 /** EONET 分类 → 落点/标签配色 */
 const CAT_COLOR = {

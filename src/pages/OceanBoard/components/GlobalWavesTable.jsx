@@ -4,7 +4,7 @@
  * 注意：该源请求带 timezone=UTC，时刻列为 UTC。
  */
 import { Empty, Table } from 'antd'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import { waveLevel } from './ui.jsx'
 
 export default function GlobalWavesTable({ spots }) {

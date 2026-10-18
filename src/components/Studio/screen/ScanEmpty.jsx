@@ -13,7 +13,7 @@
  *   <ScanEmpty text="暂无告警" subText="最近 24 小时无异常" height={220} />
  */
 
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 export default function ScanEmpty({
   text,

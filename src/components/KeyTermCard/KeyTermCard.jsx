@@ -5,11 +5,11 @@
  * 和「数据词典」（/timeline 的 GlossaryHub）是同一份释义，单一真源。
  *
  * 用法：
- *   import { getTerm } from '../../lib/boards/relations.js'
+ *   import { getTerm } from '@/lib/boards/relations.js'
  *   <KeyTermCard term={getTerm('earth', 'depth')} />
  */
 
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import './KeyTermCard.scss'
 
 export default function KeyTermCard({ term, theme = 'dark' }) {

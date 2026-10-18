@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { Input, Space, Tag } from 'antd'
 import {
   formatDate, formatRelativeTime, diffDays, formatFileSize, formatThousands, formatPercent, mask,
-} from '../../../components/Utils/index.js'
+} from '@components/Utils/index.js'
 import DemoCard from './DemoCard.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /** 格式化与脱敏：日期 / 相对时间 / 体积 / 千分位 / 百分比 / 打码 */
 export default function FormatDemos() {

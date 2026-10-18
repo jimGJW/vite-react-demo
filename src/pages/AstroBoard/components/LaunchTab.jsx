@@ -5,8 +5,8 @@
 import { Tag } from 'antd'
 import { CalendarOutlined } from '@ant-design/icons'
 import { Panel, TermTip } from './ui.jsx'
-import { zhLaunchStatus, zhMissionType } from '../../../lib/astro/glossary'
-import { useI18n } from '../../../i18n/index.js'
+import { zhLaunchStatus, zhMissionType } from '@lib/astro/glossary'
+import { useI18n } from '@i18n/index.js'
 
 export default function LaunchTab({ launches, launchData }) {
   const { t, lang } = useI18n()

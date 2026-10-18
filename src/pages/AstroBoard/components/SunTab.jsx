@@ -7,9 +7,9 @@ import { AlertOutlined, CompassOutlined, ThunderboltOutlined } from '@ant-design
 import { FLARE_TONE, KpiCard, KpiHint, Panel, TermTip, flareLevelOf, gScaleRows } from './ui.jsx'
 import SolarCycleChart from './SolarCycleChart.jsx'
 import Sparkline from './Sparkline.jsx'
-import { f107Level, solarWindLevel } from '../../../lib/astro/orbital.js'
-import { zhAlertLevel, zhFlareClass, zhProtonScale } from '../../../lib/astro/glossary'
-import { useI18n } from '../../../i18n/index.js'
+import { f107Level, solarWindLevel } from '@lib/astro/orbital.js'
+import { zhAlertLevel, zhFlareClass, zhProtonScale } from '@lib/astro/glossary'
+import { useI18n } from '@i18n/index.js'
 
 export default function SunTab({
   spaceWeather, solarActivity, aurora, solarCycle, sw, kp, kpInfo, solar, xr, proton, alertData, auroraData, cycleData,

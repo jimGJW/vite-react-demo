@@ -19,9 +19,9 @@
  * 再交给组件，组件永远拿到可直接渲染的字符串。
  */
 
-import { KPI_DEFS } from '../../lib/astro/glossary.js'
-import { EARTH_KPI_DEFS } from '../../lib/earth/glossary.js'
-import { pickText, localize } from '../../i18n/translate.mjs'
+import { KPI_DEFS } from '@lib/astro/glossary.js'
+import { EARTH_KPI_DEFS } from '@lib/earth/glossary.js'
+import { pickText, localize } from '@i18n/translate.mjs'
 
 /** 三块看板的元信息：主色与 TimelineBoard/三位一体动画共用同一套 */
 export const BOARD_META = {

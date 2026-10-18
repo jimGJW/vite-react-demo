@@ -24,7 +24,7 @@
 
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { Alert, Button, Input, Space, Tooltip, Typography, message as antdMessage } from 'antd'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import {
   ClearOutlined,
   HistoryOutlined,

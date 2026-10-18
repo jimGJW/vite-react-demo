@@ -4,7 +4,7 @@
  */
 import { CompassOutlined, LineChartOutlined, TableOutlined } from '@ant-design/icons'
 import { Empty, Table, Tooltip } from 'antd'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import { Panel, waveLevel } from './ui.jsx'
 import WaveForecast from './WaveForecast.jsx'
 import GlobalWavesTable from './GlobalWavesTable.jsx'

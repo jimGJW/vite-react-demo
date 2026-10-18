@@ -9,8 +9,8 @@ import {
   RuleBuilder, JsonDiff, ImageAnnotator, DynamicForm, OrgTree, ScanReport,
   AnchorNav, PageTabs, Highlighter, TreeTable, EditableTable, DragLayout,
   CanvasGauge, CardCarousel3D, FramePlayer, ContextMenu, ErrorBoundary, Fullscreen,
-} from '../../../components/Studio/index.js'
-import { useI18n } from '../../../i18n/index.js'
+} from '@components/Studio/index.js'
+import { useI18n } from '@i18n/index.js'
 
 const { Text } = Typography
 

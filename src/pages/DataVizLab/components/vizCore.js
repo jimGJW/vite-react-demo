@@ -1,4 +1,4 @@
-import { clamp } from '../../../components/Utils/index.js'
+import { clamp } from '@components/Utils/index.js'
 
 export { clamp }
 

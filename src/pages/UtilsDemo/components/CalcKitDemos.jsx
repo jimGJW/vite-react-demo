@@ -6,10 +6,10 @@ import {
   countBy, sumBy, move,
   get, set, has, invert, mapValues,
   startOfDay, endOfDay, addDays, isSameDay, weekdayOf, daysInMonth, isLeapYear,
-} from '../../../components/Utils/index.js'
+} from '@components/Utils/index.js'
 import DemoCard from './DemoCard.jsx'
 import { SAMPLE_ROWS, NUMS, BASE_DATE } from './sampleData.js'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /** 数值统计 / 集合运算 / 对象路径 / 日期增强 */
 export default function CalcKitDemos() {

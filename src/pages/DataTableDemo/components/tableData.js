@@ -1,4 +1,4 @@
-import { pickLang } from '../../../i18n/index.js'
+import { pickLang } from '@i18n/index.js'
 
 export const STATUS_LIST = [
   {

@@ -1,8 +1,8 @@
 import { Button, Dropdown } from 'antd'
 import { HistoryOutlined } from '@ant-design/icons'
 import { RELEASES, TOTAL_CHANGES } from './releases.js'
-import { useChangelog } from '../../contexts/ChangelogContext.jsx'
-import { useI18n, pickText } from '../../i18n/index.js'
+import { useChangelog } from '@/contexts/ChangelogContext.jsx'
+import { useI18n, pickText } from '@i18n/index.js'
 import './Changelog.scss'
 
 /**

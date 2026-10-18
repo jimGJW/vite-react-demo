@@ -23,14 +23,14 @@ export const CASES = [
   {
     id: 'd1', groupKey: 'testCenter.cases.groupData', nameKey: 'testCenter.cases.d1',
     run: async () => {
-      const { STARS } = await import('../../../components/StarArray/stars-data.js')
+      const { STARS } = await import('@components/StarArray/stars-data.js')
       return { pass: STARS.length === 365, detail: `实际 ${STARS.length} 颗` }
     },
   },
   {
     id: 'd2', groupKey: 'testCenter.cases.groupData', nameKey: 'testCenter.cases.d2',
     run: async () => {
-      const { STARS } = await import('../../../components/StarArray/stars-data.js')
+      const { STARS } = await import('@components/StarArray/stars-data.js')
       const dup = STARS.length - new Set(STARS.map((s) => s.name)).size
       return { pass: dup === 0, detail: dup ? `重复 ${dup} 个` : '全部唯一' }
     },
@@ -38,7 +38,7 @@ export const CASES = [
   {
     id: 'd3', groupKey: 'testCenter.cases.groupData', nameKey: 'testCenter.cases.d3',
     run: async () => {
-      const { STARS } = await import('../../../components/StarArray/stars-data.js')
+      const { STARS } = await import('@components/StarArray/stars-data.js')
       const miss = STARS.filter(
         (s) => !s.tag || s.mag == null || !s.distance || !s.color || !s.note,
       )
@@ -48,7 +48,7 @@ export const CASES = [
   {
     id: 'd4', groupKey: 'testCenter.cases.groupData', nameKey: 'testCenter.cases.d4',
     run: async () => {
-      const { STARS } = await import('../../../components/StarArray/stars-data.js')
+      const { STARS } = await import('@components/StarArray/stars-data.js')
       const sirius = STARS.find((s) => s.name === '天狼星')
       const ok = !!sirius && !!sirius.tag && !sirius.tag.includes('型')
       return { pass: ok, detail: sirius?.tag || '未找到天狼星' }
@@ -73,7 +73,7 @@ export const CASES = [
   {
     id: 'r1', groupKey: 'testCenter.cases.groupRoute', nameKey: 'testCenter.cases.r1',
     run: async () => {
-      const src = (await import('../../../App.jsx?raw')).default
+      const src = (await import('@/App.jsx?raw')).default
       const expected = [
         'login', 'about', 'dashboard', 'scan', 'embed', 'agent', 'voice',
         'form-builder', 'theme', 'charts', 'command-palette', 'notify', 'data-table', '404',
@@ -91,7 +91,7 @@ export const CASES = [
   {
     id: 'r2', groupKey: 'testCenter.cases.groupRoute', nameKey: 'testCenter.cases.r2',
     run: async () => {
-      const src = (await import('../../../App.jsx?raw')).default
+      const src = (await import('@/App.jsx?raw')).default
       return {
         pass: src.includes('RequireAuth') && src.includes('<Navigate to="/login"'),
         detail: src.includes('RequireAuth') ? '守卫已配置' : '未发现 RequireAuth',
@@ -103,7 +103,7 @@ export const CASES = [
   {
     id: 'u1', groupKey: 'testCenter.cases.groupUtils', nameKey: 'testCenter.cases.u1',
     run: async () => {
-      const mod = await import('../../../components/Utils/index.js')
+      const mod = await import('@components/Utils/index.js')
       const fns = ['formatDate', 'formatRelativeTime', 'debounce', 'throttle', 'mask', 'exportCsv',
         'copyText', 'groupBy', 'arrayToTree', 'treeToArray', 'deepMerge', 'pick', 'omit',
         'safeJsonParse', 'hexToRgba', 'classNames']
@@ -124,7 +124,7 @@ export const CASES = [
     id: 'u2', groupKey: 'testCenter.cases.groupUtils', nameKey: 'testCenter.cases.u2',
     run: async () => {
       const { classNames, escapeHtml, hexToRgba, camelToKebab, kebabToCamel } =
-        await import('../../../components/Utils/utils.js')
+        await import('@components/Utils/utils.js')
       const ok = classNames('a', { b: true, c: false }, ['d']) === 'a b d'
         && escapeHtml('<b>') === '&lt;b&gt;'
         && hexToRgba('#ff0000', 0.5) === 'rgba(255, 0, 0, 0.5)'
@@ -136,7 +136,7 @@ export const CASES = [
   {
     id: 'u3', groupKey: 'testCenter.cases.groupUtils', nameKey: 'testCenter.cases.u3',
     run: async () => {
-      const { setStorage, getStorage, removeStorage } = await import('../../../components/Utils/utils.js')
+      const { setStorage, getStorage, removeStorage } = await import('@components/Utils/utils.js')
       const key = '__utils_test_key__'
       setStorage(key, { a: 1 })
       const okWrite = JSON.stringify(getStorage(key)) === '{"a":1}'
@@ -153,7 +153,7 @@ export const CASES = [
   {
     id: 'u4', groupKey: 'testCenter.cases.groupUtils', nameKey: 'testCenter.cases.u4',
     run: async () => {
-      const { debounce, throttle } = await import('../../../components/Utils/utils.js')
+      const { debounce, throttle } = await import('@components/Utils/utils.js')
       let d = 0
       const dFn = debounce(() => { d += 1 }, 40)
       dFn(); dFn(); dFn()
@@ -173,7 +173,7 @@ export const CASES = [
   {
     id: 'u5', groupKey: 'testCenter.cases.groupUtils', nameKey: 'testCenter.cases.u5',
     run: async () => {
-      const src = (await import('../../../App.jsx?raw')).default
+      const src = (await import('@/App.jsx?raw')).default
       const hasUtils = src.includes('path="utils"')
       const hasTpl = src.includes('path="templates"')
       return {

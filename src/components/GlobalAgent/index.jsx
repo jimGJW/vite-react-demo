@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import UniversalPageAgent from '../../pages/Agent/UniversalPageAgent'
+import UniversalPageAgent from '@/pages/Agent/UniversalPageAgent'
 import { useNavigate as useReactRouterNavigate } from 'react-router-dom'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 import './index.scss'
 

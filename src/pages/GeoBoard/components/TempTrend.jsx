@@ -5,7 +5,7 @@
  * 一眼就能看到「早年几乎全蓝、近三十年几乎全红」这个结构性转变——
  * 折线图会把这种转变柔化成一条斜线。
  */
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 export default function TempTrend({ annual, latest12, lastYear, warmest, baseline }) {
   const { t } = useI18n()

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Input, Switch, Slider, Space, Tag, Divider, Typography } from 'antd'
-import CompareLayout from '../../../utils/CompareLayout.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import CompareLayout from '@/utils/CompareLayout.jsx'
+import { useI18n } from '@i18n/index.js'
 
 
 const { Text } = Typography

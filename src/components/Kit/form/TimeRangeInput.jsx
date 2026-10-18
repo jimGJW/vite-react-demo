@@ -3,7 +3,7 @@ import { Button, TimePicker, Tooltip } from 'antd'
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import { minutesToTime, splitDuration, uid, validateTimeRanges } from '../utils.js'
-import { useI18n } from '../../../i18n'
+import { useI18n } from '@i18n'
 
 /**
  * TimeRangeInput · 时段录入（工时/排班/营业时间）

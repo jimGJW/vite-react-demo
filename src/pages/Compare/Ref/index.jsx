@@ -3,8 +3,8 @@ import { Button, Space, Input, Tag, Card, Divider, Typography, Progress } from '
 import {
   ThunderboltOutlined, AimOutlined, ClearOutlined, SyncOutlined,
 } from '@ant-design/icons'
-import CompareLayout from '../../../utils/CompareLayout.jsx'
-import { useI18n } from '../../../i18n/index.js'
+import CompareLayout from '@/utils/CompareLayout.jsx'
+import { useI18n } from '@i18n/index.js'
 
 const { Text, Paragraph } = Typography
 

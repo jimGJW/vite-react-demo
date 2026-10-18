@@ -4,11 +4,11 @@
  */
 import { Button, Empty, Segmented, Slider, Spin, Tag } from 'antd'
 import { BookOutlined, BulbOutlined, CompassOutlined, ThunderboltOutlined } from '@ant-design/icons'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import { Panel, fmtLocal, pad } from './ui.jsx'
 import { MessierTable, SkyBodyRow } from './SkyTools.jsx'
-import { OBSERVERS } from '../../../lib/astro/orbital.js'
-import SkyChart from '../../../components/AstroBoard/SkyChart.jsx'
+import { OBSERVERS } from '@lib/astro/orbital.js'
+import SkyChart from '@components/AstroBoard/SkyChart.jsx'
 
 export default function SkyTab({
   skyCity, setSkyCity, magLimit, setMagLimit, showLines, setShowLines, showDso, setShowDso, showLabels, setShowLabels, catalog, catalogError, moon, skyObs, skyNow, sunHorizon, moonHorizon, planetHorizon, visibleConsts, stargazing, stargazingScore,   showers,

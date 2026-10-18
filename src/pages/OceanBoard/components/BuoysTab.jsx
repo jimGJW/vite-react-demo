@@ -10,7 +10,7 @@
  */
 import { CompassOutlined, ExperimentOutlined } from '@ant-design/icons'
 import { Empty, Table, Tag, Tooltip } from 'antd'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import { Panel, waveLevel, fmtUTC } from './ui.jsx'
 
 /** 数值单元格：缺测显示 —，有值时可选着色 */

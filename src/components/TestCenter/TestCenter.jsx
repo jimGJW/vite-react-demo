@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import './TestCenter.scss'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /**
  * @typedef {Object} TestCase

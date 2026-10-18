@@ -1,7 +1,7 @@
 import { Card, Tag, Typography, Tooltip } from 'antd'
 import { GithubOutlined, BranchesOutlined } from '@ant-design/icons'
-import { FRAMEWORK_COLOR } from '../../../components/Templates/index.js'
-import { useI18n, pickText } from '../../../i18n/index.js'
+import { FRAMEWORK_COLOR } from '@components/Templates/index.js'
+import { useI18n, pickText } from '@i18n/index.js'
 
 const { Paragraph, Text } = Typography
 

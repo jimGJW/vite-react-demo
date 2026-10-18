@@ -17,7 +17,7 @@ import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { Button, Space } from 'antd'
 import * as echarts from 'echarts'
 import { FIELD_LABELS } from '../config.js'
-import { useI18n, pickLang } from '../../../i18n/index.js'
+import { useI18n, pickLang } from '@i18n/index.js'
 import { toSeries } from './utils.js'
 
 const PALETTE = ['#1677ff', '#722ed1', '#13c2c2', '#52c41a', '#faad14', '#eb2f96', '#fa541c']

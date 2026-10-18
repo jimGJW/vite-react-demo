@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 function Dashboard() {

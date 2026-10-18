@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { Button, Space } from 'antd'
-import { formatDate, weekdayOf, useNow, useCountdown, useSet, useUpdate, useEventListener } from '../../../components/Utils/index.js'
+import { formatDate, weekdayOf, useNow, useCountdown, useSet, useUpdate, useEventListener } from '@components/Utils/index.js'
 import DemoCard from './DemoCard.jsx'
 import { PICK_OPTIONS, COUNTDOWN_SECONDS } from './sampleData.js'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /** 新增 Hook：时钟 / 倒计时 / 多选集合 / 强制刷新 / 声明式监听 */
 export default function NewHookDemos() {

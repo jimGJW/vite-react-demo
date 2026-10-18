@@ -11,7 +11,7 @@
  */
 import { ExperimentOutlined } from '@ant-design/icons'
 import { Empty, Tag, Tooltip } from 'antd'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import { Panel } from './ui.jsx'
 
 /**

@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import { Form, Input, InputNumber, Select, Switch, DatePicker, Radio, Space } from 'antd'
 
 /**

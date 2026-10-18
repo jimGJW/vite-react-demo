@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 import { Button, Select, Input, InputNumber, Space, Empty } from 'antd'
 import { PlusOutlined, DeleteOutlined, FolderAddOutlined } from '@ant-design/icons'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /**
  * RuleBuilder · 可视化条件编排

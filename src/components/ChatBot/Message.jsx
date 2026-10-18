@@ -14,7 +14,7 @@
 
 import { memo, useState } from 'react'
 import { Avatar, Button, Divider, Tooltip, message as antdMessage } from 'antd'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import {
   CheckOutlined,
   CopyOutlined,

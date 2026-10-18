@@ -18,8 +18,8 @@
 
 import { useCallback, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getBoardMeta, getBoardScope, getRelated, getTerm } from '../../lib/boards/relations.js'
-import { useI18n } from '../../i18n/index.js'
+import { getBoardMeta, getBoardScope, getRelated, getTerm } from '@lib/boards/relations.js'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 export default function RelatedData({

@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import { fmtSiteTime } from './ui.jsx'
 
 /* ---------- 24h 浪高预报（5 站多线，自绘 SVG） ---------- */

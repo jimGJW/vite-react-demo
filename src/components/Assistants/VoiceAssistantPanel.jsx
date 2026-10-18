@@ -1,7 +1,7 @@
 import { clamp } from '../Utils/index.js'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import VoiceInput from '../VoiceInput/index.jsx'
-import { useI18n } from '../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 import './VoiceAssistantPanel.scss'
 
 const PERSIST_PREFIX = 'assistant.voice.pos'

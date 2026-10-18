@@ -1,6 +1,6 @@
-import VoiceAssistantPanel from '../../components/Assistants/VoiceAssistantPanel.jsx'
-import { useAssistants } from '../../components/Assistants/index.jsx'
-import { useI18n } from '../../i18n/index.js'
+import VoiceAssistantPanel from '@components/Assistants/VoiceAssistantPanel.jsx'
+import { useAssistants } from '@components/Assistants/index.jsx'
+import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 /**

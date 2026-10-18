@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { Button, Space, Tag, Typography } from 'antd'
 import { useChart } from './useChart.js'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 const { Text } = Typography
 

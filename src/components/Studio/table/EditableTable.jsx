@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Input, Select, Button, Space } from 'antd'
-import { useI18n } from '../../../i18n/index.js'
+import { useI18n } from '@i18n/index.js'
 
 /**
  * 行内编辑表格：点击「编辑」整行切换为输入框 / 下拉，保存即写回。
