@@ -134,13 +134,13 @@
     "timeout": "Zeitüberschreitung der Anfrage, bitte später erneut versuchen",
     "failed": "Anfrage fehlgeschlagen, bitte später erneut versuchen",
     "interrupted": "(Antwort unterbrochen, bitte erneut versuchen)",
-    "invalidUser": "登录状态已失效，请重新登录",
-    "authError": "身份校验失败，请重新登录",
-    "sessionNotFound": "会话不存在，已为你开启新会话",
-    "pointsExhausted": "可用积分已用完",
-    "quotaExhausted": "今日额度已用完",
-    "networkError": "网络或系统异常，请稍后重试",
-    "serviceError": "服务异常，请稍后重试"
+    "invalidUser": "Anmeldestatus ist abgelaufen, bitte erneut anmelden",
+    "authError": "Authentifizierung fehlgeschlagen, bitte erneut anmelden",
+    "sessionNotFound": "Sitzung existiert nicht, eine neue Sitzung wurde für dich geöffnet",
+    "pointsExhausted": "Verfügbare Punkte sind aufgebraucht",
+    "quotaExhausted": "Das heutige Kontingent ist aufgebraucht",
+    "networkError": "Netzwerk- oder Systemfehler, bitte später erneut versuchen",
+    "serviceError": "Dienstefehler, bitte später erneut versuchen"
   },
   "share": {
     "pageTitle": "QASharing · Read-Only-Seite für Chat-Freigaben",

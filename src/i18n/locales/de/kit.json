@@ -44,7 +44,7 @@
   },
   "form": {
     "tagTitle": "Tag-Eingabe",
-    "tagDesc": "Leerzeichen / Enter / Komma (halb- oder vollbreit) bestätigen jeweils; bei leerem Eingabefeld löscht Backspace den vorherigen Tag; das Einfügen von „甲, 乙 丙“ wird auf einmal in drei Tags zerlegt. Maximal 6.",
+    "tagDesc": "Leerzeichen / Enter / Komma (halb- oder vollbreit) bestätigen jeweils; bei leerem Eingabefeld löscht Backspace den vorherigen Tag; das Einfügen von „A, B C“ wird auf einmal in drei Tags zerlegt. Maximal 6.",
     "currentTags": "Aktuelle Tags: {tags}",
     "emptyValue": "(leer)",
     "asyncTitle": "Async-Auswahl",

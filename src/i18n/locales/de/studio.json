@@ -318,7 +318,7 @@
     "boomBtn": "Render-Ausnahme auslösen",
     "boomHint": "Klick auf die Schaltfläche lässt den Teilbaum werfen; die Fehlergrenze fängt es ab und unterstützt Wiederholung.",
     "fullscreenHint": "Klicken Sie die „Vollbild“-Schaltfläche oben rechts (in einer Sandbox möglicherweise eingeschränkt)",
-    "gaugeTitle": "完成度"
+    "gaugeTitle": "Fertigstellungsgrad"
   },
   "code": {
     "copied": "Verwendung kopiert",

@@ -44,8 +44,8 @@
       },
       "defaultValue": {
         "title": "Standardwert",
-        "antd": "function Child({ title = '默认' }) {}",
-        "vue": "withDefaults(defineProps({ title: { type: String, default: '默认' } }), {})"
+        "antd": "function Child({ title = 'Standard' }) {}",
+        "vue": "withDefaults(defineProps({ title: { type: String, default: 'Standard' } }), {})"
       },
       "propsModify": {
         "title": "Props ändern",
@@ -211,7 +211,7 @@
       "multiRef": {
         "title": "Mehrere refs: Listen",
         "antd": "ref={el => arr[i] = el} (Callback-ref) oder useRef([])",
-        "vue": "<div v-for=\"i in 5\" :ref=\"el => list[i]=el\" /> 或 :ref=\"keyed\""
+        "vue": "<div v-for=\"i in 5\" :ref=\"el => list[i]=el\" /> oder :ref=\"keyed\""
       },
       "sideEffect": {
         "title": "DOM-Operationen als \"Seiteneffekt\"",
@@ -265,12 +265,12 @@
       "scoped": {
         "title": "Scoped Slot (Listen-Rendering)",
         "antd": "renderItem={(row, idx) => <Item />} oder die itemRender-Prop",
-        "vue": "<template #default=\"{ row, $index }\">\n  直接使用 row / $index\n</template>"
+        "vue": "<template #default=\"{ row, $index }\">\n  row / $index direkt verwenden\n</template>"
       },
       "fallback": {
         "title": "Ersatzinhalt",
         "antd": "im Container schreiben: children || Standardknoten",
-        "vue": "<slot>默认内容</slot>"
+        "vue": "<slot>Standardinhalt</slot>"
       },
       "multiSlot": {
         "title": "Mehrere Slots + Daten",
