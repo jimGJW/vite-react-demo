@@ -318,7 +318,7 @@
     "boomBtn": "Trigger render exception",
     "boomHint": "Click the button to make the subtree throw; the error boundary will catch it and support retry.",
     "fullscreenHint": "Click the \"Fullscreen\" button at the top right (may be restricted in a sandbox)",
-    "gaugeTitle": "完成度"
+    "gaugeTitle": "Progress"
   },
   "code": {
     "copied": "Usage copied",

@@ -61,7 +61,7 @@
     "step3Desc": "QA リグレッション",
     "step4": "リリース",
     "step4Desc": "本番デプロイ",
-    "completion": "完成度",
+    "completion": "完了率",
     "satisfaction": "満足度"
   },
   "feedback": {

@@ -134,13 +134,13 @@
     "timeout": "Request timed out, please try again later",
     "failed": "Request failed, please try again later",
     "interrupted": "(Answer interrupted, please retry)",
-    "invalidUser": "登录状态已失效，请重新登录",
-    "authError": "身份校验失败，请重新登录",
-    "sessionNotFound": "会话不存在，已为你开启新会话",
-    "pointsExhausted": "可用积分已用完",
-    "quotaExhausted": "今日额度已用完",
-    "networkError": "网络或系统异常，请稍后重试",
-    "serviceError": "服务异常，请稍后重试"
+    "invalidUser": "Your login has expired. Please sign in again",
+    "authError": "Authentication failed. Please sign in again",
+    "sessionNotFound": "Session not found; a new session has been started for you",
+    "pointsExhausted": "You have used up all your credits",
+    "quotaExhausted": "Today's quota is used up",
+    "networkError": "Network or system error. Please try again later",
+    "serviceError": "Service error. Please try again later"
   },
   "share": {
     "pageTitle": "QASharing · Read-only conversation sharing page",

@@ -8,7 +8,7 @@
   "grayHint": "灰色按鈕表示目前狀態下不允許該操作 —— 狀態機直接傳回 ok:false， 業務程式碼不需要再寫一遍判斷。",
   "triggerTip": "觸發 {event}",
   "travelTitle": "時間旅行：復原 / 重做 / 任意跳轉",
-  "travelHint": "歷史棧存的是「狀態快照序列」。提交新狀態時若不在末尾， 後面的 redo 分支會被丟棄 —— 这是所有復原棧的標準行為。",
+  "travelHint": "歷史棧存的是「狀態快照序列」。提交新狀態時若不在末尾， 後面的 redo 分支會被丟棄 —— 這是所有復原棧的標準行為。",
   "undo": "復原",
   "redo": "重做",
   "jumpStart": "回到最初",
@@ -16,5 +16,5 @@
   "sliderTip": "第 {step} 步：{label}",
   "stepItem": "第 {step} 步 · {label}",
   "currentMark": "（目前）",
-  "disableReason": "「{label}」状态下不能触发「{event}」"
+  "disableReason": "「{label}」狀態下不能觸發「{event}」"
 }

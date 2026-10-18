@@ -134,13 +134,13 @@
     "timeout": "請求逾時，請稍後重試",
     "failed": "請求失敗，請稍後重試",
     "interrupted": "（回答中斷，請重試）",
-    "invalidUser": "登录状态已失效，请重新登录",
-    "authError": "身份校验失败，请重新登录",
-    "sessionNotFound": "会话不存在，已为你开启新会话",
-    "pointsExhausted": "可用积分已用完",
-    "quotaExhausted": "今日额度已用完",
-    "networkError": "网络或系统异常，请稍后重试",
-    "serviceError": "服务异常，请稍后重试"
+    "invalidUser": "登錄狀態已失效，請重新登錄",
+    "authError": "身份校驗失敗，請重新登錄",
+    "sessionNotFound": "會話不存在，已為你開啟新會話",
+    "pointsExhausted": "可用積分已用完",
+    "quotaExhausted": "今日額度已用完",
+    "networkError": "網絡或系統異常，請稍後重試",
+    "serviceError": "服務異常，請稍後重試"
   },
   "share": {
     "pageTitle": "QASharing · 對話分享唯讀頁",

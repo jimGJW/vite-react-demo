@@ -28,7 +28,7 @@
   "readOnly": "只读模式",
   "disableAll": "整体禁用",
   "submit": "提交表单",
-  "reset": "重置",
+  "reset": "リセット",
   "resultTitle": "📋 提交结果",
   "resultEmpty": "提交表单后，这里将展示收集到的字段值（JSON）",
   "widgetsNote": "★ 号为通过 FormBuilder.defineWidget() 扩展注册的自定义 widget，其余为内置类型；此外任何 antd 组件都可直接作为 widget 传入。",

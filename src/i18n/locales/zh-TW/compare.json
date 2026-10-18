@@ -44,8 +44,8 @@
       },
       "defaultValue": {
         "title": "預設值",
-        "antd": "function Child({ title = '默认' }) {}",
-        "vue": "withDefaults(defineProps({ title: { type: String, default: '默认' } }), {})"
+        "antd": "function Child({ title = '默認' }) {}",
+        "vue": "withDefaults(defineProps({ title: { type: String, default: '默認' } }), {})"
       },
       "propsModify": {
         "title": "props 修改",
@@ -270,7 +270,7 @@
       "fallback": {
         "title": "回退內容（fallback）",
         "antd": "在容器元件裡寫：children || 預設節點",
-        "vue": "<slot>默认内容</slot>"
+        "vue": "<slot>默認內容</slot>"
       },
       "multiSlot": {
         "title": "多 slot + 資料",

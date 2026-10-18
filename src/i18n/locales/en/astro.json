@@ -337,7 +337,7 @@
   "neoColHazard": "Hazard",
   "galaxyAria": "Milky Way structure (schematic)",
   "galaxySun": "Sun",
-  "earthElevTip": "观测仰角",
+  "earthElevTip": "Observation Elevation Angle",
   "obsFactor": {
     "moon": "Illumination {pct}% ({phase})",
     "dark": "{hours} h astronomical night",

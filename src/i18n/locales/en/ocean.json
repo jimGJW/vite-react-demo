@@ -317,7 +317,7 @@
     "oniCaption": "ONI = 3-month running mean of Niño 3.4 SST anomaly (NOAA CPC). Five consecutive seasons ≥ +0.5 is El Niño, ≤ −0.5 is La Niña; latest now {year} {season}:",
     "oniBarTitle": "{year} {season}: ONI {anom} (SST {sst} °C)",
     "barTitle": "{key}: {value} {unit}",
-    "waveFcBarTitle": "{name} 未来 24h 浪高预报（Open-Meteo Marine）"
+    "waveFcBarTitle": "{name}: next 24h wave height forecast (Open-Meteo Marine)"
   },
   "dir": {
     "n": "N",

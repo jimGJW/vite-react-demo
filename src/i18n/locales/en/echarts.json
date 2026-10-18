@@ -1,15 +1,15 @@
 {
-  "title": "ECharts 图表演示",
-  "subtitle": "基于 ECharts 6 + Ant Design 5 的数据可视化展示，支持实时交互切换图表样式。",
-  "barTitle": "柱状图 · 季度营收",
-  "barSegGroup": "分组",
-  "barSegStack": "堆叠",
-  "lineTitle": "折线图 · 周流量趋势",
-  "lineSegSmooth": "平滑",
-  "lineSegLine": "折线",
-  "pieTitle": "饼图 · 访问来源占比",
-  "pieSegRing": "环形",
-  "pieSegPie": "饼图",
-  "radarTitle": "雷达图 · 预算 vs 开销",
-  "scatterTitle": "散点图 · 气泡数据分布"
+  "title": "ECharts Demo",
+  "subtitle": "Data visualization built on ECharts 6 + Ant Design 5, with live style switching.",
+  "barTitle": "Bar Chart · Quarterly Revenue",
+  "barSegGroup": "Grouped",
+  "barSegStack": "Stacked",
+  "lineTitle": "Line Chart · Weekly Traffic Trend",
+  "lineSegSmooth": "Smooth",
+  "lineSegLine": "Line",
+  "pieTitle": "Pie Chart · Traffic Source Share",
+  "pieSegRing": "Donut",
+  "pieSegPie": "Pie",
+  "radarTitle": "Radar Chart · Budget vs Spend",
+  "scatterTitle": "Scatter Plot · Bubble Distribution"
 }

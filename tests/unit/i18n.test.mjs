@@ -9,6 +9,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { ok, eq, length } from './harness.mjs'
+import { SIMPLIFIED_CHARS } from '@root/scripts/zh-tw.mjs'
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..')
 const LOCALE_DIR = path.join(ROOT, 'src', 'i18n', 'locales')
@@ -159,6 +160,57 @@ export default [
         }
       }
       eq(bad.join('\n'), '', '存在不存在的 i18n 键引用')
+    },
+  ],
+  [
+    /**
+     * 非汉藏语种的文案里不得残留汉字 —— 守住「键对齐 ≠ 已翻译」。
+     *
+     * 背景：早期为了让本文件的前几条断言（结构一致 / 非空）通过，
+     * 曾把 zh-CN 原文整体复制到各语种。结果是 3261 个键一个不缺、全都非空，
+     * 但切换到日语 / 德语时界面上显示的仍是中文 —— 而所有断言都是绿的。
+     * 这条用例就是专门为这类「结构完美但内容没翻译」的退化兜底。
+     *
+     * STRICT 是渐进名单：每治理干净一个语种就把它加进来，加进来之后它就再也不能退回。
+     * 剩余待治理：ja / ko / de / fr / th / mn / bo。
+     */
+    '非汉藏语种文案不得残留汉字（防止「键对齐但没翻译」重演）',
+    () => {
+      const STRICT = ['en']
+      const HAN = /[一-鿿]/
+      for (const lang of STRICT) {
+        const j = readLang(lang)
+        for (const key of leafKeys(j)) {
+          const v = key.split('.').reduce((o, s) => o[s], j)
+          ok(!HAN.test(v), `${lang}.${key} 仍未翻译：${v}`)
+        }
+      }
+    },
+  ],
+  [
+    /**
+     * zh-TW 不得残留简体字形。
+     *
+     * 判定口径和上一条刻意不同：zh-TW 与 zh-CN 共用大量传承字（系统、空间、天文…），
+     * 所以「值与 zh-CN 相同」在这里是常态，拿它当漏翻译会误报一大片。
+     * 真正的信号是「出现了只在简体里存在的字形」——数、据、时、动这些字
+     * 在繁体里根本不存在，一旦出现就说明那一处没走简繁转换。
+     */
+    'zh-TW 文案不得残留简体字形',
+    () => {
+      const j = readLang('zh-TW')
+      const bad = []
+      for (const key of leafKeys(j)) {
+        const v = key.split('.').reduce((o, s) => o[s], j)
+        if (typeof v !== 'string') continue
+        for (const ch of v) {
+          if (SIMPLIFIED_CHARS.has(ch)) {
+            bad.push(`zh-TW.${key} 残留简体字「${ch}」：${v}`)
+            break
+          }
+        }
+      }
+      eq(bad.join('\n'), '', 'zh-TW 存在未转换的简体字形')
     },
   ],
   [
