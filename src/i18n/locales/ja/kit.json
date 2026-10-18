@@ -68,7 +68,7 @@
     "infiniteEnd": "全 36 件読み込み済み",
     "sortTitle": "ドラッグ並べ替え SortableList",
     "sortDesc": "ゼロ依存（原実装の react-sortable-hoc は React 19 と非互換）。ハンドルでドラッグし、ハンドル聚焦後は ↑ / ↓ キーでも移動できる。",
-    "dragging": "拖动中",
+    "dragging": "ドラッグ中",
     "marqueeTitle": "マーキー AutoScrollText",
     "marqueeDesc": "内容が実際に容器幅を超えたときだけ起動。アニメーション時間 = はみ出した像素 / speed なので、長いテキストが速く滾ることはない。",
     "marqueeShort": "短いテキストは滾らない",

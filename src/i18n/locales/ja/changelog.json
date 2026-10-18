@@ -1,9 +1,9 @@
 {
-  "title": "功能版本时间轴",
+  "title": "機能バージョンタイムライン",
   "all": "すべて",
-  "items": "{n} 项",
-  "allVersions": "全部版本",
-  "changesCount": "{n} 项改动",
-  "changedAt": "{date} 改动",
-  "batchTip": "改动批次：{date} · {title}"
+  "items": "{n} 項目",
+  "allVersions": "全バージョン",
+  "changesCount": "{n} 件の変更",
+  "changedAt": "{date} 変更",
+  "batchTip": "変更批次：{date} · {title}"
 }

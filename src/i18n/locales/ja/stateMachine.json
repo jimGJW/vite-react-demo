@@ -16,5 +16,5 @@
   "sliderTip": "ステップ {step}：{label}",
   "stepItem": "ステップ {step} · {label}",
   "currentMark": "（現在）",
-  "disableReason": "「{label}」状态下不能触发「{event}」"
+  "disableReason": "「{label}」状態では「{event}」を発火できません"
 }

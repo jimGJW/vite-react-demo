@@ -22,7 +22,7 @@
   "wakeHint": "デモ大画面、監視ダッシュボード、録画に最適です。タブを切り替えるとブラウザは自動的にロックを解放し、フォアグラウンドに戻ると再申請が必要です。 ",
   "wakeRequest": "常亮を申請",
   "wakeRelease": "解放",
-  "wakeActive": "常亮中",
+  "wakeActive": "常時点灯中",
   "wakeInactive": "未有効",
   "wakeUnsupported": "このブラウザは Screen Wake Lock に非対応です（Safari 低バージョン / 非安全上下文）",
   "geoTitle": "③ ジオロケーション",

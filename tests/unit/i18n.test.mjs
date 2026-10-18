@@ -172,7 +172,9 @@ export default [
      * 这条用例就是专门为这类「结构完美但内容没翻译」的退化兜底。
      *
      * STRICT 是渐进名单：每治理干净一个语种就把它加进来，加进来之后它就再也不能退回。
-     * 剩余待治理：ja / ko / de / fr / th / mn / bo。
+     * 剩余待治理：ko / de / fr / th / mn / bo。
+     * ⚠️ ja / ko 这类汉字圈语种永远不能进 STRICT：按钮「停止」在日语里就是「停止」，
+     * 与原文同形是常态，拿「残留汉字」判它们会全量误报 —— 改用下面的「相同率」守卫。
      */
     '非汉藏语种文案不得残留汉字（防止「键对齐但没翻译」重演）',
     () => {
@@ -184,6 +186,39 @@ export default [
           const v = key.split('.').reduce((o, s) => o[s], j)
           ok(!HAN.test(v), `${lang}.${key} 仍未翻译：${v}`)
         }
+      }
+    },
+  ],
+  [
+    /**
+     * 汉字圈语种（ja / ko）用「相同率」而不是「零残留汉字」守。
+     *
+     * 日语本就大量使用汉字书写：操作、停止、数据、状态、保存……这些词日译后
+     * 与中文完全同形，是正常语言现象而非漏译。但它们同时也意味着：
+     * 一旦有人再把 zh-CN 整体复制进来，相同率会从个位数直接跳到 100%，
+     * 这个信号足够干净、足够灵敏。
+     *
+     * 当前 ja 实测 284 / 3261 ≈ 8.7%，阈值取 12%（留出新增文案的余量，
+     * 同时把「批量复制」这种量级的退化死死挡住）。
+     * ko 治理干净后按同样口径加进来（当前相同率约 50%，进名单会直接红）。
+     */
+    '汉字圈语种与原文的相同率不得超过阈值',
+    () => {
+      const SAME_RATIO = { ja: 0.12 }
+      const zh = readLang('zh-CN')
+      const zhLeaves = leafKeys(zh)
+      for (const [lang, limit] of Object.entries(SAME_RATIO)) {
+        const j = readLang(lang)
+        let same = 0
+        for (const key of zhLeaves) {
+          const v = key.split('.').reduce((o, s) => o[s], j)
+          if (v === key.split('.').reduce((o, s) => o[s], zh)) same++
+        }
+        const ratio = same / zhLeaves.length
+        ok(
+          ratio <= limit,
+          `${lang} 与原文相同率 ${(ratio * 100).toFixed(1)}% 超过阈值 ${limit * 100}%（疑似整篇复制）`,
+        )
       }
     },
   ],

@@ -42,7 +42,7 @@
     "promiseErr": "Promise で投げたエラー —— 境界に捕捉されました",
     "naiveBtn": "直接 throw（拾えない）",
     "naiveErr": "直接 throw：境界はそれを見えません（コンソールにはエラーが出ますが、ページは降級しません）",
-    "case1Label": "案例①",
-    "case4Label": "案例④"
+    "case1Label": "ケース①",
+    "case4Label": "ケース④"
   }
 }

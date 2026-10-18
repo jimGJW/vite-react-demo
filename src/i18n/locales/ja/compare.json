@@ -33,7 +33,7 @@
     "parentState": "親の state：items.length =",
     "diff": {
       "fatherToChild": {
-        "title": "父 → 子",
+        "title": "親 → 子",
         "antd": "function Child(props) {/* props.title */}",
         "vue": "<script setup>const props = defineProps(['title'])</script>"
       },
@@ -44,8 +44,8 @@
       },
       "defaultValue": {
         "title": "デフォルト値",
-        "antd": "function Child({ title = '默认' }) {}",
-        "vue": "withDefaults(defineProps({ title: { type: String, default: '默认' } }), {})"
+        "antd": "function Child({ title = 'デフォルト' }) {}",
+        "vue": "withDefaults(defineProps({ title: { type: String, default: 'デフォルト' } }), {})"
       },
       "propsModify": {
         "title": "props の変更",
@@ -118,7 +118,7 @@
     "tagContext": "Context / provide/inject",
     "tagDi": "依存性注入",
     "childLayer": "第 3 層 · Child",
-    "childDirect": "直接 useContext()",
+    "childDirect": "useContext() を直接使用",
     "themeLabel": "theme：",
     "userLabel": "ユーザー：",
     "notLoggedIn": "未ログイン",
@@ -211,7 +211,7 @@
       "multiRef": {
         "title": "複数 ref：リスト",
         "antd": "ref={el => arr[i] = el}（コールバック ref）または useRef([])",
-        "vue": "<div v-for=\"i in 5\" :ref=\"el => list[i]=el\" /> 或 :ref=\"keyed\""
+        "vue": "<div v-for=\"i in 5\" :ref=\"el => list[i]=el\" /> または :ref=\"keyed\""
       },
       "sideEffect": {
         "title": "「副作用」DOM 操作",
@@ -270,7 +270,7 @@
       "fallback": {
         "title": "フォールバック内容",
         "antd": "コンテナ内に書く：children || 既定ノード",
-        "vue": "<slot>默认内容</slot>"
+        "vue": "<slot>デフォルト内容</slot>"
       },
       "multiSlot": {
         "title": "複数 slot + データ",
