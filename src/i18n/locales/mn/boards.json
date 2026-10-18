@@ -1,65 +1,65 @@
 {
   "dict": {
-    "what": "What it is",
-    "how": "How to read",
-    "soWhat": "So what",
-    "unit": "Unit",
-    "explain": "Explain “{name}”"
+    "what": "Энэ юу вэ",
+    "how": "Хэрхэн унших вэ",
+    "soWhat": "Тэгээд юу гэж",
+    "unit": "Нэгж",
+    "explain": "«{name}»-г тайлбарлах"
   },
   "related": {
-    "title": "Related data",
-    "subtitle": "Read these modules side by side — expand a card for the background notes",
-    "monitor": "Three-board monitoring",
-    "watching": "Watching: {list}",
-    "selfHealth": "This board: {ok}/{total} feeds healthy",
-    "goBoard": "Go to the {name} board",
-    "goTab": "Go to the {board} board · {tab}",
-    "detail": "Background notes",
-    "detailClose": "Hide notes",
-    "termCount": "{n} terms",
-    "termsHead": "Related terms",
-    "dictTip": "Full definition and search in the data dictionary",
-    "dictGo": "Dictionary →",
-    "scale": "Scale",
-    "how": "How to read"
+    "title": "Холбоотой өгөгдөл",
+    "subtitle": "Эдгээр модулийн өгөгдлийг зэрэгцүүлж харж болно, дэлгэвэл тайлбар материал гарна",
+    "monitor": "Гурван самбарын хяналт",
+    "watching": "Хянаж байгаа: {list}",
+    "selfHealth": "Энэ самбарын өгөгдлийн эх сурвалж {ok}/{total} хэвийн",
+    "goBoard": "{name} самбарт очих",
+    "goTab": "{board} самбарт очих · {tab}",
+    "detail": "Материалын тайлбар",
+    "detailClose": "Материалын тайлбарыг хураах",
+    "termCount": "{n} нэр томьёо",
+    "termsHead": "Холбоотой нэр томьёо",
+    "dictTip": "Өгөгдлийн толь бичгээс бүрэн тайлбар болон хайлтыг үзнэ үү",
+    "dictGo": "Толь бичиг →",
+    "scale": "Хэмжээний зэрэг",
+    "how": "Хэрхэн унших вэ"
   },
   "keyTerm": {
-    "tag": "Key term",
-    "scale": "Scale",
-    "how": "How to read",
-    "foot": "Full definition and search: side panel “Time archive” → Data dictionary"
+    "tag": "Гол нэр томьёо",
+    "scale": "Хэмжээний зэрэг",
+    "how": "Хэрхэн унших вэ",
+    "foot": "Бүрэн тайлбар ба хайлт нь хажуугийн «Цаг хугацааны архив» → Өгөгдлийн толь бичиг хэсэгт бий"
   },
   "gscale": {
     "G0": {
-      "label": "Quiet",
-      "desc": "Kp < 4. Geomagnetic activity is quiet, there is no space weather impact, and satellites need no protective action."
+      "label": "Тайван",
+      "desc": "Kp < 4. Геомагнитын идэвхжил тайван, сансрын цаг агаарын нөлөө байхгүй, хиймэл дагуулд ямар нэгэн хамгаалалтын арга хэмжээ авах шаардлагагүй."
     },
     "G1": {
-      "label": "Minor",
-      "desc": "Kp 4. Weak magnetic disturbance; aurora may show at high latitudes, with virtually no effect on satellites."
+      "label": "Бага зэрэг",
+      "desc": "Kp 4. Сул соронзон хөдөлгөөн; өндөр өргөрөгт туйлын гэрэл харагдаж болох бөгөөд бараг бүх хиймэл дагуулд нөлөөлөхгүй."
     },
     "G2": {
-      "label": "Light-moderate",
-      "desc": "Kp 5. Aurora spreads equatorward, satellites may need attitude correction, grid transformers see occasional induced heating."
+      "label": "Бага-дунд",
+      "desc": "Kp 5. Туйлын гэрэл экватор руу тэлнэ, хиймэл дагуулд чиг баримжаа засах шаардлагатай болж магадгүй, цахилгаан сүлжээний трансформаторт заримдаа индукцийн халалт үүснэ."
     },
     "G3": {
-      "label": "Moderate",
-      "desc": "Kp 6. Surface charging on low-orbit satellites intensifies, attitude disturbance can exceed limits and needs active intervention."
+      "label": "Дунд",
+      "desc": "Kp 6. Нам орбитын хиймэл дагуулын гадаргуугийн цэнэглэлт нэмэгдэж, чиг баримжааны хөдөлгөөн хязгаараас хэтэрч болох тул идэвхтэй арга хэмжээ авах шаардлагатай."
     },
     "G4": {
-      "label": "Strong",
-      "desc": "Kp 7. Satellite tracking becomes difficult, some low-orbit satellites may be lost, power grid and communications show anomalies."
+      "label": "Хүчтэй",
+      "desc": "Kp 7. Хиймэл дагуулыг мөшгөхөд хэцүү болно, зарим нам орбитын хиймэл дагуул алдагдаж магадгүй, цахилгаан сүлжээ ба холбоонд хэвийн бус байдал үүснэ."
     },
     "G5": {
-      "label": "Severe",
-      "desc": "Kp 8. GPS accuracy drops sharply or service is unavailable, astronauts must shelter inside the module."
+      "label": "Маш хүчтэй",
+      "desc": "Kp 8. GPS-ийн нарийвчлал огцом буурах эсвэл үйлчилгээ огт байхгүй болох тул сансрын нисэгчид модульд орж хоргодох шаардлагатай."
     },
     "G6p": {
-      "label": "Extreme",
-      "desc": "Kp 9. Rare in recorded history; GPS may be lost for a long time, power grids and communications are under threat."
+      "label": "Хэт",
+      "desc": "Kp 9. Бүртгэгдсэн түүхэнд ховор тохиолдох; GPS удаан хугацаагаар алдагдаж, цахилгаан сүлжээ ба холбоо аюулд өртөж болзошгүй."
     }
   },
   "ui": {
-    "moonAria": "Moon phase diagram"
+    "moonAria": "Сарны фазны диаграмм"
   }
 }

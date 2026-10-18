@@ -80,7 +80,7 @@
     "parentRendered": "Эцэг {tick} удаа render хийсэн",
     "plainTitle": "① Энгийн компонпонент",
     "plainNote": "эцэг render хийхэд энэ ч render хийдэг",
-    "looseTitle": "② memo + inline props",
+    "looseTitle": "② memo + шууд props",
     "looseNote": "memo хоосон: тутам шинэ лавлал",
     "strictTitle": "③ memo + тогтвортой лавлал",
     "strictNote": "props жинхэнэ хувирдаггүй үед л render алгасна",

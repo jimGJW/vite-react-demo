@@ -16,5 +16,5 @@
   "sliderTip": "{step}-р алхам: {label}",
   "stepItem": "{step}-р алхам · {label}",
   "currentMark": "(одоо)",
-  "disableReason": "「{label}」状态下不能触发「{event}」"
+  "disableReason": "«{label}» төлөвт «{event}»-г триггер хийх боломжгүй"
 }

@@ -44,8 +44,8 @@
       },
       "defaultValue": {
         "title": "Анхдагч утга",
-        "antd": "function Child({ title = '默认' }) {}",
-        "vue": "withDefaults(defineProps({ title: { type: String, default: '默认' } }), {})"
+        "antd": "function Child({ title = 'анхдагч' }) {}",
+        "vue": "withDefaults(defineProps({ title: { type: String, default: 'анхдагч' } }), {})"
       },
       "propsModify": {
         "title": "props засварлах",
@@ -55,7 +55,7 @@
       "eventNaming": {
         "title": "Event нэрлэх",
         "antd": "props callback onXxx camelCase",
-        "vue": "emit('add') kebab-case template @add"
+        "vue": "emit('add') kebab-case загвар @add"
       }
     }
   },
@@ -174,7 +174,7 @@
     "appendScroll": "Нэмэх (дээш гүйлгэх)",
     "appendLog": "Лог нэмэх: ",
     "clear": "Цэвэрлэх",
-    "domRefCard": "① DOM Ref:原生 input / div үйлдэл",
+    "domRefCard": "① DOM Ref: үндсэн input / div үйлдэл",
     "imperativeCard": "② forwardRef + useImperativeHandle: тушаалтын компонпонентын API",
     "playing": "▶ Тоглуулж байна",
     "paused": "⏸ Завсарлагдсан",
@@ -211,7 +211,7 @@
       "multiRef": {
         "title": "Олон ref: жагсаалт",
         "antd": "ref={el => arr[i] = el}(callback ref) эсвэл useRef([])",
-        "vue": "<div v-for=\"i in 5\" :ref=\"el => list[i]=el\" /> 或 :ref=\"keyed\""
+        "vue": "<div v-for=\"i in 5\" :ref=\"el => list[i]=el\" /> эсвэл :ref=\"keyed\""
       },
       "sideEffect": {
         "title": "\"хамарлын\" DOM үйлдэл",
@@ -265,12 +265,12 @@
       "scoped": {
         "title": "Скоуп слот (жагсаалт рендер)",
         "antd": "renderItem={(row, idx) => <Item />} эсвэл itemRender шинж чанар",
-        "vue": "<template #default=\"{ row, $index }\">\n  直接使用 row / $index\n</template>"
+        "vue": "<template #default=\"{ row, $index }\">\n  row / $index шууд ашиглах\n</template>"
       },
       "fallback": {
         "title": "Нөөц контент",
         "antd": "контейнер дотор бичих: children || анхдагч зангуу",
-        "vue": "<slot>默认内容</slot>"
+        "vue": "<slot>анхдагч агуулга</slot>"
       },
       "multiSlot": {
         "title": "Олон слот + өгөгдөл",
@@ -327,7 +327,7 @@
       "devtools": {
         "title": "Devtools",
         "antd": "React DevTools Components-р Context харах; Redux/Zustand тусад нь панелтэй",
-        "vue": "Vue DevTools → Pinia панел эсвэл Setup状态 мод"
+        "vue": "Vue DevTools → Pinia панел эсвэл Setup-ийн төлөв мод"
       },
       "prod": {
         "title": "Продакшн дээр хэрэглэдэг wrapper",
