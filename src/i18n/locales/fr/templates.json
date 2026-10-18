@@ -13,10 +13,10 @@
     "templateLocal": "Modèle open source (local)"
   },
   "groups": {
-    "all": "全部",
+    "all": "Tout",
     "react": "React",
     "vue": "Vue",
-    "mobile": "移动端",
-    "libs": "组件库·工具"
+    "mobile": "Mobile",
+    "libs": "Bibliothèques · outils"
   }
 }

@@ -134,13 +134,13 @@
     "timeout": "Délai d'attente dépassé, veuillez réessayer plus tard",
     "failed": "Échec de la requête, veuillez réessayer plus tard",
     "interrupted": "(Réponse interrompue, veuillez réessayer)",
-    "invalidUser": "登录状态已失效，请重新登录",
-    "authError": "身份校验失败，请重新登录",
-    "sessionNotFound": "会话不存在，已为你开启新会话",
-    "pointsExhausted": "可用积分已用完",
-    "quotaExhausted": "今日额度已用完",
-    "networkError": "网络或系统异常，请稍后重试",
-    "serviceError": "服务异常，请稍后重试"
+    "invalidUser": "La session a expiré, veuillez vous reconnecter",
+    "authError": "Échec de vérification d’identité, veuillez vous reconnecter",
+    "sessionNotFound": "La session n’existe pas, une nouvelle session a été ouverte pour vous",
+    "pointsExhausted": "Les points disponibles sont épuisés",
+    "quotaExhausted": "Le quota du jour est épuisé",
+    "networkError": "Anomalie réseau ou système, veuillez réessayer plus tard",
+    "serviceError": "Erreur de service, veuillez réessayer plus tard"
   },
   "share": {
     "pageTitle": "QASharing · Page en lecture seule de partage de conversation",

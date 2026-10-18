@@ -318,7 +318,7 @@
     "boomBtn": "Déclencher une exception de rendu",
     "boomHint": "Cliquez sur le bouton pour faire lever une exception au sous-arbre ; la frontière d'erreur affichera un repli et prendra en charge la nouvelle tentative.",
     "fullscreenHint": "Cliquez sur le bouton « Plein écran » en haut à droite (peut être limité dans un bac à sable)",
-    "gaugeTitle": "完成度"
+    "gaugeTitle": "Taux d’avancement"
   },
   "code": {
     "copied": "Utilisation copiée",

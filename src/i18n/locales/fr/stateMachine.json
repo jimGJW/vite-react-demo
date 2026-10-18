@@ -16,5 +16,5 @@
   "sliderTip": "Étape {step} : {label}",
   "stepItem": "Étape {step} · {label}",
   "currentMark": "(actuel)",
-  "disableReason": "「{label}」状态下不能触发「{event}」"
+  "disableReason": "Dans l’état « {label} », « {event} » ne peut pas être déclenché"
 }

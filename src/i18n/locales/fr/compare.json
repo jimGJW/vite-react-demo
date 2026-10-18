@@ -44,8 +44,8 @@
       },
       "defaultValue": {
         "title": "Valeur par défaut",
-        "antd": "function Child({ title = '默认' }) {}",
-        "vue": "withDefaults(defineProps({ title: { type: String, default: '默认' } }), {})"
+        "antd": "function Child({ title = 'défaut' }) {}",
+        "vue": "withDefaults(defineProps({ title: { type: String, default: 'défaut' } }), {})"
       },
       "propsModify": {
         "title": "Modification des props",
@@ -211,7 +211,7 @@
       "multiRef": {
         "title": "Plusieurs refs : listes",
         "antd": "ref={el => arr[i] = el} (ref callback) ou useRef([])",
-        "vue": "<div v-for=\"i in 5\" :ref=\"el => list[i]=el\" /> 或 :ref=\"keyed\""
+        "vue": "<div v-for=\"i in 5\" :ref=\"el => list[i]=el\" /> ou :ref=\"keyed\""
       },
       "sideEffect": {
         "title": "Opérations DOM « à effet de bord »",
@@ -265,12 +265,12 @@
       "scoped": {
         "title": "Slot à portée (rendu de liste)",
         "antd": "renderItem={(row, idx) => <Item />} ou la prop itemRender",
-        "vue": "<template #default=\"{ row, $index }\">\n  直接使用 row / $index\n</template>"
+        "vue": "<template #default=\"{ row, $index }\">\n  utiliser directement row / $index\n</template>"
       },
       "fallback": {
         "title": "Contenu de repli",
         "antd": "dans le conteneur : children || nœud par défaut",
-        "vue": "<slot>默认内容</slot>"
+        "vue": "<slot>contenu par défaut</slot>"
       },
       "multiSlot": {
         "title": "Plusieurs slots + données",

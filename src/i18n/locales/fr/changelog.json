@@ -1,9 +1,9 @@
 {
-  "title": "功能版本时间轴",
-  "all": "全部",
-  "items": "{n} 项",
-  "allVersions": "全部版本",
-  "changesCount": "{n} 项改动",
-  "changedAt": "{date} 改动",
-  "batchTip": "改动批次：{date} · {title}"
+  "title": "Chronologie des versions de fonctionnalités",
+  "all": "Tout",
+  "items": "{n} entrées",
+  "allVersions": "Toutes les versions",
+  "changesCount": "{n} modifications",
+  "changedAt": "Modifié le {date}",
+  "batchTip": "Lot de modifications : {date} · {title}"
 }

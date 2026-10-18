@@ -44,7 +44,7 @@
   },
   "form": {
     "tagTitle": "Saisie d'étiquettes",
-    "tagDesc": "Espace / Entrée / virgule (demie ou pleine chasse) valident chacun ; quand le champ est vide, Retour arrière supprime l'étiquette précédente ; coller « 甲, 乙 丙 » se scinde d'un coup en trois étiquettes. 6 maximum.",
+    "tagDesc": "Espace / Entrée / virgule (demie ou pleine chasse) valident chacun ; quand le champ est vide, Retour arrière supprime l'étiquette précédente ; coller « A, B C » se scinde d'un coup en trois étiquettes. 6 maximum.",
     "currentTags": "Étiquettes actuelles : {tags}",
     "emptyValue": "(vide)",
     "asyncTitle": "Sélecteur asynchrone",

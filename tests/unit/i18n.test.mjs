@@ -172,13 +172,13 @@ export default [
      * 这条用例就是专门为这类「结构完美但内容没翻译」的退化兜底。
      *
      * STRICT 是渐进名单：每治理干净一个语种就把它加进来，加进来之后它就再也不能退回。
-     * 剩余待治理：fr / th / mn / bo。
+     * 剩余待治理：th / mn / bo。
      * ⚠️ ja / ko 这类汉字圈语种永远不能进 STRICT：按钮「停止」在日语里就是「停止」，
      * 与原文同形是常态，拿「残留汉字」判它们会全量误报 —— 改用下面的「相同率」守卫。
      */
     '非汉藏语种文案不得残留汉字（防止「键对齐但没翻译」重演）',
     () => {
-      const STRICT = ['en', 'de']
+      const STRICT = ['en', 'de', 'fr']
       const HAN = /[一-鿿]/
       for (const lang of STRICT) {
         const j = readLang(lang)
