@@ -1,9 +1,9 @@
 {
-  "title": "PerfLab · Performance Lab",
-  "lead1": "Four instantly verifiable experiments: 100k rows, live FPS, Web Worker offload, re-render optimization.",
-  "lead2": "Underlying capabilities live in",
-  "lead3": "; pure functions are covered by",
-  "lead4": ", so edge cases are testable without a browser.",
+  "title": "ཤུགས་རྐྱེན་ཚད་ལས་ཁང་ PerfLab",
+  "lead1": "དེ་མ་ཐག་ཚད་གཏན་འབེབས་ཐུབ་པའི་ཤུགས་རྐྱེན་ཚད་ལྟ་བཞི། གྲལ་ཐིག་ཁྲི་ 10 འཕྲུལ་རིས་དུས་ཐོག  Web Worker གཡོལ་འགྲོ བསྐྱར་མངོན་བཟོ་ལེགས་བཅོས།",
+  "lead2": "རྨང་གཞིའི་ནུས་པ་ནི་",
+  "lead3": "ནང་བསྡུས་ཡོད། གཙང་མའི་བྱེད་ནུས་ཆ་ཤས་ནི་",
+  "lead4": "གིས་ཁེབས་ཡོད་པས་ལྟ་ཀློག་ཆས་མ་ཕྱེ་ཡང་མཐའ་ཚད་ཚད་གཏན་འབེབས་ཐུབ།",
   "tab": {
     "list": "Virtual scroll",
     "fps": "FPS monitor",
@@ -11,7 +11,7 @@
     "rerender": "Re-render optimization"
   },
   "fps": {
-    "title": "FPS monitor: jank into measurable numbers",
+    "title": "འཕྲུལ་རིས་ཚད་ལྟ། འགག་འཐེན་ཚད་གཞལ་ཐུབ་ཨང་གྲངས་སུ་བསྒྱུར།",
     "idle": "Idle",
     "stress": "Stress test",
     "levelGood": "Smooth",
@@ -30,7 +30,7 @@
     "hint2": "Trade-off: summarize every 500ms before setState, not per frame. Otherwise the FPS component re-renders each frame and you measure the monitor’s overhead."
   },
   "vscroll": {
-    "title": "Virtual scroll: render only visible rows",
+    "title": "སྒྲུབ་པའི་འཁོར་སྤོ། མཐོང་ཐུབ་པའི་གྲལ་ཐིག་ཙམ་མངོན་བཟོ།",
     "k1": "1 thousand rows",
     "k10": "10 thousand rows",
     "k100": "100 thousand rows",
@@ -59,7 +59,7 @@
     "pitfall3": ", and must use a business id, not the array index — index keys make React reuse wrong nodes on insert/delete, causing bizarre \"content mismatch\" bugs."
   },
   "worker": {
-    "title": "Web Worker: move heavy computation off the main thread",
+    "title": "Web Worker། ལྗིད་པོའི་རྩིས་འཁོར་གཙོ་ལམ་ནས་ཕྱིར་སྤོ།",
     "k10": "100 thousand",
     "k30": "300 thousand",
     "k60": "600 thousand",
@@ -76,7 +76,7 @@
     "pitfall2": " functions passed to createWorker are stringified and moved into the Worker, so they must be self-contained and cannot reference external closure variables (an inherent Worker limitation). Workers also have creation overhead, so only tasks that \"feel laggy\" are worth moving."
   },
   "rerender": {
-    "title": "Re-render optimization: memo is not a cure-all",
+    "title": "བསྐྱར་མངོན་བཟོ་ལེགས་བཅོས། memo ནི་ཀུན་ལ་ཕན་པའི་སྨན་མ་ཡིན།",
     "parentRendered": "Parent rendered {tick} times",
     "plainTitle": "① Plain component",
     "plainNote": "it renders whenever the parent renders",

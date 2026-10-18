@@ -44,8 +44,8 @@
       },
       "defaultValue": {
         "title": "Default value",
-        "antd": "function Child({ title = '默认' }) {}",
-        "vue": "withDefaults(defineProps({ title: { type: String, default: '默认' } }), {})"
+        "antd": "function Child({ title = 'སྔོན་སྒྲིག' }) {}",
+        "vue": "withDefaults(defineProps({ title: { type: String, default: 'སྔོན་སྒྲིག' } }), {})"
       },
       "propsModify": {
         "title": "Modifying props",
@@ -211,7 +211,7 @@
       "multiRef": {
         "title": "Multiple refs: lists",
         "antd": "ref={el => arr[i] = el} (callback ref) or useRef([])",
-        "vue": "<div v-for=\"i in 5\" :ref=\"el => list[i]=el\" /> 或 :ref=\"keyed\""
+        "vue": "<div v-for=\"i in 5\" :ref=\"el => list[i]=el\" /> ཡང་ན་ :ref=\"keyed\""
       },
       "sideEffect": {
         "title": "\"Side-effect\" DOM operations",
@@ -265,12 +265,12 @@
       "scoped": {
         "title": "Scoped slot (list rendering)",
         "antd": "renderItem={(row, idx) => <Item />} or itemRender prop",
-        "vue": "<template #default=\"{ row, $index }\">\n  直接使用 row / $index\n</template>"
+        "vue": "<template #default=\"{ row, $index }\">\n  row / $index ཐད་ཀར་བེད་སྤྱོད།\n</template>"
       },
       "fallback": {
         "title": "Fallback content",
         "antd": "in the container: children || default node",
-        "vue": "<slot>默认内容</slot>"
+        "vue": "<slot>སྔོན་སྒྲིག་ནང་དོན།</slot>"
       },
       "multiSlot": {
         "title": "Multiple slots + data",

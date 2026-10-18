@@ -1,15 +1,15 @@
 {
-  "title": "ECharts 图表演示",
-  "subtitle": "基于 ECharts 6 + Ant Design 5 的数据可视化展示，支持实时交互切换图表样式。",
-  "barTitle": "柱状图 · 季度营收",
-  "barSegGroup": "分组",
-  "barSegStack": "堆叠",
-  "lineTitle": "折线图 · 周流量趋势",
-  "lineSegSmooth": "平滑",
-  "lineSegLine": "折线",
-  "pieTitle": "饼图 · 访问来源占比",
-  "pieSegRing": "环形",
-  "pieSegPie": "饼图",
-  "radarTitle": "雷达图 · 预算 vs 开销",
-  "scatterTitle": "散点图 · 气泡数据分布"
+  "title": "ECharts རི་མོའི་སྟོན་པ།",
+  "subtitle": "ECharts 6 + Ant Design 5 ལ་བརྟེན་ནས་གཞི་གྲངས་མཐོང་སྣང་ཅན་དུ་སྟོན་པ། དུས་ཐོག་ཕན་ཚུན་འབྲེལ་བས་རི་མོའི་རྣམ་པ་བརྗེ་བར་རྒྱབ་སྐྱོར་བྱེད།",
+  "barTitle": "ཀ་རི་མོ · དུས་ཚོད་ཀྱི་ཚོང་འབབ།",
+  "barSegGroup": "ཚོ་ཁག",
+  "barSegStack": "བརྩེགས་པ།",
+  "lineTitle": "གུག་ཐིག་རི་མོ · གཟའ་འཁོར་གྱི་འགྲུལ་བསྐྱོད་ཁ་ཕྱོགས།",
+  "lineSegSmooth": "འཇམ་པོ།",
+  "lineSegLine": "གུག་ཐིག",
+  "pieTitle": "སྒོར་ལེབ་རི་མོ · མཇལ་སྐོར་འབྱུང་ཁུངས་ཀྱི་བརྒྱ་ཆ།",
+  "pieSegRing": "འཁོར་ལོའི་རི་མོ",
+  "pieSegPie": "སྒོར་ལེབ་རི་མོ",
+  "radarTitle": "རྒྱང་ཟིན་རི་མོ · སྔོན་ཚད་གཞལ་བ། vs གྲོན་དངུལ།",
+  "scatterTitle": "ཐོར་ཚེག་རི་མོ · ལྦུ་རྡོག་གཞི་གྲངས་ཁྱབ་གདལ།"
 }
