@@ -29,7 +29,7 @@
     "emptyText": "ยังไม่มีรายการ — ลูกแจ้งพ่อผ่าน callback onAdd",
     "demoTitle": "OKR ไตรมาสนี้",
     "item1": "ทำเครื่องมือ React-Vue ให้เสร็จ",
-    "item2": "ลง组件重構",
+    "item2": "นำการรีแฟกเตอร์เป็นคอมโพเนนต์ไปใช้งานจริง",
     "parentState": "state ของพ่อ: items.length =",
     "diff": {
       "fatherToChild": {
@@ -44,8 +44,8 @@
       },
       "defaultValue": {
         "title": "ค่ามาตรฐาน",
-        "antd": "function Child({ title = '默认' }) {}",
-        "vue": "withDefaults(defineProps({ title: { type: String, default: '默认' } }), {})"
+        "antd": "function Child({ title = 'ค่าเริ่มต้น' }) {}",
+        "vue": "withDefaults(defineProps({ title: { type: String, default: 'ค่าเริ่มต้น' } }), {})"
       },
       "propsModify": {
         "title": "การแก้ props",
@@ -61,7 +61,7 @@
   },
   "twoWay": {
     "title": "การผูกสองทาง",
-    "subtitle": "React: 受控คอมโพเนนต์ (value + onChange); Vue: v-model syntactic sugar (:modelValue + @update:modelValue)",
+    "subtitle": "React: คอมโพเนนต์ที่ควบคุม (value + onChange) ผูกกันแบบแจง; Vue: syntactic sugar ของ v-model (:modelValue + @update:modelValue)",
     "tagSugar": "การควบคุม vs syntactic sugar",
     "tagMulti": "v-model:xxx หลายฟิลด์",
     "tagState": "useState / ref",
@@ -95,8 +95,8 @@
         "vue": "<Counter v-model=\"n\" />  → props.modelValue + emit('update:modelValue')"
       },
       "multiField": {
-        "title": "การผูกสองทางหลาย字段",
-        "antd": "ทีละ字段 value/a/b/c + onChangeXxx",
+        "title": "การผูกสองทางหลายฟิลด์",
+        "antd": "ทีละฟิลด์ value/a/b/c + onChangeXxx",
         "vue": "v-model:title / v-model:visible / v-model:count"
       },
       "modifier": {
@@ -122,10 +122,10 @@
     "themeLabel": "theme: ",
     "userLabel": "ผู้ใช้: ",
     "notLoggedIn": "ยังไม่ล็อกอิน",
-    "grandchildToggle": "หลานทำ「สลับ主题」",
+    "grandchildToggle": "หลานทริกเกอร์「สลับธีม」",
     "fatherLayer": "ชั้นที่ 2 · Father (ไม่มี props ผ่านต่อไป)",
     "grandpaLayer": "ชั้นที่ 1 · GrandPa (Provider)",
-    "toggleTheme": "สลับ主题",
+    "toggleTheme": "สลับธีม",
     "diff": {
       "injectPoint": {
         "title": "ประกาศ「จุดฉีด」",
@@ -133,12 +133,12 @@
         "vue": "setup() ระดับบน: provide('key', value) หรือ app.provide() ที่ root"
       },
       "provide": {
-        "title": "จัด和价值",
+        "title": "การ Provide ค่า",
         "antd": "<Ctx.Provider value={...}>\n  {children}\n</Ctx.Provider>",
         "vue": "provide('theme', { cur, setCur, user })"
       },
       "consume": {
-        "title": "รับ价值",
+        "title": "การบริโภคค่า",
         "antd": "const { theme } = useContext(Ctx)",
         "vue": "const theme = inject('theme', defaultVal)"
       },
@@ -175,7 +175,7 @@
     "appendLog": "เพิ่มล็อก: ",
     "clear": "ล้าง",
     "domRefCard": "① DOM Ref: ควบคุม input / div ดั้งเดิม",
-    "imperativeCard": "② forwardRef + useImperativeHandle: 命令式คอมโพเนนต์ API",
+    "imperativeCard": "② forwardRef + useImperativeHandle: API ของคอมโพเนนต์แบบสั่งการ",
     "playing": "▶ กำลังเล่น",
     "paused": "⏸ หยุดชั่วคราว",
     "playBtn": "▶ play()",
@@ -211,7 +211,7 @@
       "multiRef": {
         "title": "หลาย ref: รายการ",
         "antd": "ref={el => arr[i] = el} (callback ref) หรือ useRef([])",
-        "vue": "<div v-for=\"i in 5\" :ref=\"el => list[i]=el\" /> 或 :ref=\"keyed\""
+        "vue": "<div v-for=\"i in 5\" :ref=\"el => list[i]=el\" /> หรือ :ref=\"keyed\""
       },
       "sideEffect": {
         "title": "การทำงาน DOM แบบ「side effect」",
@@ -232,7 +232,7 @@
     "startWork": "เริ่มงาน",
     "viewNotify": "ดูการแจ้งเตือน 3",
     "namedSlot": "② named slots: หลาย ReactNode props (title / extra / footer / children)",
-    "subtitle2": "วิศวกร前端 · 5 ปี",
+    "subtitle2": "วิศวกร frontend · 5 ปีประสบการณ์",
     "setting": "ตั้งค่า",
     "followed": "ติดตามแล้ว",
     "follow": "ติดตาม",
@@ -265,12 +265,12 @@
       "scoped": {
         "title": "scoped slot (เรนเดอร์รายการ)",
         "antd": "renderItem={(row, idx) => <Item />} หรือ itemRender prop",
-        "vue": "<template #default=\"{ row, $index }\">\n  直接使用 row / $index\n</template>"
+        "vue": "<template #default=\"{ row, $index }\">\n  ใช้ row / $index โดยตรง\n</template>"
       },
       "fallback": {
         "title": "เนื้อหาสำรอง",
         "antd": "เขียนในคอนเทนเนอร์: children || โหนดเริ่มต้น",
-        "vue": "<slot>默认内容</slot>"
+        "vue": "<slot>เนื้อหาเริ่มต้น</slot>"
       },
       "multiSlot": {
         "title": "หลาย slot + ข้อมูล",
@@ -301,8 +301,8 @@
     "addButton": "เพิ่ม",
     "emptyCart": "ตะกร้าว่าง",
     "subtotal": "ยอดรวม: ¥",
-    "book1": "Vue 3 实战",
-    "book2": "React 设计模式",
+    "book1": "Vue 3 ภาคปฏิบัติ",
+    "book2": "รูปแบบการออกแบบ React",
     "diff": {
       "native": {
         "title": "แนวทาง (native)",
