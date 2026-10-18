@@ -11,7 +11,7 @@
   "resetBtn": "재설정",
   "case2Title": "② 이벤트·비동기 오류: useAsyncError로 렌더 단계에 던지기",
   "case2Hint1": "아래 버튼을 아무거나 누르면 오류가 ",
-  "case2Hint2": " 다음 렌더 때 던져져 경계가同样 잡습니다 —— 세 진입점(이벤트 / 타이머 / Promise) 효과가 동일합니다.",
+  "case2Hint2": " 다음 렌더 때 던져져 경계가 마찬가지로 잡힙니다 —— 세 진입점(이벤트 / 타이머 / Promise) 효과가 동일합니다.",
   "case2Caught": "비동기 오류가 잡혔습니다",
   "retry": "재시도",
   "case3Title": "③ 대조군: 직접 throw하면 경계가 보지 못한다",
@@ -42,7 +42,7 @@
     "promiseErr": "Promise에서 던진 오류 —— 경계가 잡았습니다",
     "naiveBtn": "직접 throw(못 잡음)",
     "naiveErr": "직접 throw: 경계가 보지 못합니다(콘솔에 오류가 뜨지만 페이지는 대체되지 않습니다)",
-    "case1Label": "案例①",
-    "case4Label": "案例④"
+    "case1Label": "사례①",
+    "case4Label": "사례④"
   }
 }

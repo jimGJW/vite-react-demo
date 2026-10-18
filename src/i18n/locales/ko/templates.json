@@ -13,10 +13,10 @@
     "templateLocal": "오픈소스 템플릿(로컬)"
   },
   "groups": {
-    "all": "全部",
+    "all": "전체",
     "react": "React",
     "vue": "Vue",
-    "mobile": "移动端",
-    "libs": "组件库·工具"
+    "mobile": "모바일",
+    "libs": "컴포넌트 라이브러리·도구"
   }
 }

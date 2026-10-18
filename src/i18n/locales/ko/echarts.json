@@ -1,15 +1,15 @@
 {
-  "title": "ECharts 图表演示",
-  "subtitle": "基于 ECharts 6 + Ant Design 5 的数据可视化展示，支持实时交互切换图表样式。",
-  "barTitle": "柱状图 · 季度营收",
-  "barSegGroup": "分组",
-  "barSegStack": "堆叠",
-  "lineTitle": "折线图 · 周流量趋势",
-  "lineSegSmooth": "平滑",
-  "lineSegLine": "折线",
-  "pieTitle": "饼图 · 访问来源占比",
-  "pieSegRing": "环形",
-  "pieSegPie": "饼图",
-  "radarTitle": "雷达图 · 预算 vs 开销",
-  "scatterTitle": "散点图 · 气泡数据分布"
+  "title": "ECharts 차트 데모",
+  "subtitle": "ECharts 6 + Ant Design 5 기반의 데이터 시각화 표시. 실시간 인터랙션을 통한 차트 스타일 전환을 지원합니다.",
+  "barTitle": "막대 차트 · 분기 매출",
+  "barSegGroup": "그룹",
+  "barSegStack": "스택",
+  "lineTitle": "선 차트 · 주간 유량 추세",
+  "lineSegSmooth": "스무스",
+  "lineSegLine": "선",
+  "pieTitle": "파이 차트 · 방문 소스 구성비",
+  "pieSegRing": "도넛",
+  "pieSegPie": "파이 차트",
+  "radarTitle": "레이더 차트 · 예산 vs 지출",
+  "scatterTitle": "산점도 · 버블 데이터 분포"
 }

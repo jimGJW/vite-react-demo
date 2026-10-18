@@ -1,9 +1,9 @@
 {
-  "title": "功能版本时间轴",
-  "all": "全部",
-  "items": "{n} 项",
-  "allVersions": "全部版本",
-  "changesCount": "{n} 项改动",
-  "changedAt": "{date} 改动",
-  "batchTip": "改动批次：{date} · {title}"
+  "title": "기능 버전 타임라인",
+  "all": "전체",
+  "items": "{n}항목",
+  "allVersions": "전체 버전",
+  "changesCount": "{n}건의 변경",
+  "changedAt": "{date} 변경",
+  "batchTip": "변경 묶음: {date} · {title}"
 }
