@@ -30,6 +30,7 @@ import { ChangelogMenu } from '../components/Changelog/ChangelogMenu.jsx'
 import { ChangelogDrawer } from '../components/Changelog/ChangelogDrawer.jsx'
 import { useChangelog } from '../contexts/ChangelogContext.jsx'
 import { useSubApps } from '../contexts/SubAppContext.jsx'
+import { PageTransition } from '../motion/index.jsx'
 import { MICRO_APPS } from '../micros/config.js'
 import { ROUTE_RELEASES, getRelease } from '../components/Changelog/releases.js'
 import './Layout.scss'
@@ -461,7 +462,9 @@ export default function Layout() {
 
         <div className="app-main-wrap">
           <main className="app-main-scroll" role="main">
-            <Outlet />
+            <PageTransition>
+              <Outlet />
+            </PageTransition>
             <footer className="app-footer">
               <Text type="secondary" style={{ fontSize: '0.8rem' }}>
                 {t('shell.footer', { year: new Date().getFullYear() })}

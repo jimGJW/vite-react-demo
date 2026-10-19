@@ -1,0 +1,194 @@
+/* =====================================================================
+   Motion 插件 · 全局动效系统
+   ---------------------------------------------------------------------
+   这是整个项目的「动效中枢」，集中维护所有共享动画与微交互：
+
+   1) 共享 @keyframes：fade / slide / zoom / pop / float / pulse /
+      shimmer / spin / breathe / page-in 等
+   2) 工具类 .m-*：直接挂到任意元素即可获得入场 / 循环动画
+   3) 错峰入场 .m-stagger + .m-stagger-item（用 --i 控制顺序）
+   4) 滚动揭示 .m-reveal（配合 <Reveal> 组件，进入视口加 .is-visible）
+   5) 全局基础增强（无需改 JSX）：.page-card / .ant-card 悬停上浮、
+      .ant-btn 按压回弹、标题渐变流光等
+   6) 速度档 [data-motion="slow|fast"] 调整 --m-speed
+   7) 尊重 prefers-reduced-motion：所有动画降级为无
+
+   主题全部走 --c-* / --r-* / --sh-* 变量，明暗主题自动适配。
+   ===================================================================== */
+
+:root {
+  --m-speed: 1;                                   /* 全局速度倍率 */
+  --m-dur: 0.5s;                                  /* 默认动画时长 */
+  --m-dur-fast: 0.28s;                            /* 轻量动画时长 */
+  --m-ease: cubic-bezier(0.22, 0.61, 0.36, 1);    /* 通用缓动 */
+  --m-ease-out: cubic-bezier(0.16, 1, 0.3, 1);    /* 出场缓动（强减速） */
+  --m-dist: 16px;                                 /* 位移距离 */
+  --m-ring: var(--c-primary-ring, rgba(22, 119, 255, 0.4));
+}
+
+/* 速度档：在根节点（如 .app-shell）设置即可整体调速 */
+[data-motion="slow"] { --m-speed: 1.6; }
+[data-motion="fast"] { --m-speed: 0.6; }
+
+/* ============================ 1. 共享 keyframes ============================ */
+@keyframes m-fade-in     { from { opacity: 0; } to { opacity: 1; } }
+@keyframes m-fade-up     { from { opacity: 0; transform: translateY(var(--m-dist)); } to { opacity: 1; transform: none; } }
+@keyframes m-fade-down   { from { opacity: 0; transform: translateY(calc(-1 * var(--m-dist))); } to { opacity: 1; transform: none; } }
+@keyframes m-fade-left   { from { opacity: 0; transform: translateX(calc(-1 * var(--m-dist))); } to { opacity: 1; transform: none; } }
+@keyframes m-fade-right  { from { opacity: 0; transform: translateX(var(--m-dist)); } to { opacity: 1; transform: none; } }
+@keyframes m-zoom-in     { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: none; } }
+@keyframes m-zoom-out    { from { opacity: 0; transform: scale(1.06); } to { opacity: 1; transform: none; } }
+@keyframes m-pop         { 0% { opacity: 0; transform: scale(0.8); } 60% { opacity: 1; transform: scale(1.04); } 100% { transform: scale(1); } }
+@keyframes m-float       { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes m-pulse       { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+@keyframes m-pulse-ring  { 0% { box-shadow: 0 0 0 0 var(--m-ring); } 70% { box-shadow: 0 0 0 14px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
+@keyframes m-shimmer     { 0% { background-position: -150% 0; } 100% { background-position: 250% 0; } }
+@keyframes m-spin-slow   { to { transform: rotate(360deg); } }
+@keyframes m-breathe     { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+@keyframes m-wobble      { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-6deg); } 75% { transform: rotate(6deg); } }
+@keyframes m-page-in     { from { opacity: 0; transform: translateY(10px) scale(0.995); } to { opacity: 1; transform: none; } }
+@keyframes m-shine       { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+
+/* ============================ 2. 入场 / 循环工具类 ============================ */
+.m-fade        { animation: m-fade-in     calc(var(--m-dur) * var(--m-speed)) var(--m-ease) both; }
+.m-fade-up     { animation: m-fade-up     calc(var(--m-dur) * var(--m-speed)) var(--m-ease) both; }
+.m-fade-down   { animation: m-fade-down   calc(var(--m-dur) * var(--m-speed)) var(--m-ease) both; }
+.m-fade-left   { animation: m-fade-left   calc(var(--m-dur) * var(--m-speed)) var(--m-ease) both; }
+.m-fade-right  { animation: m-fade-right  calc(var(--m-dur) * var(--m-speed)) var(--m-ease) both; }
+.m-zoom-in     { animation: m-zoom-in     calc(var(--m-dur) * var(--m-speed)) var(--m-ease) both; }
+.m-zoom-out    { animation: m-zoom-out    calc(var(--m-dur) * var(--m-speed)) var(--m-ease) both; }
+.m-pop         { animation: m-pop         calc(var(--m-dur) * var(--m-speed)) var(--m-ease) both; }
+
+.m-float       { animation: m-float       3.2s ease-in-out infinite; }
+.m-pulse       { animation: m-pulse       2s   ease-in-out infinite; }
+.m-pulse-ring  { animation: m-pulse-ring  1.8s ease-out     infinite; }
+.m-spin-slow   { animation: m-spin-slow   9s   linear       infinite; }
+.m-breathe     { animation: m-breathe     2.6s ease-in-out infinite; }
+.m-wobble      { animation: m-wobble      1.2s ease-in-out infinite; }
+
+/* 延迟档（也可 inline style --i / animation-delay 精确控制） */
+.m-delay-1 { animation-delay: calc(0.08s * var(--m-speed)); }
+.m-delay-2 { animation-delay: calc(0.16s * var(--m-speed)); }
+.m-delay-3 { animation-delay: calc(0.24s * var(--m-speed)); }
+.m-delay-4 { animation-delay: calc(0.32s * var(--m-speed)); }
+.m-delay-5 { animation-delay: calc(0.40s * var(--m-speed)); }
+.m-delay-6 { animation-delay: calc(0.48s * var(--m-speed)); }
+
+/* ============================ 3. 错峰入场 ============================ */
+.m-stagger > .m-stagger-item {
+  animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease) both;
+  animation-delay: calc(var(--i, 0) * 0.07s * var(--m-speed));
+}
+
+/* ============================ 4. 滚动揭示初始态 ============================ */
+.m-reveal {
+  opacity: 0;
+  transform: translateY(var(--m-dist));
+  transition:
+    opacity  calc(var(--m-dur)   * var(--m-speed)) var(--m-ease),
+    transform calc(var(--m-dur) * var(--m-speed)) var(--m-ease);
+  will-change: opacity, transform;
+}
+.m-reveal--down  { transform: translateY(calc(-1 * var(--m-dist))); }
+.m-reveal--left  { transform: translateX(calc(-1 * var(--m-dist))); }
+.m-reveal--right { transform: translateX(var(--m-dist)); }
+.m-reveal--zoom  { transform: scale(0.94); }
+.m-reveal--fade  { transform: none; }
+.m-reveal.is-visible { opacity: 1; transform: none; }
+
+/* ============================ 5. 路由切换过渡 ============================ */
+.page-transition {
+  animation: m-page-in calc(0.42s * var(--m-speed)) var(--m-ease-out) both;
+}
+
+/* ============================ 6. 全局基础增强（项目级微交互，不改 JSX） ============================ */
+/* 卡片悬停上浮 + 柔光（覆盖自定义 .page-card 与 antd Card） */
+.page-card,
+.ant-card {
+  transition:
+    transform var(--t, 0.2s),
+    box-shadow var(--t, 0.2s),
+    border-color var(--t, 0.2s);
+}
+@media (hover: hover) {
+  .page-card:hover,
+  .ant-card:not(.ant-card-bordered-disabled):hover {
+    transform: translateY(-4px);
+    box-shadow: var(--sh-md, 0 6px 16px rgba(0, 0, 0, 0.08));
+    border-color: var(--c-primary-ring, rgba(22, 119, 255, 0.18));
+  }
+}
+
+/* 按钮按压回弹（不影响 antd 颜色逻辑） */
+.ant-btn {
+  transition:
+    transform var(--t-fast, 0.1s),
+    box-shadow var(--t-fast, 0.1s),
+    background var(--t-fast, 0.1s),
+    border-color var(--t-fast, 0.1s);
+}
+.ant-btn:active { transform: scale(0.96); }
+
+/* 列表 / 表格行悬停轻微高亮位移 */
+.ant-table-tbody > tr.ant-table-row {
+  transition: background var(--t-fast, 0.1s), box-shadow var(--t-fast, 0.1s);
+}
+.ant-table-tbody > tr.ant-table-row:hover > td {
+  box-shadow: inset 3px 0 0 0 var(--c-primary, #1677ff);
+}
+
+/* 标题渐变流光（给带 .m-shine-text 的标题） */
+.m-shine-text {
+  background: linear-gradient(
+    100deg,
+    var(--c-text-1, #000000e0) 30%,
+    var(--c-primary, #1677ff) 50%,
+    var(--c-accent, #722ed1) 65%,
+    var(--c-text-1, #000000e0) 80%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: m-shine calc(4.5s * var(--m-speed)) linear infinite;
+}
+
+/* 按钮流光（给带 .m-shimmer-btn 的按钮：加载 / 主行动） */
+.m-shimmer-btn {
+  position: relative;
+  overflow: hidden;
+}
+.m-shimmer-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 80%
+  );
+  background-size: 200% 100%;
+  animation: m-shimmer calc(2.4s * var(--m-speed)) linear infinite;
+  pointer-events: none;
+}
+
+/* ============================ 7. 减少动效守卫 ============================ */
+@media (prefers-reduced-motion: reduce) {
+  .m-fade, .m-fade-up, .m-fade-down, .m-fade-left, .m-fade-right,
+  .m-zoom-in, .m-zoom-out, .m-pop,
+  .m-float, .m-pulse, .m-pulse-ring, .m-spin-slow, .m-breathe, .m-wobble,
+  .m-stagger > .m-stagger-item,
+  .page-transition {
+    animation: none !important;
+  }
+  .m-reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .page-card:hover, .ant-card:hover { transform: none !important; }
+  .ant-btn:active { transform: none !important; }
+  .m-shine-text, .m-shimmer-btn::after { animation: none !important; }
+}

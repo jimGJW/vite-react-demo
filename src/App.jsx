@@ -7,6 +7,7 @@ import { AssistantProvider } from './components/Assistants/index.jsx'
 import PageLoader from './components/PageLoader/index.jsx'
 import Layout from './layouts/Layout.jsx'
 import './App.scss'
+import './motion/motion.scss'
 
 /* —— 路由懒加载：每个页面独立 chunk，按需加载 ——
    每个页面单独抽出 loader 函数，便于空闲时预热（prefetch），消除跳转时的加载延迟 */
