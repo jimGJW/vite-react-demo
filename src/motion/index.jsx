@@ -4,6 +4,8 @@ import { useReveal } from './hooks/useReveal.js'
 import { useReducedMotion } from './hooks/useReducedMotion.js'
 import { useTilt } from './hooks/useTilt.js'
 import { useCountUp } from './hooks/useCountUp.js'
+// animate.css 插件：<Animate> 组件 + 效果清单（自动引入 animate.css 样式）
+import { Animate, ANIMATE_EFFECTS } from './animate/index.jsx'
 
 /* —— 全局动效配置（可选；不包也可用，走默认值） —— */
 const MotionCtx = createContext({ speed: 'normal', reduced: false })
@@ -81,4 +83,4 @@ export function PageTransition({ children }) {
   )
 }
 
-export { useReveal, useReducedMotion, useTilt, useCountUp }
+export { useReveal, useReducedMotion, useTilt, useCountUp, Animate, ANIMATE_EFFECTS }

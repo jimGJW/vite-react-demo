@@ -1,0 +1,22 @@
+/* =====================================================================
+   Motion · animate.css 守卫
+   ---------------------------------------------------------------------
+   animate.css v4 自带的 reduced-motion 媒体查询只是「缩短时长」，
+   并不会彻底关掉动画。这里补一道更严格的守卫：系统开启「减少动效」
+   时彻底禁用 animate__animated，避免对动效敏感用户造成不适。
+   同时把 [data-motion] 速度档桥接到 animate.css（fast 档整体提速）。
+   ===================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .animate__animated {
+    animation: none !important;
+  }
+}
+
+/* 速度档桥接：根节点设 data-motion="fast" 时，animate.css 也跟着提速 */
+[data-motion="fast"] .animate__animated {
+  --animate-duration: 0.6s;
+}
+[data-motion="slow"] .animate__animated {
+  --animate-duration: 1.4s;
+}

@@ -56,10 +56,41 @@ const n = useCountUp(1234, { decimals: 0 })
 
 ## 调速
 
-在根节点设置 `data-motion="slow"` 或 `"fast"` 即可整体调整速度（覆盖 `--m-speed`）。
+在根节点设置 `data-motion="slow"` 或 `"fast"` 即可整体调整速度（覆盖 `--m-speed`，并桥接到 animate.css 的 `--animate-duration`）。
+
+## animate.css 插件（社区知名特效库）
+
+把 [animate.css](https://animate.style) 封装成 `<Animate>` 组件，直接挂效果，无需手写 `animate__` 前缀：
+
+```jsx
+import { Animate, ANIMATE_EFFECTS } from '@/motion'
+
+<Animate name="fadeInDown" as="h1">{title}</Animate>      {/* 标题落下 */}
+<Animate name="zoomIn" delay={0.22}>…</Animate>           {/* 延迟缩放进入 */}
+<Animate name="pulse" infinite>saving…</Animate>           {/* 循环脉冲 */}
+<Animate name="bounceInUp" repeat={2}>toast</Animate>      {/* 弹入 2 次 */}
+```
+
+Props：
+
+| 属性 | 说明 |
+| --- | --- |
+| `name` | animate.css 效果名（不带 `animate__` 前缀），如 `fadeInUp` / `zoomIn` / `bounce` / `pulse` / `flipInX` |
+| `speed` | `'slow'` `slower` `fast` `faster` 或数字（秒） |
+| `delay` | 数字（秒），任意值 |
+| `infinite` | 循环播放 |
+| `repeat` | `1~3`，循环 N 次（与 `infinite` 二选一） |
+| `as` | 渲染标签，默认 `div` |
+| `onAnimationEnd` | 动画结束回调（一次性入场常用） |
+
+常用效果分组见 `ANIMATE_EFFECTS`：`attention`（bounce/flash/pulse/…）、`entrance`（fadeIn*/zoomIn/slideIn*/flipIn*/rotateIn…）、`exit`、`special`（tada/hinge/jackInTheBox…）。
+
+**已落地示例**：`Home`（标题 `fadeInDown`、说明 `fadeInUp`、计数器 `zoomIn`、技术栈 `m-stagger` 错峰、星图 `zoomIn`）与 `Dashboard`（标题 `fadeInDown`、统计卡 `m-stagger` 错峰 + `useTilt` 3D 倾斜）。
 
 ## 文件
 
 - `motion.scss` — keyframes + 工具类 + 全局基础增强
-- `index.jsx` — `Reveal` / `Motion` / `PageTransition` / `MotionProvider` + 导出 hooks
+- `index.jsx` — `Reveal` / `Motion` / `PageTransition` / `MotionProvider` + 导出 hooks 与 `Animate`
 - `hooks/` — `useReveal` / `useReducedMotion` / `useTilt` / `useCountUp`
+- `animate/index.jsx` — `<Animate>` 组件（自动引入 animate.css 样式）
+- `animate/animate.scss` — animate.css 的「减少动效」严格守卫 + 速度桥接
