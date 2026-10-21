@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import StarArray from '@components/StarArray/StarArray.jsx'
 import { useI18n } from '@i18n/index.js'
-import { Animate } from '../../motion/index.jsx'
+import { Animate } from '@/motion/index.jsx'
 import './index.scss'
 
 const TECH = ['React 19', 'React Router 7', 'Vite 8']

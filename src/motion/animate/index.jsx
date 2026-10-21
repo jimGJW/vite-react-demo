@@ -26,34 +26,9 @@ import 'animate.css'
 import './animate.scss'
 
 import { useReducedMotion } from '../hooks/useReducedMotion.js'
+import { ANIMATE_EFFECTS, SPEED_CLASS, buildAnimateClasses } from './effects.js'
 
-/* 常用效果清单（用于文档 / 联想，不全量） */
-export const ANIMATE_EFFECTS = {
-  attention: [
-    'bounce', 'flash', 'pulse', 'rubberBand', 'shakeX', 'shakeY',
-    'headShake', 'swing', 'wobble', 'jello', 'heartBeat',
-  ],
-  entrance: [
-    'fadeIn', 'fadeInUp', 'fadeInDown', 'fadeInLeft', 'fadeInRight',
-    'zoomIn', 'slideInUp', 'slideInLeft', 'slideInRight',
-    'flipInX', 'flipInY', 'rotateIn', 'rollIn', 'lightSpeedIn',
-  ],
-  exit: [
-    'fadeOut', 'fadeOutUp', 'fadeOutDown', 'fadeOutLeft', 'fadeOutRight',
-    'zoomOut', 'slideOutUp', 'slideOutLeft', 'slideOutRight', 'rotateOut',
-  ],
-  special: [
-    'hinge', 'jackInTheBox', 'rollOut', 'bounceIn', 'bounceInUp',
-    'bounceInDown', 'flip', 'tada',
-  ],
-}
-
-const SPEED_CLASS = {
-  slow: 'animate__slow',
-  slower: 'animate__slower',
-  fast: 'animate__fast',
-  faster: 'animate__faster',
-}
+export { ANIMATE_EFFECTS, SPEED_CLASS }
 
 /**
  * animate.css 入场 / 循环动画包装组件。
@@ -79,10 +54,7 @@ export function Animate({
     return createElement(Tag, { className, style, ...rest }, children)
   }
 
-  const classes = ['animate__animated', `animate__${name}`]
-  if (speed && SPEED_CLASS[speed]) classes.push(SPEED_CLASS[speed])
-  if (infinite) classes.push('animate__infinite')
-  if (repeat && repeat >= 1 && repeat <= 3) classes.push(`animate__repeat-${repeat}`)
+  const classes = buildAnimateClasses({ name, speed, infinite, repeat })
 
   const s = { ...style }
   if (typeof speed === 'number') s.animationDuration = `${speed}s`

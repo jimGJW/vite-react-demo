@@ -12,5 +12,6 @@
   "footer": "© {year} Interstellare Konsole · Built with Ant Design",
   "userFallback": "U",
   "docTitle": "Interstellare Konsole · Deep-Space-/Erde-/Ozean-Datenboards",
-  "metaDesc": "React 19 + Vue 3 + Angular 22 Multi-Framework-Komponenten-Demo: Diagramme, Datentabellen, Befehlspalette, Sprache & Scan, AI-Agent-Konsole."
+  "metaDesc": "React 19 + Vue 3 + Angular 22 Multi-Framework-Komponenten-Demo: Diagramme, Datentabellen, Befehlspalette, Sprache & Scan, AI-Agent-Konsole.",
+  "menuAria": "Menü"
 }

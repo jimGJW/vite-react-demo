@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useI18n } from '@i18n/index.js'
-import { Animate, useTilt } from '../../motion/index.jsx'
+import { Animate, useTilt } from '@/motion/index.jsx'
 import './index.scss'
 
 function Dashboard() {

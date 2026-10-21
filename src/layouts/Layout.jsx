@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, Fragment } from 'react'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Menu, Button, Avatar, Dropdown, Typography, Tooltip, Badge } from 'antd'
 import {
@@ -20,19 +20,19 @@ import {
   SafetyCertificateOutlined, NodeIndexOutlined,
   HighlightOutlined, StarOutlined, HeatMapOutlined, CompassOutlined, BlockOutlined,
   VideoCameraOutlined, GlobalOutlined, EnvironmentOutlined, RadarChartOutlined,
+  HistoryOutlined, CheckOutlined, MenuOutlined,
 } from '@ant-design/icons'
 import { useAuth } from '../contexts/useAuth.js'
 import Assistants from '../components/Assistants/index.jsx'
-import LanguageSwitch from '../components/LanguageSwitch/index.jsx'
-import { useI18n } from '../i18n/index.js'
+import { useI18n, LANGUAGES, pickText } from '../i18n/index.js'
 import { PeriodTag } from '../components/Changelog/PeriodTag.jsx'
-import { ChangelogMenu } from '../components/Changelog/ChangelogMenu.jsx'
 import { ChangelogDrawer } from '../components/Changelog/ChangelogDrawer.jsx'
 import { useChangelog } from '../contexts/ChangelogContext.jsx'
 import { useSubApps } from '../contexts/SubAppContext.jsx'
 import { PageTransition } from '../motion/index.jsx'
+import { buildHeaderPanelSections } from './headerPanel.js'
 import { MICRO_APPS } from '../micros/config.js'
-import { ROUTE_RELEASES, getRelease } from '../components/Changelog/releases.js'
+import { ROUTE_RELEASES, getRelease, RELEASES, TOTAL_CHANGES } from '../components/Changelog/releases.js'
 import './Layout.scss'
 
 const { Text } = Typography
@@ -157,6 +157,23 @@ function buildNavItems(t) {
   ]
 }
 
+/* 从导航树提取「当前路由」对应的菜单文案（纯字符串），供 header 中部标题使用。
+   精确匹配 → 最长前缀匹配；找不到回退到品牌名。 */
+function findPageTitle(items, pathname) {
+  const flat = []
+  const walk = (arr) => arr.forEach((it) => {
+    if (it.children) walk(it.children)
+    else if (typeof it.key === 'string' && it.key.startsWith('/')) flat.push(it)
+  })
+  walk(items)
+  const exact = flat.find((it) => it.key === pathname)
+  if (exact) return exact.label
+  const prefix = flat
+    .filter((it) => it.key !== '/' && pathname.startsWith(it.key))
+    .sort((a, b) => b.key.length - a.key.length)
+  return prefix.length ? prefix[0].label : null
+}
+
 /* 给「路由项」追加时间段下标 icon（侧边栏文字右上角小徽标），并按当前选中的批次高亮。
    selected==='all'（默认全选）时不做额外高亮；
    选中某批次时：属于该批次的项加 period-hit 高亮（用该批次颜色），其余淡化 period-off。
@@ -246,13 +263,28 @@ function writeLayout(v) {
 export default function Layout() {
   const { pathname } = useLocation()
   const { user, logout } = useAuth()
-  const { selected } = useChangelog()
+  const { selected, openChangelog } = useChangelog()
   const { subApps, requestSubApp } = useSubApps()
-  const { t } = useI18n()
+  const { t, lang, setLang } = useI18n()
   const navigate = useNavigate()
 
   /* 导航项随语言重建（label 全部走 i18n 文案） */
   const navItems = useMemo(() => buildNavItems(t), [t])
+
+  /* header 中部标题：主菜单精确/前缀匹配；子应用内部页回退到子应用标题 */
+  const pageTitle = useMemo(() => {
+    const fromNav = findPageTitle(navItems, pathname)
+    if (fromNav) return fromNav
+    for (const appKey of Object.keys(MICRO_APPS)) {
+      const internal = subApps[appKey]?.currentPath
+      if (internal && MICRO_APPS[appKey]?.hostPath === pathname) {
+        const m = subApps[appKey]?.menus?.find((mm) => mm.path === internal)
+        if (m) return m.label
+        return subApps[appKey]?.title || MICRO_APPS[appKey]?.title || appKey
+      }
+    }
+    return t('shell.brand')
+  }, [navItems, pathname, subApps, t])
 
   const initial = useMemo(() => readLayout(), [])
   const [sidebarMode, setSidebarMode] = useState(initial.sidebarMode)
@@ -291,13 +323,101 @@ export default function Layout() {
     navigate(key)
   }
 
-  /* —— 用户下拉菜单 —— */
-  const userMenuItems = [
-    { key: 'logout', icon: <LogoutOutlined />, label: t('shell.logout'), danger: true },
-  ]
-  const onUserMenu = ({ key }) => {
-    if (key === 'logout') { logout(); navigate('/login', { replace: true }) }
+  /* —— 顶栏「统一菜单」浮层：数据驱动的分区面板（配置抽自 headerPanel.js）。
+        后续要加别的模块链接，只需往 actions 的 items 追加一项，或新增一个 list
+        section —— 渲染层（renderPanelSection）自动按配置出面板，无需改动 JSX 结构。 */
+  const [menuOpen, setMenuOpen] = useState(false)
+  const closePanel = () => setMenuOpen(false)
+
+  const headerPanelSections = buildHeaderPanelSections({
+    t,
+    lang,
+    setLang,
+    closePanel,
+    openChangelog,
+    cycleHeader,
+    logout,
+    navigate,
+    pickText,
+    LANGUAGES,
+    RELEASES,
+    TOTAL_CHANGES,
+    headerVisible,
+    user,
+    icons: {
+      GlobalOutlined,
+      HistoryOutlined,
+      EyeOutlined,
+      EyeInvisibleOutlined,
+      LogoutOutlined,
+    },
+  })
+
+  /* 按配置渲染单个区块：grid（彩色卡片网格）/ list（标题 + 行列表）两种布局 */
+  const renderPanelSection = (section) => {
+    if (section.variant === 'grid') {
+      return (
+        <div className="ahp-block" key={section.key}>
+          <div className="ahp-block__title">{section.icon}<span>{section.title}</span></div>
+          <div className="ahp-lang-grid">
+            {section.items.map((it) => (
+              <button
+                key={it.key}
+                type="button"
+                className={`ahp-lang-cell${it.active ? ' is-active' : ''}`}
+                style={{ '--lang-color': it.color }}
+                title={it.label}
+                onClick={it.onClick}
+              >
+                {it.flag
+                  ? <span className="lang-flag lang-flag--sm">{it.flag}</span>
+                  : <span className="lang-badge lang-badge--sm" style={{ background: it.badge.color }}>{it.badge.text}</span>}
+                <span className="ahp-lang-cell__name">{it.label}</span>
+                {it.active && <CheckOutlined className="ahp-lang-cell__check" />}
+              </button>
+            ))}
+          </div>
+        </div>
+      )
+    }
+    return (
+      <div className="ahp-block" key={section.key}>
+        {section.title && (
+          <div className="ahp-block__title">{section.icon}<span>{section.title}</span></div>
+        )}
+        <div className="ahp-cl-list">
+          {section.items.map((it) => (
+            <button
+              key={it.key}
+              type="button"
+              className={`ahp-cl-row${it.danger ? ' ahp-cl-row--danger' : ''}`}
+              onClick={it.onClick}
+            >
+              {it.dot && (
+                <span className={`cl-dot${it.dot.gradient ? ' cl-dot--all' : ''}`} style={it.dot.color ? { background: it.dot.color } : undefined} />
+              )}
+              {it.icon && <span className="ahp-cl-row__icon">{it.icon}</span>}
+              <span className="ahp-cl-row__title">{it.label}</span>
+              {it.sub && <span className="ahp-cl-row__sub">{it.sub}</span>}
+              {it.count != null && <span className="ahp-cl-row__count">{it.count}</span>}
+            </button>
+          ))}
+        </div>
+      </div>
+    )
   }
+
+  const renderHeaderPanel = () => (
+    <div className="app-header-panel" role="menu">
+      {headerPanelSections.map((section, i) => (
+        <Fragment key={section.key}>
+          {i > 0 && <div className="ahp-divider" />}
+          {renderPanelSection(section)}
+        </Fragment>
+      ))}
+    </div>
+  )
+
 
   /* —— 选中状态：精确匹配 / 前缀匹配，外加「子应用内部页面」——
      子应用菜单项的 key 形如 `micro:vue:/kit`，永远不会等于 pathname（宿主页恒为 /micro-vue），
@@ -394,36 +514,47 @@ export default function Layout() {
           </div>
         </div>
 
+        <div className="header-center">
+          <span key={pageTitle} className="header-page-title">{pageTitle}</span>
+        </div>
+
         <div className="header-right">
-          <ChangelogMenu />
-          <LanguageSwitch />
-
-          <Tooltip title={headerVisible ? t('shell.hideHeader') : t('shell.showHeader')}>
-            <Button
-              type="text"
-              className="header-toggle-btn"
-              icon={headerVisible ? <EyeInvisibleOutlined /> : <EyeOutlined />}
-              onClick={cycleHeader}
-            />
-          </Tooltip>
-
-          {user && (
-            <Dropdown menu={{ items: userMenuItems, onClick: onUserMenu }} placement="bottomRight">
+          {/* 统一入口：语言 / 功能版本时间轴 / 隐藏页眉 / 退出登录 全部收进一个下拉，
+              与「退出登录」同级，header 不再散布零散按钮 */}
+          <Dropdown
+            open={menuOpen}
+            onOpenChange={setMenuOpen}
+            trigger={['click']}
+            placement="bottomRight"
+            dropdownRender={renderHeaderPanel}
+          >
+            {user ? (
               <div className="user-chip-antd">
                 <Avatar size="small" style={{ background: '#1677ff' }}>
                   {user.name?.charAt(0).toUpperCase() || t('shell.userFallback')}
                 </Avatar>
                 <Text className="user-name-text">{user.name}</Text>
-                <DownOutlined style={{ fontSize: '0.7rem', color: 'var(--c-text-3, #00000073)' }} />
+                <DownOutlined className="user-chip-caret" style={{ fontSize: '0.7rem', color: 'var(--c-text-3, #00000073)' }} />
               </div>
-            </Dropdown>
-          )}
+            ) : (
+              <Button type="text" className="header-menu-btn" icon={<MenuOutlined />} aria-label={t('shell.menuAria', null, '菜单')} />
+            )}
+          </Dropdown>
         </div>
       </header>
 
       {/* ========== 中部：左侧栏 + 右侧内容（唯一滚动容器在这里） ========== */}
       <section className="app-body">
-        <aside className="app-sidebar" aria-label={t('shell.sidebarAria')}>
+        <aside
+          className="app-sidebar"
+          aria-label={t('shell.sidebarAria')}
+          onMouseMove={(e) => {
+            const el = e.currentTarget
+            const r = el.getBoundingClientRect()
+            el.style.setProperty('--mx', `${e.clientX - r.left}px`)
+            el.style.setProperty('--my', `${e.clientY - r.top}px`)
+          }}
+        >
           <div className="sidebar-scroll">
             <Menu
               mode="inline"

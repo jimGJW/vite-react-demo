@@ -12,5 +12,6 @@
   "footer": "© {year} 星空コンソール · Built with Ant Design",
   "userFallback": "U",
   "docTitle": "インターステラーコンソール · 深空 / 地球 / 海洋データボード",
-  "metaDesc": "React 19 + Vue 3 + Angular 22 マルチフレームワークコンポーネントデモ：チャート、データテーブル、コマンドパレット、音声・スキャン、AI Agent コンソール。"
+  "metaDesc": "React 19 + Vue 3 + Angular 22 マルチフレームワークコンポーネントデモ：チャート、データテーブル、コマンドパレット、音声・スキャン、AI Agent コンソール。",
+  "menuAria": "メニュー"
 }

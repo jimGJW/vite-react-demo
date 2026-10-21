@@ -12,5 +12,6 @@
   "footer": "© {year} 星際控制台 · Built with Ant Design",
   "userFallback": "U",
   "docTitle": "星際控制台 · 深空 / 地球 / 海洋數據看板",
-  "metaDesc": "React 19 + Vue 3 + Angular 22 多框架元件演示：圖表、資料表格、命令面板、語音與掃碼、AI Agent 控制台。"
+  "metaDesc": "React 19 + Vue 3 + Angular 22 多框架元件演示：圖表、資料表格、命令面板、語音與掃碼、AI Agent 控制台。",
+  "menuAria": "選單"
 }
