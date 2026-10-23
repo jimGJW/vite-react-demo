@@ -1,6 +1,14 @@
 .chatbot-demo {
   padding: 4px 2px 24px;
 
+  /* 左右两栏错峰入场：左侧对话主体先落位，右侧说明卡稍后跟进 */
+  > .ant-row > .ant-col {
+    animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease-out) backwards;
+  }
+  > .ant-row > .ant-col:nth-child(2) {
+    animation-delay: calc(0.1s * var(--m-speed));
+  }
+
   &__head {
     margin-bottom: 18px;
   }
@@ -27,4 +35,8 @@
     white-space: pre-wrap;
     word-break: break-word;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chatbot-demo > .ant-row > .ant-col { animation: none !important; }
 }

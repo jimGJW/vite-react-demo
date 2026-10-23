@@ -6,6 +6,8 @@
   "hideHeader": "상단 내비게이션 숨기기",
   "showHeader": "상단 내비게이션 표시",
   "logout": "로그아웃",
+  "back": "돌아가기",
+  "backHome": "홈으로",
   "sidebarAria": "사이드 내비게이션",
   "hiddenEntryTitle": "로컬 미디어 센터 (숨겨진 페이지)",
   "sidebarFoot": "왼쪽 위 버튼으로 전환: 접기 / 숨기기",

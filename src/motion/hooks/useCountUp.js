@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
+import { useReducedMotion } from './useReducedMotion.js'
 
 /**
  * 数字滚动增长动画（用于统计卡 / KPI 数字）。
- * 减少动效偏好下直接显示终值，不跑动画。
+ * 减少动效偏好下直接返回终值，不跑动画（也不在 effect 里 setState 追一次）。
  *
  * @param {number} target    目标数值
  * @param {Object} options
@@ -11,18 +12,12 @@ import { useEffect, useRef, useState } from 'react'
  * @param {boolean} options.start   是否开始（默认 true）
  */
 export function useCountUp(target, { duration = 1200, decimals = 0, start = true } = {}) {
+  const reduced = useReducedMotion()
   const [value, setValue] = useState(0)
   const rafRef = useRef(null)
 
   useEffect(() => {
-    if (!start) return
-    const prefersReduced =
-      typeof window !== 'undefined' &&
-      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-    if (prefersReduced) {
-      setValue(target)
-      return
-    }
+    if (!start || reduced) return undefined
     const t0 = performance.now()
     const tick = (now) => {
       const p = Math.min(1, (now - t0) / duration)
@@ -32,7 +27,8 @@ export function useCountUp(target, { duration = 1200, decimals = 0, start = true
     }
     rafRef.current = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(rafRef.current)
-  }, [target, duration, decimals, start])
+  }, [target, duration, decimals, start, reduced])
 
-  return value
+  // 减动效 / 未启动时直接用终值，避免首帧显示 0
+  return reduced || !start ? target : value
 }

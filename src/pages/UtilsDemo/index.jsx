@@ -49,7 +49,7 @@ export default function UtilsDemo() {
 
   return (
     <div className="utils-demo">
-      <div className="utils-demo__header">
+      <div className="utils-demo__header page-hero">
         <Title level={3} style={{ marginBottom: 4 }}>
           <ThunderboltOutlined /> {t('utilsdemo.pageTitle')}
         </Title>

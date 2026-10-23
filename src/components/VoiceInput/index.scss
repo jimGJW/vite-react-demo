@@ -50,7 +50,7 @@
   padding: 1px 6px;
   border-radius: 999px;
   background: #fef3c7;
-  color: #b45309;
+  color: var(--c-warning-text, #b45309);
 
   &.ok {
     background: #dcfce7;
@@ -69,7 +69,7 @@
   border-left: 4px solid #f59e0b;
   border-radius: 4px;
   font-size: 13px;
-  color: #92400e;
+  color: var(--c-warning-text, #92400e);
 }
 
 .voice-input-link-btn {
@@ -93,7 +93,7 @@
   border-left: 4px solid #f59e0b;
   border-radius: 4px;
   font-size: 13px;
-  color: #92400e;
+  color: var(--c-warning-text, #92400e);
   display: flex;
   align-items: center;
   gap: 0.5rem;

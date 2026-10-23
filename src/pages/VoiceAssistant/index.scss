@@ -11,9 +11,9 @@
   border-left: 4px solid var(--c-warning);
   border-radius: var(--r-sm);
   font-size: 13px;
-  color: #92400e;
+  color: var(--c-warning-text, #92400e);
 
   strong {
-    color: #78350f;
+    color: var(--c-warning-text-strong, #78350f);
   }
 }

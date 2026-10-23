@@ -34,7 +34,10 @@ export default function TimelineChart({
   className = '',
 }) {
   const { t } = useI18n()
-  const names = seriesNames ?? [t('kit.timeline.seriesA'), t('kit.timeline.seriesB')]
+  const names = useMemo(
+    () => seriesNames ?? [t('kit.timeline.seriesA'), t('kit.timeline.seriesB')],
+    [seriesNames, t],
+  )
   const elRef = useRef(null)
 
   const option = useMemo(() => {

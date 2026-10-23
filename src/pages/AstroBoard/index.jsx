@@ -336,7 +336,10 @@ export default function AstroBoard({ lockedTab = null } = {}) {
       {/* 顶部概览 */}
       <div className="astro-hero">
         <div className="astro-hero__main">
-          <h1><RocketOutlined /> {t('astro.heroTitle')}</h1>
+          <h1>
+            <RocketOutlined />
+            <span className="astro-hero__title-text">{t('astro.heroTitle')}</span>
+          </h1>
         </div>
         <div className="astro-hero__side">
           <div className="astro-clock">

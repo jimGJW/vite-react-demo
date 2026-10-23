@@ -38,7 +38,7 @@ export default function StudioDemo() {
 
   return (
     <div className="studio-demo">
-      <div className="studio-demo__header">
+      <div className="studio-demo__header page-hero">
         <Title level={3} style={{ marginBottom: 4 }}>
           <CodepenOutlined /> {t('studio.page.title')}
         </Title>

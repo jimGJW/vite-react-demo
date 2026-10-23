@@ -97,7 +97,7 @@ export default function ChatBotShareDemo() {
 
   return (
     <div className="share-demo">
-      <div className="share-demo__head">
+      <div className="share-demo__head page-hero">
         <Title level={3} style={{ marginBottom: 6 }}>
           {t('chatbot.share.pageTitle')}
         </Title>

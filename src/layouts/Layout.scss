@@ -869,11 +869,30 @@
    MAIN · 右侧内容（唯一滚动容器！）
    ========================================================= */
 .app-shell .app-main-wrap {
+  position: relative;
   flex: 1 1 auto;
   min-width: 0;
   min-height: 0;
   display: flex;
   flex-direction: column;
+}
+
+/* 阅读进度线：--read 由 Layout.jsx 的滚动监听写入 0~1，顶部 2px 渐变。
+   放在 wrap 的伪元素上，不占布局高度，也不会随内容滚走。 */
+.app-shell .app-main-wrap::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 6;
+  pointer-events: none;
+  background: linear-gradient(90deg, var(--c-primary), var(--c-accent) 55%, var(--c-accent-2));
+  transform: scaleX(var(--read, 0));
+  transform-origin: 0 50%;
+  opacity: 0.85;
+  transition: transform 120ms linear;
 }
 
 .app-shell .app-main-scroll {
@@ -888,15 +907,23 @@
   overflow-y: auto;
   overflow-x: hidden;
   scroll-behavior: smooth;
+  /* 滚动条始终预留位置：切页时内容高度变化不再导致整页左右抖 2px */
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+  scroll-padding-top: var(--sp-md);
   display: flex;
   flex-direction: column;
   gap: var(--pad);
 }
 
 .app-shell .app-footer {
-  text-align: center;
-  padding: 1rem;
   margin-top: auto;
+  padding: var(--sp-lg) var(--sp-sm) var(--sp-xs);
+  border-top: 1px solid var(--c-border-soft);
+  color: var(--c-text-3);
+  text-align: center;
+  font-size: 0.8rem;
+  letter-spacing: 0.01em;
 }
 
 /* =========================================================
@@ -968,7 +995,7 @@
 
 /* =========================================================
    顶栏统一菜单浮层（语言网格 + 功能版本时间轴 + 隐藏页眉 + 退出登录）
-   通过 Dropdown 的 dropdownRender 自绘分区面板；语言从二级子菜单改为 2 列网格
+   通过 Dropdown 的 popupRender 自绘分区面板；语言从二级子菜单改为 2 列网格
    ========================================================= */
 .app-header-panel {
   width: 320px;
@@ -1115,7 +1142,7 @@
   background: color-mix(in srgb, #ff4d4f 12%, transparent);
 }
 
-/* 旧 antd menu 浮层兜底（当前已改用 dropdownRender 自绘，保留以防回退） */
+/* 旧 antd menu 浮层兜底（当前已改用 popupRender 自绘，保留以防回退） */
 .app-header-menu-dropdown .ant-dropdown-menu {
   padding: 6px;
   border-radius: 12px;

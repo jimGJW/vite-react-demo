@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, Fragment } from 'react'
+import { useEffect, useMemo, useRef, useState, Fragment } from 'react'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { Menu, Button, Avatar, Dropdown, Typography, Tooltip, Badge } from 'antd'
 import {
@@ -118,6 +118,8 @@ function buildNavItems(t) {
         { key: '/creative', icon: <StarOutlined />, label: t('nav.creative') },
         { key: '/data-viz', icon: <HeatMapOutlined />, label: t('nav.dataViz') },
         { key: '/orbit', icon: <CompassOutlined />, label: t('nav.orbit') },
+        { key: '/honghuang', icon: <ThunderboltOutlined />, label: t('nav.honghuang') },
+        { key: '/stars', icon: <RadarChartOutlined />, label: t('nav.stars') },
         { key: '/playground', icon: <BlockOutlined />, label: t('nav.playground') },
       ],
     },
@@ -295,6 +297,40 @@ export default function Layout() {
     writeLayout({ sidebarMode, headerVisible, openKeys })
     writeSeenGroups()
   }, [sidebarMode, headerVisible, openKeys])
+
+  /* —— 内容区滚动：顶部渐变阅读进度 + 切页回到顶部 —— */
+  const mainRef = useRef(null)
+
+  useEffect(() => {
+    const el = mainRef.current
+    if (!el) return undefined
+    const wrap = el.parentElement
+    let raf = 0
+    const sync = () => {
+      raf = 0
+      const max = el.scrollHeight - el.clientHeight
+      wrap?.style.setProperty('--read', max > 0 ? (el.scrollTop / max).toFixed(3) : '0')
+    }
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(sync)
+    }
+    el.addEventListener('scroll', onScroll, { passive: true })
+    sync()
+    return () => {
+      el.removeEventListener('scroll', onScroll)
+      cancelAnimationFrame(raf)
+    }
+  }, [])
+
+  useEffect(() => {
+    const el = mainRef.current
+    if (!el) return
+    /* 临时关掉 scroll-behavior: smooth，避免切页时看到一段"往回滚"的动画 */
+    const prev = el.style.scrollBehavior
+    el.style.scrollBehavior = 'auto'
+    el.scrollTop = 0
+    el.style.scrollBehavior = prev
+  }, [pathname])
 
   const toggleSidebar = () => setSidebarMode((prev) => {
     if (prev === 'hidden') return 'expanded'
@@ -526,7 +562,7 @@ export default function Layout() {
             onOpenChange={setMenuOpen}
             trigger={['click']}
             placement="bottomRight"
-            dropdownRender={renderHeaderPanel}
+            popupRender={renderHeaderPanel}
           >
             {user ? (
               <div className="user-chip-antd">
@@ -592,7 +628,7 @@ export default function Layout() {
         </aside>
 
         <div className="app-main-wrap">
-          <main className="app-main-scroll" role="main">
+          <main className="app-main-scroll" role="main" ref={mainRef}>
             <PageTransition>
               <Outlet />
             </PageTransition>

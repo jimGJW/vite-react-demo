@@ -27,7 +27,8 @@
     margin: 0 0 0.4rem;
     font-size: 1.4rem;
     font-weight: 800;
-    background: linear-gradient(135deg, var(--c-primary-600), var(--c-violet-600));
+    /* 曾引用未定义的 --c-violet-600：整条 background 失效 + 透明填充 = 标题隐形 */
+    background: linear-gradient(135deg, var(--c-primary-600), var(--c-accent));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;

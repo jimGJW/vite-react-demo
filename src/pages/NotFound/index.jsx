@@ -1,18 +1,26 @@
-import { Link } from 'react-router-dom'
+import { Button } from 'antd'
+import { useNavigate } from 'react-router-dom'
+import { Page } from '@components/PageShell/index.jsx'
 import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
 function NotFound() {
   const { t } = useI18n()
+  const navigate = useNavigate()
+
   return (
-    <div className="page-card not-found-card">
-      <h1 className="not-found-code">404</h1>
-      <h2>{t('notFound.title')}</h2>
-      <p>{t('notFound.desc')}</p>
-      <Link to="/" className="btn">
-        {t('notFound.back')}
-      </Link>
-    </div>
+    <Page className="nf" aurora gap="lg">
+      <div className="nf-card page-card">
+        <div className="nf-code m-float" aria-hidden="true">
+          404
+        </div>
+        <h1 className="nf-title">{t('notFound.title')}</h1>
+        <p className="nf-desc">{t('notFound.desc')}</p>
+        <Button type="primary" size="large" onClick={() => navigate('/')}>
+          {t('notFound.back')}
+        </Button>
+      </div>
+    </Page>
   )
 }
 

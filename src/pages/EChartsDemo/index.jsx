@@ -26,20 +26,19 @@ export default function EChartsDemo() {
   const { t } = useI18n()
   return (
     <div className="echarts-demo-page">
-      <Typography>
+      <div className="page-hero">
         <Title level={2}>{t('echarts.title')}</Title>
         <Paragraph type="secondary">
           {t('echarts.subtitle')}
         </Paragraph>
-      </Typography>
-
-      <Space wrap className="echarts-tags">
-        <Tag color="blue">Bar</Tag>
-        <Tag color="green">Line</Tag>
-        <Tag color="orange">Pie</Tag>
-        <Tag color="purple">Radar</Tag>
-        <Tag color="cyan">Scatter</Tag>
-      </Space>
+        <Space wrap className="echarts-tags">
+          <Tag color="blue">Bar</Tag>
+          <Tag color="green">Line</Tag>
+          <Tag color="orange">Pie</Tag>
+          <Tag color="purple">Radar</Tag>
+          <Tag color="cyan">Scatter</Tag>
+        </Space>
+      </div>
 
       <div className="echarts-grid">
         <BarChartCard />

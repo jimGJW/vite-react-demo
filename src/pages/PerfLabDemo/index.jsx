@@ -26,7 +26,7 @@ export default function PerfLabDemo() {
 
   return (
     <div className="perf-lab">
-      <header className="perf-lab__header">
+      <header className="perf-lab__header page-hero">
         <Title level={4} className="perf-lab__title">
           <ThunderboltOutlined /> {t('perf.title')}
         </Title>

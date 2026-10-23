@@ -320,7 +320,7 @@ export default function DataVizLab() {
 
   return (
     <div className="data-viz-lab">
-      <header className="dvl-head">
+      <header className="dvl-head page-hero">
         <h1>可视化实验室</h1>
         <p>三张 canvas 手绘图 —— 不引图表库，演示「布局算法 + 逐帧渲染」这两件事</p>
       </header>

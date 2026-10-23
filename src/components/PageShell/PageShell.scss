@@ -1,0 +1,329 @@
+/* =====================================================================
+   PageShell · 全站统一页面外壳
+   ---------------------------------------------------------------------
+   38 个页面收敛到同一套视觉语言：页头（极光氛围 + 渐变大标题 + 工具组）、
+   主体栅格、分节标题、KPI 卡、工具条、页脚。
+
+   约定的 CSS 变量（由 pageShellStyle.js 注入，勿在页面里手写硬编码色）：
+     --pg-accent  本页强调色，默认回退 --c-primary，暗色主题自动换值
+     --pg-gap     主体纵向节奏，默认 --sp-lg
+
+   卡片沿用全站既有的 .page-card（motion.scss 已给它 hover 上浮），
+   这里不重复定义，避免出现第二套卡片。
+   ===================================================================== */
+
+@keyframes pg-title-shine {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.pg {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--pg-gap, var(--sp-lg));
+  min-width: 0;
+}
+
+/* —— 氛围层：贴在页头后方的极光渐变，纯装饰 —— */
+.pg-aurora {
+  position: absolute;
+  inset: -72px -32px auto;
+  height: 340px;
+  z-index: 0;
+  pointer-events: none;
+  --m-aurora-a: color-mix(in srgb, var(--pg-accent, var(--c-primary)) 18%, transparent);
+  --m-aurora-b: color-mix(in srgb, var(--c-accent) 14%, transparent);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 94%);
+  mask-image: linear-gradient(180deg, #000 0%, transparent 94%);
+}
+
+/* ============================ 页头 ============================ */
+.pg-hero {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-lg);
+  padding: clamp(16px, 2.4vw, 26px);
+  border: 1px solid var(--c-border-soft);
+  border-radius: var(--r-lg);
+  background:
+    radial-gradient(120% 150% at 0% 0%,
+      color-mix(in srgb, var(--pg-accent, var(--c-primary)) 10%, transparent), transparent 62%),
+    var(--c-card);
+  box-shadow: var(--sh-sm);
+  overflow: hidden;
+
+  /* 底部一条渐隐的强调色细线，让页头与主体之间有承接 */
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--pg-accent, var(--c-primary)), transparent 72%);
+  }
+}
+
+.pg-hero__main {
+  min-width: 0;
+  flex: 1 1 320px;
+}
+
+.pg-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-xs);
+  margin-bottom: var(--sp-sm);
+  padding: 2px 10px;
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--pg-accent, var(--c-primary)) 10%, transparent);
+  color: var(--pg-accent, var(--c-primary));
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* 渐变大标题：静态渐变打底，shine 档才跑流光 */
+.pg-hero__title {
+  margin: 0 0 var(--sp-xs);
+  font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  background: linear-gradient(
+    100deg,
+    var(--c-text-1) 22%,
+    var(--pg-accent, var(--c-primary)) 58%,
+    var(--c-accent) 82%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+.pg-hero__title--shine {
+  animation: pg-title-shine calc(6s * var(--m-speed, 1)) linear infinite;
+}
+
+.pg-hero__sub {
+  margin: 0;
+  max-width: 70ch;
+  color: var(--c-text-2);
+  line-height: 1.65;
+}
+
+.pg-hero__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-sm);
+  flex-shrink: 0;
+}
+
+/* ============================ 主体 ============================ */
+.pg-body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--pg-gap, var(--sp-lg));
+  min-width: 0;
+}
+
+/* —— 分节 —— */
+.pg-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-md);
+  min-width: 0;
+}
+
+.pg-section__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-sm);
+  flex-wrap: wrap;
+}
+
+.pg-section__title {
+  position: relative;
+  margin: 0;
+  padding-left: 12px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--c-text-1);
+
+  /* 左侧一根强调色短竖条，代替各页手写的 border-left */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    translate: 0 -50%;
+    width: 3px;
+    height: 0.9em;
+    border-radius: var(--r-pill);
+    background: var(--pg-accent, var(--c-primary));
+  }
+}
+
+.pg-section__desc {
+  margin: 0;
+  color: var(--c-text-3);
+  font-size: 0.85rem;
+}
+
+.pg-section__extra {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-sm);
+}
+
+/* —— 自适应栅格：列数随宽度收缩，长文本不撑破（minmax(0,…) 是关键） —— */
+.pg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--pg-col, 260px), 1fr));
+  gap: var(--pg-gap, var(--sp-lg));
+}
+.pg-grid--fit { grid-template-columns: repeat(auto-fit, minmax(var(--pg-col, 260px), 1fr)); }
+
+/* ============================ KPI ============================ */
+.pg-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--pg-kpi-col, 150px), 1fr));
+  gap: var(--sp-md);
+}
+
+.pg-kpi {
+  position: relative;
+  padding: var(--sp-lg) var(--sp-lg) var(--sp-md);
+  border: 1px solid var(--c-border-soft);
+  border-radius: var(--r-lg);
+  background: var(--c-card);
+  box-shadow: var(--sh-sm);
+  overflow: hidden;
+  transition:
+    transform var(--t),
+    box-shadow var(--t),
+    border-color var(--t);
+
+  /* 顶部 2px 强调条，随 hover 变亮 */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--pg-accent, var(--c-primary)), transparent 80%);
+    opacity: 0.5;
+    transition: opacity var(--t);
+  }
+
+  &:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--pg-accent, var(--c-primary)) 35%, transparent);
+    box-shadow: var(--sh-md);
+
+    &::before { opacity: 1; }
+  }
+}
+
+.pg-kpi__label {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--c-text-3);
+  margin-bottom: var(--sp-xs);
+}
+
+.pg-kpi__value {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--c-text-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.pg-kpi__unit {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--c-text-3);
+}
+
+.pg-kpi__hint {
+  display: block;
+  margin-top: var(--sp-xs);
+  font-size: 0.78rem;
+  color: var(--c-text-3);
+}
+
+/* ============================ 工具条 / 页脚 / 空态 ============================ */
+.pg-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-sm);
+  padding: var(--sp-md);
+  border: 1px solid var(--c-border-soft);
+  border-radius: var(--r-lg);
+  background: var(--c-bg-soft);
+
+  > .pg-toolbar__spacer { margin-left: auto; }
+}
+
+.pg-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-sm);
+  padding: clamp(28px, 6vh, 56px) var(--sp-lg);
+  border: 1px dashed var(--c-border);
+  border-radius: var(--r-lg);
+  color: var(--c-text-3);
+  text-align: center;
+  background:
+    repeating-linear-gradient(135deg, transparent 0 10px, var(--c-primary-softer) 10px 20px);
+}
+
+.pg-foot {
+  padding-top: var(--sp-md);
+  border-top: 1px solid var(--c-border-soft);
+  color: var(--c-text-3);
+  font-size: 0.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-sm);
+  align-items: center;
+}
+
+/* ============================ 断点 ============================ */
+@media (max-width: 860px) {
+  .pg-hero {
+    align-items: stretch;
+    flex-direction: column;
+    padding: var(--sp-lg);
+  }
+  .pg-hero__tools { width: 100%; }
+  .pg-hero__title { font-size: 1.3rem; }
+}
+
+/* ============================ 减少动效 ============================ */
+@media (prefers-reduced-motion: reduce) {
+  .pg-aurora { display: none; }
+  .pg-hero__title--shine { animation: none; }
+  .pg-kpi,
+  .pg-kpi:hover {
+    transform: none;
+    transition: none;
+  }
+}

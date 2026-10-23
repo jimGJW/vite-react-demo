@@ -6,6 +6,8 @@
   "hideHeader": "Obere Navigationsleiste ausblenden",
   "showHeader": "Obere Navigationsleiste anzeigen",
   "logout": "Abmelden",
+  "back": "Zurück",
+  "backHome": "Zur Startseite",
   "sidebarAria": "Seitennavigation",
   "hiddenEntryTitle": "Lokales Medienzentrum (versteckte Seite)",
   "sidebarFoot": "Taste oben links zum Wechseln: einklappen / ausblenden",

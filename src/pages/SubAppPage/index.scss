@@ -4,6 +4,14 @@
     align-items: center;
     margin-bottom: 4px;
   }
+
+  .ant-card {
+    animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease-out) backwards;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .subapp-page .ant-card { animation: none !important; }
 }
 
 /* 框架色点（Vue 绿 / Angular 红），页头与卡片标题共用 */

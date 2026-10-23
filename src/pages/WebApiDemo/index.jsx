@@ -35,7 +35,7 @@ export default function WebApiDemo() {
 
   return (
     <div className="wad">
-      <header className="wad__header">
+      <header className="wad__header page-hero">
         <Title level={4} className="wad__title">
           <ApiOutlined /> {t('webApi.title')}
         </Title>

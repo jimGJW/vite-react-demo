@@ -1,8 +1,165 @@
-/* 首页计数器：玻璃凹槽容器 */
+/* =====================================================================
+   首页 · 落地页
+   - 页头 / 极光 / 渐变大标题由 PageShell 提供，这里只管首页自己的块
+   - 入口卡：--e-accent 由 JS 注入（命名 token → var(--c-*)），暗色自动跟随
+   ===================================================================== */
+
+/* —— 可玩的计数器 + 技术栈 —— */
 .home-counter {
-  margin: 1.5rem 0;
-  padding: 1rem 1.25rem;
-  background: var(--c-primary-softer);
-  border: 1px dashed var(--c-primary-ring);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-lg);
+  background:
+    radial-gradient(120% 180% at 0% 0%, var(--c-primary-softer), transparent 62%),
+    var(--c-card);
+}
+
+.home-counter__num {
+  display: inline-block;      /* transform 生效需要非 inline 盒 */
+  font-variant-numeric: tabular-nums;
+}
+
+.home-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-chip {
+  padding: 3px 12px;
+  border: 1px solid var(--c-border-soft);
+  border-radius: var(--r-pill);
+  background: var(--c-bg-soft);
+  color: var(--c-text-2);
+  font-size: 0.8rem;
+  letter-spacing: 0.01em;
+  transition: color var(--t-fast), border-color var(--t-fast), background var(--t-fast);
+
+  &:hover {
+    color: var(--c-primary);
+    border-color: var(--c-primary-ring);
+    background: var(--c-primary-soft);
+  }
+}
+
+/* —— 三组入口 —— */
+.home-entries {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2xl);
+}
+
+.home-grid {
+  --pg-col: 232px;
+}
+
+.home-entry {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-md);
+  padding: 14px 16px;
+  color: var(--c-text-1);
+  text-decoration: none;
+  will-change: transform;
+
+  &:hover {
+    color: var(--c-text-1);
+    text-decoration: none;
+  }
+}
+
+.home-entry__icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
   border-radius: var(--r-md);
+  font-size: 1.15rem;
+  color: var(--e-accent, var(--c-primary));
+  background: color-mix(in srgb, var(--e-accent, var(--c-primary)) 12%, transparent);
+  transition: transform var(--t), background var(--t);
+}
+
+.home-entry__title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  min-width: 0;
+}
+
+.home-entry__arrow {
+  margin-left: auto;
+  color: var(--e-accent, var(--c-primary));
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity var(--t), transform var(--t);
+}
+
+.home-entry:hover .home-entry__icon,
+.home-entry:focus-visible .home-entry__icon {
+  transform: scale(1.08) rotate(-5deg);
+}
+
+.home-entry:hover .home-entry__arrow,
+.home-entry:focus-visible .home-entry__arrow {
+  opacity: 1;
+  transform: none;
+}
+
+/* —— 周天星辰大阵 —— */
+/* —— 两套星空入口（原首页嵌入式星阵已独立成页）—— */
+.home-arrays {
+  padding: var(--sp-md);
+  background:
+    radial-gradient(120% 200% at 100% 0%, var(--c-primary-softer), transparent 55%),
+    var(--c-card);
+
+  .home-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
+.home-arrays__head {
+  margin-bottom: var(--sp-md);
+
+  h2 {
+    margin: 0 0 0.35rem;
+    font-size: 1.1rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--c-primary-600), var(--c-accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  p {
+    margin: 0;
+    max-width: 44rem;
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: var(--c-text-3);
+  }
+}
+
+/* —— 页脚提示 —— */
+.home-hint {
+  border-top-color: var(--c-border-soft);
+
+  a { font-weight: 600; }
+}
+
+@media (max-width: 640px) {
+  .home-counter { justify-content: center; }
+  .home-chips { justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-entry__icon,
+  .home-entry__arrow,
+  .home-chip { transition: none; }
 }

@@ -1,3 +1,7 @@
+/* eslint-disable react-refresh/only-export-components --
+   本文件是 motion 的公开出口，刻意同时导出组件（Reveal/Motion/PageTransition/Animate）
+   与 hooks（useTilt/useReveal/useCountUp/useReducedMotion）。拆成两个入口会让 20+ 处
+   import 变成双路径，代价大于收益（该规则只影响开发期 HMR 粒度，不影响运行）。 */
 import { createContext, useContext } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useReveal } from './hooks/useReveal.js'

@@ -6,6 +6,8 @@
   "hideHeader": "Masquer la barre de navigation",
   "showHeader": "Afficher la barre de navigation",
   "logout": "Se déconnecter",
+  "back": "Retour",
+  "backHome": "Accueil",
   "sidebarAria": "Navigation latérale",
   "hiddenEntryTitle": "Centre média local (page cachée)",
   "sidebarFoot": "Bouton en haut à gauche : replier / masquer",

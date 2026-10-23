@@ -6,6 +6,8 @@
   "hideHeader": "Hide top navigation",
   "showHeader": "Show top navigation",
   "logout": "Log out",
+  "back": "Back",
+  "backHome": "Go home",
   "sidebarAria": "Sidebar navigation",
   "hiddenEntryTitle": "Local media center (hidden page)",
   "sidebarFoot": "Click the top-left button to toggle: collapse / hide",

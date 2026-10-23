@@ -248,7 +248,7 @@ export default function VoiceInput({
       }
     }, 6000)
     return () => window.clearTimeout(timer)
-  }, [listening])
+  }, [listening, t])
 
   // ============ 离线识别（本地 Whisper） ============
 

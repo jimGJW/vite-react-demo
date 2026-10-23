@@ -42,7 +42,7 @@ export default function DataTableDemo() {
 
   return (
     <div className="page-card dt-demo">
-      <header className="dt-demo-header">
+      <header className="dt-demo-header page-hero">
         <div>
           <h1>{t('dataTable.demo.title')}</h1>
           <p>

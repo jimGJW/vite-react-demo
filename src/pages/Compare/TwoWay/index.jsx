@@ -74,7 +74,7 @@ function ReactDemo() {
         <Text strong>{t('compare.twoWay.customLabel')}</Text>
       </div>
       <CustomCounter value={count} onChange={setCount} label={t('compare.twoWay.parentStateLabel')} />
-      <div style={{ fontSize: 12, color: '#666' }}>
+      <div style={{ fontSize: 12, color: 'var(--c-text-3)' }}>
         {t('compare.twoWay.parentCount')} <Tag color="purple">{count}</Tag>
         &nbsp;{t('compare.twoWay.controlledNote')}
       </div>

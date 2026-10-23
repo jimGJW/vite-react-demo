@@ -6,6 +6,8 @@
   "hideHeader": "隱藏頂部導航欄",
   "showHeader": "顯示頂部導航欄",
   "logout": "登出",
+  "back": "返回",
+  "backHome": "回首頁",
   "sidebarAria": "側邊導航",
   "hiddenEntryTitle": "本地媒體中心（隱藏頁）",
   "sidebarFoot": "點擊左上角按鈕切換：折疊 / 隱藏",

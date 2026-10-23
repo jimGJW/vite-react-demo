@@ -446,7 +446,7 @@ $transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     padding: 10px 20px;
     font-size: 13px;
     background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-    color: #92400e;
+    color: var(--c-warning-text, #92400e);
     border-top: 1px solid rgba(245, 158, 11, 0.2);
 
     .agent-voice-status-text { flex: 1; }
@@ -757,7 +757,7 @@ $transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 // ========================== 暗色模式 ==========================
-@media (prefers-color-scheme: dark) {
+[data-theme='dark'] {
   .universal-page-agent {
     --agent-bg: #1e293b;
     --agent-bg-card: #1e293b;

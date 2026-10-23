@@ -26,7 +26,7 @@ function ChartsDemo() {
 
   return (
     <div className="page-card charts-demo">
-      <header className="charts-demo-header">
+      <header className="charts-demo-header page-hero">
         <div>
           <h1>{t('charts.title')}</h1>
           <p>

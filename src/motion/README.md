@@ -45,9 +45,9 @@ import { Reveal, Motion, PageTransition, useTilt, useCountUp } from '@/motion'
 // 命令式动画
 <Motion type="zoom-in" duration={0.6}>…</Motion>
 
-// 鼠标 3D 倾斜
-const { ref, onMouseMove, onMouseLeave } = useTilt({ max: 8 })
-<div ref={ref} onMouseMove={onMouseMove} onMouseLeave={onMouseLeave}>…</div>
+// 鼠标 3D 倾斜：监听器在 hook 内自绑，拿 ref 挂上即可（配合 .m-tilt 得景深）
+const tiltRef = useTilt({ max: 8 })
+<div ref={tiltRef} className="m-tilt">…</div>
 
 // 数字滚动
 const n = useCountUp(1234, { decimals: 0 })

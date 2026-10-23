@@ -7,12 +7,23 @@
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
     gap: 16px;
+
+    > * {
+      animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease-out) backwards;
+    }
+    > *:nth-child(2) { animation-delay: calc(0.08s * var(--m-speed)); }
   }
 
   .micro-container {
     min-height: 120px;
     border-radius: 8px;
+    background: var(--c-bg-soft, #fafafa);
+    transition: background calc(var(--m-dur-fast) * var(--m-speed)) var(--m-ease);
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .micro-frontend-page .micro-grid > * { animation: none !important; }
 }
 
 /* 侧边栏子应用入口点击后的定位高亮（3s 自动消退） */

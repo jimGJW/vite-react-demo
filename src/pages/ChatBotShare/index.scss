@@ -1,6 +1,14 @@
 .share-demo {
   padding: 4px 2px 24px;
 
+  /* 左右两栏错峰入场 */
+  > .ant-row > .ant-col {
+    animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease-out) backwards;
+  }
+  > .ant-row > .ant-col:nth-child(2) {
+    animation-delay: calc(0.1s * var(--m-speed));
+  }
+
   &__head {
     margin-bottom: 18px;
   }
@@ -9,6 +17,9 @@
   &__stage {
     height: 660px;
     overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 18px 48px -42px var(--c-primary);
+    animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease-out) backwards;
   }
 
   &__toolbar {
@@ -82,4 +93,9 @@
       user-select: none;
     }
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .share-demo > .ant-row > .ant-col,
+  .share-demo__stage { animation: none !important; }
 }

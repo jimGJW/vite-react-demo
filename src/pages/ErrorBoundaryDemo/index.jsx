@@ -24,7 +24,7 @@ export default function ErrorBoundaryDemo() {
 
   return (
     <div className="ebd">
-      <header className="ebd__header">
+      <header className="ebd__header page-hero">
         <Title level={4} className="ebd__title">
           <SafetyCertificateOutlined /> {t('errorBoundary.title')}
         </Title>

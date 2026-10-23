@@ -44,6 +44,8 @@
   --c-success-soft: #f6ffed;
   --c-warning: #faad14;          /* antd gold-6 */
   --c-warning-soft: #fffbe6;
+  --c-warning-text: #92400e;     /* warning-soft 上的正文色（暗色主题会提亮） */
+  --c-warning-text-strong: #78350f;
   --c-danger: #ff4d4f;           /* antd red-5 */
   --c-danger-soft: #fff2f0;
   --c-info: #1677ff;             /* antd blue-6 */
@@ -71,6 +73,27 @@
   /* —— 动效（antd motion） —— */
   --t-fast: 0.1s cubic-bezier(0.215, 0.61, 0.355, 1);
   --t: 0.2s cubic-bezier(0.645, 0.045, 0.355, 1);
+
+  /* —— 间距刻度（8pt 栅格；页面一律消费刻度，不再写魔法数） —— */
+  --sp-0: 0;
+  --sp-2xs: 2px;
+  --sp-xs: 4px;
+  --sp-sm: 8px;
+  --sp-md: 12px;
+  --sp-lg: 16px;
+  --sp-xl: 24px;
+  --sp-2xl: 32px;
+  --sp-3xl: 48px;
+  --sp-fluid: clamp(12px, 1.6vw, 20px);   /* 卡片内边距：随视口缩放 */
+  --sp-gap: 16px;                         /* 栅格默认间隙 */
+
+  /* —— 聚焦环（键盘可达性单一真源） —— */
+  --focus-ring: 0 0 0 2px var(--c-card, #fff), 0 0 0 4px var(--c-primary-ring, rgba(22, 119, 255, 0.4));
+  --c-overlay: rgba(0, 0, 0, 0.45);       /* antd colorBgMask */
+
+  /* —— 强调渐变（页头 / 高亮边框用，随主题切换） —— */
+  --grad-accent: linear-gradient(120deg, var(--c-primary) 0%, var(--c-accent) 55%, var(--c-accent-2) 100%);
+  --grad-hairline: linear-gradient(90deg, transparent, var(--c-primary-ring), transparent);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -150,7 +173,97 @@ pre {
   background-clip: padding-box;
 }
 
-/* —— 尊重减少动效偏好 —— */
+/* =====================================================================
+   全局精修 · 键盘可达性 + antd 组件统一质感
+   只调「质感」（描边/间距/圆角/焦点），不改 antd 的颜色计算逻辑，
+   避免与暗色主题算法、各页局部样式打架。
+   ===================================================================== */
+
+/* —— 键盘焦点环：所有可交互元素统一可见焦点（鼠标点击不显示） —— */
+:focus-visible {
+  outline: 2px solid var(--c-primary, #1677ff);
+  outline-offset: 2px;
+  border-radius: var(--r-sm, 4px);
+}
+.ant-btn:focus-visible,
+.ant-segmented-item:focus-visible,
+.theme-toggle:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* —— Card：统一 12px 圆角 + 头部分隔线柔化 —— */
+.ant-card {
+  border-radius: var(--r-lg, 8px);
+
+  > .ant-card-head {
+    border-bottom-color: var(--c-border-soft, #f0f0f0);
+    font-weight: 600;
+    min-height: 44px;
+  }
+}
+
+/* —— Tabs：ink bar 用主色渐变，字号层级更清楚 —— */
+.ant-tabs {
+  > .ant-tabs-nav .ant-tabs-tab {
+    padding: 10px 4px;
+    transition: color var(--t-fast), background var(--t-fast);
+  }
+  .ant-tabs-tab-active .ant-tabs-tab-btn {
+    font-weight: 600;
+  }
+  .ant-tabs-ink-bar {
+    background: var(--grad-primary, var(--c-primary));
+    border-radius: var(--r-pill);
+  }
+}
+
+/* —— Table：表头轻量、单元格纵向呼吸 —— */
+.ant-table-thead > tr > th {
+  background: var(--c-bg-soft, #fafafa);
+  font-weight: 600;
+  color: var(--c-text-1, #000000e0);
+}
+.ant-table-tbody > tr > td {
+  padding: 10px 12px;
+}
+
+/* —— Statistic：数值用等宽数字，跳动时不抖行宽 —— */
+.ant-statistic-content {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* —— Empty：弱化占位，避免与页面留骨架抢注意力 —— */
+.ant-empty {
+  opacity: 0.72;
+  margin-block: var(--sp-md);
+}
+
+/* —— Descriptions / Alert / Tag：统一走 token 圆角与描边 —— */
+.ant-descriptions-item-label {
+  color: var(--c-text-3, #00000073);
+}
+.ant-alert {
+  border-radius: var(--r-md, 6px);
+}
+.ant-tag {
+  border-radius: var(--r-sm, 4px);
+  line-height: 1.6;
+}
+
+/* —— Segmented：选中态轻微上浮 —— */
+.ant-segmented-item-selected {
+  box-shadow: var(--sh-sm);
+}
+
+/* —— 骨架屏：微光扫过，替代纯色块闪烁 —— */
+.ant-skeleton-content .ant-skeleton-title,
+.ant-skeleton .ant-skeleton-paragraph > li {
+  border-radius: var(--r-sm, 4px);
+}
+
+/* —— 减少动效守卫 —— */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;

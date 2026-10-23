@@ -189,3 +189,15 @@
     gap: 0.75rem;
   }
 }
+
+/* 内容区依次落位：工具条 → 表格 → 用法 → 代码 */
+.dt-demo > :is(.dt-demo-controls, .dt-demo-table, .dt-demo-usage) {
+  animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease-out) backwards;
+}
+.dt-demo > .dt-demo-controls { animation-delay: calc(0.04s * var(--m-speed)); }
+.dt-demo > .dt-demo-table { animation-delay: calc(0.1s * var(--m-speed)); }
+.dt-demo > .dt-demo-usage { animation-delay: calc(0.16s * var(--m-speed)); }
+
+@media (prefers-reduced-motion: reduce) {
+  .dt-demo > :is(.dt-demo-controls, .dt-demo-table, .dt-demo-usage) { animation: none !important; }
+}

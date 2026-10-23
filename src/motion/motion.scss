@@ -4,14 +4,18 @@
    这是整个项目的「动效中枢」，集中维护所有共享动画与微交互：
 
    1) 共享 @keyframes：fade / slide / zoom / pop / float / pulse /
-      shimmer / spin / breathe / page-in 等
+      shimmer / spin / breathe / page-in / blur-in / drop-in / aurora /
+      ken-burns / border-flow / glow-breathe 等
    2) 工具类 .m-*：直接挂到任意元素即可获得入场 / 循环动画
-   3) 错峰入场 .m-stagger + .m-stagger-item（用 --i 控制顺序）
+      —— 含「丰富档」：.m-blur-in .m-drop-in .m-lift-in .m-tilt .m-glow
+         .m-grad-border .m-hover-lift .m-hover-zoom .m-hover-sheen
+         .m-aurora .m-ken-burns .m-drift .m-parallax
+   3) 错峰入场 .m-stagger + .m-stagger-item（用 --i 控制顺序，JS 侧需钳制上限）
    4) 滚动揭示 .m-reveal（配合 <Reveal> 组件，进入视口加 .is-visible）
    5) 全局基础增强（无需改 JSX）：.page-card / .ant-card 悬停上浮、
       .ant-btn 按压回弹、标题渐变流光等
    6) 速度档 [data-motion="slow|fast"] 调整 --m-speed
-   7) 尊重 prefers-reduced-motion：所有动画降级为无
+   7) 尊重 prefers-reduced-motion：所有动画降级为无（氛围层直接隐藏）
 
    主题全部走 --c-* / --r-* / --sh-* 变量，明暗主题自动适配。
    ===================================================================== */
@@ -29,6 +33,11 @@
 /* 速度档：在根节点（如 .app-shell）设置即可整体调速 */
 [data-motion="slow"] { --m-speed: 1.6; }
 [data-motion="fast"] { --m-speed: 0.6; }
+
+/* animate.css 默认 animation-fill-mode: both，入场结束后末帧的 transform 会被
+   永久钉住 —— 元素此后无法 hover 上浮，useTilt 的内联 transform 也全部失效。
+   本项目只用入场类效果（fadeIn* / zoomIn），统一改回 backwards。 */
+.animate__animated { animation-fill-mode: backwards !important; }
 
 /* ============================ 1. 共享 keyframes ============================ */
 @keyframes m-fade-in     { from { opacity: 0; } to { opacity: 1; } }
@@ -49,15 +58,26 @@
 @keyframes m-page-in     { from { opacity: 0; transform: translateY(10px) scale(0.995); } to { opacity: 1; transform: none; } }
 @keyframes m-shine       { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
 
+/* —— 丰富档（“丰满级”动效）新增 keyframes —— */
+@keyframes m-blur-in     { from { opacity: 0; filter: blur(10px); transform: translateY(calc(0.5 * var(--m-dist))) scale(0.98); } to { opacity: 1; filter: blur(0); transform: none; } }
+@keyframes m-drop-in     { 0% { opacity: 0; transform: translateY(calc(-1.4 * var(--m-dist))); } 60% { opacity: 1; transform: translateY(calc(0.12 * var(--m-dist))); } 100% { transform: none; } }
+@keyframes m-lift-in     { from { opacity: 0; transform: translateY(calc(0.7 * var(--m-dist))) scale(0.985); } to { opacity: 1; transform: none; } }
+@keyframes m-border-flow { 0% { background-position: 0% 50%; } 100% { background-position: 200% 50%; } }
+@keyframes m-glow-breathe{ 0%, 100% { box-shadow: 0 0 0 0 transparent, var(--m-glow-base, 0 0 0 transparent); } 50% { box-shadow: 0 0 22px 2px var(--m-glow, rgba(22, 119, 255, 0.22)), var(--m-glow-base, 0 0 0 transparent); } }
+@keyframes m-drift       { 0%, 100% { transform: translate3d(0, 0, 0) scale(1); } 33% { transform: translate3d(3%, -4%, 0) scale(1.06); } 66% { transform: translate3d(-3%, 3%, 0) scale(0.97); } }
+@keyframes m-aurora      { 0% { background-position: 0% 50%, 100% 50%; } 50% { background-position: 60% 40%, 40% 60%; } 100% { background-position: 100% 50%, 0% 50%; } }
+@keyframes m-ken-burns   { 0%, 100% { transform: scale(1) translate(0, 0); } 50% { transform: scale(1.08) translate(-1.5%, -1.5%); } }
+@keyframes m-parallax-y  { from { transform: translateY(calc(-1 * var(--m-px, 24px))); } to { transform: translateY(var(--m-px, 24px)); } }
+
 /* ============================ 2. 入场 / 循环工具类 ============================ */
-.m-fade        { animation: m-fade-in     calc(var(--m-dur) * var(--m-speed)) var(--m-ease) both; }
-.m-fade-up     { animation: m-fade-up     calc(var(--m-dur) * var(--m-speed)) var(--m-ease) both; }
-.m-fade-down   { animation: m-fade-down   calc(var(--m-dur) * var(--m-speed)) var(--m-ease) both; }
-.m-fade-left   { animation: m-fade-left   calc(var(--m-dur) * var(--m-speed)) var(--m-ease) both; }
-.m-fade-right  { animation: m-fade-right  calc(var(--m-dur) * var(--m-speed)) var(--m-ease) both; }
-.m-zoom-in     { animation: m-zoom-in     calc(var(--m-dur) * var(--m-speed)) var(--m-ease) both; }
-.m-zoom-out    { animation: m-zoom-out    calc(var(--m-dur) * var(--m-speed)) var(--m-ease) both; }
-.m-pop         { animation: m-pop         calc(var(--m-dur) * var(--m-speed)) var(--m-ease) both; }
+.m-fade        { animation: m-fade-in     calc(var(--m-dur) * var(--m-speed)) var(--m-ease) backwards; }
+.m-fade-up     { animation: m-fade-up     calc(var(--m-dur) * var(--m-speed)) var(--m-ease) backwards; }
+.m-fade-down   { animation: m-fade-down   calc(var(--m-dur) * var(--m-speed)) var(--m-ease) backwards; }
+.m-fade-left   { animation: m-fade-left   calc(var(--m-dur) * var(--m-speed)) var(--m-ease) backwards; }
+.m-fade-right  { animation: m-fade-right  calc(var(--m-dur) * var(--m-speed)) var(--m-ease) backwards; }
+.m-zoom-in     { animation: m-zoom-in     calc(var(--m-dur) * var(--m-speed)) var(--m-ease) backwards; }
+.m-zoom-out    { animation: m-zoom-out    calc(var(--m-dur) * var(--m-speed)) var(--m-ease) backwards; }
+.m-pop         { animation: m-pop         calc(var(--m-dur) * var(--m-speed)) var(--m-ease) backwards; }
 
 .m-float       { animation: m-float       3.2s ease-in-out infinite; }
 .m-pulse       { animation: m-pulse       2s   ease-in-out infinite; }
@@ -74,9 +94,93 @@
 .m-delay-5 { animation-delay: calc(0.40s * var(--m-speed)); }
 .m-delay-6 { animation-delay: calc(0.48s * var(--m-speed)); }
 
+/* ============================ 2b. 丰富档工具类（美化批次启用） ============================ */
+.m-blur-in    { animation: m-blur-in  calc(var(--m-dur) * 1.4 * var(--m-speed)) var(--m-ease-out) backwards; }
+.m-drop-in    { animation: m-drop-in  calc(var(--m-dur) * 1.2 * var(--m-speed)) var(--m-ease)     backwards; }
+.m-lift-in    { animation: m-lift-in  calc(var(--m-dur) * var(--m-speed))       var(--m-ease-out) backwards; }
+.m-drift      { animation: m-drift    18s ease-in-out infinite; }
+.m-glow       { --m-glow: color-mix(in srgb, var(--c-primary) 38%, transparent); animation: m-glow-breathe 3.4s ease-in-out infinite; }
+
+/* 3D 倾斜配套：配合 useTilt() 的 JS transform，负责平滑复位与景深 */
+.m-tilt {
+  transform-style: preserve-3d;
+  transition: transform 0.32s var(--m-ease), box-shadow 0.32s var(--m-ease);
+  will-change: transform;
+
+  > * { transform: translateZ(24px); }
+}
+
+/* 悬停强化上浮（比全局 .page-card 更大幅度 + 主色光圈） */
+/* 渐变流光描边：::before 铺在实体背景之下，只在 hover / .is-active 时点亮 */
+.m-grad-border {
+  position: relative;
+  z-index: 0;
+  isolation: isolate;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    z-index: -1;
+    border-radius: inherit;
+    background: linear-gradient(120deg, transparent 25%, var(--c-primary) 42%, var(--c-accent) 56%, var(--c-accent-2) 68%, transparent 82%);
+    background-size: 220% 220%;
+    opacity: 0;
+    transition: opacity calc(var(--m-dur-fast) * var(--m-speed)) var(--m-ease);
+    animation: m-border-flow calc(5s * var(--m-speed)) linear infinite;
+  }
+  /* 触屏无 hover，靠 .is-active 显式点亮 */
+  &:hover::before,
+  &.is-active::before { opacity: 1; }
+}
+
+@media (hover: hover) {
+  .m-hover-lift:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--sh-lg, 0 12px 32px rgba(0, 0, 0, 0.08)), 0 0 0 1px var(--c-primary-ring);
+  }
+  /* 图片 / 缩略图容器：hover 轻放大（容器需自行 overflow:hidden） */
+  .m-hover-zoom img { transition: transform calc(var(--m-dur) * var(--m-speed)) var(--m-ease); }
+  .m-hover-zoom:hover img { transform: scale(1.06); }
+  /* 高光扫过（一次性，不常驻循环，避免看板视觉疲劳） */
+  .m-hover-sheen { position: relative; overflow: hidden; }
+  .m-hover-sheen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 35%, rgba(255, 255, 255, 0.28) 50%, transparent 65%);
+    background-size: 250% 100%;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .m-hover-sheen:hover::after { opacity: 1; animation: m-shimmer calc(0.9s * var(--m-speed)) ease-out 1; }
+}
+
+/* 主视觉背景慢速呼吸（Hero / 头像 / 地球仪图片） */
+.m-ken-burns { animation: m-ken-burns 24s ease-in-out infinite; }
+
+/* 滚动视差：仅在支持 CSS 滚动时间轴的浏览器启用，其余保持静态（不留半成品动画） */
+@supports (animation-timeline: view()) {
+  .m-parallax {
+    animation: m-parallax-y linear both;
+    animation-timeline: view();
+    animation-range: entry 0% exit 100%;
+  }
+}
+
+/* 极光氛围层：整页背景用，两个超大径向渐变缓慢游走 */
+.m-aurora {
+  background-image:
+    radial-gradient(48% 42% at 12% 8%, var(--m-aurora-a, var(--c-primary-ring)), transparent 70%),
+    radial-gradient(42% 38% at 88% 18%, var(--m-aurora-b, rgba(114, 46, 209, 0.16)), transparent 68%);
+  background-size: 180% 180%, 170% 170%;
+  background-repeat: no-repeat;
+  animation: m-aurora calc(26s * var(--m-speed)) ease-in-out infinite alternate;
+}
+
 /* ============================ 3. 错峰入场 ============================ */
 .m-stagger > .m-stagger-item {
-  animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease) both;
+  animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease) backwards;
   animation-delay: calc(var(--i, 0) * 0.07s * var(--m-speed));
 }
 
@@ -129,6 +233,11 @@
 }
 .ant-btn:active { transform: scale(0.96); }
 
+/* antd Tabs 切换：内容一次性淡入上浮（看板已有自己的节拍，优先级更高不受影响） */
+.ant-tabs-tabpane-active {
+  animation: m-fade-up calc(0.34s * var(--m-speed)) var(--m-ease-out) backwards;
+}
+
 /* 列表 / 表格行悬停轻微高亮位移 */
 .ant-table-tbody > tr.ant-table-row {
   transition: background var(--t-fast, 0.1s), box-shadow var(--t-fast, 0.1s);
@@ -178,17 +287,27 @@
 @media (prefers-reduced-motion: reduce) {
   .m-fade, .m-fade-up, .m-fade-down, .m-fade-left, .m-fade-right,
   .m-zoom-in, .m-zoom-out, .m-pop,
+  .m-blur-in, .m-drop-in, .m-lift-in,
   .m-float, .m-pulse, .m-pulse-ring, .m-spin-slow, .m-breathe, .m-wobble,
+  .m-drift, .m-glow, .m-ken-burns, .m-aurora, .m-parallax,
+  .m-grad-border::before,
+  .m-hover-sheen:hover::after,
   .m-stagger > .m-stagger-item,
+  .ant-tabs-tabpane-active,
   .page-transition {
     animation: none !important;
   }
+  .m-blur-in { filter: none !important; }
+  .m-tilt { transform: none !important; transition: none !important; }
   .m-reveal {
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
   }
-  .page-card:hover, .ant-card:hover { transform: none !important; }
+  .page-card:hover, .ant-card:hover,
+  .m-hover-lift:hover, .m-hover-zoom:hover img { transform: none !important; }
   .ant-btn:active { transform: none !important; }
   .m-shine-text, .m-shimmer-btn::after { animation: none !important; }
+  /* 氛围层直接隐藏，避免"看起来还在闪但没有动"的半残状态 */
+  .m-aurora { background-image: none !important; }
 }

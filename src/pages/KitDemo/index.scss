@@ -1,14 +1,8 @@
 .kit-demo {
   padding: 4px 2px 32px;
 
+  /* 页头外观交给全局 .page-hero，这里只保留标题排版 */
   &__hero {
-    margin-bottom: 16px;
-    padding: 18px 20px;
-    border-radius: 14px;
-    border: 1px solid var(--c-border-soft, #f0f0f0);
-    background: var(--glass-bg, rgba(255, 255, 255, 0.6));
-    backdrop-filter: blur(8px);
-
     h2 {
       margin: 0 0 8px;
       font-size: 20px;
@@ -54,6 +48,10 @@
     font-size: 13px;
     color: var(--c-text-1, #1f1f1f);
     border-bottom: 1px solid var(--c-border-soft, #f0f0f0);
+    border-radius: var(--r-sm, 4px);
+    transition: background calc(var(--m-dur-fast) * var(--m-speed)) var(--m-ease);
+
+    &:hover { background: var(--c-primary-softer, rgba(22, 119, 255, 0.03)); }
   }
 
   &__list-item:last-child {

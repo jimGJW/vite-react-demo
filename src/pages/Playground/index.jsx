@@ -152,7 +152,7 @@ export default function Playground() {
 
   return (
     <div className="playground">
-      <header className="pg-head">
+      <header className="pg-head page-hero">
         <h1>创意 Playground</h1>
         <p>
           {DEMOS.length} 个算法型 demo —— 流场、元胞自动机、密度波、混沌、数值解、脉冲耦合、图灵斑图、

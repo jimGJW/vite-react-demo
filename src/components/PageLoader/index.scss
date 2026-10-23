@@ -152,7 +152,8 @@
 }
 
 /* 暗色主题（StyleMode 的 dark 态挂在 :root 上，与登录页一致用媒体查询兜底） */
-@media (prefers-color-scheme: dark) {
+/* 跟随应用主题开关（ThemeProvider 写在 <html data-theme>），不是系统偏好 */
+[data-theme='dark'] {
   .pl-star { background: #cfe4ff; }
 }
 

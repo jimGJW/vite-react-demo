@@ -20,7 +20,7 @@ export default function AntdDemo() {
   const { t } = useI18n()
   return (
     <div className="antd-demo-page">
-      <Typography style={{ marginBottom: 16 }}>
+      <Typography className="page-hero">
         <Title level={2}>{t('antd.demo.title')}</Title>
         <Paragraph type="secondary">
           {t('antd.demo.lead')}

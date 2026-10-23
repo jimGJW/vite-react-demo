@@ -11,15 +11,13 @@ import { useEffect, useRef, useState } from 'react'
  */
 export function useReveal({ threshold = 0.12, rootMargin = '0px 0px -8% 0px', once = true } = {}) {
   const ref = useRef(null)
-  const [visible, setVisible] = useState(false)
+  // 环境不支持 IntersectionObserver 时从首帧就可见，保证内容可达
+  const supported = typeof IntersectionObserver !== 'undefined'
+  const [visible, setVisible] = useState(() => !supported)
 
   useEffect(() => {
     const el = ref.current
-    if (!el) return
-    if (typeof IntersectionObserver === 'undefined') {
-      setVisible(true) // 环境不支持时直接显示，保证内容可达
-      return
-    }
+    if (!el || !supported) return undefined
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -35,7 +33,7 @@ export function useReveal({ threshold = 0.12, rootMargin = '0px 0px -8% 0px', on
     )
     io.observe(el)
     return () => io.disconnect()
-  }, [threshold, rootMargin, once])
+  }, [threshold, rootMargin, once, supported])
 
   return [ref, visible]
 }

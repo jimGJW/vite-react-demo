@@ -29,12 +29,23 @@
     padding: 16px 18px;
     margin-bottom: 14px;
     background: var(--c-card);
+    animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease-out) backwards;
+    transition: border-color calc(var(--m-dur-fast) * var(--m-speed)) var(--m-ease),
+                box-shadow calc(var(--m-dur-fast) * var(--m-speed)) var(--m-ease);
+
+    @media (hover: hover) {
+      &:hover { border-color: var(--c-primary-ring); box-shadow: var(--sh-md); }
+    }
 
     h3 {
       margin: 0 0 6px;
       font-size: 15px;
       color: var(--c-text-1);
     }
+  }
+
+  @for $i from 2 through 3 {
+    > .dvl-card:nth-of-type(#{$i}) { animation-delay: calc(#{$i - 1} * 0.07s * var(--m-speed)); }
   }
 
   .dvl-hint {
@@ -143,4 +154,8 @@
       background: color-mix(in srgb, #f59e0b 14%, transparent);
     }
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .data-viz-lab .dvl-card { animation: none !important; }
 }

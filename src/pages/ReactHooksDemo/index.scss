@@ -617,3 +617,37 @@
     color: var(--c-text-2, #000000a6);
   }
 }
+
+/* ============ 动效补充：演示卡入场 + 指标条错峰 ============ */
+.rh-layer {
+  animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease-out) backwards;
+  transition: border-color calc(var(--m-dur-fast) * var(--m-speed)) var(--m-ease);
+
+  &:hover { border-color: var(--c-primary-ring, rgba(22, 119, 255, 0.18)); }
+
+  &--inner { animation: none; }
+}
+
+.rh-metrics > .rh-metric {
+  animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease-out) backwards;
+
+  @for $i from 2 through 6 {
+    &:nth-child(#{$i}) { animation-delay: calc(#{$i - 1} * 0.05s * var(--m-speed)); }
+  }
+}
+
+.rh-api {
+  border-radius: var(--r-md, 6px);
+  transition: background calc(var(--m-dur-fast) * var(--m-speed)) var(--m-ease), padding-inline calc(var(--m-dur-fast) * var(--m-speed)) var(--m-ease);
+
+  &:hover {
+    background: var(--c-primary-softer, rgba(22, 119, 255, 0.03));
+    padding-inline: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rh-layer,
+  .rh-metrics > .rh-metric { animation: none !important; }
+  .rh-api:hover { padding-inline: 0; }
+}

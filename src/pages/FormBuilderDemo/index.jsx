@@ -135,7 +135,7 @@ function FormBuilderDemo() {
 
   return (
     <div className="fb-page">
-      <header className="fb-header">
+      <header className="fb-header page-hero">
         <div className="fb-title">
           <span className="fb-title-icon">🧩</span>
           <h1>{t('formbuilder.title')}</h1>

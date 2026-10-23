@@ -1,12 +1,86 @@
-/* 关于页：目录结构代码块（玻璃态） */
-.about-structure {
-  background: rgba(15, 23, 42, 0.9);
-  color: #c7d2fe;
-  padding: 1.1rem 1.25rem;
+/* =====================================================================
+   关于页 · 技术栈 + 目录结构
+   ===================================================================== */
+
+.about-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: var(--sp-lg);
+  align-items: start;
+}
+
+.about-panel {
+  /* 分节标题与卡片内边距的呼吸，避免 Section 和 .page-card 各加一层 */
+  gap: var(--sp-md);
+}
+
+/* —— 技术栈列表 —— */
+.about-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.about-stack__item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-sm);
+  padding: 10px 12px;
+  border: 1px solid var(--c-border-soft);
   border-radius: var(--r-md);
-  border: 1px solid rgba(99, 102, 241, 0.25);
+  background: var(--c-bg-soft);
+  transition: border-color var(--t), background var(--t);
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--e-accent, var(--c-primary)) 35%, transparent);
+    background: color-mix(in srgb, var(--e-accent, var(--c-primary)) 6%, var(--c-bg-soft));
+  }
+}
+
+.about-stack__dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--e-accent, var(--c-primary));
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--e-accent, var(--c-primary)) 16%, transparent);
+}
+
+.about-stack__name {
+  color: var(--c-text-1);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.about-stack__desc {
+  margin-left: auto;
+  color: var(--c-text-3);
+  font-size: 0.82rem;
+  text-align: right;
+}
+
+/* —— 目录结构代码块 —— */
+.about-structure {
+  margin: 0;
+  padding: var(--sp-md) var(--sp-lg);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  background: var(--c-bg-soft);
+  color: var(--c-text-1);
   overflow: auto;
-  font-family: ui-monospace, 'SF Mono', Consolas, Menlo, monospace;
-  font-size: 0.85rem;
-  line-height: 1.6;
+  font-family: 'SF Mono', SFMono-Regular, Consolas, Menlo, monospace;
+  font-size: 0.82rem;
+  line-height: 1.75;
+  tab-size: 2;
+}
+
+@media (max-width: 860px) {
+  .about-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-stack__item { transition: none; }
 }

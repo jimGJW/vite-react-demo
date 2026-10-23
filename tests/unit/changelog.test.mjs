@@ -12,9 +12,9 @@ const HAS_CJK = /[一-鿿]/
 
 export default [
   ['批次数量与顺序正确', () => {
-    length(RELEASES, 5)
+    length(RELEASES, 8)
     eq(RELEASES[0].id, 'r1')
-    eq(RELEASES[4].id, 'r5')
+    eq(RELEASES[7].id, 'r8')
   }],
   ['getRelease 按 id 查找 / 缺失返回 null', () => {
     eq(pickText(getRelease('r2').title, 'zh-CN'), '核心 API 演示 + 验证体系')
@@ -53,8 +53,13 @@ export default [
     /* r5 数据看板批次 */
     eq(ROUTE_LATEST['/astro'], 'r5')
     eq(ROUTE_LATEST['/geo'], 'r5')
-    eq(ROUTE_LATEST['/ocean'], 'r5')
     eq(ROUTE_LATEST['/agent'], 'r5')
+    /* r6 新增台风页签，/ocean 最新批次升级为 r6 */
+    eq(ROUTE_LATEST['/ocean'], 'r6')
+    /* r7 经纬度检查、r8 城市词典都落在 /timeline，最新批次升级为 r8 */
+    eq(ROUTE_LATEST['/timeline'], 'r8')
+    eq(ROUTE_LATEST['/honghuang'], 'r8')
+    eq(ROUTE_LATEST['/stars'], 'r8')
     eq(ROUTE_LATEST['/home-missing'] === undefined, true)
   }],
   ['ROUTE_RELEASES 路由归属全部批次（/utils 在 r1、r3）', () => {
@@ -64,10 +69,10 @@ export default [
     deepEq(ROUTE_RELEASES['/orbit'], ['r4'])
     eq(ROUTE_RELEASES['/home-missing'] === undefined, true)
   }],
-  ['TOTAL_CHANGES 等于各批次之和（6+2+5+8+7=28）', () => {
+  ['TOTAL_CHANGES 等于各批次之和（6+2+5+8+7+2+1+5=36）', () => {
     const sum = RELEASES.reduce((n, r) => n + r.changes.length, 0)
     eq(sum, TOTAL_CHANGES)
-    eq(TOTAL_CHANGES, 28)
+    eq(TOTAL_CHANGES, 36)
   }],
   ['每条改动都有必填字段', () => {
     for (const r of RELEASES) {

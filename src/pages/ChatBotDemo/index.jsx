@@ -12,7 +12,7 @@ export default function ChatBotDemo() {
   const { t } = useI18n()
   return (
     <div className="chatbot-demo">
-      <div className="chatbot-demo__head">
+      <div className="chatbot-demo__head page-hero">
         <Title level={3} style={{ marginBottom: 6 }}>
           {t('chatbot.demo.title')}
         </Title>

@@ -35,7 +35,7 @@
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   box-sizing: border-box;
 }
 
@@ -65,12 +65,35 @@
    HERO
    ========================================================= */
 .o-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 14px;
   flex-wrap: wrap;
   flex-shrink: 0;
+  padding: 16px 20px;
+  background: linear-gradient(160deg, var(--o-panel) 0%, var(--o-panel-2) 100%);
+  border: 1px solid var(--o-line);
+  border-radius: 14px;
+
+  /* 海面：细横纹缓慢横移 + 两团水下光斑，
+     节奏比 geo 的等高线更慢，符合「潮汐」的时间尺度。 */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -20% -30%;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(var(--o-accent-rgb), 0.055) 0 1px, transparent 1px 14px),
+      radial-gradient(40% 50% at 18% 20%, rgba(var(--o-accent-rgb), 0.12), transparent 70%),
+      radial-gradient(34% 44% at 82% 85%, rgba(13, 148, 136, 0.1), transparent 70%);
+    background-size: 100% 100%, 100% 100%, 100% 100%;
+    animation: o-swell 30s ease-in-out infinite alternate;
+  }
 
   h1 {
     margin: 0;
@@ -83,6 +106,15 @@
     gap: 10px;
 
     .anticon { color: var(--o-accent); }
+  }
+
+  /* 渐变只作用于文字 span：h1 上的 anticon 用 currentColor，直接裁会一起透明 */
+  h1 .o-hero__title-text {
+    background: linear-gradient(96deg, var(--o-fg-strong) 0%, var(--o-fg-strong) 45%, var(--o-accent) 76%, #0d9488 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
   }
 
   &__sub {
@@ -111,6 +143,13 @@
   border: 1px solid var(--o-line);
   border-radius: 8px;
   padding: 4px 10px;
+  transition: border-color 0.25s, background 0.25s, transform 0.25s var(--m-ease);
+
+  &:hover {
+    border-color: rgba(var(--o-accent-rgb), 0.4);
+    background: var(--o-panel-2);
+    transform: translateY(-1px);
+  }
 
   &__label { font-size: 10.5px; color: var(--o-dim); font-weight: 600; }
   &__val {
@@ -136,7 +175,14 @@
   flex-shrink: 0;
 }
 
+/* KPI 错峰入场（同 geo：用 nth-child，卡片增减无需改 JSX） */
+@for $i from 2 through 10 {
+  .o-strip .o-metric:nth-child(#{$i}) { animation-delay: #{($i - 1) * 0.045}s; }
+}
+
 .o-metric {
+  position: relative;
+  overflow: hidden;
   background: var(--o-panel);
   border: 1px solid var(--o-line);
   border-radius: 10px;
@@ -145,6 +191,28 @@
   flex-direction: column;
   gap: 4px;
   min-width: 0;
+  transition: transform 0.3s var(--m-ease), border-color 0.3s, box-shadow 0.3s;
+  animation: o-rise 0.5s var(--m-ease-out) backwards;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 2px;
+    background: linear-gradient(90deg, var(--o-accent), #0d9488);
+    opacity: 0;
+    transition: opacity 0.3s var(--m-ease);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(-2px);
+      border-color: rgba(var(--o-accent-rgb), 0.42);
+      box-shadow: 0 14px 30px -22px rgba(var(--o-accent-rgb), 0.6);
+
+      &::before { opacity: 1; }
+    }
+  }
 
   &__val {
     font-size: clamp(18px, 1.9vw, 24px);
@@ -188,6 +256,23 @@
     border-radius: 10px;
     padding: 2px 8px 0;
   }
+
+  .ant-tabs-content-holder,
+  .ant-tabs-tabpane { overflow: visible; }
+
+  /* 切页签入场：antd 只在切换时增删 .ant-tabs-tabpane-active，动画随类名重放 */
+  .ant-tabs-tabpane-active {
+    animation: o-fade-up 0.36s var(--m-ease-out) backwards;
+  }
+
+  .ant-tabs-tab {
+    border-radius: 8px 8px 0 0;
+    transition: color 0.2s, background 0.2s;
+
+    &:hover { background: rgba(var(--o-accent-rgb), 0.06); }
+  }
+
+  .ant-tabs-ink-bar { height: 3px !important; border-radius: 2px; }
 }
 
 .o-tab-content {
@@ -205,6 +290,14 @@
   border-radius: 12px;
   overflow: hidden;
   flex-shrink: 0;
+  transition: border-color 0.3s var(--m-ease), box-shadow 0.3s var(--m-ease);
+
+  @media (hover: hover) {
+    &:hover {
+      border-color: rgba(var(--o-accent-rgb), 0.34);
+      box-shadow: 0 18px 40px -30px rgba(var(--o-accent-rgb), 0.55);
+    }
+  }
 
   &__head {
     display: flex;
@@ -846,4 +939,34 @@
   .o-coast-advice { grid-column: 1 / -1; }
 
   .o-sst-row { grid-template-columns: 72px 64px 1fr; gap: 8px; }
+}
+
+/* =========================================================
+   氛围层与入场动效（与 astro / geo 同节奏，颜色换 --o-*）
+   ========================================================= */
+@keyframes o-swell {
+  from { background-position: 0 0, 0 0, 0 0; transform: translateY(0); }
+  to   { background-position: 0 42px, 0 0, 0 0; transform: translateY(-6px); }
+}
+
+@keyframes o-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes o-fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .o-hero::before,
+  .o-metric,
+  .o-tabs .ant-tabs-tabpane-active {
+    animation: none !important;
+  }
+
+  .o-metric {
+    transition: none !important;
+  }
 }

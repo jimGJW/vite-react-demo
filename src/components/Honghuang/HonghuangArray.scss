@@ -1,0 +1,1000 @@
+/* =====================================================================
+   洪荒前二阵（周天星斗 + 十二都天神煞）
+   - 一张盘两层阵：内盘 365 星按宿度定位，外盘十二宫按地支定位
+   - 星位不转（度数即位置，点宫亮扇区才成立）；动效来自扫天、闪烁、
+     日月绕眼、神煞光柱与齐聚演出
+   ===================================================================== */
+
+.hh {
+  margin: 0 0 1rem;
+}
+
+/* —— 标题 —— */
+.hh-head {
+  text-align: center;
+  margin-bottom: 1rem;
+
+  h2 {
+    margin: 0 0 0.4rem;
+    font-size: 1.45rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--c-primary-600), var(--c-accent), var(--c-warning));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  p {
+    margin: 0 auto;
+    max-width: 46rem;
+    color: var(--c-text-2);
+    font-size: 0.84rem;
+    line-height: 1.65;
+  }
+}
+
+/* —— 史料档位条 —— */
+.hh-truth {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 auto 1rem;
+  max-width: 46rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--r-lg);
+  background: var(--c-primary-soft);
+  border: 1px dashed rgba(99, 102, 241, 0.35);
+  font-size: 0.72rem;
+  color: var(--c-text-2);
+}
+
+.hh-truth__label {
+  font-weight: 700;
+  color: var(--c-text-1);
+}
+
+.hh-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 99px;
+  background: #fff;
+  border: 1px solid var(--glass-border);
+  white-space: nowrap;
+
+  b {
+    font-variant-numeric: tabular-nums;
+    color: var(--c-text-1);
+  }
+}
+
+.hh-chip-shanhaijing { border-color: rgba(16, 185, 129, 0.5); color: var(--c-success); }
+.hh-chip-later { border-color: rgba(245, 158, 11, 0.5); color: var(--c-warning-text, var(--c-warning)); }
+.hh-chip-star { border-color: rgba(59, 130, 246, 0.5); color: var(--c-info); }
+
+.hh-truth__note {
+  flex: 1 1 100%;
+  color: var(--c-text-3);
+  line-height: 1.6;
+
+  b { color: var(--c-warning-text-strong, var(--c-warning)); }
+}
+
+/* —— 工具条 —— */
+.hh-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  max-width: 660px;
+  margin: 0 auto 0.9rem;
+}
+
+.hh-seg {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+
+  button {
+    padding: 0.3rem 0.65rem;
+    font-size: 0.74rem;
+    border: 1px solid var(--glass-border);
+    border-radius: 99px;
+    background: var(--glass-bg-strong);
+    color: var(--c-text-2);
+    cursor: pointer;
+    transition: background var(--t-fast), color var(--t-fast), transform var(--t-fast), border-color var(--t-fast);
+
+    &:hover:not(:disabled) {
+      border-color: var(--c-primary-600);
+      color: var(--c-primary-700);
+      transform: translateY(-1px);
+    }
+
+    &:disabled { opacity: 0.45; cursor: not-allowed; }
+  }
+
+  .on {
+    background: var(--c-primary);
+    border-color: var(--c-primary);
+    color: #fff;
+  }
+}
+
+.hh-play { width: 32px; height: 32px; padding: 0 !important; border-radius: 50% !important; }
+
+.hh-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--c-text-3);
+  font-variant-numeric: tabular-nums;
+
+  i { display: flex; gap: 2px; }
+
+  em {
+    width: 6px;
+    height: 12px;
+    border-radius: 2px;
+    background: var(--c-border);
+    transition: background var(--t-fast), transform var(--t-fast);
+
+    &.on {
+      background: var(--c-accent);
+      transform: scaleY(1.25);
+    }
+  }
+}
+
+/* —— 盘面 —— */
+.hh-stage {
+  --hh-r-max: min(218px, 33vw);
+  --hh-plate-r: min(302px, 45.5vw);
+  position: relative;
+  width: min(660px, 96vw);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  display: grid;
+  place-items: center;
+}
+
+.hh-nebula {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(58px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hh-nebula-1 {
+  width: 88%;
+  height: 88%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.42), transparent 70%);
+  animation: hh-float 24s ease-in-out infinite alternate;
+}
+
+.hh-nebula-2 {
+  width: 66%;
+  height: 66%;
+  background: radial-gradient(circle, rgba(251, 113, 133, 0.26), transparent 70%);
+  animation: hh-float 30s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes hh-float {
+  from { transform: scale(1) translate(0, 0); }
+  to { transform: scale(1.12) translate(-12px, 10px); }
+}
+
+.hh-disc {
+  position: relative;
+  z-index: 1;
+  width: min(480px, 74vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #0f172a 52%, #020617 100%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 24px 60px rgba(15, 23, 42, 0.5),
+    0 0 80px rgba(99, 102, 241, 0.16),
+    inset 0 0 70px rgba(2, 6, 23, 0.75);
+}
+
+/* 二十八宿硬边色轮：rotate(90°) scaleX(-1) 把「周天色角」翻成盘面屏幕角 */
+.hh-tint {
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  opacity: 0.085;
+  transform: rotate(90deg) scaleX(-1);
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.hh-sweep {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 0;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(165, 180, 252, 0.2) 6deg,
+    rgba(251, 191, 36, 0.08) 14deg,
+    transparent 22deg
+  );
+  animation: hh-spin 16s linear infinite;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  z-index: 2;
+}
+
+@keyframes hh-spin {
+  to { transform: rotate(360deg); }
+}
+
+.hh-track {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--hh-r-max) * var(--ring-frac) * 2);
+  height: calc(var(--hh-r-max) * var(--ring-frac) * 2);
+  margin-left: calc(var(--hh-r-max) * var(--ring-frac) * -1);
+  margin-top: calc(var(--hh-r-max) * var(--ring-frac) * -1);
+  border-radius: 50%;
+  border: 1px dashed rgba(165, 180, 252, 0.18);
+  pointer-events: none;
+}
+
+/* —— 365 星 —— */
+.hh-star {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 3px;
+  height: 3px;
+  margin: -1.5px 0 0 -1.5px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--c);
+  opacity: 0.5;
+  cursor: pointer;
+  transform: rotate(var(--angle)) translateY(calc(-1 * var(--hh-r-max) * var(--ring-frac))) scale(var(--s, 1));
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s, box-shadow 0.25s;
+  animation: hh-twinkle 3.6s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.037s);
+
+  /* 扩大热区 */
+  &::before {
+    content: '';
+    position: absolute;
+    left: -9px;
+    top: -9px;
+    width: 21px;
+    height: 21px;
+    border-radius: 50%;
+  }
+
+  &:hover {
+    --s: 2.1;
+    opacity: 1;
+    z-index: 3;
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.95), 0 0 18px 4px var(--c);
+  }
+
+  &:focus-visible {
+    outline: none;
+    --s: 2.1;
+    opacity: 1;
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.9), 0 0 14px 3px rgba(199, 210, 254, 0.9);
+  }
+}
+
+/* 宿首星（每宿第一度）：稍大，作为「宿」的锚点 */
+.hh-star.is-head {
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  opacity: 0.85;
+  box-shadow: 0 0 7px 1px var(--c);
+}
+
+/* 巡行游标：独立一枚光环（星层因此不随每次巡行重渲染） */
+.hh-cursor {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 15px;
+  height: 15px;
+  margin: -7.5px 0 0 -7.5px;
+  border: 1.5px solid var(--c);
+  border-radius: 50%;
+  box-shadow: 0 0 12px 3px var(--c), inset 0 0 6px 1px var(--c);
+  transform: rotate(var(--angle)) translateY(calc(-1 * var(--hh-r-max) * var(--ring-frac)));
+  transition: transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+  pointer-events: none;
+  z-index: 4;
+  animation: hh-cursor 2.2s ease-in-out infinite;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 3px;
+    height: 3px;
+    margin: -1.5px 0 0 -1.5px;
+    border-radius: 50%;
+    background: #fff;
+  }
+}
+
+@keyframes hh-cursor {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+
+.hh-star.is-sel {
+  --s: 3.2;
+  opacity: 1;
+  background: #fff;
+  animation: none;
+  z-index: 4;
+  box-shadow: 0 0 14px 3px rgba(255, 255, 255, 1), 0 0 30px 8px var(--c);
+}
+
+/* 点宫 / 点宿：整扇亮起，其余压暗 */
+.hh-star.is-lit {
+  --s: 1.7;
+  opacity: 1;
+  box-shadow: 0 0 8px 2px var(--c);
+}
+
+.hh-star.is-dim { opacity: 0.1; }
+
+/* 已入神煞的宫，星气长明 */
+.hh-star.is-glow { animation-name: hh-glow; }
+
+/* 闪烁走 brightness 而非 opacity —— 若动 opacity，is-dim/is-lit 的静态值会被关键帧全程覆盖 */
+@keyframes hh-twinkle {
+  0%, 100% { filter: brightness(0.7); }
+  50% { filter: brightness(1.75); }
+}
+
+@keyframes hh-glow {
+  0%, 100% { filter: brightness(1.1); }
+  50% { filter: brightness(2.4); }
+}
+
+/* —— 宿名（盘缘内圈，28 个）—— */
+.hh-mlabel {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: rgba(226, 232, 240, 0.55);
+  cursor: pointer;
+  transform: rotate(var(--angle)) translateY(calc(-1 * var(--hh-r-max) * 1.03)) rotate(calc(-1 * var(--angle)));
+  transition: color var(--t-fast), text-shadow var(--t-fast);
+
+  &:hover { color: #fff; text-shadow: 0 0 8px var(--c); }
+
+  &.on {
+    color: var(--c);
+    text-shadow: 0 0 10px var(--c);
+  }
+}
+
+/* —— 四象盘缘标注（纯阅读辅助，不拦点击）—— */
+.hh-qlabel {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  color: var(--c);
+  opacity: 0.75;
+  text-shadow: 0 0 10px color-mix(in srgb, var(--c) 55%, transparent);
+  transform: rotate(var(--angle)) translateY(calc(-1 * var(--hh-r-max) * 1.2)) rotate(calc(-1 * var(--angle)));
+  pointer-events: none;
+}
+
+/* —— 阵眼：河图洛书 + 日月二主星（两者皆可点，露出各自的原文与出处）—— */
+.hh-eye {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0%, #fef3c7 30%, #fbbf24 62%, rgba(99, 102, 241, 0.4) 100%);
+  box-shadow: 0 0 30px 10px rgba(251, 191, 36, 0.45), 0 0 70px 20px rgba(99, 102, 241, 0.25);
+  animation: hh-eye 5s ease-in-out infinite;
+  cursor: pointer;
+  z-index: 3;
+
+  &:hover { filter: brightness(1.18); }
+
+  &:focus-visible { outline: 2px solid #fde68a; outline-offset: 3px; }
+}
+
+@keyframes hh-eye {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+
+.hh-eye-label {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, 26px);
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  color: rgba(254, 243, 199, 0.72);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.hh-orbit {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0;
+  height: 0;
+  animation: hh-spin 34s linear infinite;
+  z-index: 3;
+
+  /* 弹窗开着时让绕眼停下，否则那颗星一直在飘，够不着也看不清 */
+  &.is-still { animation-play-state: paused; }
+}
+
+.hh-orbit__star {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0%, var(--c) 65%);
+  box-shadow: 0 0 16px 6px var(--c);
+  cursor: pointer;
+  transform: rotate(var(--half)) translateY(calc(-1 * var(--hh-r-max) * 0.24));
+
+  /* 绕眼的小星要能点中：热区放大到 30px，视觉上不变 */
+  &::before {
+    content: '';
+    position: absolute;
+    left: -9px;
+    top: -9px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+  }
+
+  &:hover { filter: brightness(1.25); }
+
+  &:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+}
+
+/* —— 十二道神煞光柱 —— */
+.hh-beams {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+
+  i {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: calc(var(--hh-r-max) * 1.0);
+    height: 2px;
+    margin-top: -1px;
+    transform-origin: 0 50%;
+    transform: rotate(calc(var(--angle) - 90deg));
+    background: linear-gradient(to right, var(--c), transparent);
+    opacity: 0;
+    transition: opacity 0.8s ease;
+
+    &.on { opacity: 0.34; }
+  }
+}
+
+/* 齐聚演出 */
+.hh-stage.is-gathering {
+  .hh-beams i.on { animation: hh-beam 1.5s ease-in-out infinite; }
+
+  .hh-eye { box-shadow: 0 0 48px 18px rgba(251, 191, 36, 0.75), 0 0 120px 40px rgba(99, 102, 241, 0.4); }
+}
+
+@keyframes hh-beam {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.95; }
+}
+
+.hh-pangu {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  gap: 0.2rem;
+  z-index: 6;
+  pointer-events: none;
+  animation: hh-emerge 4.2s ease forwards;
+
+  b {
+    font-size: 2.1rem;
+    font-weight: 900;
+    letter-spacing: 0.3em;
+    padding-left: 0.3em;
+    background: linear-gradient(180deg, #fff, #fde68a 55%, #a5b4fc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(253, 230, 138, 0.35);
+  }
+
+  em {
+    font-size: 0.7rem;
+    font-style: normal;
+    letter-spacing: 0.1em;
+    color: rgba(226, 232, 240, 0.85);
+  }
+}
+
+@keyframes hh-emerge {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.6); }
+  22% { opacity: 1; transform: translate(-50%, -50%) scale(1.06); }
+  70% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.18); }
+}
+
+/* —— 外盘十二宫 —— */
+.hh-plate {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+.hh-node {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 78px;
+  height: 46px;
+  margin: -23px 0 0 -39px;
+  padding: 0.2rem 0.3rem;
+  display: grid;
+  place-content: center;
+  gap: 1px;
+  border: 1px solid rgba(226, 232, 240, 0.18);
+  border-radius: var(--r-md);
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  color: var(--c-text-2);
+  cursor: pointer;
+  pointer-events: auto;
+  transform: rotate(var(--angle)) translateY(calc(-1 * var(--hh-plate-r))) rotate(calc(-1 * var(--angle)));
+  transition: border-color var(--t-fast), box-shadow var(--t-fast), transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), background var(--t-fast);
+
+  &:hover {
+    border-color: var(--c);
+    box-shadow: 0 0 16px 3px color-mix(in srgb, var(--c) 45%, transparent);
+    z-index: 2;
+  }
+
+  &:focus-visible { outline: 2px solid var(--c); outline-offset: 2px; }
+}
+
+.hh-node__branch {
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  color: rgba(148, 163, 184, 0.9);
+}
+
+.hh-node__name {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #e2e8f0;
+  line-height: 1.15;
+}
+
+.hh-node__office {
+  font-size: 0.58rem;
+  color: rgba(148, 163, 184, 0.85);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 74px;
+}
+
+.hh-node.is-lit {
+  border-color: var(--c);
+  background: rgba(30, 27, 75, 0.9);
+
+  .hh-node__name { color: #fff; text-shadow: 0 0 10px var(--c); }
+  .hh-node__branch { color: var(--c); }
+}
+
+.hh-node.is-sel {
+  transform: rotate(var(--angle)) translateY(calc(-1 * var(--hh-plate-r))) rotate(calc(-1 * var(--angle))) scale(1.12);
+  box-shadow: 0 0 22px 6px color-mix(in srgb, var(--c) 55%, transparent);
+}
+
+/* 戌位天门：虚位，用虚线框与灰蓝，强调「这里没人」 */
+.hh-node.is-gate {
+  border-style: dashed;
+  background: rgba(2, 6, 23, 0.55);
+
+  .hh-node__name { font-weight: 600; color: rgba(148, 163, 184, 0.85); }
+}
+
+/* 视图切换：只亮一阵（选中态必须盖过整体压暗，故写成更高优先级的组合选择器） */
+.hh-layer-xingdou .hh-plate { opacity: 0.14; pointer-events: none; }
+.hh-layer-shensha .hh-star { opacity: 0.1; }
+.hh-layer-shensha .hh-star.is-lit,
+.hh-layer-shensha .hh-star.is-sel,
+.hh-layer-shensha .hh-star:hover { opacity: 1; }
+.hh-layer-xingdou .hh-star.is-dim { opacity: 0.1; }
+
+/* —— HUD —— */
+.hh-hud {
+  max-width: 660px;
+  margin: 1rem auto 0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--r-lg);
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--sh-sm);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.hh-hud__star {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  color: var(--c-text-2);
+
+  b { color: var(--c-text-1); font-size: 0.92rem; }
+}
+
+.hh-hud__dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px 2px;
+  flex-shrink: 0;
+}
+
+.hh-hud__sub { color: var(--c-text-3); font-size: 0.74rem; }
+
+.hh-hud__beast {
+  width: 100%;
+  margin-top: 0.2rem;
+  font-size: 0.76rem;
+  color: var(--c-text-2);
+
+  b { color: var(--c-primary-700); }
+}
+
+.hh-rank {
+  font-style: normal;
+  margin-left: 0.3rem;
+  padding: 0.05rem 0.4rem;
+  border-radius: 99px;
+  font-size: 0.64rem;
+  border: 1px solid var(--c-border);
+  color: var(--c-text-3);
+  background: #fff;
+}
+
+.hh-rank-1 { border-color: rgba(16, 185, 129, 0.45); color: var(--c-success); }
+.hh-rank-2 { border-color: rgba(245, 158, 11, 0.45); color: var(--c-warning-text, var(--c-warning)); }
+.hh-rank-3 { border-color: rgba(148, 163, 184, 0.5); color: var(--c-text-3); }
+.hh-rank-from { border-color: rgba(99, 102, 241, 0.35); color: var(--c-primary-700); }
+
+.hh-hud__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.74rem;
+  color: var(--c-text-3);
+  font-variant-numeric: tabular-nums;
+
+  button {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.72rem;
+    border: 1px solid var(--glass-border);
+    border-radius: 99px;
+    background: var(--c-primary-soft);
+    color: var(--c-primary-700);
+    cursor: pointer;
+    transition: background var(--t-fast), transform var(--t-fast);
+
+    &:hover:not(:disabled) { background: var(--c-primary); color: #fff; transform: scale(1.05); }
+    &:disabled { opacity: 0.4; cursor: not-allowed; }
+  }
+}
+
+/* —— 详情弹窗 —— */
+.hh-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(2, 6, 23, 0.58);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: hh-fade 0.25s ease;
+}
+
+@keyframes hh-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.hh-card {
+  position: relative;
+  width: min(460px, 100%);
+  max-height: 82vh;
+  overflow: auto;
+  padding: 1.5rem 1.5rem 1.3rem;
+  border-radius: var(--r-xl);
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid rgba(99, 102, 241, 0.18);
+  box-shadow: 0 24px 64px rgba(15, 23, 42, 0.42);
+  animation: hh-pop 0.34s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 24px;
+    right: 24px;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--grad-primary-3);
+  }
+}
+
+@keyframes hh-pop {
+  from { opacity: 0; transform: scale(0.92) translateY(12px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.hh-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--c-primary-700);
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background var(--t-fast), transform var(--t-fast);
+
+  &:hover { background: var(--c-primary-soft); transform: rotate(90deg); }
+}
+
+.hh-card__head {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-bottom: 0.9rem;
+  padding-right: 2rem;
+
+  h3 { margin: 0; font-size: 1.25rem; color: var(--c-text-1); }
+}
+
+.hh-card__dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  box-shadow: 0 0 12px 3px;
+  flex-shrink: 0;
+}
+
+.hh-card__sub { display: block; font-size: 0.73rem; color: var(--c-text-3); margin-top: 0.1rem; }
+
+.hh-card__title {
+  margin: 1rem 0 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--c-text-1);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.2rem;
+}
+
+.hh-card__note {
+  margin: 0 0 0.7rem;
+  font-size: 0.79rem;
+  line-height: 1.65;
+  color: var(--c-text-2);
+}
+
+.hh-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem 0.9rem;
+  margin: 0 0 0.8rem;
+
+  > div {
+    background: rgba(99, 102, 241, 0.06);
+    border: 1px solid rgba(99, 102, 241, 0.1);
+    border-radius: var(--r-md);
+    padding: 0.45rem 0.65rem;
+  }
+
+  dt { font-size: 0.66rem; color: var(--c-text-3); margin-bottom: 0.12rem; }
+  dd { margin: 0; font-size: 0.84rem; font-weight: 600; color: var(--c-text-1); }
+}
+
+.hh-quote {
+  margin: 0 0 0.6rem;
+  padding: 0.6rem 0.8rem;
+  border-left: 3px solid var(--c-accent);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  background: rgba(99, 102, 241, 0.05);
+  font-size: 0.85rem;
+  line-height: 1.75;
+  color: var(--c-text-1);
+}
+
+.hh-lore {
+  margin: 0 0 0.6rem;
+  font-size: 0.8rem;
+  line-height: 1.7;
+  color: var(--c-text-2);
+}
+
+.hh-reality {
+  margin: 0 0 0.6rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--r-md);
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: var(--c-text-2);
+}
+
+.hh-warn {
+  margin: 0;
+  font-size: 0.7rem;
+  line-height: 1.6;
+  color: var(--c-text-3);
+  font-style: italic;
+}
+
+/* 星卡内的「按度前后翻」——365 星逐颗看，靠翻页比在盘上找快得多 */
+.hh-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid rgba(99, 102, 241, 0.14);
+  font-size: 0.74rem;
+  color: var(--c-text-3);
+  font-variant-numeric: tabular-nums;
+
+  button {
+    padding: 0.3rem 0.7rem;
+    font-size: 0.74rem;
+    border: 1px solid var(--glass-border);
+    border-radius: 99px;
+    background: var(--c-primary-soft);
+    color: var(--c-primary-700);
+    cursor: pointer;
+    transition: background var(--t-fast), color var(--t-fast), transform var(--t-fast);
+
+    &:hover { background: var(--c-primary); color: #fff; transform: translateY(-1px); }
+
+    &:focus-visible { box-shadow: var(--focus-ring); }
+  }
+}
+
+.hh-keys {
+  margin: 0.7rem 0 0;
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  color: var(--c-text-3);
+  text-align: center;
+}
+
+.hh-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin: 0.8rem auto 0;
+  max-width: 660px;
+  font-size: 0.68rem;
+  color: var(--c-text-3);
+}
+
+/* —— 响应式 —— */
+@media (max-width: 720px) {
+  .hh-stage {
+    --hh-r-max: 30vw;
+    --hh-plate-r: 44vw;
+  }
+  .hh-node { width: 66px; margin-left: -33px; }
+  .hh-node__office { display: none; }
+  .hh-node__name { font-size: 0.75rem; }
+  .hh-toolbar { max-width: 100%; }
+  .hh-hud { flex-direction: column; align-items: stretch; }
+
+  /* 窄盘上 28 个宿名必然叠在一起（觜宿 2 度、鬼宿 4 度），
+     与其糊成一片，不如只留四象；宿的筛选仍可由盘缘色轮与弹窗承担。 */
+  .hh-mlabel { display: none; }
+  .hh-qlabel { font-size: 0.58rem; letter-spacing: 0.06em; }
+}
+
+/* 365 星在手机上密到重叠，热区收到 15px 才不会一点错一颗 */
+@media (max-width: 560px) {
+  .hh-star::before {
+    left: -6px;
+    top: -6px;
+    width: 15px;
+    height: 15px;
+  }
+
+  .hh-cursor { width: 12px; height: 12px; margin: -6px 0 0 -6px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hh-nebula,
+  .hh-sweep,
+  .hh-orbit,
+  .hh-eye,
+  .hh-star,
+  .hh-cursor,
+  .hh-beams i,
+  .hh-pangu {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .hh-pangu { opacity: 1; }
+}

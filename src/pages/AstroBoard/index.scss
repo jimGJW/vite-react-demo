@@ -141,13 +141,16 @@
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   box-sizing: border-box;
 }
 
 /* ---------- 顶部 ---------- */
 
 .astro-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -156,6 +159,38 @@
   padding: 22px 24px;
   flex-shrink: 0;
   @include astro-card;
+
+  /* 星尘：两层密度不同的点阵反向漂移，制造「深空在缓慢移动」的错觉。
+     用 background-position 动画而不是位移元素，避免逐帧重排。 */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -60% -10%;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      radial-gradient(1.4px 1.4px at 18% 24%, rgba(255, 255, 255, 0.7), transparent 60%),
+      radial-gradient(1px 1px at 62% 68%, rgba(190, 215, 255, 0.6), transparent 60%),
+      radial-gradient(1.2px 1.2px at 84% 32%, rgba(255, 255, 255, 0.5), transparent 60%),
+      radial-gradient(1px 1px at 36% 84%, rgba(190, 215, 255, 0.45), transparent 60%);
+    background-size: 240px 240px, 320px 320px, 200px 200px, 360px 360px;
+    opacity: 0.55;
+    animation: astro-dust 42s linear infinite;
+  }
+
+  /* 右上角的极光呼吸：只做透明度/缩放，GPU 友好 */
+  &::after {
+    content: '';
+    position: absolute;
+    right: -12%;
+    top: -70%;
+    width: 55%;
+    height: 220%;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(closest-side, rgba(var(--a-accent-rgb), 0.22), transparent 72%);
+    animation: astro-aurora 11s ease-in-out infinite alternate;
+  }
 
   &__main {
     flex: 1 1 420px;
@@ -170,6 +205,21 @@
       align-items: center;
       gap: 9px;
       color: var(--a-fg-strong);
+    }
+
+    /* 渐变只作用于文字 span：svg 图标走 currentColor，
+       若把 background-clip 挂在 h1 上，图标会一起变透明。 */
+    h1 .astro-hero__title-text {
+      background: linear-gradient(96deg, var(--a-fg-strong) 0%, var(--a-fg-strong) 42%, var(--a-accent) 74%, var(--a-accent-2) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
+
+    h1 svg {
+      color: var(--a-accent-icon);
+      filter: drop-shadow(0 0 8px rgba(var(--a-accent-rgb), 0.5));
     }
 
     p {
@@ -197,6 +247,13 @@
   border-radius: 9px;
   background: rgba(var(--a-accent-rgb), 0.08);
   border: 1px solid rgba(var(--a-accent-rgb), 0.18);
+  transition: background 0.25s, border-color 0.25s, transform 0.25s var(--m-ease);
+
+  &:hover {
+    background: rgba(var(--a-accent-rgb), 0.13);
+    border-color: rgba(var(--a-accent-rgb), 0.35);
+    transform: translateY(-1px);
+  }
 
   &__label {
     font-size: 10px;
@@ -221,9 +278,42 @@
   flex-shrink: 0;
 }
 
+/* 指标卡：入场错峰 + 悬停上浮。用 nth-child 排延迟，
+   免得为每张卡在 JSX 里注入 index（卡片数量会随看板演进变）。 */
+.astro-strip .astro-metric {
+  animation: astro-rise 0.5s var(--m-ease-out) backwards;
+}
+@for $i from 2 through 10 {
+  .astro-strip .astro-metric:nth-child(#{$i}) { animation-delay: #{($i - 1) * 0.045}s; }
+}
+
 .astro-metric {
   @include astro-card;
+  position: relative;
+  overflow: hidden;
   padding: 14px 16px;
+  transition: transform 0.3s var(--m-ease), border-color 0.3s, box-shadow 0.3s;
+
+  /* 顶部高光条：默认隐形，悬停时点亮，强化「这张卡在被关注」 */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 2px;
+    background: linear-gradient(90deg, var(--a-accent), var(--a-accent-2));
+    opacity: 0;
+    transition: opacity 0.3s var(--m-ease);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(-2px);
+      border-color: rgba(var(--a-accent-rgb), 0.42);
+      box-shadow: 0 14px 30px -22px rgba(var(--a-accent-rgb), 0.75);
+
+      &::before { opacity: 1; }
+    }
+  }
 
   &__val {
     font-size: 23px;
@@ -255,6 +345,14 @@
   @include astro-card;
   overflow: hidden;
   flex-shrink: 0;
+  transition: border-color 0.3s var(--m-ease), box-shadow 0.3s var(--m-ease);
+
+  @media (hover: hover) {
+    &:hover {
+      border-color: rgba(var(--a-accent-rgb), 0.34);
+      box-shadow: 0 18px 40px -30px rgba(var(--a-accent-rgb), 0.8);
+    }
+  }
 
   &__head {
     display: flex;
@@ -1128,15 +1226,23 @@
     overflow: visible;
   }
 
+  /* 切页签时的内容入场：antd 只在切换时增删 .ant-tabs-tabpane-active，
+     动画随之重放；首次渲染也有一次轻微上浮，和指标条节奏一致。 */
+  .ant-tabs-tabpane-active {
+    animation: astro-fade-up 0.36s var(--m-ease-out) backwards;
+  }
+
   .ant-tabs-tab {
     padding: 6px 4px !important;
     font-size: 13px !important;
     font-weight: 600 !important;
     color: var(--a-dim) !important;
-    transition: color 0.2s !important;
+    border-radius: 8px 8px 0 0;
+    transition: color 0.2s, background 0.2s !important;
 
     &:hover {
       color: var(--a-fg-hi) !important;
+      background: rgba(var(--a-tint), 0.05);
     }
 
     &.ant-tabs-tab-active {
@@ -3015,4 +3121,89 @@
 
   dt { color: var(--a-dim); }
   dd { margin: 0; }
+}
+
+/* ============================================================
+ * 氛围层与入场动效
+ * 动画时长/缓动统一走 motion 插件的 --m-* 令牌；
+ * prefers-reduced-motion 下全部关闭（见文件末）。
+ * ============================================================ */
+
+@keyframes astro-dust {
+  from { background-position: 0 0, 0 0, 0 0, 0 0; }
+  to   { background-position: 240px -240px, -320px 320px, 200px -200px, -360px 360px; }
+}
+
+@keyframes astro-aurora {
+  from { opacity: 0.45; transform: scale(0.92); }
+  to   { opacity: 0.95; transform: scale(1.06); }
+}
+
+@keyframes astro-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes astro-fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .astro-hero::before,
+  .astro-hero::after,
+  .astro-strip .astro-metric,
+  .astro-tabs .ant-tabs-tabpane-active {
+    animation: none !important;
+  }
+
+  .astro-metric,
+  .astro-clock {
+    transition: none !important;
+  }
+}
+
+/* ---------- 卡片微交互统一 ----------
+ * 各页签内部大量「一条一个」的信息卡：统一悬停上浮 + 描边点亮，
+ * 不逐个改 JSX，靠选择器归并保证三块看板手感一致。
+ * 列表行（.astro-pass-item）与 Tooltip 内容（.astro-kpi-card）不参与。 */
+.astro-exo-item,
+.astro-launch-item,
+.astro-obs-card,
+.astro-messier__item,
+.astro-flare-kpi,
+.astro-cycle-kpi,
+.astro-fact,
+.astro-dict-card {
+  transition: transform 0.28s var(--m-ease), border-color 0.28s var(--m-ease),
+    background 0.28s var(--m-ease), box-shadow 0.28s var(--m-ease);
+}
+
+@media (hover: hover) {
+  .astro-exo-item:hover,
+  .astro-launch-item:hover,
+  .astro-obs-card:hover,
+  .astro-messier__item:hover,
+  .astro-flare-kpi:hover,
+  .astro-cycle-kpi:hover,
+  .astro-fact:hover,
+  .astro-dict-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(var(--a-accent-rgb), 0.34);
+    box-shadow: 0 12px 26px -20px rgba(var(--a-accent-rgb), 0.7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .astro-exo-item,
+  .astro-launch-item,
+  .astro-obs-card,
+  .astro-messier__item,
+  .astro-flare-kpi,
+  .astro-cycle-kpi,
+  .astro-fact,
+  .astro-dict-card {
+    transition: none !important;
+    transform: none !important;
+  }
 }

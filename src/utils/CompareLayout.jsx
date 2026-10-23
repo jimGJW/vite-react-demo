@@ -52,12 +52,10 @@ export default function CompareLayout({
       {/* 页头 */}
       <div className="compare-header">
         <div>
-          <Title level={2} style={{ margin: 0 }}>{title}</Title>
-          <Paragraph type="secondary" style={{ marginTop: 4, marginBottom: 12 }}>
-            {subtitle}
-          </Paragraph>
+          <Title level={2} className="compare-header__title">{title}</Title>
+          <Paragraph type="secondary" className="compare-header__sub">{subtitle}</Paragraph>
           {tags && (
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <div className="compare-header__tags">
               {tags.map((tag, i) => <Tag key={i} color={tag.color || 'blue'}>{tag.label}</Tag>)}
             </div>
           )}
@@ -96,7 +94,7 @@ export default function CompareLayout({
                 <Button type="primary" onClick={openInVueApp}>
                   {loaded ? t('compare.layout.openLoaded') : t('compare.layout.openLoad')}
                 </Button>
-                <Paragraph type="secondary" style={{ marginTop: 10, marginBottom: 0, fontSize: 12 }}>
+                <Paragraph type="secondary" className="vue-subapp-card__hint">
                   {t('compare.layout.targetPre')}<Text code>{vueAppPath}</Text>
                   {t('compare.layout.targetPost')}
                 </Paragraph>

@@ -33,6 +33,13 @@
     padding: 16px 18px;
     margin-bottom: 14px;
     background: var(--c-card);
+    animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease-out) backwards;
+    transition: border-color calc(var(--m-dur-fast) * var(--m-speed)) var(--m-ease),
+                box-shadow calc(var(--m-dur-fast) * var(--m-speed)) var(--m-ease);
+
+    @media (hover: hover) {
+      &:hover { border-color: var(--c-primary-ring); box-shadow: var(--sh-md); }
+    }
 
     h3 {
       margin: 0 0 8px;
@@ -289,6 +296,8 @@
     }
   }
 
+  > .ol-card:nth-of-type(2) { animation-delay: calc(0.07s * var(--m-speed)); }
+
   .ol-meta {
     margin: 12px 0 0;
     padding-top: 10px;
@@ -303,4 +312,8 @@
       background: var(--c-bg-soft);
     }
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .orbit-lab .ol-card { animation: none !important; }
 }

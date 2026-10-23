@@ -107,7 +107,7 @@ function ReactDemo() {
               </Space>
             }
             footer={
-              <div style={{ display: 'flex', gap: 16, fontSize: 12, color: '#666' }}>
+              <div style={{ display: 'flex', gap: 16, fontSize: 12, color: 'var(--c-text-3)' }}>
                 <span>{t('compare.slot.comment')}</span>
                 <span>{t('compare.slot.repost')}</span>
                 <span>{t('compare.slot.view')}</span>

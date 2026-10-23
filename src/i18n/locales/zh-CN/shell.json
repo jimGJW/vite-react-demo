@@ -6,6 +6,8 @@
   "hideHeader": "隐藏顶部导航栏",
   "showHeader": "显示顶部导航栏",
   "logout": "退出登录",
+  "back": "返回",
+  "backHome": "回首页",
   "sidebarAria": "侧边导航",
   "hiddenEntryTitle": "本地媒体中心（隐藏页）",
   "sidebarFoot": "点击左上角按钮切换：折叠 / 隐藏",

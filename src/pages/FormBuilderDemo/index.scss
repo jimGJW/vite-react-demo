@@ -398,7 +398,7 @@
 }
 
 /* ---------- 暗色模式 ---------- */
-@media (prefers-color-scheme: dark) {
+[data-theme='dark'] {
   .fb-panel {
     background: #1e293b;
     border-color: #334155;
@@ -463,4 +463,33 @@
   .fb-widgets-note {
     color: #64748b;
   }
+}
+
+/* ---------- 动效 ---------- */
+.fb-header {
+  animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease-out) backwards;
+}
+
+.fb-body > .fb-panel {
+  animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease-out) backwards;
+  transition: border-color calc(var(--m-dur-fast) * var(--m-speed)) var(--m-ease),
+              box-shadow calc(var(--m-dur-fast) * var(--m-speed)) var(--m-ease);
+
+  @media (hover: hover) {
+    &:hover { border-color: var(--c-primary-ring); box-shadow: var(--sh-md); }
+  }
+}
+
+.fb-body > .fb-panel:nth-child(2) { animation-delay: calc(0.08s * var(--m-speed)); }
+
+.fb-field-row {
+  animation: m-fade-in calc(var(--m-dur) * var(--m-speed)) var(--m-ease-out) backwards;
+  transition: background calc(var(--m-dur-fast) * var(--m-speed)) var(--m-ease),
+              border-color calc(var(--m-dur-fast) * var(--m-speed)) var(--m-ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fb-header,
+  .fb-body > .fb-panel,
+  .fb-field-row { animation: none !important; }
 }

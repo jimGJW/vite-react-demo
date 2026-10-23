@@ -192,7 +192,7 @@ export default function CreativeLab() {
 
   return (
     <div className="creative-lab">
-      <header className="cl-head">
+      <header className="cl-head page-hero">
         <h1>创意实验室</h1>
         <p>
           六个「好看且有用」的交互 demo，零第三方依赖。命令面板另有独立页

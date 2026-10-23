@@ -22,7 +22,7 @@ export default function ReactHooksDemo() {
 
   return (
     <div className="rh-page">
-      <header className="rh-page__header">
+      <header className="rh-page__header page-hero">
         <h1>{t('hooks.index.title')}</h1>
         <p className="rh-page__lead">
           {t('hooks.index.lead')}

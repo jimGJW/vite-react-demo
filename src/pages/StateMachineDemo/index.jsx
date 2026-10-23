@@ -60,7 +60,7 @@ export default function StateMachineDemo() {
 
   return (
     <div className="smd">
-      <header className="smd__header">
+      <header className="smd__header page-hero">
         <Title level={4} className="smd__title">
           <NodeIndexOutlined /> {t('stateMachine.title')}
         </Title>

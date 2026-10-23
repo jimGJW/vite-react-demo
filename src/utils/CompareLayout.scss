@@ -1,23 +1,81 @@
 /* =====================================================================
    CompareLayout · 双栏对比页通用样式
+   - 全部颜色/圆角/间距走全局令牌（--c-* / --r-* / --sp-* / --sh-*），
+     暗色主题自动跟随，不再有写死的 #fff / #f0f0f0
+   - 动效统一走 motion 插件的 --m-* 令牌；reduced-motion 下全部关闭
    ===================================================================== */
 
 .compare-layout-page {
-  padding: 0 4px 32px;
+  padding: 0 4px var(--sp-2xl);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--sp-lg);
 
+  /* ---------- 页头 ---------- */
   .compare-header {
-    padding: 20px 24px;
-    background: linear-gradient(135deg, #1677ff 0%, #409eff 50%, #722ed1 100%);
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    padding: 22px 26px;
+    border-radius: 14px;
     color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 16px rgba(22, 119, 255, 0.2);
+    background: linear-gradient(135deg, var(--c-primary-700) 0%, var(--c-primary-600) 48%, var(--c-accent) 100%);
+    box-shadow: var(--sh-md);
+    animation: compare-rise 0.5s var(--m-ease-out) backwards;
 
-    h2.ant-typography { color: #fff !important; }
-    .ant-typography-secondary { color: rgba(255,255,255,0.92) !important; }
-    .ant-tag { background: rgba(255,255,255,0.2); color: #fff; border: none; }
+    /* 压暗层：暗色主题下 --c-accent 偏亮，白色标题会掉对比度，
+       用一层中性黑纱兜住，不依赖具体主题色。 */
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background: linear-gradient(135deg, rgba(0, 0, 0, 0.16), rgba(0, 0, 0, 0.34));
+      pointer-events: none;
+    }
+
+    /* 斜向光带：缓慢平移，给标题区一点「活着」的感觉 */
+    &::after {
+      content: '';
+      position: absolute;
+      inset: -40% -20%;
+      z-index: -1;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        115deg,
+        rgba(255, 255, 255, 0.06) 0 2px,
+        transparent 2px 26px
+      );
+      animation: compare-sheen 18s linear infinite;
+    }
+
+    &__title.ant-typography {
+      margin: 0;
+      color: #fff;
+      letter-spacing: 0.2px;
+    }
+
+    &__sub.ant-typography {
+      margin: 4px 0 12px;
+      color: rgba(255, 255, 255, 0.9);
+      max-width: 780px;
+    }
+
+    &__tags {
+      display: flex;
+      gap: var(--sp-sm);
+      flex-wrap: wrap;
+
+      .ant-tag {
+        margin: 0;
+        padding: 1px 10px;
+        background: rgba(255, 255, 255, 0.16);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.28);
+        border-radius: var(--r-pill);
+        backdrop-filter: blur(4px);
+      }
+    }
   }
 }
 
@@ -27,13 +85,23 @@
 .compare-column {
   display: flex;
   flex-direction: column;
-  border-radius: 10px;
+  border-radius: 14px;
   overflow: hidden;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  border: 1px solid #f0f0f0;
+  background: var(--c-card);
+  border: 1px solid var(--c-border-soft);
+  box-shadow: var(--sh-sm);
   height: 100%;
   min-height: 320px;
+  transition: transform 0.3s var(--m-ease), box-shadow 0.3s var(--m-ease), border-color 0.3s var(--m-ease);
+  animation: compare-rise 0.5s var(--m-ease-out) backwards;
+
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(-2px);
+      border-color: var(--c-primary-ring);
+      box-shadow: var(--sh-md);
+    }
+  }
 
   &__header {
     display: flex;
@@ -44,30 +112,37 @@
     font-size: 14px;
     color: #fff;
 
-    &.antd { background: linear-gradient(90deg, #1677ff, #4096ff); }
-    &.vue  { background: linear-gradient(90deg, #409eff, #66b1ff); }
+    &.antd { background: var(--grad-primary); }
+    &.vue  { background: linear-gradient(90deg, #42b883, #66b1ff); }
   }
 
   .badge {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 22px; height: 22px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     font-size: 12px;
     font-weight: 700;
-    background: rgba(255,255,255,0.25);
+    background: rgba(255, 255, 255, 0.25);
     color: #fff;
     backdrop-filter: blur(4px);
   }
+
   .col-title { letter-spacing: 0.3px; }
 
   &__body {
-    padding: 16px;
+    padding: var(--sp-lg);
     flex: 1;
     min-height: 260px;
+    background: var(--c-card);
+    color: var(--c-text-1);
   }
 }
+
+/* 右栏晚一拍入场，视线先落到 React 示例 */
+.compare-row .ant-col:nth-child(2) .compare-column { animation-delay: 0.08s; }
 
 /* Vue SFC 加载中 */
 .compare-loading {
@@ -76,13 +151,14 @@
   justify-content: center;
   gap: 10px;
   min-height: 220px;
-  color: #909399;
+  color: var(--c-text-3);
   font-size: 13px;
 
   .spinner {
-    width: 22px; height: 22px;
-    border: 3px solid #ebeef5;
-    border-top-color: #409eff;
+    width: 22px;
+    height: 22px;
+    border: 3px solid var(--c-border-soft);
+    border-top-color: var(--c-primary);
     border-radius: 50%;
     animation: c-spin 0.6s linear infinite;
   }
@@ -91,39 +167,55 @@
 
 /* ========== 对比表格 ========== */
 .compare-diff-table {
-  border: 1px solid #f0f0f0;
-  border-radius: 10px;
+  border: 1px solid var(--c-border-soft);
+  border-radius: 12px;
   overflow: hidden;
-  background: #fff;
+  background: var(--c-card);
 
   .diff-row {
     display: grid;
     grid-template-columns: minmax(160px, 1fr) 1.3fr 1.3fr;
-    & + & { border-top: 1px solid #f0f0f0; }
+    transition: background 0.2s var(--m-ease);
+
+    & + & { border-top: 1px solid var(--c-border-soft); }
+
+    &:not(.diff-row--head):hover { background: var(--c-primary-softer); }
   }
+
   .diff-row--head {
-    background: linear-gradient(90deg, #fafafa, #f5f7fa);
+    background: linear-gradient(90deg, var(--c-bg-soft), var(--c-card));
     font-weight: 600;
     font-size: 13px;
-    color: #1f1f1f;
+    color: var(--c-text-1);
 
-    .diff-cell.antd { color: #1677ff; }
-    .diff-cell.vue  { color: #409eff; }
+    .diff-cell.antd { color: var(--c-primary); }
+    .diff-cell.vue  { color: #42b883; }
   }
 
   .diff-cell {
     padding: 10px 14px;
     font-size: 13px;
     line-height: 1.7;
-    &--title { font-weight: 600; color: #1f1f1f; background: #fafafa; }
-    &.antd { background: rgba(22,119,255,0.03); }
-    &.vue  { background: rgba(64,158,255,0.03); }
+    color: var(--c-text-2);
+    min-width: 0;
+
+    &--title {
+      font-weight: 600;
+      color: var(--c-text-1);
+      background: var(--c-bg-soft);
+    }
+
+    &.antd { background: var(--c-primary-softer); }
+    &.vue  { background: color-mix(in srgb, #42b883 5%, transparent); }
+
     code {
-      background: #f6f8fa;
+      background: var(--c-bg-soft);
+      border: 1px solid var(--c-border-soft);
       padding: 1px 6px;
-      border-radius: 4px;
+      border-radius: var(--r-sm);
       font-size: 12px;
-      color: #d6336c;
+      color: var(--c-danger);
+      overflow-wrap: anywhere;
     }
   }
 
@@ -134,62 +226,114 @@
 
 /* ========== 代码块 ========== */
 .code-block-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-weight: 600;
   font-size: 13px;
-  color: #1677ff;
+  color: var(--c-primary);
   margin-bottom: 6px;
-  &.vue { color: #409eff; }
+
+  &.vue { color: #42b883; }
 }
+
 .code-block {
   margin: 0;
   padding: 14px 16px;
   background: #1e1f29;
   color: #abb2bf;
-  border-radius: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
   font-size: 12px;
   line-height: 1.7;
   overflow-x: auto;
   max-height: 320px;
   font-family: 'JetBrains Mono', Consolas, monospace;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.35) transparent;
 
   &.vue { background: #1b2432; }
-  code { font-family: inherit; background: none; color: inherit; padding: 0; }
+
+  code {
+    font-family: inherit;
+    background: none;
+    border: none;
+    color: inherit;
+    padding: 0;
+  }
 }
 
 /* —— Vue 子应用体验卡（live Vue 已迁移至 qiankun 子应用 vue-app） —— */
 .vue-subapp-card {
-  border: 1px solid #b7d9b0;
-  background: linear-gradient(180deg, #f6fbf4, #eef8ec);
+  border: 1px solid color-mix(in srgb, #42b883 34%, var(--c-border-soft));
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, #42b883 8%, var(--c-card)),
+    color-mix(in srgb, #42b883 4%, var(--c-bg-soft))
+  );
   border-radius: 12px;
   padding: 18px 20px;
+
+  &__head {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 14px;
+  }
+
+  &__logo {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: #42b883;
+    color: #fff;
+    font-weight: 800;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 6px 14px -8px rgba(66, 184, 131, 0.9);
+  }
+
+  &__title {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--c-text-1);
+    margin-bottom: 2px;
+  }
+
+  &__desc {
+    font-size: 12.5px;
+    color: var(--c-text-2);
+    line-height: 1.6;
+  }
+
+  &__hint.ant-typography {
+    margin: 10px 0 0;
+    font-size: 12px;
+    color: var(--c-text-3);
+  }
 }
-.vue-subapp-card__head {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  margin-bottom: 14px;
+
+/* ========== 动效 ========== */
+@keyframes compare-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
 }
-.vue-subapp-card__logo {
-  flex-shrink: 0;
-  width: 34px;
-  height: 34px;
-  border-radius: 9px;
-  background: #42b883;
-  color: #fff;
-  font-weight: 800;
-  font-size: 16px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+
+@keyframes compare-sheen {
+  from { transform: translateX(0); }
+  to   { transform: translateX(120px); }
 }
-.vue-subapp-card__title {
-  font-weight: 600;
-  font-size: 14px;
-  color: #1f2937;
-  margin-bottom: 2px;
-}
-.vue-subapp-card__desc {
-  font-size: 12.5px;
-  color: #6b7280;
-  line-height: 1.6;
+
+@media (prefers-reduced-motion: reduce) {
+  .compare-layout-page .compare-header,
+  .compare-column {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .compare-header::after { animation: none !important; }
+  .compare-loading .spinner { animation-duration: 1.6s; }
 }

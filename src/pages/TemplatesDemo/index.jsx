@@ -27,7 +27,7 @@ export default function TemplatesDemo() {
 
   return (
     <div className="templates-demo">
-      <div className="templates-demo__header">
+      <div className="templates-demo__header page-hero">
         <Title level={3} style={{ marginBottom: 4 }}>
           <AppstoreOutlined /> {t('templates.page.title')}
         </Title>

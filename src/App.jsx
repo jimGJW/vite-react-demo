@@ -44,6 +44,9 @@ const loadCreativeLab = () => import('./pages/CreativeLab/index.jsx')
 const loadDataVizLab = () => import('./pages/DataVizLab/index.jsx')
 const loadOrbitLab = () => import('./pages/OrbitLab/index.jsx')
 const loadPlayground = () => import('./pages/Playground/index.jsx')
+/* 洪荒三阵（周天星斗 + 十二都天神煞 + 九宫八卦）与周天星辰（真实星表）——一虚一实两个入口 */
+const loadHonghuang = () => import('./pages/Honghuang/index.jsx')
+const loadStars = () => import('./pages/Stars/index.jsx')
 /* 隐藏视频轮播页：只在路由表注册，不进侧边栏 navItems，需手动访问 /not-videos */
 const loadNotVideos = () => import('./pages/NotVideos/index.jsx')
 const loadLogin = () => import('./pages/Login/index.jsx')
@@ -92,6 +95,8 @@ const CreativeLab = lazy(loadCreativeLab)
 const DataVizLab = lazy(loadDataVizLab)
 const OrbitLab = lazy(loadOrbitLab)
 const Playground = lazy(loadPlayground)
+const Honghuang = lazy(loadHonghuang)
+const Stars = lazy(loadStars)
 const NotVideos = lazy(loadNotVideos)
 const AstroBoard = lazy(() => import('./pages/AstroBoard/index.jsx'))
 const loadGeo = () => import('./pages/GeoBoard/index.jsx')
@@ -122,6 +127,7 @@ const allLoaders = [
   loadCommandPaletteDemo, loadNotifyDemo,
   loadDataTableDemo, loadTestCenterDemo, loadAssistantDemo, loadLogin,
   loadCreativeLab, loadDataVizLab, loadOrbitLab, loadPlayground,
+  loadHonghuang, loadStars,
   loadNotFound, loadCompareParentChild, loadCompareTwoWay, loadCompareProvide,
   loadCompareState, loadCompareSlot, loadCompareRef,
   loadMicroFrontendDemo,
@@ -216,6 +222,9 @@ function App() {
           <Route path="data-viz" element={<DataVizLab />} />
           <Route path="orbit" element={<OrbitLab />} />
           <Route path="playground" element={<Playground />} />
+          {/* 洪荒三阵（星斗 + 神煞 + 九宫，考据分层）与周天星辰（真实星表）*/}
+          <Route path="honghuang" element={<Honghuang />} />
+          <Route path="stars" element={<Stars />} />
           <Route path="astro" element={<AstroBoard />} />
           <Route path="geo" element={<GeoBoard />} />
           <Route path="ocean" element={<OceanBoard />} />

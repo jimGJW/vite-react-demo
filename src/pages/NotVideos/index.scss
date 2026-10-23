@@ -88,6 +88,8 @@
     border: 1px solid var(--nv-line);
     border-radius: 12px;
     overflow: hidden;
+    box-shadow: 0 22px 64px -46px rgba(22, 119, 255, 0.6);
+    animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease-out) backwards;
   }
 
   &__video {
@@ -177,11 +179,12 @@
     font-size: 12px;
     text-align: left;
     cursor: pointer;
-    transition: color 0.18s ease, background 0.18s ease;
+    transition: color 0.18s ease, background 0.18s ease, transform 0.18s ease;
 
     &:hover {
       background: #1a1f2b;
       color: #c7cddc;
+      transform: translateX(2px);
     }
 
     /* 当前播放项：主色描边 + 提亮；未选中项自然被压暗 */
@@ -342,6 +345,16 @@
     background: var(--nv-panel);
     border: 1px solid var(--nv-line);
     border-radius: 12px;
+    animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease-out) backwards;
+    transition: border-color 0.2s ease;
+
+    &:hover { border-color: color-mix(in srgb, var(--c-primary, #1677ff) 38%, var(--nv-line)); }
+  }
+
+  @for $i from 2 through 4 {
+    &__sections > &__section:nth-child(#{$i}) {
+      animation-delay: #{($i - 1) * 0.07}s;
+    }
   }
 
   &__secHead {
@@ -663,4 +676,10 @@
   .notvideos__select {
     max-width: none;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notvideos__stage,
+  .notvideos__section { animation: none !important; }
+  .notvideos__item:hover { transform: none !important; }
 }

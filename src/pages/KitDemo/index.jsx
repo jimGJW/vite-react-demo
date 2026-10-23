@@ -12,7 +12,7 @@ export default function KitDemo() {
   const { t } = useI18n()
   return (
     <div className="kit-demo">
-      <div className="kit-demo__hero">
+      <div className="kit-demo__hero page-hero">
         <h2>
           <ThunderboltOutlined /> {t('kit.page.title')}
         </h2>

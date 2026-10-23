@@ -23,6 +23,10 @@
     }
   }
 
+  @for $i from 2 through 6 {
+    > .cl-card:nth-of-type(#{$i}) { animation-delay: calc(#{$i - 1} * 0.06s * var(--m-speed)); }
+  }
+
   .cl-link {
     margin-left: 6px;
     color: var(--c-primary);
@@ -38,6 +42,13 @@
     padding: 16px 18px;
     margin-bottom: 14px;
     background: var(--c-card);
+    animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease-out) backwards;
+    transition: border-color calc(var(--m-dur-fast) * var(--m-speed)) var(--m-ease),
+                box-shadow calc(var(--m-dur-fast) * var(--m-speed)) var(--m-ease);
+
+    @media (hover: hover) {
+      &:hover { border-color: var(--c-primary-ring); box-shadow: var(--sh-md); }
+    }
 
     h3 {
       margin: 0 0 6px;
@@ -308,4 +319,8 @@
     transition: transform 0.18s cubic-bezier(0.34, 1.4, 0.64, 1);
     will-change: transform;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .creative-lab .cl-card { animation: none !important; }
 }

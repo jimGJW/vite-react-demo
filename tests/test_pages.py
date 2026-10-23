@@ -45,7 +45,10 @@ TIMEOUT = 8000  # 单步超时 ms
 # path: 路由 / name: 用例名 / texts: 页面应包含的文本 / selector: 至少存在的元素
 CASES = [
     {"path": "/login", "name": "星空登录页", "texts": ["星际控制台", "访问密钥"], "selector": "form"},
-    {"path": "/", "name": "首页·周天星辰大阵", "texts": ["欢迎来到首页", "周天星辰"], "selector": ".sa-array"},
+    {"path": "/", "name": "首页·两套星空入口", "texts": ["欢迎来到首页", "周天星辰"], "selector": ".home-arrays"},
+    {"path": "/honghuang", "name": "洪荒三阵", "texts": ["二十八宿宿度", "十二祖巫"], "selector": ".hh-stage"},
+    {"path": "/honghuang", "name": "洪荒三阵·九宫八卦盘", "texts": ["九宫八卦阵", "帝出乎震"], "selector": ".jg-grid"},
+    {"path": "/stars", "name": "周天星辰（真实星表）", "texts": ["365"], "selector": ".sa-array"},
     {"path": "/about", "name": "关于页", "texts": ["关于"], "selector": "h1"},
     {"path": "/dashboard", "name": "控制台", "texts": ["控制台"], "selector": ".page-card"},
     {"path": "/scan", "name": "扫码", "texts": ["扫码"], "selector": ".page-card"},
@@ -186,9 +189,9 @@ def interaction_tests(page, base):
     except Exception as e:
         results.append({"name": "首页计数器点击自增", "pass": False, "detail": str(e)})
 
-    # 2) 周天星辰点击弹出详情
+    # 2) 周天星辰（独立页）点击星点弹出详情
     try:
-        page.goto(f"{base}/", wait_until="load")
+        page.goto(f"{base}/stars", wait_until="load")
         star = page.locator(".sa-star").first
         if star.count():
             star.click(force=True)
@@ -201,6 +204,38 @@ def interaction_tests(page, base):
                              "detail": "无星点元素"})
     except Exception as e:
         results.append({"name": "周天星辰点击弹详情", "pass": False, "detail": str(e)})
+
+    # 2b) 洪荒三阵·星斗盘：点十二宫祖巫 → 本宫星区亮起 + 详情弹窗
+    try:
+        page.goto(f"{base}/honghuang", wait_until="load")
+        page.wait_for_selector(".hh-node", timeout=10000)
+        node = page.locator(".hh-node").first
+        if node.count():
+            node.click(force=True)
+            time.sleep(0.4)
+            lit = page.locator(".hh-star.is-lit").count() > 0
+            dialog = page.locator(".hh-modal").count() > 0
+            results.append({"name": "洪荒三阵点宫亮星区", "pass": lit and dialog,
+                             "detail": f"亮星区={lit} 弹窗={dialog}"})
+        else:
+            results.append({"name": "洪荒三阵点宫亮星区", "pass": False, "detail": "无十二宫节点"})
+    except Exception as e:
+        results.append({"name": "洪荒三阵点宫亮星区", "pass": False, "detail": str(e)})
+
+    # 2c) 九宫八卦阵：点一格 → 档案弹窗；Esc → 收起
+    try:
+        page.goto(f"{base}/honghuang", wait_until="load")
+        page.wait_for_selector(".jg-cell", timeout=10000)
+        page.locator(".jg-cell").first.click(force=True)
+        time.sleep(0.4)
+        opened = page.locator(".jg-modal").count() > 0
+        page.keyboard.press("Escape")
+        time.sleep(0.4)
+        closed = page.locator(".jg-modal").count() == 0
+        results.append({"name": "九宫八卦阵点格弹档案", "pass": opened and closed,
+                         "detail": f"弹窗={opened} Esc 收起={closed}"})
+    except Exception as e:
+        results.append({"name": "九宫八卦阵点格弹档案", "pass": False, "detail": str(e)})
 
     # 3) 命令面板 Cmd+K 唤起
     try:

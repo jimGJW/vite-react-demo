@@ -387,7 +387,7 @@ export default function OrbitLab() {
 
   return (
     <div className="orbit-lab" ref={rootRef}>
-      <header className="ol-head">
+      <header className="ol-head page-hero">
         <h1>星际轨道</h1>
         <p>
           轨道要素来自 <b>Python</b>：<code>scripts/orbit-data.py</code> 用 JPL 的 J2000 要素

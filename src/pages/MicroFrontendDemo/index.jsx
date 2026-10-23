@@ -31,18 +31,20 @@ export default function MicroFrontendDemo() {
 
   return (
     <div className="micro-frontend-page">
-      <Title level={2}>{t('micro.title')}</Title>
-      <Paragraph>
-        {t('micro.intro1')}<Text code>5173</Text>{t('micro.intro2')}<Text strong>qiankun</Text>{t('micro.intro3')}<Text strong>{t('micro.indepProj')}</Text>{t('micro.intro4')}<Text code>7101</Text>{t('micro.intro5')}<Text code>7102</Text>{t('micro.intro6')}<strong>{t('micro.menuRegister')}</strong>{t('micro.intro7')}
-        <Button type="link" size="small" style={{ padding: 0 }} href="/micro-vue">
-          /micro-vue
-        </Button>
-        、
-        <Button type="link" size="small" style={{ padding: 0 }} href="/micro-angular">
-          /micro-angular
-        </Button>
-        {t('micro.intro8')}
-      </Paragraph>
+      <div className="page-hero">
+        <Title level={2}>{t('micro.title')}</Title>
+        <Paragraph>
+          {t('micro.intro1')}<Text code>5173</Text>{t('micro.intro2')}<Text strong>qiankun</Text>{t('micro.intro3')}<Text strong>{t('micro.indepProj')}</Text>{t('micro.intro4')}<Text code>7101</Text>{t('micro.intro5')}<Text code>7102</Text>{t('micro.intro6')}<strong>{t('micro.menuRegister')}</strong>{t('micro.intro7')}
+          <Button type="link" size="small" style={{ padding: 0 }} href="/micro-vue">
+            /micro-vue
+          </Button>
+          、
+          <Button type="link" size="small" style={{ padding: 0 }} href="/micro-angular">
+            /micro-angular
+          </Button>
+          {t('micro.intro8')}
+        </Paragraph>
+      </div>
 
       {isInQiankun() && (
         <Alert

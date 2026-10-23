@@ -6,6 +6,8 @@
   "hideHeader": "上部ナビゲーションを隠す",
   "showHeader": "上部ナビゲーションを表示",
   "logout": "ログアウト",
+  "back": "戻る",
+  "backHome": "ホームへ",
   "sidebarAria": "サイドナビゲーション",
   "hiddenEntryTitle": "ローカルメディアセンター（非表示ページ）",
   "sidebarFoot": "左上のボタンで切替：折りたたみ / 非表示",

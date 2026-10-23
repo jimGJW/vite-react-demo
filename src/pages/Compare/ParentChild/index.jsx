@@ -78,7 +78,7 @@ function ReactDemo() {
     <div>
       <ReactTodoList title={title} items={items} onAdd={add} onRemove={remove} />
       <Divider style={{ margin: '14px 0' }} />
-      <div style={{ fontSize: 12, color: '#666' }}>
+      <div style={{ fontSize: 12, color: 'var(--c-text-3)' }}>
         {t('compare.parentChild.parentState')} <Tag color="blue">{items.length}</Tag>
       </div>
     </div>

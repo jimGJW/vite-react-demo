@@ -46,6 +46,7 @@
     background: var(--c-card);
     max-height: 660px;
     overflow: auto;
+    animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease-out) backwards;
 
     &__head {
       display: flex;
@@ -74,6 +75,9 @@
     margin-bottom: 4px;
     background: var(--c-card);
     overflow: hidden;
+    transition: border-color 0.2s ease;
+
+    &:hover { border-color: var(--c-primary-ring); }
 
     &.is-open {
       border-color: var(--c-primary);
@@ -237,6 +241,8 @@
   /* —————————————— 右栏：舞台 —————————————— */
   .pg-stage {
     min-width: 0;
+    animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease-out) backwards;
+    animation-delay: calc(0.08s * var(--m-speed));
   }
 
   .pg-toolbar {
@@ -272,6 +278,7 @@
     overflow: hidden;
     aspect-ratio: 16 / 9;
     min-height: 300px;
+    box-shadow: 0 26px 64px -54px var(--c-primary);
   }
 
   .pg-canvas {
@@ -424,4 +431,9 @@
       display: none;
     }
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .playground .pg-list,
+  .playground .pg-stage { animation: none !important; }
 }

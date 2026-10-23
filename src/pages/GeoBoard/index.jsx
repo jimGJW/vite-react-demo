@@ -133,7 +133,10 @@ export default function GeoBoard({ lockedTab = null } = {}) {
         {/* 顶部概览 */}
         <div className="geo-hero">
           <div className="geo-hero__main">
-            <h1><GlobalOutlined /> {t('geo.hero.title')}</h1>
+            <h1>
+              <GlobalOutlined />
+              <span className="geo-hero__title-text">{t('geo.hero.title')}</span>
+            </h1>
             <p className="geo-hero__sub">
               {t('geo.hero.sub1')}<Link to="/astro">{t('geo.hero.deepSpace')}</Link>{t('geo.hero.sub2')}
             </p>

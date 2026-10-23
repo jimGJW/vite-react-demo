@@ -33,17 +33,19 @@ export default function SubAppPage({ appKey }) {
 
   return (
     <div className="subapp-page">
-      <Title level={2} className="subapp-page__title">
-        <span className="subapp-dot" style={{ background: cfg.color }} />
-        {cfg.title}
-        <Tag color={tagColor} style={{ marginLeft: 12 }}>
-          {t(`micro.status.${status}`)}
-        </Tag>
-      </Title>
-      <Paragraph type="secondary">
-        {t('micro.subIntro1')}<Text code>{cfg.name}</Text>{t('micro.subIntro2')}<Text code>{cfg.port}</Text>{t('micro.subIntro3')}
-        {cfg.title}{t('micro.subIntro4')}
-      </Paragraph>
+      <header className="page-hero">
+        <Title level={2} className="subapp-page__title">
+          <span className="subapp-dot" style={{ background: cfg.color }} />
+          {cfg.title}
+          <Tag color={tagColor} style={{ marginLeft: 12 }}>
+            {t(`micro.status.${status}`)}
+          </Tag>
+        </Title>
+        <Paragraph type="secondary">
+          {t('micro.subIntro1')}<Text code>{cfg.name}</Text>{t('micro.subIntro2')}<Text code>{cfg.port}</Text>{t('micro.subIntro3')}
+          {cfg.title}{t('micro.subIntro4')}
+        </Paragraph>
+      </header>
 
       {status === 'error' && (
         <Alert

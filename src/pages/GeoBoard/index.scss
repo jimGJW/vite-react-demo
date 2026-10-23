@@ -37,7 +37,7 @@
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   box-sizing: border-box;
 }
 
@@ -70,12 +70,36 @@
    HERO
    ========================================================= */
 .geo-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
   gap: 14px;
   flex-wrap: wrap;
   flex-shrink: 0;
+  padding: 16px 20px;
+  background: linear-gradient(160deg, var(--g-panel) 0%, var(--g-panel-2) 100%);
+  border: 1px solid var(--g-line);
+  border-radius: 14px;
+
+  /* 地表等高线：极细的网格 + 双层径向渐变缓慢漂移，
+     不抢内容，只让「地球」这层隐喻有呼吸。 */
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -60% -10%;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(var(--g-accent-rgb), 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(var(--g-accent-rgb), 0.05) 1px, transparent 1px),
+      radial-gradient(38% 45% at 20% 10%, rgba(var(--g-accent-rgb), 0.1), transparent 70%),
+      radial-gradient(30% 40% at 85% 90%, rgba(217, 119, 6, 0.08), transparent 70%);
+    background-size: 46px 46px, 46px 46px, 100% 100%, 100% 100%;
+    animation: geo-drift 36s linear infinite;
+  }
 
   h1 {
     margin: 0;
@@ -88,6 +112,15 @@
     gap: 10px;
 
     .anticon { color: var(--g-accent); }
+  }
+
+  /* 渐变挂到 span 上：h1 里的 anticon 用 currentColor，直接裁 h1 会让图标透明 */
+  h1 .geo-hero__title-text {
+    background: linear-gradient(96deg, var(--g-fg-strong) 0%, var(--g-fg-strong) 45%, var(--g-accent) 78%, #d97706 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
   }
 
   &__sub {
@@ -116,6 +149,13 @@
   border: 1px solid var(--g-line);
   border-radius: 8px;
   padding: 4px 10px;
+  transition: border-color 0.25s, background 0.25s, transform 0.25s var(--m-ease);
+
+  &:hover {
+    border-color: rgba(var(--g-accent-rgb), 0.4);
+    background: var(--g-panel-2);
+    transform: translateY(-1px);
+  }
 
   &__label { font-size: 10.5px; color: var(--g-dim); font-weight: 600; }
   &__val {
@@ -137,7 +177,14 @@
   flex-shrink: 0;
 }
 
+/* KPI 错峰入场（卡片数量随数据源演进而变，用 nth-child 而不是 JS 注入 index） */
+@for $i from 2 through 10 {
+  .geo-strip .geo-metric:nth-child(#{$i}) { animation-delay: #{($i - 1) * 0.045}s; }
+}
+
 .geo-metric {
+  position: relative;
+  overflow: hidden;
   background: var(--g-panel);
   border: 1px solid var(--g-line);
   border-radius: 10px;
@@ -146,6 +193,28 @@
   flex-direction: column;
   gap: 3px;
   min-width: 0;
+  transition: transform 0.3s var(--m-ease), border-color 0.3s, box-shadow 0.3s;
+  animation: geo-rise 0.5s var(--m-ease-out) backwards;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 2px;
+    background: linear-gradient(90deg, var(--g-accent), #d97706);
+    opacity: 0;
+    transition: opacity 0.3s var(--m-ease);
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      transform: translateY(-2px);
+      border-color: rgba(var(--g-accent-rgb), 0.42);
+      box-shadow: 0 14px 30px -22px rgba(var(--g-accent-rgb), 0.6);
+
+      &::before { opacity: 1; }
+    }
+  }
 
   &__val {
     font-size: 20px;
@@ -196,10 +265,20 @@
   .ant-tabs-content-holder { overflow: visible; }
   .ant-tabs-tabpane { overflow: visible; }
 
+  .ant-tabs-tabpane-active {
+    animation: geo-fade-up 0.36s var(--m-ease-out) backwards;
+  }
+
   .ant-tabs-tab {
     padding: 6px 4px !important;
     font-size: 13px !important;
     font-weight: 600 !important;
+    border-radius: 8px 8px 0 0;
+    transition: color 0.2s, background 0.2s !important;
+
+    &:hover {
+      background: rgba(var(--g-accent-rgb), 0.06);
+    }
   }
 
   .ant-tabs-ink-bar { height: 3px !important; border-radius: 2px; }
@@ -220,6 +299,14 @@
   border-radius: 14px;
   overflow: hidden;
   flex-shrink: 0;
+  transition: border-color 0.3s var(--m-ease), box-shadow 0.3s var(--m-ease);
+
+  @media (hover: hover) {
+    &:hover {
+      border-color: rgba(var(--g-accent-rgb), 0.34);
+      box-shadow: 0 18px 40px -30px rgba(var(--g-accent-rgb), 0.55);
+    }
+  }
 
   &__head {
     display: flex;
@@ -998,4 +1085,61 @@
   }
 
   .geo-arch-days { text-align: left; }
+}
+
+/* =========================================================
+   氛围层与入场动效（与 astro 同节奏，颜色换 --g-*）
+   ========================================================= */
+@keyframes geo-drift {
+  from { background-position: 0 0, 0 0, 0 0, 0 0; }
+  to   { background-position: 46px -46px, -46px 46px, 0 0, 0 0; }
+}
+
+@keyframes geo-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes geo-fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .geo-hero::before,
+  .geo-metric,
+  .geo-tabs .ant-tabs-tabpane-active {
+    animation: none !important;
+  }
+
+  .geo-metric {
+    transition: none !important;
+  }
+}
+
+/* ---------- 卡片微交互统一 ---------- */
+.geo-ghg-card,
+.geo-tsu-item,
+.geo-wx-card {
+  transition: transform 0.28s var(--m-ease), border-color 0.28s var(--m-ease),
+    background 0.28s var(--m-ease), box-shadow 0.28s var(--m-ease);
+}
+
+@media (hover: hover) {
+  .geo-ghg-card:hover,
+  .geo-tsu-item:hover,
+  .geo-wx-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(var(--g-accent-rgb), 0.34);
+    box-shadow: 0 12px 26px -20px rgba(var(--g-accent-rgb), 0.55);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .geo-ghg-card,
+  .geo-tsu-item,
+  .geo-wx-card {
+    transition: none !important;
+    transform: none !important;
+  }
 }

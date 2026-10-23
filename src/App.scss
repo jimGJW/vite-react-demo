@@ -63,6 +63,43 @@
   }
 }
 
+/* —— 通用页头（demo / 工具页共用）：柔软主色带 + 左侧渐变色标 ——
+   只做「容器」层面的统一：不改各页已有的标题字号与渐变字，
+   新页面直接加 .page-hero 即可获得一致的页头观感与入场动效。 */
+.page-hero {
+  position: relative;
+  overflow: hidden;
+  padding: var(--sp-md) var(--sp-lg);
+  margin-bottom: var(--sp-lg);
+  border: 1px solid var(--c-border-soft, #f0f0f0);
+  border-radius: var(--r-lg, 8px);
+  background:
+    radial-gradient(62% 130% at 0% 50%, var(--c-primary-soft, rgba(22, 119, 255, 0.06)), transparent 72%),
+    var(--c-card, #fff);
+  box-shadow: var(--sh-sm, 0 1px 2px rgba(0, 0, 0, 0.03));
+  animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease-out) backwards;
+
+  /* 左缘渐变竖条：与 PageShell 的分区标题同一套语言 */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 12px;
+    bottom: 12px;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: linear-gradient(180deg, var(--c-primary), var(--c-accent));
+  }
+
+  :is(h1, h2, h3, h4) { margin-top: 0; }
+  > :last-child,
+  .ant-typography:last-child,
+  .ant-typography :is(p, h1, h2, h3, h4):last-child { margin-bottom: 0 !important; }
+
+  /* 页头内的图标统一吃主色，避免每页各写一套 */
+  > :is(h1, h2, h3, h4) .anticon { color: var(--c-primary); }
+}
+
 /* —— 页面卡片（antd Card 风格：实体白底，去掉模糊） —— */
 .page-card {
   position: relative;

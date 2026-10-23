@@ -102,6 +102,44 @@ export const RELEASES = [
       { route: '__infra__', title: { 'zh-CN': '看板性能优化', en: 'Board Performance Tuning' }, desc: { 'zh-CN': '自包含 Clock 组件隔离秒级渲染；Geo/Ocean 看板顶层不再每秒重渲染', en: 'Self-contained Clock isolates per-second rendering; Geo/Ocean no longer re-render every second at top level' }, changedAt: '2026-10-10' },
     ],
   },
+  {
+    id: 'r6',
+    short: '10/22',
+    label: '2026-10-22',
+    date: '2026-10-22',
+    color: '#13c2c2',
+    title: { 'zh-CN': '海洋看板新增西北太平洋台风', en: 'Ocean Board Adds W. Pacific Typhoons' },
+    changes: [
+      { route: '/ocean', title: { 'zh-CN': '「台风」页签接入实时路径与强度', en: 'Typhoon tab: live tracks & intensity' }, desc: { 'zh-CN': '接入中央气象台 nmc.cn 西北太平洋台风（list_default + view_<id> 解析，15 分钟缓存），补充 NHC 不覆盖的影响我国的台风', en: 'Integrates CMA nmc.cn W. Pacific typhoons (list_default + view_<id> parsing, 15-min cache), covering China-affecting storms NHC does not' }, changedAt: '2026-10-22' },
+      { route: '__infra__', title: { 'zh-CN': '台风强度分级与 NHC 对照', en: 'CMA typhoon grading vs NHC' }, desc: { 'zh-CN': '按 GB/T 19201 六级（2 分钟平均风）分级并对照萨菲尔–辛普森（1 分钟平均风），提醒跨页比较先辨口径', en: 'GB/T 19201 six-grade (2-min avg wind) grading cross-referenced with Saffir-Simpson (1-min avg); warns to check basis before comparing' }, changedAt: '2026-10-22' },
+    ],
+  },
+  {
+    id: 'r7',
+    short: '10/23',
+    label: '2026-10-23',
+    date: '2026-10-23',
+    color: '#13c2c2',
+    title: { 'zh-CN': '时空档案新增经纬度检查', en: 'Timeline Adds Lat/Lng Check' },
+    changes: [
+      { route: '/timeline', title: { 'zh-CN': '经纬度检查模块', en: 'Lat/Lng Check module' }, desc: { 'zh-CN': '时空档案新增「经纬度检查」页签：约 44 个知名国家/地区代表城市经纬度速查（可搜索、点行回填），并支持按经纬度反查归属（边界框优先、最近首都兜底）', en: 'Timeline gains a Lat/Lng Check tab: reference coordinates for ~44 countries (searchable, click-to-fill) plus reverse lookup by coordinate (bounding-box first, nearest capital fallback)' }, changedAt: '2026-10-23' },
+    ],
+  },
+  {
+    id: 'r8',
+    short: '10/23',
+    label: '2026-10-23',
+    date: '2026-10-23',
+    color: '#722ed1',
+    title: { 'zh-CN': '城市词典 · 洪荒三阵 · 全站页面外壳', en: 'City Gazetteer, Honghuang Arrays, Page Shell' },
+    changes: [
+      { route: '/timeline', title: { 'zh-CN': '城市词典：任意真实城市 → 经纬度', en: 'City gazetteer: any real city to coordinates' }, desc: { 'zh-CN': '离线内置 GeoNames 公有领域数据 6.3 万城，支持中文 / 英文 / 当地写法、繁简体与「城市, 国家」限定；同名城市按人口给出候选列表；3MB 词典按需加载，不拖慢首屏', en: 'Offline gazetteer of 63k settlements from public-domain GeoNames: Chinese/English/local spellings, simplified-traditional tolerance and "city, country" scoping; same-name cities return candidates by population; the 3MB dictionary loads on demand' }, changedAt: '2026-10-23' },
+      { route: '/timeline', title: { 'zh-CN': '经纬度检查体验优化', en: 'Lat/Lng check UX polish' }, desc: { 'zh-CN': '点参考行 / 样例 / 城市即出反查结果（少一次点击）；输入错误按字段结构化标红；参考表支持键盘 Enter / Space 操作；卡片悬浮微抬升与焦点环，并尊重系统减少动效设置', en: 'Clicking a reference row, sample or city now runs the reverse lookup instantly; input errors highlight the offending field; the table is keyboard operable; cards lift subtly with focus rings and honor reduced-motion' }, changedAt: '2026-10-23' },
+      { route: '/honghuang', title: { 'zh-CN': '洪荒三阵新页面', en: 'Honghuang three-array page' }, desc: { 'zh-CN': '周天星斗 / 十二都天神煞 / 九宫八卦三阵联动演示，考据分层呈现；点宫亮本宫星区并弹出档案，Esc 收起', en: 'Three interlinked array demos (star dipper, twelve ancestral witches, nine palaces); clicking a node lights its star sector and opens a dossier, Esc dismisses' }, changedAt: '2026-10-23' },
+      { route: '/stars', title: { 'zh-CN': '周天星辰（真实星表）', en: 'Zhou Tian stars (real catalog)' }, desc: { 'zh-CN': '基于真实星表的星辰大阵独立页，星点可点开详情，与洪荒三阵一虚一实两个入口', en: 'Standalone star array page driven by the real star catalog; stars open detail popups, paired with the fictional Honghuang page' }, changedAt: '2026-10-23' },
+      { route: '__infra__', title: { 'zh-CN': '全站页面外壳与导航增强', en: 'Site-wide page shell and navigation' }, desc: { 'zh-CN': 'PageShell 统一全站页面的页头 / 栅格 / 分节 / KPI 骨架（只消费 token、不写死颜色）；BackButton 在无站内历史时回首页兜底；内容区新增阅读进度条与切页回顶', en: 'PageShell unifies page headers, grids, sections and KPI skeletons (token-driven, no hardcoded colors); BackButton falls back to home without in-site history; reading progress bar and scroll-to-top on navigation' }, changedAt: '2026-10-23' },
+    ],
+  },
 ]
 
 export const getRelease = (id) => RELEASES.find((r) => r.id === id) || null

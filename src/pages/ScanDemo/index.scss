@@ -104,5 +104,18 @@
   border-left: 4px solid var(--c-warning);
   border-radius: var(--r-sm);
   font-size: 13px;
-  color: #92400e;
+  color: var(--c-warning-text, #92400e);
+}
+
+.scan-demo-actions {
+  animation: m-fade-up calc(var(--m-dur) * var(--m-speed)) var(--m-ease-out) backwards;
+}
+
+.scan-demo-history-item {
+  animation: m-fade-in calc(var(--m-dur) * var(--m-speed)) var(--m-ease-out) backwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scan-demo-actions,
+  .scan-demo-history-item { animation: none !important; }
 }
