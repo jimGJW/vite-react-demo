@@ -1,0 +1,346 @@
+/* 经纬度检查模块样式 —— 跟随时空档案主题（data-ll-theme） */
+.ll-root {
+  --ll-bg: #0e1626;
+  --ll-card: #131d30;
+  --ll-border: rgba(255, 255, 255, 0.08);
+  --ll-text: #e6edf7;
+  --ll-muted: rgba(230, 237, 247, 0.55);
+  --ll-accent: #13c2c2;
+  --ll-accent-soft: rgba(19, 194, 194, 0.14);
+}
+
+.ll-root[data-ll-theme='light'] {
+  --ll-bg: #f7f9fc;
+  --ll-card: #ffffff;
+  --ll-border: rgba(20, 36, 48, 0.1);
+  --ll-text: #1c2430;
+  --ll-muted: rgba(28, 36, 48, 0.55);
+  --ll-accent: #08979c;
+  --ll-accent-soft: rgba(8, 151, 156, 0.1);
+}
+
+.ll-root {
+  color: var(--ll-text);
+}
+
+/* ---------- 顶部：图标 + 标题 ---------- */
+.ll-hero {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--ll-border);
+  border-radius: 14px;
+  background: linear-gradient(120deg, var(--ll-accent-soft), transparent 58%), var(--ll-card);
+}
+
+.ll-hero__mark {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  font-size: 22px;
+  border-radius: 12px;
+  background: var(--ll-accent-soft);
+}
+
+.ll-hero__text {
+  min-width: 0;
+}
+
+.ll-title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+.ll-sub {
+  margin: 2px 0 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ll-muted);
+}
+
+/* ---------- 两列栅格 ---------- */
+.ll-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.ll-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+@media (max-width: 992px) {
+  .ll-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ll-card {
+  background: var(--ll-card) !important;
+  border: 1px solid var(--ll-border) !important;
+  color: var(--ll-text) !important;
+  border-radius: 14px !important;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+/* 悬浮微抬升：位移不改变布局，不会把表格顶得晃动 */
+.ll-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--ll-accent) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+}
+
+.ll-card .ll-card__h {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.ll-badge {
+  margin-left: 8px;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--ll-muted) !important;
+  border-color: var(--ll-border) !important;
+}
+
+.ll-search {
+  margin-bottom: 8px;
+}
+
+.ll-hint {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: var(--ll-muted);
+}
+
+/* ---------- 城市检索 ---------- */
+.ll-city {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  border-top: 1px solid var(--ll-border);
+  transition: opacity 0.18s ease;
+
+  &.is-stale {
+    opacity: 0.55;
+  }
+}
+
+.ll-city__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 6px;
+  border-bottom: 1px dashed var(--ll-border);
+  border-radius: 8px;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: var(--ll-accent-soft);
+  }
+
+  /* 选中行：城市名同步染强调色，未选中行保持原样 —— 高亮而不抢噪 */
+  &:hover .ll-city__name {
+    color: var(--ll-accent);
+  }
+}
+
+.ll-city__main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ll-city__name {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.ll-city__orig,
+.ll-city__where {
+  font-size: 12px;
+  color: var(--ll-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ll-city__coord {
+  flex: none;
+  font-family: 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 12px;
+  color: var(--ll-accent);
+  white-space: nowrap;
+}
+
+.ll-city__state {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 6px;
+  font-size: 13px;
+  color: var(--ll-muted);
+}
+
+/* ---------- 键盘可达性：焦点环 + 参考表行交互 ---------- */
+.ll-city__main:focus-visible,
+.ll-city__row button:focus-visible,
+.ll-sample:focus-visible {
+  outline: 2px solid var(--ll-accent);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* 参考表行：hover 淡染 + 键盘焦点环（onRow 已补 tabIndex/Enter/Space） */
+.ll-row {
+  transition: background 0.15s ease;
+}
+
+.ll-row:hover {
+  background: var(--ll-accent-soft);
+}
+
+.ll-row:focus-visible {
+  outline: 2px solid var(--ll-accent);
+  outline-offset: -2px;
+}
+
+/* ---------- 反查结果坐标（可复制） ---------- */
+.ll-result__coord {
+  font-family: 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 13px;
+  color: var(--ll-accent) !important;
+}
+
+/* ---------- 选中城市的坐标输出 ---------- */
+.ll-city__out {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--ll-accent);
+  border-radius: 12px;
+  background: var(--ll-accent-soft);
+}
+
+.ll-city__out-name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.ll-city__out-where {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ll-muted);
+}
+
+.ll-city__out-coord {
+  display: block;
+  margin-top: 6px;
+  font-family: 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 18px;
+  color: var(--ll-accent) !important;
+}
+
+.ll-city__out-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--ll-muted);
+}
+
+/* ---------- 反查 ---------- */
+.ll-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ll-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.ll-samples {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ll-sample {
+  cursor: pointer;
+  user-select: none;
+  border-color: var(--ll-border) !important;
+  color: var(--ll-text) !important;
+  background: transparent !important;
+}
+
+.ll-sample:hover {
+  border-color: var(--ll-accent) !important;
+  color: var(--ll-accent) !important;
+}
+
+.ll-tip__text {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--ll-muted);
+}
+
+/* 窄屏：城市行让原文名让位给坐标，保证坐标不被挤没 */
+@media (max-width: 560px) {
+  .ll-city__orig {
+    display: none;
+  }
+
+  .ll-city__row {
+    gap: 6px;
+  }
+
+  .ll-city__coord {
+    font-size: 11px;
+  }
+}
+
+/* 系统「减少动效」下，交错淡入、卡片抬升与 is-stale 的过渡都不该再跑 */
+@media (prefers-reduced-motion: reduce) {
+  .ll-city {
+    transition: none;
+  }
+
+  .ll-card,
+  .ll-city__row,
+  .ll-row {
+    transition: none;
+  }
+
+  .ll-card:hover {
+    transform: none;
+  }
+}

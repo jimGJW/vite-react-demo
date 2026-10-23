@@ -1,4 +1,93 @@
-/* 时空档案页：tab 栏吸顶，长内容切换时始终可见导航 */
+/*
+ * 时空档案页（/timeline）
+ * 结构层：hero（标题 + 健康度徽标）→ Tabs 分区 → footer
+ * 视觉层：主题令牌（data-tl-theme）+ 每个分区自己的强调色（--tl-accent，由 index.jsx 挂到根上）
+ */
+
+.tl-root {
+  min-height: 100vh;
+  padding: 28px clamp(16px, 4vw, 48px) 48px;
+  --tl-card: rgba(128, 128, 128, 0.06);
+  --tl-border: rgba(255, 255, 255, 0.09);
+  --tl-muted: rgba(230, 237, 247, 0.58);
+}
+
+.tl-root[data-tl-theme='light'] {
+  --tl-card: rgba(20, 36, 48, 0.03);
+  --tl-border: rgba(20, 36, 48, 0.1);
+  --tl-muted: rgba(28, 36, 48, 0.58);
+}
+
+/* ---------- 顶部 hero ---------- */
+.tl-hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding: 18px 20px;
+  border: 1px solid var(--tl-border);
+  border-radius: 16px;
+  background:
+    radial-gradient(120% 160% at 0% 0%, color-mix(in srgb, var(--tl-accent) 22%, transparent), transparent 60%),
+    var(--tl-card);
+}
+
+.tl-hero__text {
+  min-width: 0;
+}
+
+.tl-hero__title {
+  margin: 0;
+  font-size: clamp(22px, 3vw, 30px);
+  line-height: 1.25;
+}
+
+.tl-hero__sub {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--tl-muted);
+}
+
+.tl-hero__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 实时健康度徽标：正常绿、有异常转红，随主题与强调色一起呼吸 */
+.tl-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  font-size: 12px;
+  border: 1px solid var(--tl-border);
+  border-radius: 999px;
+  color: var(--tl-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.tl-pill__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #52c41a;
+  animation: tl-pulse 2.4s ease-in-out infinite;
+}
+
+.tl-pill.is-warn .tl-pill__dot {
+  background: #ff4d4f;
+}
+
+@keyframes tl-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(82, 196, 26, 0.5); }
+  50% { box-shadow: 0 0 0 5px rgba(82, 196, 26, 0); }
+}
+
+/* ---------- tab 导航：吸顶 + 分区强调色 ---------- */
 .tl-tabs {
   .ant-tabs-nav {
     position: sticky;
@@ -6,10 +95,20 @@
     z-index: 20;
     margin-bottom: 16px;
     padding: 4px 6px;
-    border-radius: 10px;
-    background: rgba(128, 128, 128, 0.1);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    border-radius: 12px;
+    background: var(--tl-card);
+    border: 1px solid var(--tl-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: background 0.3s ease;
+  }
+
+  .ant-tabs-tab {
+    transition: color 0.24s ease, transform 0.24s ease;
+
+    &:hover .ant-tabs-tab-btn {
+      transform: translateY(-1px);
+    }
   }
 
   /* 外层激活条 + 内层子 tab 激活条都用看板主色区分，避免视觉混淆 */
@@ -19,5 +118,117 @@
 
   .ant-tabs-ink-bar {
     background: var(--tl-accent, #722ed1);
+    transition: left 0.32s cubic-bezier(0.22, 1, 0.36, 1), width 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+/* 数据档案里的第二层 tab（深空 / 地球 / 海洋），缩进一档避免与外层同级感 */
+.tl-subtabs {
+  margin-top: 4px;
+
+  .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: var(--tl-accent, #13c2c2);
+  }
+
+  .ant-tabs-ink-bar {
+    background: var(--tl-accent, #13c2c2);
+  }
+}
+
+/* ---------- 分区内容 ---------- */
+.tl-panel {
+  min-height: 60vh;
+}
+
+.tl-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.tl-card {
+  background: var(--tl-card) !important;
+  border-color: var(--tl-border) !important;
+}
+
+.tl-caption {
+  margin: 4px 0 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--tl-muted);
+}
+
+.tl-board-note {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: var(--tl-muted);
+}
+
+/* ---------- 三钟 ---------- */
+.tl-clocks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 48px;
+}
+
+.tl-clock {
+  .ant-statistic-content {
+    font-variant-numeric: tabular-nums;
+    font-size: clamp(24px, 3vw, 34px);
+    letter-spacing: 0.5px;
+  }
+
+  &:hover .ant-statistic-content {
+    color: var(--tl-accent, #722ed1);
+    transition: color 0.24s ease;
+  }
+}
+
+/* ---------- KPI 栅格 ---------- */
+.tl-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.tl-kpi {
+  border: 1px solid var(--tl-border) !important;
+  background: var(--tl-card) !important;
+  transition: transform 0.24s ease, box-shadow 0.24s ease, border-color 0.24s ease;
+
+  &:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--tl-accent, #722ed1) 55%, transparent) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  }
+}
+
+/* ---------- footer ---------- */
+.tl-footer {
+  margin-top: 36px;
+  font-size: 12px;
+  color: var(--tl-muted);
+}
+
+/* 减少动效：脉冲与位移都停掉，只保留静态呈现 */
+@media (prefers-reduced-motion: reduce) {
+  .tl-pill__dot {
+    animation: none;
+  }
+
+  .tl-kpi:hover,
+  .tl-tabs .ant-tabs-tab:hover .ant-tabs-tab-btn {
+    transform: none;
+  }
+}
+
+/* 窄屏：hero 改成纵向堆叠，KPI 收到两列 */
+@media (max-width: 720px) {
+  .tl-hero {
+    align-items: flex-start;
+  }
+
+  .tl-clocks {
+    gap: 14px 28px;
   }
 }

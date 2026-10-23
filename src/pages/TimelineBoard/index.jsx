@@ -25,7 +25,9 @@ import TrinityOrbit from './components/TrinityOrbit.jsx'
 import DataSummary from './components/DataSummary.jsx'
 import GlossaryHub from './components/GlossaryHub.jsx'
 import ModuleView from './components/ModuleView.jsx'
+import LatLngCheck from './components/LatLngCheck.jsx'
 import { useI18n } from '@i18n/index.js'
+import { Animate, useCountUp } from '@/motion/index.jsx'
 import './components/TrinityOrbit.scss'
 import './components/DataSummary.scss'
 import './index.scss'
@@ -178,11 +180,39 @@ const BOARDS = [
 /** 三看板主色，与三位一体动画、数据总结共用 */
 const BOARD_COLOR = { astro: '#722ed1', geo: '#13c2c2', ocean: '#1677ff' }
 
+/**
+ * 每个 tab 的强调色：吸顶导航的激活条 / 文字跟随当前分区换色，
+ * 让「概览 · 数据档案 · 名词库 · 模块视图 · 经纬度」在五块内容之间有明确的视觉归属。
+ */
+const TAB_ACCENT = {
+  overview: '#722ed1',
+  sources: '#13c2c2',
+  glossary: '#fa8c16',
+  modules: '#2f54eb',
+  latlng: '#08979c',
+}
+
+/**
+ * KPI 卡：数字指标用 useCountUp 滚动到位，文案指标（「3 分钟前」）直接展示。
+ * 交错入场交给父容器的 .m-stagger + 自身的 --i，不额外包一层动画。
+ */
+function KpiCard({ title, value, color, index = 0 }) {
+  const numeric = typeof value === 'number'
+  const counted = useCountUp(numeric ? value : 0)
+  return (
+    <Card size="small" className="tl-kpi m-stagger-item" style={{ '--i': index }}>
+      <Statistic title={title} value={numeric ? counted : value} valueStyle={color ? { color } : undefined} />
+    </Card>
+  )
+}
+
 /* ---------- 页面 ---------- */
 
 export default function TimelineBoard() {
   const { t } = useI18n()
   const [theme, setTheme] = useState(readTheme)
+  /** 当前分区：受控，为了把强调色作为 CSS 变量挂到页面根上（导航激活条 / 内容描边共用） */
+  const [tab, setTab] = useState('overview')
   const astro = useAstroData()
   const geo = useGeoData()
   const ocean = useOceanData()
@@ -282,8 +312,8 @@ export default function TimelineBoard() {
   const antdThemeCfg = useMemo(
     () =>
       theme === 'dark'
-        ? { algorithm: antdTheme.darkAlgorithm, token: { colorBgBase: '#0b1220', colorTextBase: '#e6edf7', borderRadius: 10 } }
-        : { algorithm: antdTheme.defaultAlgorithm, token: { colorBgBase: '#f7f9fc', colorTextBase: '#1c2430', borderRadius: 10 } },
+        ? { algorithm: antdTheme.darkAlgorithm, token: { colorBgBase: '#0b1220', colorTextBase: '#e6edf7', borderRadius: 12 } }
+        : { algorithm: antdTheme.defaultAlgorithm, token: { colorBgBase: '#f7f9fc', colorTextBase: '#1c2430', borderRadius: 12 } },
     [theme],
   )
 
@@ -346,141 +376,169 @@ export default function TimelineBoard() {
 
   return (
     <ConfigProvider theme={antdThemeCfg}>
-      <div style={{ minHeight: '100vh', padding: '28px clamp(16px, 4vw, 48px) 48px' }}>
-        {/* 顶部：标题 + 主题切换 + 一键刷新 */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
-          <div style={{ flex: 1 }}>
-            <h1 style={{ margin: 0, fontSize: 'clamp(22px, 3vw, 30px)' }}>{t('timeline.title')}</h1>
-            <p style={{ margin: '6px 0 0', opacity: 0.72 }}>
-              {t('timeline.subtitle')}
-            </p>
+      <div
+        className="tl-root"
+        data-tl-theme={theme}
+        style={{ '--tl-accent': TAB_ACCENT[tab] || BOARD_COLOR.astro }}
+      >
+        {/* 顶部：标题 + 实时健康度徽标 + 主题切换 + 一键刷新 */}
+        <Animate name="fadeInDown" speed="fast" as="header" className="tl-hero">
+          <div className="tl-hero__text">
+            <h1 className="tl-hero__title m-shine-text">{t('timeline.title')}</h1>
+            <p className="tl-hero__sub">{t('timeline.subtitle')}</p>
           </div>
-          <Button icon={<ReloadOutlined />} onClick={reloadAll} loading={anyLoading}>
-            {t('timeline.refreshAll')}
-          </Button>
-          <Button
-            icon={theme === 'dark' ? <BulbOutlined /> : <MoonOutlined />}
-            onClick={toggleTheme}
-          />
-        </div>
+          <div className="tl-hero__tools">
+            <span className={`tl-pill${totalBad ? ' is-warn' : ''}`}>
+              <span className="tl-pill__dot" />
+              {t('timeline.heroHealth', { ok: totalOk, total: totalSrc })}
+            </span>
+            <Button icon={<ReloadOutlined />} onClick={reloadAll} loading={anyLoading}>
+              {t('timeline.refreshAll')}
+            </Button>
+            <Button icon={theme === 'dark' ? <BulbOutlined /> : <MoonOutlined />} onClick={toggleTheme} />
+          </div>
+        </Animate>
 
         {/* 三大板块收进 tab：概览 / 数据档案 / 名词库，避免长页一路下滑 */}
         <Tabs
-          defaultActiveKey="overview"
+          activeKey={tab}
+          onChange={setTab}
           className="tl-tabs"
           items={[
             {
               key: 'overview',
               label: t('timeline.tabOverview'),
               children: (
-                <>
+                <Animate name="fadeIn" speed="fast" as="div" className="tl-panel tl-stack">
                   {/* 三位一体动画：天 · 地 · 海 绕核心旋转 */}
-                  <Card size="small" style={{ marginTop: 20 }}>
-                    <TrinityOrbit
-                      boards={boardHealth}
-                      totalOk={totalOk}
-                      totalSrc={totalSrc}
-                      theme={theme}
-                    />
-                    <p style={{ textAlign: 'center', margin: '4px 0 0', fontSize: 12, opacity: 0.55 }}>
-                      {t('timeline.orbitCaption')}
-                    </p>
-                  </Card>
+                  <Animate name="zoomIn" speed="slow" as="div">
+                    <Card size="small" className="tl-card">
+                      <TrinityOrbit
+                        boards={boardHealth}
+                        totalOk={totalOk}
+                        totalSrc={totalSrc}
+                        theme={theme}
+                      />
+                      <p className="tl-caption">{t('timeline.orbitCaption')}</p>
+                    </Card>
+                  </Animate>
 
                   {/* 数据总结：深空 / 地球 / 海洋三方数据现状 */}
-                  <DataSummary
-                    boards={boardHealth}
-                    ages={boardAges}
-                    totalOk={totalOk}
-                    totalSrc={totalSrc}
-                    totalBad={totalBad}
-                    totalWait={totalWait}
-                    theme={theme}
-                  />
+                  <Animate name="fadeInUp" speed="fast" delay={0.12} as="div">
+                    <DataSummary
+                      boards={boardHealth}
+                      ages={boardAges}
+                      totalOk={totalOk}
+                      totalSrc={totalSrc}
+                      totalBad={totalBad}
+                      totalWait={totalWait}
+                      theme={theme}
+                    />
+                  </Animate>
 
                   {/* 三钟：本地 / UTC / 儒略日 */}
-                  <Card size="small" style={{ marginTop: 16 }}>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px 48px' }}>
-                      <Statistic
-                        title={t('timeline.clockLocal')}
-                        valueStyle={{ fontVariantNumeric: 'tabular-nums', fontSize: 'clamp(24px, 3vw, 34px)' }}
-                        value={fmtClock(now.getTime())}
-                      />
-                      <Statistic
-                        title={t('timeline.clockUtc')}
-                        valueStyle={{ fontVariantNumeric: 'tabular-nums', fontSize: 'clamp(24px, 3vw, 34px)' }}
-                        value={`${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}`}
-                      />
-                      <Statistic
-                        title={t('timeline.clockJulian')}
-                        valueStyle={{ fontVariantNumeric: 'tabular-nums', fontSize: 'clamp(24px, 3vw, 34px)' }}
-                        value={(now.getTime() / 86400000 + 2440587.5).toFixed(5)}
-                      />
-                    </div>
-                  </Card>
+                  <Animate name="fadeInUp" speed="fast" delay={0.2} as="div">
+                    <Card size="small" className="tl-card">
+                      <div className="tl-clocks">
+                        <div className="tl-clock">
+                          <Statistic
+                            title={t('timeline.clockLocal')}
+                            value={fmtClock(now.getTime())}
+                          />
+                        </div>
+                        <div className="tl-clock">
+                          <Statistic
+                            title={t('timeline.clockUtc')}
+                            value={`${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}:${pad(now.getUTCSeconds())}`}
+                          />
+                        </div>
+                        <div className="tl-clock">
+                          <Statistic
+                            title={t('timeline.clockJulian')}
+                            value={(now.getTime() / 86400000 + 2440587.5).toFixed(5)}
+                          />
+                        </div>
+                      </div>
+                    </Card>
+                  </Animate>
 
-                  {/* 健康度概览 */}
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 12, marginTop: 16 }}>
-                    <Card size="small"><Statistic title={t('timeline.statTotalSrc')} value={rows.length} /></Card>
-                    <Card size="small"><Statistic title={t('timeline.statOk')} value={totalOk} valueStyle={{ color: '#52c41a' }} /></Card>
-                    <Card size="small"><Statistic title={t('timeline.statError')} value={totalBad} valueStyle={{ color: totalBad ? '#ff4d4f' : undefined }} /></Card>
-                    <Card size="small"><Statistic title={t('timeline.statWaiting')} value={totalWait} /></Card>
-                    <Card size="small">
-                      <Statistic
-                        title={t('timeline.statFreshest')}
-                        value={stats.freshest == null ? '—' : stats.freshest < 1000 ? t('timeline.justNow') : fmtAgo(stats.freshest, now)}
-                      />
-                    </Card>
-                    <Card size="small">
-                      <Statistic title={t('timeline.statOldest')} value={stats.oldest == null ? '—' : fmtAgo(stats.oldest, now)} />
-                    </Card>
+                  {/* 健康度概览：六格 KPI，交错入场 + 数字滚动 */}
+                  <div className="tl-kpis m-stagger">
+                    <KpiCard index={0} title={t('timeline.statTotalSrc')} value={rows.length} />
+                    <KpiCard index={1} title={t('timeline.statOk')} value={totalOk} color="#52c41a" />
+                    <KpiCard index={2} title={t('timeline.statError')} value={totalBad} color={totalBad ? '#ff4d4f' : undefined} />
+                    <KpiCard index={3} title={t('timeline.statWaiting')} value={totalWait} />
+                    <KpiCard
+                      index={4}
+                      title={t('timeline.statFreshest')}
+                      value={stats.freshest == null ? '—' : stats.freshest < 1000 ? t('timeline.justNow') : fmtAgo(stats.freshest, now)}
+                    />
+                    <KpiCard index={5} title={t('timeline.statOldest')} value={stats.oldest == null ? '—' : fmtAgo(stats.oldest, now)} />
                   </div>
-                </>
+                </Animate>
               ),
             },
             {
               key: 'sources',
               label: t('timeline.tabSources'),
               children: (
-                <Tabs
-                  defaultActiveKey={BOARDS[0].key}
-                  items={BOARDS.map((b) => ({
-                    key: b.key,
-                    label: `${b.icon} ${b.title}`,
-                    children: (
-                      <div style={{ marginTop: 12 }}>
-                        <p style={{ margin: '0 0 10px', fontSize: 13, opacity: 0.65 }}>
-                          {b.title} · {t('timeline.boardSummary', { count: b.sources.length })}
-                        </p>
-                        <Table
-                          size="small"
-                          rowKey="key"
-                          columns={columns}
-                          dataSource={b.sources.map((s) => ({ ...s, ...HOOKS[b.key][s.key] }))}
-                          pagination={false}
-                        />
-                      </div>
-                    ),
-                  }))}
-                />
+                <Animate name="fadeIn" speed="fast" as="div" className="tl-panel">
+                  <Tabs
+                    defaultActiveKey={BOARDS[0].key}
+                    className="tl-subtabs"
+                    items={BOARDS.map((b) => ({
+                      key: b.key,
+                      label: `${b.icon} ${b.title}`,
+                      children: (
+                        <div>
+                          <p className="tl-board-note">
+                            {b.title} · {t('timeline.boardSummary', { count: b.sources.length })}
+                          </p>
+                          <Table
+                            size="small"
+                            rowKey="key"
+                            columns={columns}
+                            dataSource={b.sources.map((s) => ({ ...s, ...HOOKS[b.key][s.key] }))}
+                            pagination={false}
+                          />
+                        </div>
+                      ),
+                    }))}
+                  />
+                </Animate>
               ),
             },
             {
               key: 'glossary',
               label: t('timeline.tabGlossary'),
-              children: <GlossaryHub theme={theme} />,
+              children: (
+                <Animate name="fadeIn" speed="fast" as="div" className="tl-panel">
+                  <GlossaryHub theme={theme} />
+                </Animate>
+              ),
             },
             {
               key: 'modules',
               label: t('timeline.tabModules'),
-              children: <ModuleView />,
+              children: (
+                <Animate name="fadeIn" speed="fast" as="div" className="tl-panel">
+                  <ModuleView />
+                </Animate>
+              ),
+            },
+            {
+              key: 'latlng',
+              label: t('timeline.tabLatLng'),
+              children: (
+                <Animate name="fadeIn" speed="fast" as="div" className="tl-panel">
+                  <LatLngCheck theme={theme} />
+                </Animate>
+              ),
             },
           ]}
         />
 
-        <footer style={{ marginTop: 36, fontSize: 12, opacity: 0.55 }}>
-          {t('timeline.footer')}
-        </footer>
+        <footer className="tl-footer">{t('timeline.footer')}</footer>
       </div>
     </ConfigProvider>
   )

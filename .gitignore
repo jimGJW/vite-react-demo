@@ -85,3 +85,6 @@ trae-browser-screenshots/
 
 # 临时类型检查验证目录（本地产物，不入库）
 .tmptest/
+
+# 静态词典生成脚本的原始下载缓存（GeoNames / Unihan，几十 MB，不入库）
+scripts/.cache/
