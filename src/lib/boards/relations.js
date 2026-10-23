@@ -61,14 +61,15 @@ export const BOARD_SCOPE = {
   },
   ocean: {
     scope: {
-      'zh-CN': '海浪 · 潮汐 · 海温与气候振荡 · 热带气旋',
-      en: 'Waves · Tides · Sea temperature and climate oscillations · Tropical cyclones',
+      'zh-CN': '海浪 · 潮汐 · 海温与气候振荡 · 热带气旋 · 西北太平洋台风',
+      en: 'Waves · Tides · Sea temperature and climate oscillations · Tropical cyclones · W. Pacific typhoons',
     },
     watch: [
       { 'zh-CN': '近岸与全球浪况', en: 'Coastal and global wave conditions' },
       { 'zh-CN': '实测潮位与预报', en: 'Observed tide levels and forecasts' },
       { 'zh-CN': 'ENSO / PDO / AMO 相位', en: 'ENSO / PDO / AMO phases' },
       { 'zh-CN': '气旋路径与浮标实测', en: 'Cyclone tracks and buoy observations' },
+      { 'zh-CN': '西北太平洋台风路径与强度', en: 'W. Pacific typhoon tracks and intensity' },
     ],
   },
 }
@@ -104,6 +105,7 @@ export const TAB_LABELS = {
     tide: { 'zh-CN': '潮汐', en: 'Tides' },
     oni: { 'zh-CN': '气候振荡', en: 'Climate Oscillations' },
     cyclone: { 'zh-CN': '热带气旋', en: 'Tropical Cyclones' },
+    typhoon: { 'zh-CN': '西北太平洋台风', en: 'W. Pacific Typhoons' },
     buoy: { 'zh-CN': '浮标实况', en: 'Live Buoys' },
     marine: { 'zh-CN': '海况预报', en: 'Marine Forecast' },
     coast: { 'zh-CN': '海岸榜', en: 'Coastal Ranking' },
@@ -1358,6 +1360,56 @@ export const RELATIONS = {
         en: 'Both observations and theory point the same way: the global total count of cyclones has not necessarily increased, but the share of intense cyclones (Category 4–5) is rising and rapid-intensification events are becoming more common — the latter being the hardest kind to forecast. So saying that warming makes more typhoons is inaccurate; the accurate statement is that the probability of becoming intense is rising, and intensification is happening faster.',
       },
       terms: [{ b: 'earth', k: 'sst' }, { b: 'earth', k: 'ssta' }],
+    },
+  ],
+  'ocean.typhoon': [
+    {
+      to: 'ocean.waves',
+      why: {
+        'zh-CN': '台风是最强浪高的制造机，风场与气压场共同掀起十几米巨浪',
+        en: 'A typhoon is the chief maker of extreme waves; its wind and pressure fields together raise waves of ten-plus metres',
+      },
+      detail: {
+        'zh-CN': '台风浪不是单一方向的规则波，而是风浪与涌浪叠加的混乱海况，波高与近中心最大风速、风时、风区正相关。CMA 给的近中心最大风速（2 分钟平均）比 NHC 的 1 分钟平均偏低约 10–15%，但带来的浪高量级一致——一个强台风外围就能在千里外的海岸堆出三米以上的涌浪。',
+        en: 'Typhoon-generated seas are not a single orderly swell but a confused mix of wind waves and swell, with height correlated to the maximum sustained wind, its duration and fetch. CMA’s 2-minute wind is about 10–15% lower than NHC’s 1-minute value, yet the resulting wave heights are of the same order — the periphery of a strong typhoon can pile up swell above three metres on coasts a thousand kilometres away.',
+      },
+      terms: [{ b: 'earth', k: 'waveHeight' }, { b: 'earth', k: 'saffir' }],
+    },
+    {
+      to: 'ocean.oni',
+      why: {
+        'zh-CN': 'ENSO 相位调制西北太平洋台风的频数、强度与路径，拉尼娜年偏多偏强',
+        en: 'The ENSO phase modulates the frequency, intensity and tracks of W. Pacific typhoons; La Niña years tend to bring more and stronger ones',
+      },
+      detail: {
+        'zh-CN': '统计上拉尼娜年西北太平洋台风生成数偏多、极值强度偏高、登陆我国概率上升；厄尔尼诺年则相反。但这是概率性调制而非确定性预测——暖海温只是提供了「容易发展」的背景，单个台风能否快速增强还要看眼墙置换、垂直风切变等中尺度条件。',
+        en: 'Statistically, La Niña years see more W. Pacific typhoons, higher peak intensities and a greater chance of landfall in China; El Niño years are the opposite. But this is a probabilistic modulation, not a deterministic forecast — warm seas only provide a favourable background, while a given storm’s rapid intensification still depends on mesoscale conditions such as eyewall replacement and vertical wind shear.',
+      },
+      terms: [{ b: 'earth', k: 'oni' }, { b: 'earth', k: 'sst' }],
+    },
+    {
+      to: 'ocean.buoy',
+      why: {
+        'zh-CN': '浮标在台风过境时给出原位气压与浪高，是检验路径与强度预报的尺子',
+        en: 'As a typhoon passes, buoys supply in-situ pressure and wave height — the ruler that checks track and intensity forecasts',
+      },
+      detail: {
+        'zh-CN': '台风中心气压是强度核心量，而开阔洋面上几乎只有浮标能给出原位气压。浮标记录到的气压骤降曲线常用来反推中心位置与强度——卫星看形态、浮标看数值，二者缺一不可。极端海况下浮标可能漂移或停发，缺测本身就是危险信号。',
+        en: 'Central pressure is the core intensity quantity of a typhoon, and over the open ocean almost only buoys can supply in-situ pressure. The pressure-drop curve a buoy records is often used to infer the centre’s position and strength — satellites show the shape, buoys give the numbers, and neither can be spared. In extreme seas a buoy may drift or stop transmitting; missing data is itself a danger signal.',
+      },
+      terms: [{ b: 'earth', k: 'buoy' }, { b: 'earth', k: 'pressure' }],
+    },
+    {
+      to: 'ocean.cyclone',
+      why: {
+        'zh-CN': '本页（中央气象台）与「热带气旋」页（NHC）是同一类天气系统的两个责任区',
+        en: 'This tab (CMA) and the Tropical Cyclones tab (NHC) cover the same kind of system across two different areas of responsibility',
+      },
+      detail: {
+        'zh-CN': '台风与飓风本质都是热带气旋，区别只在生成海域与命名机构：西北太平洋的叫台风（CMA/JMA 发布），北大西洋与东太平洋的叫飓风（NHC 发布）。强度口径也不同——CMA 用 2 分钟平均风速、NHC 用 1 分钟平均，同一场风暴两家的等级可能差一档，跨页比较时务必先看清口径。',
+        en: 'Typhoons and hurricanes are the same phenomenon — a tropical cyclone — differing only in where they form and who names them: those in the NW Pacific are called typhoons (issued by CMA/JMA), those in the N Atlantic and E Pacific are hurricanes (issued by NHC). The intensity basis also differs — CMA uses a 2-minute average wind, NHC a 1-minute average — so the same storm can be one category apart between the two agencies; always check the basis before comparing across tabs.',
+      },
+      terms: [{ b: 'earth', k: 'cycloneClass' }, { b: 'earth', k: 'saffir' }],
     },
   ],
   'ocean.buoy': [

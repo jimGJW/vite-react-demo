@@ -699,6 +699,106 @@ async function marine() {
 }
 
 /** dev 中间件：/api/ocean/* → 各数据源 */
+/**
+ * 西北太平洋台风（中国气象局中央气象台 nmc.cn，免密钥 JSONP）。
+ *
+ * 为什么单独做一源、不并进现有 cyclones（NHC 大西洋 / 东太平洋）：
+ *   影响我国的台风全在西北太平洋，NHC 责任区根本不包含这片海——
+ *   此前 CycloneTab 的提示也明确写了「西北太平洋台风由 JTWC / 日本气象厅 / 中央气象台发布，本源不包含」。
+ *   所以这页是那页的互补，而不是重复。
+ *
+ * 数据形态：list_default 仅 ~3KB，给出当年全部台风（含 status: 'start' / 'stop'）；
+ *   view_<id> 给出完整路径点。路径点字段（数组下标）：
+ *     1 时间 YYYYMMDDHHmm · 3 CMA 强度等级码 · 4 经度 · 5 纬度
+ *     6 中心气压 hPa · 7 近中心最大风速 m/s（2 分钟平均，CMA 口径）
+ *     8 移向（16 方位缩写）· 9 移速 km/h。
+ *   CMA 强度等级按 2 分钟平均风速划分（与 NHC 的 1 分钟不同），见 earth 词典 CMA_TYPHOON_GRADES。
+ */
+function stripJsonp(txt, prefix) {
+  const i = txt.indexOf(prefix)
+  if (i < 0) return null
+  let s = txt.slice(i + prefix.length).trim()
+  // nmc 用 JSONP 包裹，外层可能是单层或多层括号、结尾可能带分号；
+  // 贪婪剥离所有前导 '(' 与尾部 ')' / ';'，只保留真正的 JSON 主体。
+  while (s.startsWith('(')) s = s.slice(1)
+  while (s.endsWith(';') || s.endsWith(')')) s = s.slice(0, -1)
+  try {
+    return JSON.parse(s)
+  } catch {
+    return null
+  }
+}
+
+/** 把 nmc 的 16 方位移向缩写压到 8 向（复用 ocean.dir.* 8 个已翻译方位词） */
+const MOVE_DIR8 = {
+  N: 'n', NNE: 'ne', NE: 'ne', ENE: 'e', E: 'e', ESE: 'se', SE: 'se', SSE: 's',
+  S: 's', SSW: 'sw', SW: 'sw', WSW: 'w', W: 'w', WNW: 'nw', NW: 'nw', NNW: 'n',
+}
+
+async function typhoons() {
+  return withCache('typhoons', 15 * 60_000, async () => {
+    const listTxt = await fetchWithTimeout(
+      'https://typhoon.nmc.cn/weatherservice/typhoon/jsons/list_default',
+    )
+    const listJson = stripJsonp(listTxt, 'typhoon_jsons_list_default')
+    const rawList = (listJson && listJson.typhoonList) || []
+    // 数组格式：[id, 英文名, 中文名, ?, ?, ?, 含义, status]
+    const all = rawList
+      .filter(Array.isArray)
+      .map((a) => ({
+        id: String(a[0]),
+        enName: a[1] || '',
+        name: a[2] || a[1] || '未命名',
+        meaning: a[6] || '',
+        status: a[7],
+      }))
+    const active = all.filter((t) => t.status === 'start')
+
+    const storms = await Promise.all(
+      active.map(async (t) => {
+        try {
+          const dTxt = await fetchWithTimeout(
+            `https://typhoon.nmc.cn/weatherservice/typhoon/jsons/view_${t.id}`,
+          )
+          const dJson = stripJsonp(dTxt, `typhoon_jsons_view_${t.id}`)
+          const arr = (dJson && dJson.typhoon) || []
+          // arr: [id, 英文名, 中文名, ?, ?, ?, 含义, status, 路径点[]]
+          const points = (Array.isArray(arr[8]) ? arr[8] : [])
+            .map((p) => ({
+              time: p[1],
+              grade: p[3],
+              lng: num(p[4]),
+              lat: num(p[5]),
+              pressure: num(p[6]),
+              windMs: num(p[7]),
+              moveDir: p[8],
+              moveDir8: MOVE_DIR8[p[8]] || null,
+              moveSpeed: num(p[9]),
+            }))
+            .filter((p) => Number.isFinite(p.lat) && Number.isFinite(p.lng))
+          const current = points.length ? points[points.length - 1] : null
+          return {
+            ...t,
+            pointCount: points.length,
+            current,
+            track: points.slice(-30), // 最近 30 个定位点，足够看清路径
+          }
+        } catch {
+          return { ...t, pointCount: 0, current: null, track: [] }
+        }
+      }),
+    )
+
+    return {
+      ok: true,
+      source: '中国气象局中央气象台（typhoon.nmc.cn，免密钥）',
+      seasonCount: all.length,
+      activeCount: storms.length,
+      storms,
+    }
+  })
+}
+
 export function serveOceanData() {
   const SOURCES = {
     '/api/ocean/waves': waves,
@@ -712,6 +812,7 @@ export function serveOceanData() {
     '/api/ocean/station-weather': stationWeather,
     '/api/ocean/buoys': buoys,
     '/api/ocean/marine': marine,
+    '/api/ocean/typhoons': typhoons,
   }
   return {
     name: 'serve-ocean-data',

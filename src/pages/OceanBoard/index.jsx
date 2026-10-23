@@ -29,6 +29,7 @@ import WavesTab from './components/WavesTab.jsx'
 import TideTab from './components/TideTab.jsx'
 import OniTab from './components/OniTab.jsx'
 import CycloneTab from './components/CycloneTab.jsx'
+import TyphoonTab from './components/TyphoonTab.jsx'
 import BuoysTab from './components/BuoysTab.jsx'
 // DictTab 已集中到 /timeline 聚合名词库（名词解析统一入口），本看板不再单独持有名词页签
 import MarineTab from './components/MarineTab.jsx'
@@ -43,7 +44,7 @@ import './index.scss'
 
 export default function OceanBoard({ lockedTab = null } = {}) {
   const {
-    waves, tides, tidePred, globalWaves, oni, cyclones, oscillations, ssta, stationWeather, buoys, marine, reloadAll,
+    waves, tides, tidePred, globalWaves, oni, cyclones, oscillations, ssta, stationWeather, buoys, marine, typhoons, reloadAll,
   } = useOceanData()
   const { t } = useI18n()
   const [theme, setTheme] = useState(readTheme)
@@ -57,7 +58,7 @@ export default function OceanBoard({ lockedTab = null } = {}) {
 
   /** 本看板实时健康度：给「关联数据」底部的三方监控条用 */
   const health = healthOf([
-    waves, tides, tidePred, globalWaves, oni, cyclones, oscillations, ssta, stationWeather, buoys,
+    waves, tides, tidePred, globalWaves, oni, cyclones, oscillations, ssta, stationWeather, buoys, typhoons,
   ])
 
   const waveData = waves.data?.ok ? waves.data : null
@@ -71,6 +72,7 @@ export default function OceanBoard({ lockedTab = null } = {}) {
   const wxData = stationWeather.data?.ok ? stationWeather.data : null
   const buoyData = buoys.data?.ok ? buoys.data : null
   const marineData = marine.data?.ok ? marine.data : null
+  const tyData = typhoons.data?.ok ? typhoons.data : null
 
   // 派生：下次高潮 / 低潮（站点时间轴上「现在」= 最新实测采样时刻，字符串比较即时序比较）
   const nextTides = useMemo(() => {
@@ -121,7 +123,10 @@ export default function OceanBoard({ lockedTab = null } = {}) {
         {/* 顶部概览 */}
         <div className="o-hero">
           <div className="o-hero__main">
-            <h1><CompassOutlined /> {t('ocean.hero.title')}</h1>
+            <h1>
+              <CompassOutlined />
+              <span className="o-hero__title-text">{t('ocean.hero.title')}</span>
+            </h1>
             <p className="o-hero__sub">
               {t('ocean.hero.subPre')}
               <Link to="/astro">{t('ocean.hero.linkAstro')}</Link>
@@ -213,6 +218,13 @@ export default function OceanBoard({ lockedTab = null } = {}) {
             tone={buoyData?.maxWave ? waveLevel(buoyData.maxWave.wvht).color : undefined}
             info={t('ocean.metric.buoy.info')}
           />
+          <Metric
+            label={t('ocean.metric.typhoon.label')}
+            value={tyData ? `${tyData.activeCount}` : '—'}
+            unit={tyData ? `活跃 · 本季 ${tyData.seasonCount}` : ''}
+            tone={tyData?.activeCount ? '#ef4444' : 'var(--o-accent)'}
+            info={t('ocean.metric.typhoon.info')}
+          />
         </div>
 
         <Tabs
@@ -266,6 +278,11 @@ export default function OceanBoard({ lockedTab = null } = {}) {
               key: 'cyclone',
               label: `🌀 ${t('ocean.tab.cyclone')}`,
               children: <CycloneTab cyclones={cyclones} cycData={cycData} />,
+            },
+            {
+              key: 'typhoon',
+              label: `🌀 ${t('ocean.tab.typhoon')}`,
+              children: <TyphoonTab typhoons={typhoons} tyData={tyData} />,
             },
             {
               key: 'buoy',

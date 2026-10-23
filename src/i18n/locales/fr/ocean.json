@@ -50,6 +50,10 @@
     "buoy": {
       "label": "Vague maximale des bouées (mesurée)",
       "info": "Plus grande hauteur significative mesurée actuellement par le réseau mondial de bouées NOAA NDBC (à distinguer de la valeur de prévision modèle « hauteur de vague maximale » ci-dessus)"
+    },
+    "typhoon": {
+      "label": "Typhons Pac. Ouest",
+      "info": "Nombre de typhons actifs repérés en temps réel par l’administration météo chinoise (CMA) ; intensité sur la moyenne de vent sur 2 min, base différente des ouragans NHC"
     }
   },
   "tab": {
@@ -61,7 +65,8 @@
     "marine": "Prévisions de l'état de la mer",
     "coast": "Classement côtier",
     "seatem": "Tendance des températures",
-    "cases": "Cas réels"
+    "cases": "Cas réels",
+    "typhoon": "Typhons Pac. Ouest"
   },
   "footer": "Toutes les données proviennent d'interfaces publiques gratuites (Open-Meteo Marine / NOAA CO-OPS / NOAA CPC / NOAA NHC / NOAA PSL / NOAA NCEI / NOAA NDBC), à des fins de vulgarisation et de visualisation uniquement. L'état de la mer est une prévision de modèle sur grille et non une mesure de station ; les heures de marée sont l'heure locale de la station ; la classification des oscillations climatiques suit les seuils officiels NOAA ; les cyclones actifs ne couvrent que la zone de responsabilité NHC (Atlantique Nord et Pacifique Nord-Est) ; les valeurs des bouées sont remontées après l'heure pleine, les horloges des stations varient légèrement, les valeurs manquantes sont marquées MM.",
   "col": {
@@ -345,5 +350,27 @@
     "sourceTag": "Source de données",
     "fail": "Cette source de données est temporairement indisponible : {error}",
     "loading": "Récupération des données temps réel…"
+  },
+  "typhoon": {
+    "panelActive": "Typhons actifs Pac. Ouest",
+    "srcActive": "Administration météo chinoise (typhoon.nmc.cn, sans clé), actualisé toutes les 15 min ; couvre le Pac. Ouest (typhons touchant la Chine)",
+    "statSeason": "Cette saison {n} typhons · {m} actifs",
+    "colName": "Nom",
+    "colGrade": "Niveau actuel",
+    "colPressure": "Pression centrale",
+    "colWind": "Vent max",
+    "colPos": "Centre",
+    "colMove": "Déplacement",
+    "colUpdated": "Heure du point",
+    "colTime": "Heure",
+    "noTrack": "Pas de trajectoire",
+    "emptyNone": "Aucun typhon actif dans le Pac. Ouest pour l’instant",
+    "emptyData": "Pas encore de données typhon",
+    "panelTips": "Trois choses à savoir avant de lire ce tableau",
+    "srcTips": "Notes (statiques)",
+    "tip1": "① Source différente. Cette page présente les typhons du Pacifique Ouest de l’administration météo chinoise (CMA) — ceux qui touchent la Chine se trouvent tous dans ce bassin. La page « Cyclones tropicaux » présente les ouragans de l’Atlantique Nord et du Pacifique Est de NOAA NHC. Ensemble, les deux pages couvrent les principaux cyclones tropicaux du monde.",
+    "tip2": "② Base d’intensité différente. CMA classe un système en six niveaux selon le vent maximal moyenné sur 2 min (dépression tropicale / tempête tropicale / tempête tropicale sévère / typhon / typhon sévère / super typhon), tandis que NHC utilise le vent moyenné sur 1 min et l’échelle de Saffir–Simpson à cinq niveaux. Un même orage peut différer d’un niveau entre les deux agences — vérifiez toujours la base avant de comparer.",
+    "tip3": "③ Le niveau ne regarde que le vent. Le niveau CMA est déterminé uniquement par la vitesse du vent, alors que les vrais dégâts viennent le plus souvent de la surcote et de pluies extrêmes. Un système de niveau « typhon » qui se déplace lentement peut provoquer des inondations plus graves qu’un « super typhon » qui passe rapidement.",
+    "expandHint": "Déployez la ligne pour voir la trajectoire en direct (30 derniers points)"
   }
 }

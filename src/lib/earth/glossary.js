@@ -46,6 +46,25 @@ export const SAFFIR_SIMPSON = {
   C5: { zh: { 'zh-CN': '五级飓风', en: 'Category 5 hurricane' }, cat: 5, kt: '≥137', ms: '≥70', color: '#a21caf', desc: { 'zh-CN': '最高等级，风暴潮 > 5.5 m，灾区可长期不宜居住。', en: 'The highest category; storm surge > 5.5 m, and affected areas may remain uninhabitable for a long time.' } },
 }
 
+/**
+ * 中国气象局（CMA）热带气旋等级（GB/T 19201-2006），按 2 分钟平均近中心最大风速划分。
+ * 与 NHC 萨菲尔–辛普森（1 分钟平均）不是一套口径，颜色刻意与 SAFFIR_SIMPSON 对齐便于对照。
+ * 注意 nmc 路径点里出现的强度码：TD / TS / STS / TY / STY / SuperTY。
+ */
+export const CMA_TYPHOON_GRADES = {
+  TD: { zh: { 'zh-CN': '热带低压', en: 'Tropical depression' }, cat: 0, ms: '≤17', color: '#36cfc9', desc: { 'zh-CN': '近中心最大风速 ≤ 17.1 m/s，尚未达到热带风暴，是最弱的命名前阶段。', en: 'Maximum sustained wind ≤ 17.1 m/s; below tropical-storm strength, the weakest pre-naming stage.' } },
+  TS: { zh: { 'zh-CN': '热带风暴', en: 'Tropical storm' }, cat: 1, ms: '17–24', color: '#22c55e', desc: { 'zh-CN': '近中心最大风速 17.2–24.4 m/s，达到此级才会被正式编号命名。', en: 'Maximum sustained wind of 17.2–24.4 m/s; a system is officially numbered and named once it reaches this stage.' } },
+  STS: { zh: { 'zh-CN': '强热带风暴', en: 'Severe tropical storm' }, cat: 2, ms: '25–32', color: '#eab308', desc: { 'zh-CN': '近中心最大风速 24.5–32.6 m/s，风雨明显增强，沿海需防风防浪。', en: 'Maximum sustained wind of 24.5–32.6 m/s; wind and rain strengthen markedly, coastal wind and wave precautions are needed.' } },
+  TY: { zh: { 'zh-CN': '台风', en: 'Typhoon' }, cat: 3, ms: '33–41', color: '#f97316', desc: { 'zh-CN': '近中心最大风速 32.7–41.4 m/s，对应 NHC 的一到二级飓风量级。', en: 'Maximum sustained wind of 32.7–41.4 m/s, comparable to a Category 1–2 hurricane on the NHC scale.' } },
+  STY: { zh: { 'zh-CN': '强台风', en: 'Severe typhoon' }, cat: 4, ms: '42–50', color: '#ef4444', desc: { 'zh-CN': '近中心最大风速 41.5–50.9 m/s，具有严重破坏力，需停工停课转移。', en: 'Maximum sustained wind of 41.5–50.9 m/s; capable of severe damage, work and school suspensions and evacuations are warranted.' } },
+  SuperTY: { zh: { 'zh-CN': '超强台风', en: 'Super typhoon' }, cat: 5, ms: '≥51', color: '#a21caf', desc: { 'zh-CN': '近中心最大风速 ≥ 51.0 m/s，是 CMA 等级里的最高级，灾情可极重。', en: 'Maximum sustained wind ≥ 51.0 m/s, the highest CMA category; destruction can be extreme.' } },
+}
+
+/** CMA 强度等级码（TD / TS / STS / TY / STY / SuperTY）→ 中文 + 风速区间 + 颜色 */
+export function zhTyphoonGrade(code, lang = 'zh-CN') {
+  return localize(lookup(code, CMA_TYPHOON_GRADES), lang)
+}
+
 /** 欧洲标准 AQI（Open-Meteo 的 european_aqi）：数值越低越好 */
 export const AQI_LEVELS = {
   good: { zh: { 'zh-CN': '优', en: 'Good' }, min: -Infinity, max: 20, color: '#0e9f6e', desc: { 'zh-CN': '空气质量令人满意，各类人群可正常活动。', en: 'Air quality is satisfactory and all groups can carry on their normal activities.' } },

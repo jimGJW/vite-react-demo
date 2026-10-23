@@ -21,6 +21,8 @@ const POLL = {
   buoys: 20 * 60_000,
   // 新增：沿海城市海况（含 7 天预报）小时级更新足够，30 分钟
   marine: 30 * 60_000,
+  // 西北太平洋台风：中央气象台每 6 小时更新一次定位，15 分钟足够
+  typhoons: 15 * 60_000,
 }
 
 async function getJSON(url, signal) {
@@ -80,6 +82,7 @@ export function useOceanData() {
   const stationWeather = usePolling('/api/ocean/station-weather', POLL.stationWeather)
   const buoys = usePolling('/api/ocean/buoys', POLL.buoys)
   const marine = usePolling('/api/ocean/marine', POLL.marine)
+  const typhoons = usePolling('/api/ocean/typhoons', POLL.typhoons)
 
   return {
     waves,
@@ -93,10 +96,11 @@ export function useOceanData() {
     stationWeather,
     buoys,
     marine,
+    typhoons,
     anyLoading:
       waves.loading || tides.loading || tidePred.loading || globalWaves.loading || oni.loading ||
       cyclones.loading || oscillations.loading || ssta.loading || stationWeather.loading ||
-      buoys.loading || marine.loading,
+      buoys.loading || marine.loading || typhoons.loading,
     reloadAll: useCallback(() => {
       waves.reload()
       tides.reload()
@@ -109,6 +113,7 @@ export function useOceanData() {
       stationWeather.reload()
       buoys.reload()
       marine.reload()
+      typhoons.reload()
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
       waves.reload,
@@ -122,6 +127,7 @@ export function useOceanData() {
       stationWeather.reload,
       buoys.reload,
       marine.reload,
+      typhoons.reload,
     ]),
   }
 }

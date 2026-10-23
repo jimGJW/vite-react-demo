@@ -50,6 +50,10 @@
     "buoy": {
       "label": "Maximale Boje-Welle (gemessen)",
       "info": "Aktuell größte gemessene signifikante Wellenhöhe im globalen Bojennetz von NOAA NDBC (zu unterscheiden vom Modell-Vorhersagewert „maximale Wellenhöhe“ oben)"
+    },
+    "typhoon": {
+      "label": "Typhons W. Pazifik",
+      "info": "Zahl der aktiven Typhons, die CMA (China-Wetterbehörde) in Echtzeit ortet; Intensität nach 2-Minuten-Mittelwind, andere Basis als NHC-Hurrikane"
     }
   },
   "tab": {
@@ -61,7 +65,8 @@
     "marine": "Seegang-Vorhersage",
     "coast": "Küsten-Ranking",
     "seatem": "Meerestemperatur-Trend",
-    "cases": "Echte Fälle"
+    "cases": "Echte Fälle",
+    "typhoon": "Typhons W. Pazifik"
   },
   "footer": "Alle Daten stammen aus öffentlichen, kostenlosen Schnittstellen (Open-Meteo Marine / NOAA CO-OPS / NOAA CPC / NOAA NHC / NOAA PSL / NOAA NCEI / NOAA NDBC) und dienen nur Wissenschaftsdarstellung und Visualisierung. Der Seegang ist eine Gittermodell-Vorhersage, keine Stationsmessung; Gezeitenzeiten sind Ortszeit der Station; die Klima-Oszillations-Einstufung folgt den offiziellen NOAA-Schwellen; aktive Wirbelstürme decken nur den NHC-Zuständigkeitsbereich (Nordatlantik und Nordostpazifik) ab; Bojenwerte werden nach der vollen Stunde zurückgemeldet, die Uhren der Stationen gehen leicht unterschiedlich, Fehlwerte sind mit MM markiert.",
   "col": {
@@ -345,5 +350,27 @@
     "sourceTag": "Datenquelle",
     "fail": "Diese Datenquelle ist vorübergehend nicht verfügbar: {error}",
     "loading": "Echtzeitdaten werden abgerufen…"
+  },
+  "typhoon": {
+    "panelActive": "Aktive Typhons W. Pazifik",
+    "srcActive": "China-Wetterbehörde (typhoon.nmc.cn, schlüsselfrei), alle 15 Min aktualisiert; deckt W. Pazifik ab (Typhons mit China-Bezug)",
+    "statSeason": "Diese Saison {n} Typhons · {m} aktiv",
+    "colName": "Name",
+    "colGrade": "Aktuelle Stufe",
+    "colPressure": "Zentraldruck",
+    "colWind": "Max. Wind",
+    "colPos": "Zentrum",
+    "colMove": "Bewegung",
+    "colUpdated": "Ortszeit",
+    "colTime": "Zeit",
+    "noTrack": "Keine Bahn",
+    "emptyNone": "Derzeit keine aktiven Typhons im W. Pazifik",
+    "emptyData": "Noch keine Typhondaten",
+    "panelTips": "Drei Dinge vor dem Lesen dieser Tabelle",
+    "srcTips": "Hintergrund (statisch)",
+    "tip1": "① Andere Quelle. Diese Seite zeigt Typhons des W. Pazifiks von der China-Wetterbehörde (CMA) — alle China betreffenden Typhons liegen in diesem Becken. Die Seite \"Tropische Wirbelstürme\" zeigt Hurrikane des N. Atlantiks und O. Pazifiks von NOAA NHC. Zusammen decken beide Seiten die wichtigsten tropischen Wirbelstürme der Welt ab.",
+    "tip2": "② Andere Intensitätsbasis. CMA stuft nach dem 2-Minuten-Mittelwind in sechs Stufen ein (tropische Depression / tropischer Sturm / schwerer tropischer Sturm / Taifun / schwerer Taifun / super Taifun), während NHC den 1-Minuten-Mittelwind und die fünfstufige Saffir–Simpson-Skala nutzt. Derselbe Sturm kann bei den beiden Behörden eine Stufe auseinanderliegen — vor einem Vergleich stets die Basis prüfen.",
+    "tip3": "③ Die Stufe betrachtet nur den Wind. Die CMA-Stufe wird allein vom Wind bestimmt, doch die eigentlichen Schäden kommen meist von Sturmflut und Extremregen. Ein langsam ziehendes System der Stufe \"Taifun\" kann schlimmere Überschwemmungen verursachen als ein \"super Taifun\", der schnell durchzieht.",
+    "expandHint": "Zeile aufklappen, um die live Bahn (letzte 30 Punkte) zu sehen"
   }
 }

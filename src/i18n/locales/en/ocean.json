@@ -50,6 +50,10 @@
     "buoy": {
       "label": "Max buoy wave (obs)",
       "info": "Largest significant wave height currently observed by the NOAA NDBC global buoy network (distinct from the model-forecast 'max wave height' above)"
+    },
+    "typhoon": {
+      "label": "W. Pacific Typhoons",
+      "info": "Count of active typhoons located in real time by CMA (China Meteorological Administration); intensity uses a 2-minute average wind, a different basis from NHC hurricanes"
     }
   },
   "tab": {
@@ -61,7 +65,8 @@
     "marine": "Sea State Forecast",
     "coast": "Coast Ranking",
     "seatem": "SST Trend",
-    "cases": "Real Cases"
+    "cases": "Real Cases",
+    "typhoon": "W. Pacific Typhoons"
   },
   "footer": "All data come from free public APIs (Open-Meteo Marine / NOAA CO-OPS / NOAA CPC / NOAA NHC / NOAA PSL / NOAA NCEI / NOAA NDBC), for science popularization and visualization only. Sea state is a gridded model forecast, not station observations; tide times are local station time; climate oscillation grades follow NOAA official thresholds; active cyclones cover only the NHC area (N Atlantic & NE Pacific); buoys report observed values after each hour, station clocks differ slightly, and missing data are marked MM.",
   "col": {
@@ -345,5 +350,27 @@
     "sourceTag": "Source",
     "fail": "This data source is temporarily unavailable: {error}",
     "loading": "Fetching live data…"
+  },
+  "typhoon": {
+    "panelActive": "Active W. Pacific Typhoons",
+    "srcActive": "China Meteorological Administration (typhoon.nmc.cn, key-free), refreshed every 15 min; covers the W. Pacific (typhoons affecting China)",
+    "statSeason": "This season {n} typhoons · {m} active now",
+    "colName": "Name",
+    "colGrade": "Current grade",
+    "colPressure": "Central pressure",
+    "colWind": "Max sustained wind",
+    "colPos": "Center position",
+    "colMove": "Movement",
+    "colUpdated": "Fix time",
+    "colTime": "Time",
+    "noTrack": "No track yet",
+    "emptyNone": "No active typhoon in the W. Pacific now",
+    "emptyData": "No typhoon data yet",
+    "panelTips": "Three things to know before reading this table",
+    "srcTips": "Background notes (static)",
+    "tip1": "① Different source. This page shows W. Pacific typhoons from the China Meteorological Administration (CMA) — the ones that affect China are all in this basin. The Tropical Cyclones page shows N. Atlantic and E. Pacific hurricanes from NOAA NHC. Together the two pages cover the world’s major tropical cyclones.",
+    "tip2": "② Different intensity basis. CMA grades a system into six levels by its 2-minute average maximum wind (tropical depression / tropical storm / severe tropical storm / typhoon / severe typhoon / super typhoon), whereas NHC uses a 1-minute average wind and the five-level Saffir–Simpson scale. The same storm can be one category apart between the two agencies — always check the basis before comparing.",
+    "tip3": "③ Grade looks at wind only. The CMA grade is determined solely by wind speed, yet the real damage usually comes from storm surge and extreme rainfall. A slow-moving “typhoon”-level system can cause worse flooding than a “super typhoon” that passes quickly.",
+    "expandHint": "Expand the row to see the live track (latest 30 fixes)"
   }
 }
