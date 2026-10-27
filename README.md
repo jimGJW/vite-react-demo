@@ -8,6 +8,8 @@
 
 > 项目已启用 [React Compiler](https://react.dev/learn/react-compiler)，构建时自动优化组件渲染。
 
+> 📖 **全功能说明（权威索引）**：[docs/FEATURES.md](docs/FEATURES.md) —— 覆盖当前全部 8 大分组路由、四块数据看板、i18n、动效系统、五层验证体系与版本时间轴（更新至 changelog r9）。本 README 保留版本演进史与架构沿革，**页面与能力的最新清单以 FEATURES.md 为准**。
+
 ***
 
 ## 目录
@@ -972,10 +974,10 @@ python3 scripts/orbit-data.py --samples 240   # 采样点数（默认 180）
 
 | 层 | 命令 | 覆盖 |
 | --- | --- | --- |
-| ① 单元测试 | `npm test` | **184 个断言**，零依赖 node runner（`scripts/run-tests.mjs` + `tests/unit/*.test.mjs`），覆盖 Utils 纯函数、Utils 新增工具、Kit 工具、ChatBot 流式协议、分享协议、高亮拆分、模板数据、状态机、性能实验室、浏览器能力探测 |
+| ① 单元测试 | `npm test` | **492 个断言 / 28 个测试文件**，零依赖 node runner（`scripts/run-tests.mjs` + `tests/unit/*.test.mjs`），覆盖 Utils 纯函数、Kit 工具、ChatBot 流式协议、分享协议、i18n 十语种治理、看板关联与词典、changelog 不变量、创意 demo 真跑、状态机、性能实验室、浏览器能力探测 |
 | ② SSR 渲染冒烟 | `npm run test:ssr` | 用 Vite 的 SSR 管线把页面真实渲染一遍（模块加载 + 组件树 + 关键内容断言），专抓 `vite build` 只做静态编译的盲区 |
 | ③ 应用内测试中心 | 访问 `/test-center` | 浏览器侧断言：模块导出完整性、`exportCsv` / storage / debounce 计时、路由注册等 node 覆盖不到的部分 |
-| ④ 浏览器冒烟 | `npm run test:browser` | **39 个路由**逐页真实访问，收集 console error 与未捕获异常；CDP 驱动本机 headless Chrome，零新依赖（Node 内置 WebSocket）。需先 `npm run dev` |
+| ④ 浏览器冒烟 | `npm run test:browser` | **全部路由**逐页真实访问（从 `src/App.jsx` 自动解析，新增页面无需改脚本），收集 console error 与未捕获异常；CDP 驱动本机 headless Chrome，零新依赖（Node 内置 WebSocket）。需先 `npm run dev` |
 | ⑤ E2E | `npm run test:e2e` | Python + Playwright 真实浏览器交互测试（需额外 pip 安装） |
 
 * **SSR 冒烟**（`scripts/ssr-smoke.mjs`）补的正是 build 的盲区：build 只做静态编译，跑不出 Hook 误用、Context 缺失、SSR 期误用浏览器 API 这类运行时问题；新增页面时在 `targets` 里追加一行即可
@@ -1097,9 +1099,9 @@ vite-react-demo/
 | `npm run build`            | 生产构建（产物到 `dist/`）                  |
 | `npm run preview`          | 预览生产构建                             |
 | `npm run lint`             | ESLint 代码检查                        |
-| `npm test`                 | 零依赖单元测试（86 断言 / 约 0.5s）           |
+| `npm test`                 | 零依赖单元测试（492 断言 / 28 文件）           |
 | `npm run test:ssr`         | SSR 渲染冒烟（页面真实渲染 + 内容断言）           |
-| `npm run test:browser`     | 浏览器逐页冒烟（35 路由，抓 console error）       |
+| `npm run test:browser`     | 浏览器逐页冒烟（自动解析全部路由，抓 console error）       |
 | `npm run test:e2e`         | Playwright E2E 测试（自动启动 dev server） |
 | `npm run test:whisper`     | Whisper 语音识别链路验证                   |
 | `npm run pkg:all:build`    | 一键构建全部 12 个独立 npm 包（6 React + 6 Vue）       |
