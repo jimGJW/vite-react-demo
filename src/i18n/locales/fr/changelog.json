@@ -5,5 +5,6 @@
   "allVersions": "Toutes les versions",
   "changesCount": "{n} modifications",
   "changedAt": "Modifié le {date}",
-  "batchTip": "Lot de modifications : {date} · {title}"
+  "batchTip": "Lot de modifications : {date} · {title}",
+  "newMark": "NOUVEAU"
 }

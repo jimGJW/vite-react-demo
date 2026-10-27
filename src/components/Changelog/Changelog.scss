@@ -38,6 +38,68 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* ============ 「新」标红（FRESH_DAYS 窗口内的批次） ============ */
+/* tag 整体转红（红点脉冲），过窗后恢复批次原色 */
+.period-tag--fresh {
+  background: var(--c-danger, #ff4d4f);
+  box-shadow: 0 1px 3px rgba(255, 77, 79, 0.45);
+}
+
+.period-tag--fresh .period-tag__dot {
+  background: #fff;
+  animation: pt-fresh-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pt-fresh-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.55; transform: scale(1.45); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .period-tag--fresh .period-tag__dot { animation: none; }
+}
+
+/* 页面内容处的「新」徽标（NewMark）：红底白字小药丸 + 修改日期 */
+.new-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #fff;
+  background: var(--c-danger, #ff4d4f);
+  box-shadow: 0 1px 3px rgba(255, 77, 79, 0.4);
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.new-mark--inline {
+  margin-left: 6px;
+  font-size: 0.62rem;
+  padding: 0 6px;
+}
+
+.new-mark__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #fff;
+  animation: pt-fresh-pulse 1.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .new-mark__dot { animation: none; }
+}
+
+.new-mark__date {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.92;
+}
+
 /* ============ 侧边栏文字 + 下标 icon 同行 ============ */
 .nav-label-with-tag {
   display: inline-flex;
@@ -153,4 +215,54 @@
   color: var(--c-text-3, rgba(0, 0, 0, 0.45));
   font-size: 0.74rem;
   font-variant-numeric: tabular-nums;
+}
+
+/* ============ 抽屉「新」批次整组标红 ============ */
+.changelog-release--fresh .changelog-release__date {
+  color: var(--c-danger, #ff4d4f);
+}
+
+.changelog-release--fresh .changelog-release__title {
+  color: var(--c-danger, #ff4d4f);
+  font-weight: 600;
+}
+
+.changelog-release--fresh .changelog-change__title {
+  color: var(--c-danger, #ff4d4f);
+}
+
+.changelog-release--fresh .changelog-change__desc {
+  color: color-mix(in srgb, var(--c-danger, #ff4d4f) 78%, var(--c-text-2, rgba(0, 0, 0, 0.65)));
+}
+
+.changelog-release__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 600;
+  line-height: 1.6;
+  color: #fff;
+  background: var(--c-danger, #ff4d4f);
+  box-shadow: 0 1px 3px rgba(255, 77, 79, 0.4);
+}
+
+.changelog-release__badge::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+/* 下拉菜单「新」批次整行标红 */
+.cl-menu-item--fresh .cl-menu-item__title,
+.cl-menu-item--fresh .cl-menu-item__count {
+  color: var(--c-danger, #ff4d4f);
+}
+
+.cl-menu-item--fresh .cl-menu-item__sub {
+  color: color-mix(in srgb, var(--c-danger, #ff4d4f) 70%, var(--c-text-3, rgba(0, 0, 0, 0.45)));
 }

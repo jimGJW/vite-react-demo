@@ -5,5 +5,6 @@
   "allVersions": "全バージョン",
   "changesCount": "{n} 件の変更",
   "changedAt": "{date} 変更",
-  "batchTip": "変更批次：{date} · {title}"
+  "batchTip": "変更批次：{date} · {title}",
+  "newMark": "新着"
 }

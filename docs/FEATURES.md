@@ -2,7 +2,9 @@
 
 > 本文档是项目**全部功能的权威索引**，覆盖 8 大分组共 50 条路由、可复用模块、四块数据看板、微前端、独立 npm 包、i18n、动效系统与五层验证体系。各模块的深入文档见对应目录下的 `README.md`（本文末尾有清单）。
 >
-> 更新基准：changelog r9（2026-10-27，commit `8696d6b`）。单测 492/492。
+> 更新基准：changelog r8（2026-10-27，commit `8696d6b + 663983d`）。单测 495/495。
+>
+> <span style="color:#e64545">**红色 = 最近 7 天内新增/修改的内容**（对应 changelog「新」标红窗口，过窗后应摘除红标）。</span>
 
 ---
 
@@ -72,10 +74,10 @@
 流式 AI 对话的**完整可复用实现**：
 
 - **流式协议**：逐行 JSON（兼容 SSE）。帧类型 `status` / `content` / `steps` / `error`，`stop` 帧权威收口。协议解析在 `chatStream.js`，`classifyFrame` 纯函数可单测。
-- **思考态条 ThinkingStrip**（r9，移植自 hc-apm-mobile）：回答收口后显示「已完成思考 · 用时 X 秒」，可展开结构化步骤流（每步带耗时）；纯 UI、走 `--c-*` 主题变量、尊重 `prefers-reduced-motion`。计时由 `useMessage.js` 的 `startedAt/finishedAt/elapsedMs/steps` 驱动。
+- **思考态条 ThinkingStrip**（<span style="color:#e64545">r8 · 10/27 新增</span>，移植自 hc-apm-mobile）：回答收口后显示「已完成思考 · 用时 X 秒」，可展开结构化步骤流（每步带耗时）；纯 UI、走 `--c-*` 主题变量、尊重 `prefers-reduced-motion`。计时由 `useMessage.js` 的 `startedAt/finishedAt/elapsedMs/steps` 驱动。
 - **四类富卡片**：列表 / 数据表 / 任务表 / 折线图，按 `contentType` 自动分发；表格可切图表、导出 CSV。
-- **输入体验**：4 行高度上限、IME 合成守卫（中文输入回车不误发）。
-- **推荐问题**：带序号的裸行分隔列表（窄屏不溢出，整行可点）。
+- **输入体验**：<span style="color:#e64545">4 行高度上限（r8 收紧）</span>、IME 合成守卫（中文输入回车不误发）。
+- **推荐问题**：<span style="color:#e64545">带序号的裸行分隔列表（r8 改版）</span>（窄屏不溢出，整行可点）。
 - **历史会话**：分页 / 回读 / 删除 / 清空；赞踩、复制、重新生成、停止生成。
 - **可注入后端**：`createHttpApi`（真实接口）与 `createMockApi`（离线演示）同签名互换。
 - **性能**：Context 按变化频率拆分 + 全链路 `React.memo`，流式期间只重绘生成中的气泡。
@@ -192,11 +194,11 @@ Context 四件套综合案例（带渲染计数徽标）+ 逐 API 讲解 + React
 
 ### 8.3 海洋数据看板 OceanBoard（`/ocean`，10 页签）
 
-海浪/涌浪（NDBC）· 潮汐 · ENSO/ONI · 气旋（NHC，按编号前缀 al/ep 判洋盆）· **🌀 台风**（中央气象台 nmc.cn JSONP，`list_default`/`view_<id>`，CMA 六级与萨菲尔-辛普森口径对照）· 浮标实况 · 海洋 · 海岸 · 海温 · 📚 案例
+海浪/涌浪（NDBC）· 潮汐 · ENSO/ONI · 气旋（NHC，按编号前缀 al/ep 判洋盆）· **🌀 台风**（<span style="color:#e64545">r6 · 10/22 新增</span>，中央气象台 nmc.cn JSONP，`list_default`/`view_<id>`，CMA 六级与萨菲尔-辛普森口径对照）· 浮标实况 · 海洋 · 海岸 · 海温 · 📚 案例
 
 ### 8.4 时空档案 TimelineBoard（`/timeline`，5 页签）
 
-概览 / 数据档案（各看板数据源清单与刷新周期）/ 名词库（聚合词典）/ 模块视图 + **📍 经纬度检查**（约 44 国代表城市速查 + `locate(lat,lng)` 反查：边界框优先、最近首都兜底；另有 GeoNames 6.3 万城离线词典 `src/lib/geo/cities.js`，3MB 按需加载）。
+概览 / 数据档案（各看板数据源清单与刷新周期）/ 名词库（聚合词典）/ 模块视图 + **📍 经纬度检查**（<span style="color:#e64545">r7 · 10/23 新增</span>：约 44 国代表城市速查 + `locate(lat,lng)` 反查：边界框优先、最近首都兜底；<span style="color:#e64545">另有 GeoNames 6.3 万城离线词典</span> `src/lib/geo/cities.js`，3MB 按需加载）。
 
 ### 8.5 共用词典与阈值
 
@@ -226,8 +228,8 @@ Vue 3 与 Angular 22 为两个独立工程（`micro-apps/`），主应用不再�
 | 主题系统 | 全站 `--c-*` CSS 变量（`src/index.scss`），亮暗双主题，组件不写死颜色 |
 | 动效中枢 | `src/motion/`：keyframes + `.m-*` 工具类 + `Reveal/Motion/PageTransition/MotionProvider` + `useReveal/useTilt/useCountUp/useReducedMotion`；`animate/` 封装 animate.css 为 `<Animate>` |
 | 页面外壳 | `src/components/PageShell/`：统一页头/栅格/分节/KPI 骨架；`BackButton` 无历史回首页；阅读进度条 + 切页回顶 |
-| 国际化 | **10 语种**（zh-CN/zh-TW/en/de/fr/th/mn/bo/ja/ko），`src/i18n/`，`useI18n()`；语言切换 `LanguageSwitch`。**zh-CN（源语言/兜底）同步内置，其余 9 语种切换时按需装载**（未就绪自动回退 zh-CN，无闪烁无报错），首屏 i18n chunk 仅约 190KB。治理守卫：非汉藏语种零汉字、ja/ko 相同率门限、zh-TW 简体特征字扫描 |
-| ECharts 按需注册 | `src/lib/echarts.js` 是全项目唯一注册点（折线/柱状/饼/雷达/散点 + 所需组件 + Canvas 渲染器）；Kit/Studio/ChatBot 图表统一从此引入，vendor chunk 较全量引入瘦身约四成 |
+| 国际化 | **10 语种**（zh-CN/zh-TW/en/de/fr/th/mn/bo/ja/ko），`src/i18n/`，`useI18n()`；语言切换 `LanguageSwitch`。<span style="color:#e64545">zh-CN（源语言/兜底）同步内置，其余 9 语种切换时按需装载</span>（未就绪自动回退 zh-CN，无闪烁无报错），首屏 i18n chunk 仅约 190KB。治理守卫：非汉藏语种零汉字、ja/ko 相同率门限、zh-TW 简体特征字扫描 |
+| ECharts 按需注册 | <span style="color:#e64545">`src/lib/echarts.js` 是全项目唯一注册点（r8 · 10/27）</span>（折线/柱状/饼/雷达/散点 + 所需组件 + Canvas 渲染器）；Kit/Studio/ChatBot 图表统一从此引入，vendor chunk 较全量引入瘦身约四成 |
 | 版本时间轴 | `src/components/Changelog/`（`releases.js` 纯数据 + 侧边栏批次着色图标 + `ROUTE_LATEST` 映射） |
 | 时钟隔离 | `src/components/Clock.jsx` 自包含秒级自更新，避免看板顶层每秒重渲染 |
 | 路径别名 | 唯一真源 `scripts/aliases.mjs`（`@`/`@i18n`/`@components`/`@lib`/`@root`），vite 与 tsconfig 由单测守卫同步 |
@@ -257,7 +259,7 @@ Vue 3 与 Angular 22 为两个独立工程（`micro-apps/`），主应用不再�
 
 | 层 | 命令 | 覆盖（当前） |
 | --- | --- | --- |
-| ① 单元测试 | `npm test` | **492 断言 / 28 个测试文件**，零依赖 node runner（`scripts/run-tests.mjs`）。覆盖：alias 同步、i18n 10 语种治理、chat-stream 协议、changelog 不变量、看板关联/词典、城市词典、latlng、honghuang/jiugong、motion、page-shell、utils、creative-demos（32 demo 真跑 20 帧）等 |
+| ① 单元测试 | `npm test` | **495 用例 / 28 个测试文件**，零依赖 node runner（`scripts/run-tests.mjs`）。覆盖：alias 同步、i18n 10 语种治理、chat-stream 协议、changelog 不变量、看板关联/词典、城市词典、latlng、honghuang/jiugong、motion、page-shell、utils、creative-demos（32 demo 真跑 20 帧）等 |
 | ② SSR 冒烟 | `npm run test:ssr` | Vite SSR 管线真实渲染 + 页面文案断言（抓 Hook 误用/浏览器 API 误用） |
 | ③ 应用内测试中心 | `/test-center` | 浏览器侧断言（导出完整性/计时/路由注册） |
 | ④ 浏览器冒烟 | `npm run test:browser` | CDP 驱动本机 Chrome，从 App.jsx 自动解析路由逐页访问抓 console error（需先起 dev） |
@@ -278,9 +280,9 @@ Vue 3 与 Angular 22 为两个独立工程（`micro-apps/`），主应用不再�
 
 ---
 
-## 14. 功能版本时间轴（r1–r9）
+## 14. 功能版本时间轴（r1–r8）
 
-数据：`src/components/Changelog/releases.js`（39 条变更，共 9 批次）
+数据：`src/components/Changelog/releases.js`（**41 条变更，共 8 批次**；同一天的多批改动合并为一个批次，批次配色互不相同；近 7 天内的批次在侧边栏 / 时间轴 / 页面内容处统一**红标「新」**）。
 
 | 批次 | 日期 | 主题 | 条数 |
 | --- | --- | --- | --- |
@@ -290,9 +292,8 @@ Vue 3 与 Angular 22 为两个独立工程（`micro-apps/`），主应用不再�
 | r4 | 9/30 | 微前端三端对称 + 创意分组 + Playground 32 demo | 8 |
 | r5 | 10/10 | 数据看板大扩容（天/地/海）+ Agent 拆分 + 案例体系 | 7 |
 | r6 | 10/22 | 海洋看板接入中央气象台台风（CMA 分级对照） | 2 |
-| r7 | 10/23 | 时空档案新增经纬度检查 | 1 |
-| r8 | 10/23 | 城市词典 · 洪荒三阵/周天星辰 · PageShell 全站外壳 | 5 |
-| r9 | 10/27 | ChatBot 思考态条 + 输入 4 行 + 裸行推荐（移植自 hc-apm-mobile） | 3 |
+| <span style="color:#e64545">r7</span> | <span style="color:#e64545">10/23</span> | <span style="color:#e64545">时空档案大更新（经纬度检查 + 6.3 万城城市词典）+ 洪荒三阵/周天星辰 + PageShell 全站外壳（同日两批合并）</span> | <span style="color:#e64545">6</span> |
+| <span style="color:#e64545">r8</span> | <span style="color:#e64545">10/27</span> | <span style="color:#e64545">ChatBot 思考态条 + 输入 4 行 + 裸行推荐（移植自 hc-apm-mobile）+ i18n 按需装载 + ECharts 按需注册（同日两批合并）</span> | <span style="color:#e64545">5</span> |
 
 ---
 

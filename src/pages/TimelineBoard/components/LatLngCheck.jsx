@@ -18,6 +18,7 @@ import { Alert, Button, Card, Empty, Input, Spin, Table, Tag, Tooltip, Typograph
 import { CompassOutlined, EnvironmentOutlined, SearchOutlined } from '@ant-design/icons'
 import { useI18n, pickText } from '@i18n/index.js'
 import { Animate } from '@/motion/index.jsx'
+import { NewMark } from '@components/Changelog/NewMark.jsx'
 import { COUNTRIES, searchCountries, locate, validateCoord } from '@lib/geo/latLng.js'
 import { searchCities, cityDisplayName, countryLabel, formatPopulation, flagEmoji } from '@lib/geo/cityGazetteer.js'
 import { useCityGazetteer } from '@lib/geo/useCityGazetteer.js'
@@ -214,7 +215,9 @@ export default function LatLngCheck({ theme = 'dark' }) {
           📍
         </Animate>
         <div className="ll-hero__text">
-          <h2 className="ll-title m-shine-text">{t('timeline.llTitle')}</h2>
+          <h2 className="ll-title m-shine-text">
+            {t('timeline.llTitle')} <NewMark route="/timeline" />
+          </h2>
           <p className="ll-sub">{t('timeline.llSubtitle')}</p>
         </div>
       </div>

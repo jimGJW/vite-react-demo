@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import StarArray from '@components/StarArray/StarArray.jsx'
 import { Page, Section } from '@components/PageShell/index.jsx'
 import BackButton from '@components/BackButton/index.jsx'
+import { NewMark } from '@components/Changelog/NewMark.jsx'
 import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
@@ -19,7 +20,7 @@ function Stars() {
       accent="accent"
       shine
       gap="xl"
-      actions={<BackButton />}
+      actions={<><NewMark route="/stars" /><BackButton /></>}
     >
       <div className="page-card stars-page__board">
         <StarArray />

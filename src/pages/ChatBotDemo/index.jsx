@@ -1,5 +1,6 @@
 import { Alert, Card, Col, Row, Space, Tag, Typography } from 'antd'
 import { ChatBot } from '@components/ChatBot/index.js'
+import { NewMark } from '@components/Changelog/NewMark.jsx'
 import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
@@ -14,7 +15,7 @@ export default function ChatBotDemo() {
     <div className="chatbot-demo">
       <div className="chatbot-demo__head page-hero">
         <Title level={3} style={{ marginBottom: 6 }}>
-          {t('chatbot.demo.title')}
+          {t('chatbot.demo.title')} <NewMark route="/chatbot" />
         </Title>
         <Paragraph type="secondary" style={{ marginBottom: 10 }}>
           {t('chatbot.demo.desc')}

@@ -3,14 +3,24 @@
  * 把"新功能"按上线批次（时间段）归类，每个 release 对应一次集中改动。
  * changes 列出该批次改动的具体页面与说明，changedAt 为改动日期。
  *
+ * 字段 schema（10 批已统一，新增批次必须齐备，单测钉死）：
+ *   id / short('M/D') / label('YYYY-MM-DD') / date / color / title / commit / changes[]
+ *   · 同一天的多批改动合并为一个 release（date 唯一，配色才一一对应）
+ *   · color 用 antd 调色板，8 批之间明显区分；r9/r10 等历史 id 已按日期重排
+ *   · commit 为该批次的 git 短 hash（跨多提交用 ' + ' 连接），仅资料展示
+ *
  * 数据以仓库真实 git 提交批次为依据：
- *   r1  2026-09-14  b776892  四大基础模块上线（Kit/Studio/Templates/Utils/ChatBot/QASharing）
- *   r2  2026-09-20  396587e  React 核心 API 演示 + 五层验证体系
- *   r3  2026-09-27  5f67751  四大进阶模块 + Utils 大扩充
- *   r4  2026-09-30           微前端三端对称 + 创意分组 + 创意 Playground 32 demo
- *                            （r4 的 commit 暂未回填：它是「本次提交」，无从预知 hash；
- *                            该字段目前只作资料展示，没有代码读它）
- *   r5  2026-10-10           数据看板大扩容：地球 / 海洋 / 星空三看板 + Agent 拆分 + 案例体系
+ *   r1  2026-09-14  b776892           四大基础模块上线（Kit/Studio/Templates/Utils/ChatBot/QASharing）
+ *   r2  2026-09-20  396587e           React 核心 API 演示 + 五层验证体系
+ *   r3  2026-09-27  5f67751           四大进阶模块 + Utils 大扩充
+ *   r4  2026-09-30  b0995af           微前端三端对称 + 创意分组 + 创意 Playground 32 demo
+ *   r5  2026-10-10  5c86255           数据看板大扩容：地球 / 海洋 / 星空三看板 + Agent 拆分 + 案例体系
+ *   r6  2026-10-22  15e51cc           海洋看板接入中央气象台台风
+ *   r7  2026-10-23  085de61 + 9c42e8c 时空档案大更新 + 洪荒三阵与全站外壳（同日两批合并）
+ *   r8  2026-10-27  8696d6b + 663983d ChatBot 思考态体验 + 全项目性能优化（同日两批合并）
+ *
+ * 「新」标红窗口：FRESH_DAYS（7 天）内有改动的批次，PeriodTag / NewMark /
+ * 时间轴抽屉统一红标展示，过窗自动恢复批次原色。
  *
  * 纯数据文件（无 React），可被单测直接 import。
  *
@@ -73,6 +83,7 @@ export const RELEASES = [
     label: '2026-09-30',
     date: '2026-09-30',
     color: '#eb2f96',
+    commit: 'b0995af',
     title: { 'zh-CN': '微前端三端对称 + 创意分组', en: 'Symmetric Micro-Frontend + Creative Groups' },
     changes: [
       { route: '/micro-frontend', title: { 'zh-CN': '微前端融合总览', en: 'Micro-Frontend Overview' }, desc: { 'zh-CN': 'qiankun 装载 Vue / Angular 子应用：宿主页 + 侧边栏菜单注册 + 子应用路由回传', en: 'qiankun hosts Vue / Angular sub-apps: host page, sidebar registration, sub-app route reporting' }, changedAt: '2026-09-30' },
@@ -91,6 +102,7 @@ export const RELEASES = [
     label: '2026-10-10',
     date: '2026-10-10',
     color: '#722ed1',
+    commit: '5c86255',
     title: { 'zh-CN': '数据看板大扩容 + Agent 拆分 + 案例体系', en: 'Big Data-Board Expansion + Agent Split + Case System' },
     changes: [
       { route: '/astro', title: { 'zh-CN': '星空看板 AstroBoard', en: 'Astro Board' }, desc: { 'zh-CN': 'd3-celestial 真实星表 + 全天星图 + NOAA/SWPC 空间天气', en: 'd3-celestial real star catalog, all-sky map, NOAA/SWPC space weather' }, changedAt: '2026-10-10' },
@@ -108,6 +120,7 @@ export const RELEASES = [
     label: '2026-10-22',
     date: '2026-10-22',
     color: '#13c2c2',
+    commit: '15e51cc',
     title: { 'zh-CN': '海洋看板新增西北太平洋台风', en: 'Ocean Board Adds W. Pacific Typhoons' },
     changes: [
       { route: '/ocean', title: { 'zh-CN': '「台风」页签接入实时路径与强度', en: 'Typhoon tab: live tracks & intensity' }, desc: { 'zh-CN': '接入中央气象台 nmc.cn 西北太平洋台风（list_default + view_<id> 解析，15 分钟缓存），补充 NHC 不覆盖的影响我国的台风', en: 'Integrates CMA nmc.cn W. Pacific typhoons (list_default + view_<id> parsing, 15-min cache), covering China-affecting storms NHC does not' }, changedAt: '2026-10-22' },
@@ -119,20 +132,11 @@ export const RELEASES = [
     short: '10/23',
     label: '2026-10-23',
     date: '2026-10-23',
-    color: '#13c2c2',
-    title: { 'zh-CN': '时空档案新增经纬度检查', en: 'Timeline Adds Lat/Lng Check' },
+    color: '#faad14',
+    commit: '085de61 + 9c42e8c',
+    title: { 'zh-CN': '时空档案大更新 + 洪荒三阵与全站外壳', en: 'Timeline Overhaul + Honghuang Pages & Site Shell' },
     changes: [
       { route: '/timeline', title: { 'zh-CN': '经纬度检查模块', en: 'Lat/Lng Check module' }, desc: { 'zh-CN': '时空档案新增「经纬度检查」页签：约 44 个知名国家/地区代表城市经纬度速查（可搜索、点行回填），并支持按经纬度反查归属（边界框优先、最近首都兜底）', en: 'Timeline gains a Lat/Lng Check tab: reference coordinates for ~44 countries (searchable, click-to-fill) plus reverse lookup by coordinate (bounding-box first, nearest capital fallback)' }, changedAt: '2026-10-23' },
-    ],
-  },
-  {
-    id: 'r8',
-    short: '10/23',
-    label: '2026-10-23',
-    date: '2026-10-23',
-    color: '#722ed1',
-    title: { 'zh-CN': '城市词典 · 洪荒三阵 · 全站页面外壳', en: 'City Gazetteer, Honghuang Arrays, Page Shell' },
-    changes: [
       { route: '/timeline', title: { 'zh-CN': '城市词典：任意真实城市 → 经纬度', en: 'City gazetteer: any real city to coordinates' }, desc: { 'zh-CN': '离线内置 GeoNames 公有领域数据 6.3 万城，支持中文 / 英文 / 当地写法、繁简体与「城市, 国家」限定；同名城市按人口给出候选列表；3MB 词典按需加载，不拖慢首屏', en: 'Offline gazetteer of 63k settlements from public-domain GeoNames: Chinese/English/local spellings, simplified-traditional tolerance and "city, country" scoping; same-name cities return candidates by population; the 3MB dictionary loads on demand' }, changedAt: '2026-10-23' },
       { route: '/timeline', title: { 'zh-CN': '经纬度检查体验优化', en: 'Lat/Lng check UX polish' }, desc: { 'zh-CN': '点参考行 / 样例 / 城市即出反查结果（少一次点击）；输入错误按字段结构化标红；参考表支持键盘 Enter / Space 操作；卡片悬浮微抬升与焦点环，并尊重系统减少动效设置', en: 'Clicking a reference row, sample or city now runs the reverse lookup instantly; input errors highlight the offending field; the table is keyboard operable; cards lift subtly with focus rings and honor reduced-motion' }, changedAt: '2026-10-23' },
       { route: '/honghuang', title: { 'zh-CN': '洪荒三阵新页面', en: 'Honghuang three-array page' }, desc: { 'zh-CN': '周天星斗 / 十二都天神煞 / 九宫八卦三阵联动演示，考据分层呈现；点宫亮本宫星区并弹出档案，Esc 收起', en: 'Three interlinked array demos (star dipper, twelve ancestral witches, nine palaces); clicking a node lights its star sector and opens a dossier, Esc dismisses' }, changedAt: '2026-10-23' },
@@ -141,27 +145,39 @@ export const RELEASES = [
     ],
   },
   {
-    id: 'r9',
+    id: 'r8',
+    short: '10/27',
+    label: '2026-10-27',
     date: '2026-10-27',
-    color: '#13c2c2',
-    title: { 'zh-CN': 'ChatBot 思考态条 · 输入与推荐体验', en: 'ChatBot thinking strip, input & recommend UX' },
+    color: '#2f54eb',
+    commit: '8696d6b + 663983d',
+    title: { 'zh-CN': 'ChatBot 思考态体验 + 全项目性能优化', en: 'ChatBot Thinking UX + Site-wide Performance' },
     changes: [
       { route: '/chatbot', title: { 'zh-CN': '思考态元信息条', en: 'Thinking-state meta strip' }, desc: { 'zh-CN': '移植 hc-apm-mobile 的思考态条：一轮回答收口后显示「已完成思考 · 用时 X 秒」，可展开查看结构化步骤流（理解问题 / 检索数据等耗时）；颜色走主题变量、跟随亮暗主题，并尊重系统减少动效', en: 'Ported the thinking-strip from hc-apm-mobile: after a round finishes it shows "Thought for Xs" with an expandable step flow; colors follow theme tokens and it honors reduced-motion' }, changedAt: '2026-10-27' },
       { route: '/chatbot', title: { 'zh-CN': '输入框体验：四行上限', en: 'Input box: 4-line cap' }, desc: { 'zh-CN': '输入框从五行走高收紧为四行（maxRows 5→4），避免多行时两端被拉成半圆、文字贴弧线；回车发送已带输入法合成守卫，中文输入不误触', en: 'Input auto-grow capped at 4 rows (was 5) so it stays a tidy rectangle; Enter-to-send already guards IME composition so Chinese input is not mis-fired' }, changedAt: '2026-10-27' },
       { route: '/chatbot', title: { 'zh-CN': '推荐问题改为裸行列表', en: 'Recommendations as a bare-line list' }, desc: { 'zh-CN': '推荐问题由胶囊标签改为带序号的裸行分隔列表，窄屏不再换行溢出，点击整行即可追问', en: 'Recommendations switched from pills to a numbered bare-line list that never wraps awkwardly on narrow screens; tap a row to ask' }, changedAt: '2026-10-27' },
-    ],
-  },
-  {
-    id: 'r10',
-    date: '2026-10-27',
-    color: '#722ed1',
-    title: { 'zh-CN': '全项目性能优化：首屏与图表瘦身', en: 'Perf: slimmer first paint and charts' },
-    changes: [
       { route: '__infra__', title: { 'zh-CN': 'i18n 语言包按需装载', en: 'On-demand i18n language packs' }, desc: { 'zh-CN': '简体中文（源语言）同步内置，其余 9 个语种改为切换时按需动态装载，装载前自动回退简体中文；首屏 i18n chunk 从 2.3MB（10 语种全量）降至约十分之一', en: 'Simplified Chinese (the source language) stays eager while the other 9 packs load on demand when switched, falling back to Chinese until ready; the first-paint i18n chunk drops from 2.3MB (all ten languages) to roughly a tenth' }, changedAt: '2026-10-27' },
       { route: '__infra__', title: { 'zh-CN': 'ECharts 按需注册', en: 'Modular ECharts registration' }, desc: { 'zh-CN': 'Kit / Studio / ChatBot 三处图表改为共享的 echarts/core 按需注册入口（仅折线/柱状/饼/雷达/散点与所需组件），vendor-echarts 体积下降约四成', en: 'The Kit, Studio and ChatBot charts now share one echarts/core entry registering only line, bar, pie, radar and scatter plus the components they use, cutting the vendor-echarts chunk by roughly 40%' }, changedAt: '2026-10-27' },
     ],
   },
 ]
+
+/** 「新功能」标红窗口：最近 N 天内有改动的批次/路由按「新」红标展示（PeriodTag / NewMark / 时间轴抽屉共用） */
+export const FRESH_DAYS = 7
+
+/* 模块加载时刻算一次：避免组件渲染期调用 Date.now()（react-hooks 纯度规则） */
+const NOW_MS = Date.now()
+const DAY_MS = 24 * 60 * 60 * 1000
+
+const releaseTs = (r) => new Date(`${r.date}T00:00:00`).getTime()
+
+/** 处于「新」窗口内的批次 id 列表 */
+export const FRESH_RELEASE_IDS = RELEASES
+  .filter((r) => NOW_MS - releaseTs(r) < FRESH_DAYS * DAY_MS)
+  .map((r) => r.id)
+
+/** 某批次是否处于「新」窗口内（红标展示） */
+export const isFreshRelease = (id) => FRESH_RELEASE_IDS.includes(id)
 
 export const getRelease = (id) => RELEASES.find((r) => r.id === id) || null
 

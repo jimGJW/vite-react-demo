@@ -1,6 +1,9 @@
 import { eq, length, ok, deepEq } from './harness.mjs'
 import { pickText } from '../../src/i18n/translate.mjs'
-import { RELEASES, getRelease, ROUTE_LATEST, ROUTE_RELEASES, TOTAL_CHANGES } from '../../src/components/Changelog/releases.js'
+import {
+  RELEASES, getRelease, ROUTE_LATEST, ROUTE_RELEASES, TOTAL_CHANGES,
+  FRESH_DAYS, FRESH_RELEASE_IDS, isFreshRelease,
+} from '../../src/components/Changelog/releases.js'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -12,15 +15,41 @@ const HAS_CJK = /[一-鿿]/
 
 export default [
   ['批次数量与顺序正确', () => {
-    length(RELEASES, 10)
+    length(RELEASES, 8)
     eq(RELEASES[0].id, 'r1')
-    eq(RELEASES[9].id, 'r10')
+    eq(RELEASES[7].id, 'r8')
   }],
   ['getRelease 按 id 查找 / 缺失返回 null', () => {
     eq(pickText(getRelease('r2').title, 'zh-CN'), '核心 API 演示 + 验证体系')
     eq(getRelease('r4').short, '9/30')
     eq(getRelease('r5').short, '10/10')
     eq(getRelease('nope'), null)
+  }],
+  ['字段格式统一：每个批次都有 short/label/date/color/commit，且 date 互不相同（同日已合并）', () => {
+    const dates = new Set()
+    for (const r of RELEASES) {
+      ok(typeof r.short === 'string' && /^\d{1,2}\/\d{1,2}$/.test(r.short), `release ${r.id} short 不是 M/D 格式`)
+      ok(/^\d{4}-\d{2}-\d{2}$/.test(r.label) && r.label === r.date, `release ${r.id} label/date 不是或不同为 YYYY-MM-DD`)
+      ok(typeof r.color === 'string' && r.color.startsWith('#'), `release ${r.id} color 缺失`)
+      ok(typeof r.commit === 'string' && r.commit.length > 0, `release ${r.id} commit 缺失`)
+      ok(!dates.has(r.date), `release ${r.id} 与其他批次同日期（同日改动必须合并为一个批次）`)
+      dates.add(r.date)
+    }
+  }],
+  ['批次配色互不相同（同一时间轴里颜色明显区分）', () => {
+    const colors = RELEASES.map((r) => r.color)
+    eq(new Set(colors).size, colors.length, '存在重复配色')
+  }],
+  ['「新」标红窗口不变量：FRESH_RELEASE_IDS ⊆ 批次集合，且与日期窗口一致', () => {
+    ok(FRESH_DAYS >= 1 && FRESH_DAYS <= 30, 'FRESH_DAYS 应在 1~30 天')
+    for (const id of FRESH_RELEASE_IDS) ok(getRelease(id) !== null, `fresh id ${id} 不是真实批次`)
+    const DAY = 24 * 60 * 60 * 1000
+    const now = Date.now()
+    for (const r of RELEASES) {
+      const fresh = now - new Date(`${r.date}T00:00:00`).getTime() < FRESH_DAYS * DAY
+      eq(isFreshRelease(r.id), fresh, `release ${r.id} 的 fresh 判定与日期窗口不一致`)
+    }
+    eq(isFreshRelease('r0-nope'), false)
   }],
   ['每条 release / change 的 title / desc 双语齐备（zh-CN + en 双稿）', () => {
     for (const r of RELEASES) {
@@ -56,13 +85,16 @@ export default [
     eq(ROUTE_LATEST['/agent'], 'r5')
     /* r6 新增台风页签，/ocean 最新批次升级为 r6 */
     eq(ROUTE_LATEST['/ocean'], 'r6')
-    /* r7 经纬度检查、r8 城市词典都落在 /timeline，最新批次升级为 r8 */
-    eq(ROUTE_LATEST['/timeline'], 'r8')
-    eq(ROUTE_LATEST['/honghuang'], 'r8')
-    eq(ROUTE_LATEST['/stars'], 'r8')
-    /* r9 ChatBot 思考态条 / 输入 / 推荐体验，最新批次升级为 r9 */
-    eq(ROUTE_LATEST['/chatbot'], 'r9')
-    /* r10 只有 __infra__ 条目（性能优化），不占用任何真实路由，路由映射保持不变 */
+    /* r7（10/23 合并批：经纬度检查 + 城市词典 + 洪荒三阵 + 全站外壳） */
+    eq(ROUTE_LATEST['/timeline'], 'r7')
+    eq(ROUTE_LATEST['/honghuang'], 'r7')
+    eq(ROUTE_LATEST['/stars'], 'r7')
+    /* r7（10/23 合并批）时空档案大更新 + 洪荒三阵 */
+    eq(ROUTE_LATEST['/timeline'], 'r7')
+    eq(ROUTE_LATEST['/honghuang'], 'r7')
+    eq(ROUTE_LATEST['/stars'], 'r7')
+    /* r8（10/27 合并批）ChatBot 思考态体验 + 全项目性能优化 */
+    eq(ROUTE_LATEST['/chatbot'], 'r8')
     eq(ROUTE_LATEST['/home-missing'] === undefined, true)
   }],
   ['ROUTE_RELEASES 路由归属全部批次（/utils 在 r1、r3）', () => {
@@ -72,7 +104,7 @@ export default [
     deepEq(ROUTE_RELEASES['/orbit'], ['r4'])
     eq(ROUTE_RELEASES['/home-missing'] === undefined, true)
   }],
-  ['TOTAL_CHANGES 等于各批次之和（6+2+5+8+7+2+1+5+3+2=41）', () => {
+  ['TOTAL_CHANGES 等于各批次之和（6+2+5+8+7+2+6+5=41）', () => {
     const sum = RELEASES.reduce((n, r) => n + r.changes.length, 0)
     eq(sum, TOTAL_CHANGES)
     eq(TOTAL_CHANGES, 41)
@@ -89,7 +121,7 @@ export default [
   ['changelog 命名空间 UI 文案：10 语种齐备、英文真译、占位符保留', () => {
     const base = JSON.parse(fs.readFileSync(path.join(LOCALE_DIR, 'zh-CN', 'changelog.json'), 'utf8'))
     const baseKeys = Object.keys(base)
-    length(baseKeys, 7, 'changelog UI 键数')
+    length(baseKeys, 8, 'changelog UI 键数')
     for (const lang of LANGS) {
       const j = JSON.parse(fs.readFileSync(path.join(LOCALE_DIR, lang, 'changelog.json'), 'utf8'))
       for (const k of baseKeys) {

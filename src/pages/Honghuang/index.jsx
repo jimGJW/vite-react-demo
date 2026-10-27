@@ -6,6 +6,7 @@ import { SKY_GATE, ZUWU_LIST } from '@components/Honghuang/zuwu-data.js'
 import { BEASTS, BEAST_ORIGIN_COUNT, PROVENANCE, RANK_LABEL } from '@components/Honghuang/beasts-data.js'
 import { Page, Section } from '@components/PageShell/index.jsx'
 import BackButton from '@components/BackButton/index.jsx'
+import { NewMark } from '@components/Changelog/NewMark.jsx'
 import { useI18n } from '@i18n/index.js'
 import './index.scss'
 
@@ -29,7 +30,7 @@ function Honghuang() {
       accent="accent"
       shine
       gap="xl"
-      actions={<BackButton />}
+      actions={<><NewMark route="/honghuang" /><BackButton /></>}
     >
       <div className="page-card hh-board">
         <HonghuangArray />

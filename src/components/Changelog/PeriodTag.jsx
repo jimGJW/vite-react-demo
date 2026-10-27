@@ -1,5 +1,5 @@
 import { useI18n, pickText } from '@i18n/index.js'
-import { ROUTE_LATEST, getRelease } from './releases.js'
+import { ROUTE_LATEST, getRelease, isFreshRelease } from './releases.js'
 import './Changelog.scss'
 
 /**
@@ -11,6 +11,9 @@ import './Changelog.scss'
  *  - releaseId:  也可直接传批次 id 覆盖
  *  - showLabel: 是否显示简短日期文字（如 9/27），默认 true
  *  - as:        'subscript'（上标，默认）| 'inline'（行内药丸）
+ *
+ * 「新」标红：批次处于 FRESH_DAYS 窗口内时，tag 整体转为红色（--c-danger）+
+ * 圆点脉冲动画，过窗自动恢复批次原色（配色见 releases.js，8 批互不相同）。
  */
 export function PeriodTag({ route, releaseId, showLabel = true, as = 'subscript' }) {
   const { lang, t } = useI18n()
@@ -18,10 +21,11 @@ export function PeriodTag({ route, releaseId, showLabel = true, as = 'subscript'
   if (!id) return null
   const r = getRelease(id)
   if (!r) return null
+  const fresh = isFreshRelease(id)
 
   return (
     <span
-      className={`period-tag period-tag--${as}`}
+      className={`period-tag period-tag--${as}${fresh ? ' period-tag--fresh' : ''}`}
       style={{ '--pt-color': r.color }}
       title={t('changelog.batchTip', { date: r.label, title: pickText(r.title, lang) })}
     >

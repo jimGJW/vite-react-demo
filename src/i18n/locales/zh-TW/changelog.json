@@ -5,5 +5,6 @@
   "allVersions": "全部版本",
   "changesCount": "{n} 項改動",
   "changedAt": "{date} 改動",
-  "batchTip": "改動批次：{date} · {title}"
+  "batchTip": "改動批次：{date} · {title}",
+  "newMark": "新"
 }

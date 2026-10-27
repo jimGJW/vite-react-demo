@@ -5,5 +5,6 @@
   "allVersions": "ทุกรุ่น",
   "changesCount": "{n} การเปลี่ยนแปลง",
   "changedAt": "เปลี่ยนแปลงเมื่อ {date}",
-  "batchTip": "ชุดการเปลี่ยนแปลง: {date} · {title}"
+  "batchTip": "ชุดการเปลี่ยนแปลง: {date} · {title}",
+  "newMark": "ใหม่"
 }

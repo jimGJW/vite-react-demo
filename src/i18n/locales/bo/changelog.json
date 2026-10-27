@@ -5,5 +5,6 @@
   "allVersions": "པར་གཞི་ཚང་མ།",
   "changesCount": "{n} བསྒྱུར་བཅོས།",
   "changedAt": "{date} བསྒྱུར་བཅོས་བྱས།",
-  "batchTip": "བསྒྱུར་བཅོས་ཚོ་བ། {date} · {title}"
+  "batchTip": "བསྒྱུར་བཅོས་ཚོ་བ། {date} · {title}",
+  "newMark": "གསར་པ།"
 }

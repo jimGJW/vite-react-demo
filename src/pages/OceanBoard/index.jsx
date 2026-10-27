@@ -23,6 +23,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { Button, Tabs, Tooltip, ConfigProvider, theme as antdTheme } from 'antd'
 import { ReloadOutlined, CompassOutlined, BulbOutlined, MoonOutlined } from '@ant-design/icons'
 import { useI18n } from '@i18n/index.js'
+import { NewMark } from '@components/Changelog/NewMark.jsx'
 import { useOceanData } from '@lib/ocean/useOceanData.js'
 import { Metric, readTheme, THEME_KEY, fmtSiteTime, waveLevel } from './components/ui.jsx'
 import WavesTab from './components/WavesTab.jsx'
@@ -281,7 +282,11 @@ export default function OceanBoard({ lockedTab = null } = {}) {
             },
             {
               key: 'typhoon',
-              label: `🌀 ${t('ocean.tab.typhoon')}`,
+              label: (
+                <>
+                  🌀 {t('ocean.tab.typhoon')} <NewMark route="/ocean" inline />
+                </>
+              ),
               children: <TyphoonTab typhoons={typhoons} tyData={tyData} />,
             },
             {
