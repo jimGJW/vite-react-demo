@@ -15,7 +15,7 @@ const SPEEDS = [30, 55, 90]
 
 function RenderPane({ mode, text, speed }) {
   const { t } = useI18n()
-  const { out, running, done } = useSimulatedStream({ text, mode, speed })
+  const { out, running, done, start, stop, reset } = useSimulatedStream({ text, mode, speed })
 
   return (
     <Card size="small" className="agent-lab__demo-panel" title={<span className="agent-lab__demo-title">{t(`agent.render-${mode}`)}</span>}>
@@ -26,6 +26,14 @@ function RenderPane({ mode, text, speed }) {
       <div className="agent-lab__demo-bar"><span style={{ width: `${(mode === 'instant' ? (done ? 1 : running ? 1 : 0) : out.length / text.length) * 100}%` }} /></div>
       <div className="agent-lab__demo-meter agent-lab__demo-meter--center">
         {done ? <span className="agent-lab__demo-done">{t('agent.labDone')}</span> : <span>{Math.round((mode === 'instant' ? (running || done ? text.length : 0) : out.length) / text.length * 100)}%</span>}
+      </div>
+      <div className="agent-lab__demo-actions">
+        {running ? (
+          <button type="button" className="agent-lab__btn agent-lab__btn--stop" onClick={stop}>{t('agent.labStop')}</button>
+        ) : (
+          <button type="button" className="agent-lab__btn" onClick={start}>{t('agent.labStart')}</button>
+        )}
+        <button type="button" className="agent-lab__btn agent-lab__btn--ghost" onClick={reset}>{t('agent.labReset')}</button>
       </div>
     </Card>
   )

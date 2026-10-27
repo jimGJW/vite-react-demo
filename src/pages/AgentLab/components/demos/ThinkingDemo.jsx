@@ -20,22 +20,33 @@ const STEPS = [
 
 /* —— 形态②：脉冲思考点 —— */
 function PulseThinking() {
+  const { t } = useI18n()
   const [active, setActive] = useState(0)
+  const [running, setRunning] = useState(false)
   useEffect(() => {
+    if (!running) return undefined
     const timer = setInterval(() => setActive((i) => (i + 1) % STEPS.length), 900)
     return () => clearInterval(timer)
-  }, [])
+  }, [running])
 
   return (
     <div className="agent-lab__pulse">
       <span className="agent-lab__pulse-avatar">
-        <span className="agent-lab__pulse-dot" />
+        <span className={`agent-lab__pulse-dot${running ? '' : ' is-idle'}`} />
       </span>
       <ul className="agent-lab__pulse-steps">
         {STEPS.map((s, i) => (
           <li key={s.label} className={i === active ? 'is-active' : i < active ? 'is-done' : ''}>{s.label}</li>
         ))}
       </ul>
+      <div className="agent-lab__demo-actions">
+        {running ? (
+          <button type="button" className="agent-lab__btn agent-lab__btn--stop" onClick={() => setRunning(false)}>{t('agent.labStop')}</button>
+        ) : (
+          <button type="button" className="agent-lab__btn" onClick={() => setRunning(true)}>{t('agent.labStart')}</button>
+        )}
+        <button type="button" className="agent-lab__btn agent-lab__btn--ghost" onClick={() => { setRunning(false); setActive(0) }}>{t('agent.labReset')}</button>
+      </div>
     </div>
   )
 }
