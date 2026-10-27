@@ -140,6 +140,17 @@ export const RELEASES = [
       { route: '__infra__', title: { 'zh-CN': '全站页面外壳与导航增强', en: 'Site-wide page shell and navigation' }, desc: { 'zh-CN': 'PageShell 统一全站页面的页头 / 栅格 / 分节 / KPI 骨架（只消费 token、不写死颜色）；BackButton 在无站内历史时回首页兜底；内容区新增阅读进度条与切页回顶', en: 'PageShell unifies page headers, grids, sections and KPI skeletons (token-driven, no hardcoded colors); BackButton falls back to home without in-site history; reading progress bar and scroll-to-top on navigation' }, changedAt: '2026-10-23' },
     ],
   },
+  {
+    id: 'r9',
+    date: '2026-10-27',
+    color: '#13c2c2',
+    title: { 'zh-CN': 'ChatBot 思考态条 · 输入与推荐体验', en: 'ChatBot thinking strip, input & recommend UX' },
+    changes: [
+      { route: '/chatbot', title: { 'zh-CN': '思考态元信息条', en: 'Thinking-state meta strip' }, desc: { 'zh-CN': '移植 hc-apm-mobile 的思考态条：一轮回答收口后显示「已完成思考 · 用时 X 秒」，可展开查看结构化步骤流（理解问题 / 检索数据等耗时）；颜色走主题变量、跟随亮暗主题，并尊重系统减少动效', en: 'Ported the thinking-strip from hc-apm-mobile: after a round finishes it shows "Thought for Xs" with an expandable step flow; colors follow theme tokens and it honors reduced-motion' }, changedAt: '2026-10-27' },
+      { route: '/chatbot', title: { 'zh-CN': '输入框体验：四行上限', en: 'Input box: 4-line cap' }, desc: { 'zh-CN': '输入框从五行走高收紧为四行（maxRows 5→4），避免多行时两端被拉成半圆、文字贴弧线；回车发送已带输入法合成守卫，中文输入不误触', en: 'Input auto-grow capped at 4 rows (was 5) so it stays a tidy rectangle; Enter-to-send already guards IME composition so Chinese input is not mis-fired' }, changedAt: '2026-10-27' },
+      { route: '/chatbot', title: { 'zh-CN': '推荐问题改为裸行列表', en: 'Recommendations as a bare-line list' }, desc: { 'zh-CN': '推荐问题由胶囊标签改为带序号的裸行分隔列表，窄屏不再换行溢出，点击整行即可追问', en: 'Recommendations switched from pills to a numbered bare-line list that never wraps awkwardly on narrow screens; tap a row to ask' }, changedAt: '2026-10-27' },
+    ],
+  },
 ]
 
 export const getRelease = (id) => RELEASES.find((r) => r.id === id) || null

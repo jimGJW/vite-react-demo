@@ -200,5 +200,10 @@
     "chart": "Draw a temperature trend line chart",
     "list": "Give me a resource list",
     "task": "List tasks and support batch export"
+  },
+  "thinking": {
+    "donePrefix": "Thought for ",
+    "plainPrefix": "Took ",
+    "unit": "s"
   }
 }

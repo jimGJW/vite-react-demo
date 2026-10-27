@@ -200,5 +200,10 @@
     "chart": "温度推移の折れ線グラフを描く",
     "list": "リソース一覧をください",
     "task": "タスク一覧を表示し一括エクスポートに対応"
+  },
+  "thinking": {
+    "donePrefix": "Thought for ",
+    "plainPrefix": "Took ",
+    "unit": "s"
   }
 }

@@ -200,5 +200,10 @@
     "chart": "Ein Liniendiagramm des Temperaturtrends zeichnen",
     "list": "Gib mir eine Ressourcenliste",
     "task": "Aufgabenliste erstellen und Batch-Export unterstützen"
+  },
+  "thinking": {
+    "donePrefix": "Thought for ",
+    "plainPrefix": "Took ",
+    "unit": "s"
   }
 }

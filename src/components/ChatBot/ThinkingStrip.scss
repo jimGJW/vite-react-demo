@@ -1,0 +1,94 @@
+/* ===============================================================
+   ThinkingStrip —— 思考态元信息条（用时 + 可展开步骤流）
+   颜色全部走 --c-* 主题变量，亮/暗主题自动跟随
+   =============================================================== */
+
+.cb-thinking {
+  margin-top: 6px;
+  font-size: 0.74rem;
+  color: var(--c-text-3, #00000073);
+  /* 落定态轻轻淡入，不打扰阅读 */
+  animation: cb-thinking-in 0.28s ease both;
+
+  &__head {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border-radius: 6px;
+    padding: 1px 2px;
+    user-select: none;
+
+    &.is-clickable {
+      cursor: pointer;
+
+      &:hover {
+        color: var(--c-text-2, #000000a6);
+      }
+
+      &:focus-visible {
+        outline: none;
+        box-shadow: 0 0 0 2px var(--c-primary-ring, rgba(22, 119, 255, 0.35));
+      }
+    }
+  }
+
+  &__caret {
+    width: 14px;
+    height: 14px;
+    transition: transform 0.2s ease;
+
+    &.is-open {
+      transform: rotate(90deg);
+    }
+  }
+
+  &__steps {
+    list-style: none;
+    margin: 6px 0 0;
+    padding: 6px 0 2px;
+    border-top: 1px dashed var(--c-border-soft, #f0f0f0);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__step-label {
+    color: var(--c-text-2, #000000a6);
+  }
+
+  &__step-ms {
+    margin-left: auto;
+    font-style: normal;
+    color: var(--c-text-3, #00000073);
+    font-variant-numeric: tabular-nums;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+}
+
+@keyframes cb-thinking-in {
+  from {
+    opacity: 0;
+    transform: translateY(-3px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 系统「减少动效」下，淡入与旋转都不跑 */
+@media (prefers-reduced-motion: reduce) {
+  .cb-thinking {
+    animation: none;
+  }
+
+  .cb-thinking__caret {
+    transition: none;
+  }
+}

@@ -263,8 +263,10 @@ export function createMockApi({ endpoints = {}, latency = 60 } = {}) {
       const finish = { sessionId: sessionId || uid('s'), sessionDetailId: sessionDetailId || uid('d') }
 
       // ① 状态帧：工具调用进度（不进正文）
+      const t0 = Date.now()
       onFrame?.({ type: 'status', state: '', message: '正在理解你的问题…' })
       await delay(latency * 3, signal)
+      const t1 = Date.now()
 
       if (regenerate) {
         onFrame?.({ type: 'status', state: 'body-reset', message: '' })
@@ -274,6 +276,15 @@ export function createMockApi({ endpoints = {}, latency = 60 } = {}) {
       const answer = pickAnswer(question)
       onFrame?.({ type: 'status', state: '', message: '正在检索数据…' })
       await delay(latency * 4, signal)
+      const t2 = Date.now()
+
+      // ② 思考过程步骤流：收口前一次性下发，供 ThinkingStrip 展开查看
+      onFrame?.({
+        steps: [
+          { label: '理解你的问题', ms: t1 - t0 },
+          { label: '检索相关数据', ms: t2 - t1 },
+        ],
+      })
 
       if (answer.contentType) {
         // 卡片类回答：直接一帧 stop 帧，content 为卡片 JSON 字符串

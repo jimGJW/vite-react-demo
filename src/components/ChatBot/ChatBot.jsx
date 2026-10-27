@@ -249,17 +249,21 @@ export default function ChatBot({
             />
           ) : null}
 
-          {/* 推荐问题 */}
+          {/* 推荐问题（裸行分隔列表） */}
           {recommends.length > 0 && (
             <div className="cb-recommend">
               {recommends.map((q, i) => (
                 <button
                   type="button"
                   key={`${q}-${i}`}
-                  className="cb-recommend__chip"
+                  className="cb-recommend__row"
                   onClick={() => postMessage(q)}
                 >
-                  {q}
+                  <span className="cb-recommend__idx">{i + 1}</span>
+                  <span className="cb-recommend__text">{q}</span>
+                  <span className="cb-recommend__go" aria-hidden="true">
+                    ›
+                  </span>
                 </button>
               ))}
             </div>
@@ -267,15 +271,15 @@ export default function ChatBot({
 
           {/* 输入区 */}
           <div className="cb-input">
-            <Input.TextArea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={onKeyDown}
-              placeholder={placeholder}
-              autoSize={{ minRows: 1, maxRows: 5 }}
-              maxLength={maxLength}
-              className="cb-input__area"
-            />
+              <Input.TextArea
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={onKeyDown}
+                placeholder={placeholder}
+                autoSize={{ minRows: 1, maxRows: 4 }}
+                maxLength={maxLength}
+                className="cb-input__area"
+              />
             {busy ? (
               <Button type="primary" danger icon={<StopOutlined />} onClick={stopFetch}>
                 {t('chatbot.input.stop')}

@@ -28,6 +28,7 @@ import {
 } from '@ant-design/icons'
 import { useChatContext, useChatStatus } from './ChatContext.jsx'
 import AnswerWidget from './AnswerWidget.jsx'
+import ThinkingStrip from './ThinkingStrip.jsx'
 import { NEW_CHAT_MARK } from './chatStream.js'
 
 async function copyText(text) {
@@ -142,6 +143,14 @@ export const LeftMessage = memo(function LeftMessage({ data, isLast, roundId, on
                 api={api}
               />
             </div>
+
+            <ThinkingStrip
+              elapsedMs={data.elapsedMs}
+              steps={data.steps}
+              prefixDone={t('chatbot.thinking.donePrefix')}
+              prefixPlain={t('chatbot.thinking.plainPrefix')}
+              unit={t('chatbot.thinking.unit')}
+            />
 
             {toolBox && !shareState && (
               <div className="cb-tools">

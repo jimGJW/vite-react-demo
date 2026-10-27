@@ -200,5 +200,10 @@
     "chart": "Tracer un graphique en courbes de la tendance de température",
     "list": "Donne-moi une liste de ressources",
     "task": "Lister les tâches et prendre en charge l'export par lot"
+  },
+  "thinking": {
+    "donePrefix": "Thought for ",
+    "plainPrefix": "Took ",
+    "unit": "s"
   }
 }

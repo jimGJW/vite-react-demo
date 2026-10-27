@@ -29,6 +29,13 @@ export default [
     eq(r.kind, 'error')
     eq(r.code, '3001')
   }],
+  ['classifyFrame 识别结构化步骤流帧', () => {
+    const r = classifyFrame({ steps: [{ label: '理解问题', ms: 120 }] })
+    eq(r.kind, 'steps')
+    eq(r.steps.length, 1)
+    eq(r.steps[0].label, '理解问题')
+    eq(classifyFrame({ type: FRAME_STATUS, steps: [] }).kind, 'status', '空 steps 不误判为 steps 帧')
+  }],
   ['classifyFrame 未知帧', () => {
     eq(classifyFrame(null).kind, 'unknown')
     eq(classifyFrame({ foo: 1 }).kind, 'unknown')

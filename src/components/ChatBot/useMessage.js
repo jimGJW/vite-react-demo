@@ -34,6 +34,11 @@ function blankAssistant() {
     taskIds: [],
     messageState: '',
     sessionDetailId: '',
+    /** 计时与步骤流（供 ThinkingStrip 渲染「已完成思考 · 用时 X 秒」） */
+    startedAt: null,
+    finishedAt: null,
+    elapsedMs: null,
+    steps: [],
   }
 }
 
@@ -155,7 +160,9 @@ export function useMessage({
   const appendAssistant = useCallback((roundIdx) => {
     setRounds((prev) =>
       prev.map((round, i) =>
-        i === roundIdx ? { ...round, conversation: [...round.conversation, blankAssistant()] } : round,
+        i === roundIdx
+          ? { ...round, conversation: [...round.conversation, { ...blankAssistant(), startedAt: Date.now() }] }
+          : round,
       ),
     )
   }, [])
@@ -242,6 +249,12 @@ export function useMessage({
                 return
               }
 
+              if (c.kind === 'steps') {
+                // 思考过程步骤流：一次性覆盖（后端已按时间顺序给出）
+                patch({ steps: Array.isArray(c.steps) ? c.steps : [] })
+                return
+              }
+
               if (c.kind === 'error') {
                 const msg = resolveErrorMessage(c.code, t)
                 setStatusLine('')
@@ -271,13 +284,16 @@ export function useMessage({
                 })
                 const contentType = c.delta?.contentType ?? null
                 const detailId = frame.sessionDetailId || sessionDetailId
-                patch({
+                const finishedAt = Date.now()
+                patch((m) => ({
                   message: body ?? '',
                   contentType,
                   title: c.delta?.title ?? null,
                   taskIds: c.delta?.taskIds ?? [],
                   sessionDetailId: detailId,
-                })
+                  finishedAt,
+                  elapsedMs: m.startedAt ? finishedAt - m.startedAt : null,
+                }))
                 setStatusLine('')
                 setFetchState('idle')
                 onFinishRef.current?.({

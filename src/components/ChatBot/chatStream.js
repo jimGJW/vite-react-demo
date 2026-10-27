@@ -92,6 +92,12 @@ export function resolveMessageBody({ delta, finishReason, streamedText = '' }) {
 export function classifyFrame(frame) {
   if (!frame || typeof frame !== 'object') return { kind: 'unknown', frame }
 
+  // 结构化步骤流（思考过程）：后端在收口前一次性下发步骤清单，
+  // 与状态帧区分开——状态帧只是一条进度提示文案。空数组不视为步骤帧。
+  if (Array.isArray(frame.steps) && frame.steps.length > 0) {
+    return { kind: 'steps', frame, steps: frame.steps }
+  }
+
   if (frame.type === FRAME_STATUS) {
     return { kind: 'status', frame, state: frame.state, message: frame.message }
   }
