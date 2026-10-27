@@ -54,6 +54,7 @@ function buildNavItems(t) {
         { key: '/share', icon: <ShareAltOutlined />, label: t('nav.share') },
         { key: '/voice', icon: <AudioOutlined />, label: t('nav.voice') },
         { key: '/agent', icon: <AimOutlined />, label: t('nav.agent') },
+        { key: '/agent-lab', icon: <ApiOutlined />, label: t('nav.agentLab') },
       ],
     },
     {

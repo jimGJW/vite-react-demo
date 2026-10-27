@@ -1,8 +1,8 @@
 # vite-react-demo 全功能说明
 
-> 本文档是项目**全部功能的权威索引**，覆盖 8 大分组共 50 条路由、可复用模块、四块数据看板、微前端、独立 npm 包、i18n、动效系统与五层验证体系。各模块的深入文档见对应目录下的 `README.md`（本文末尾有清单）。
+> 本文档是项目**全部功能的权威索引**，覆盖 8 大分组共 51 条路由、可复用模块、四块数据看板、微前端、独立 npm 包、i18n、动效系统与五层验证体系。各模块的深入文档见对应目录下的 `README.md`（本文末尾有清单）。
 >
-> 更新基准：changelog r8（2026-10-27，commit `8696d6b + 663983d`）。单测 495/495。
+> 更新基准：changelog r8（2026-10-27，commit `8696d6b + 663983d`）。单测 501/501。
 >
 > <span style="color:#e64545">**红色 = 最近 7 天内新增/修改的内容**（对应 changelog「新」标红窗口，过窗后应摘除红标）。</span>
 
@@ -54,7 +54,7 @@
 | 分组 | 页面（路由） |
 | --- | --- |
 | 首页 | 周天星辰大阵 `/` · 关于 `/about` · 控制台 `/dashboard` |
-| AI 助手 | ChatBot `/chatbot` · 分享 `/share` · 语音 `/voice` · Agent `/agent` |
+| AI 助手 | ChatBot `/chatbot` · 分享 `/share` · 语音 `/voice` · Agent `/agent` · <span style="color:#e64545">Agent 实验室 `/agent-lab`</span> |
 | 工具箱 | Kit `/kit` · Studio `/studio` · Templates `/templates` · Utils `/utils` · React 核心 API `/react-hooks` · 扫码 `/scan` · 嵌套预览 `/embed` · 配置表单 `/form-builder` · 主题 `/theme` · SVG 图表 `/charts` · ECharts `/echarts` · 命令面板 `/command-palette` · 通知 `/notify` · 高级表格 `/data-table` · 快捷助手 `/assistant-demo` |
 | 组件对比中心 | AntD 组件库 `/antd` + 6 个对比专题 `/compare-*` |
 | 进阶案例 | 性能实验室 `/perf-lab` · 错误边界 `/error-boundary` · 状态机 `/state-machine` · 浏览器原生能力 `/web-api` |
@@ -93,6 +93,15 @@
 ### 3.4 AI Agent 控制台（`/agent` → `src/pages/Agent/`）与全局 Agent
 
 自然语言驱动页面 DOM 操作（NLP 规则 + DOM 执行层）；`src/components/GlobalAgent/` 提供全局浮动入口，`src/components/Assistants/` 是助手中心 Provider（任意页面 `useAssistants()` 唤起弹窗，含 `/assistant-demo` 演示）。
+
+### 3.5 <span style="color:#e64545">AI Agent 实验室（`/agent-lab` → `src/pages/AgentLab/`，r8 · 10/27 新增）</span>
+
+基于 ChatBot 打造的 Agent 知识中心，复用流式对话 / 富卡片 / 思考态条全部能力：
+
+- **对话注入**：`createMockApi` 新增 `answers` 解析器注入点（`agentAnswers.js`），按问题命中知识域返回框架对比表格卡片 / MCP / RAG / ReAct / 提示词 / 工具调用六类主题回答，带自定义思考步骤流与推荐追问
+- **知识点库**：22 个市场主流知识点（前端 6 / 后端 6 / 协议 3 / 框架 7），分类筛选 + 全文搜索 + 详情弹窗，数据在 `agentData.js`（双语 `{ 'zh-CN', en }`）
+- **框架对比**：LangGraph / OpenAI Agents SDK / AutoGen / CrewAI / Dify / Vercel AI SDK 六框架横向表
+- **提示词模板**：ReAct / 工具调用 / RAG 引用 / 多智能体角色 / 结构化输出 5 套模板一键复制
 
 ---
 
@@ -259,7 +268,7 @@ Vue 3 与 Angular 22 为两个独立工程（`micro-apps/`），主应用不再�
 
 | 层 | 命令 | 覆盖（当前） |
 | --- | --- | --- |
-| ① 单元测试 | `npm test` | **495 用例 / 28 个测试文件**，零依赖 node runner（`scripts/run-tests.mjs`）。覆盖：alias 同步、i18n 10 语种治理、chat-stream 协议、changelog 不变量、看板关联/词典、城市词典、latlng、honghuang/jiugong、motion、page-shell、utils、creative-demos（32 demo 真跑 20 帧）等 |
+| ① 单元测试 | `npm test` | **501 用例 / 29 个测试文件**，零依赖 node runner（`scripts/run-tests.mjs`）。覆盖：alias 同步、i18n 10 语种治理、chat-stream 协议、changelog 不变量、agent-lab 数据、看板关联/词典、城市词典、latlng、honghuang/jiugong、motion、page-shell、utils、creative-demos（32 demo 真跑 20 帧）等 |
 | ② SSR 冒烟 | `npm run test:ssr` | Vite SSR 管线真实渲染 + 页面文案断言（抓 Hook 误用/浏览器 API 误用） |
 | ③ 应用内测试中心 | `/test-center` | 浏览器侧断言（导出完整性/计时/路由注册） |
 | ④ 浏览器冒烟 | `npm run test:browser` | CDP 驱动本机 Chrome，从 App.jsx 自动解析路由逐页访问抓 console error（需先起 dev） |
@@ -293,7 +302,7 @@ Vue 3 与 Angular 22 为两个独立工程（`micro-apps/`），主应用不再�
 | r5 | 10/10 | 数据看板大扩容（天/地/海）+ Agent 拆分 + 案例体系 | 7 |
 | r6 | 10/22 | 海洋看板接入中央气象台台风（CMA 分级对照） | 2 |
 | <span style="color:#e64545">r7</span> | <span style="color:#e64545">10/23</span> | <span style="color:#e64545">时空档案大更新（经纬度检查 + 6.3 万城城市词典）+ 洪荒三阵/周天星辰 + PageShell 全站外壳（同日两批合并）</span> | <span style="color:#e64545">6</span> |
-| <span style="color:#e64545">r8</span> | <span style="color:#e64545">10/27</span> | <span style="color:#e64545">ChatBot 思考态条 + 输入 4 行 + 裸行推荐（移植自 hc-apm-mobile）+ i18n 按需装载 + ECharts 按需注册（同日两批合并）</span> | <span style="color:#e64545">5</span> |
+| <span style="color:#e64545">r8</span> | <span style="color:#e64545">10/27</span> | <span style="color:#e64545">ChatBot 思考态条 + 输入 4 行 + 裸行推荐（移植自 hc-apm-mobile）+ i18n 按需装载 + ECharts 按需注册 + AI Agent 实验室新页面（同日合并批）</span> | <span style="color:#e64545">6</span> |
 
 ---
 

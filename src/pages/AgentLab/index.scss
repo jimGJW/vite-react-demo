@@ -1,0 +1,130 @@
+/* AI Agent 实验室 —— 全部颜色走 --c-* 主题变量（不写死明暗色值） */
+
+.agent-lab {
+  &__head {
+    margin-bottom: 16px;
+  }
+
+  &__panel {
+    height: 100%;
+
+    :global(.ant-tabs-nav) {
+      margin-bottom: 12px;
+    }
+  }
+
+  /* —— 知识点卡片网格 —— */
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+    max-height: 560px;
+    overflow: auto;
+    padding-right: 2px;
+  }
+
+  &__card {
+    border-radius: 10px;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+
+    &.is-active {
+      box-shadow: 0 0 0 2px var(--c-primary, #1677ff);
+    }
+
+    :global(.ant-card-body) {
+      padding: 10px 12px;
+    }
+  }
+
+  &__card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+  }
+
+  &__card-name {
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--c-text-1);
+  }
+
+  &__hot {
+    flex-shrink: 0;
+    margin-inline-end: 0;
+    font-size: 11px;
+    line-height: 16px;
+    padding-block: 0;
+  }
+
+  &__card-alias {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  &__card-desc {
+    margin-top: 6px !important;
+    margin-bottom: 0 !important;
+    font-size: 0.8rem;
+    line-height: 1.5;
+  }
+
+  /* —— 知识点详情要点 —— */
+  &__points {
+    margin: 0;
+    padding-left: 18px;
+    display: grid;
+    gap: 8px;
+
+    li {
+      line-height: 1.65;
+      color: var(--c-text-1);
+    }
+  }
+
+  /* —— 提示词模板 —— */
+  &__prompts {
+    display: grid;
+    gap: 10px;
+    max-height: 600px;
+    overflow: auto;
+    padding-right: 2px;
+  }
+
+  &__prompt-text {
+    margin: 0;
+    padding: 10px 12px;
+    max-height: 200px;
+    overflow: auto;
+    font-size: 0.78rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+    border-radius: 8px;
+    background: var(--c-bg-soft, rgba(0, 0, 0, 0.03));
+    color: var(--c-text-1);
+  }
+}
+
+@media (max-width: 768px) {
+  .agent-lab__grid,
+  .agent-lab__prompts {
+    max-height: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agent-lab__card {
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}

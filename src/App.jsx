@@ -17,6 +17,7 @@ const loadDashboard = () => import('./pages/Dashboard/index.jsx')
 const loadScanDemo = () => import('./pages/ScanDemo/index.jsx')
 const loadEmbed = () => import('./pages/Embed/index.jsx')
 const loadAgent = () => import('./pages/Agent/index.jsx')
+const loadAgentLab = () => import('./pages/AgentLab/index.jsx')
 const loadVoiceAssistant = () => import('./pages/VoiceAssistant/index.jsx')
 const loadFormBuilderDemo = () => import('./pages/FormBuilderDemo/index.jsx')
 const loadThemeDemo = () => import('./pages/ThemeDemo/index.jsx')
@@ -69,6 +70,7 @@ const Dashboard = lazy(loadDashboard)
 const ScanDemo = lazy(loadScanDemo)
 const Embed = lazy(loadEmbed)
 const Agent = lazy(loadAgent)
+const AgentLab = lazy(loadAgentLab)
 const VoiceAssistant = lazy(loadVoiceAssistant)
 const FormBuilderDemo = lazy(loadFormBuilderDemo)
 const ThemeDemo = lazy(loadThemeDemo)
@@ -119,6 +121,7 @@ const CompareRef = lazy(loadCompareRef)
 /* 空闲时预热所有路由 chunk，跳转时无需等待网络加载（消除“跳转延迟严重”） */
 const allLoaders = [
   loadHome, loadAbout, loadDashboard, loadScanDemo, loadEmbed, loadAgent,
+  loadAgentLab,
   loadVoiceAssistant, loadFormBuilderDemo, loadThemeDemo, loadChartsDemo,
   loadEChartsDemo, loadAntdDemo, loadChatBotDemo, loadChatBotShare,
   loadKitDemo, loadStudioDemo, loadTemplatesDemo, loadUtilsDemo,
@@ -185,6 +188,7 @@ function App() {
           <Route path="scan" element={<ScanDemo />} />
           <Route path="embed" element={<Embed />} />
           <Route path="agent" element={<Agent onAgentExecute={handleAgentExecute} />} />
+          <Route path="agent-lab" element={<AgentLab />} />
           <Route path="voice" element={<VoiceAssistant />} />
           <Route path="form-builder" element={<FormBuilderDemo />} />
           <Route path="theme" element={<ThemeDemo />} />

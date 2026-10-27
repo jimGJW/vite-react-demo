@@ -55,5 +55,6 @@
   "dashboard": "콘솔",
   "testCenter": "테스트 센터",
   "about": "정보",
-  "hiddenVideo": "로컬 영상 캐러셀"
+  "hiddenVideo": "로컬 영상 캐러셀",
+  "agentLab": "AI Agent Lab"
 }

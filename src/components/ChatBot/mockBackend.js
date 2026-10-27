@@ -240,10 +240,25 @@ function buildItemsFromSessions(sessions, ids) {
  * @param {object} options
  * @param {object} [options.endpoints]
  * @param {number} [options.latency] 每帧基础延迟（ms），默认 60
+ * @param {(question: string) => object|undefined|null} [options.answers]
+ *   自定义回答解析器：按问题返回 { payload, contentType?, title?, taskIds?,
+ *   recommend?, steps? }，返回空值时回落到内置 pickAnswer。供业务页面注入
+ *   主题化回答（如 Agent 知识库），其余 CRUD/分享/历史能力全部保留。
  */
-export function createMockApi({ endpoints = {}, latency = 60 } = {}) {
+export function createMockApi({ endpoints = {}, latency = 60, answers } = {}) {
   const ep = { ...DEFAULT_ENDPOINTS, ...endpoints }
   const sessions = seedSessions()
+
+  /** 优先用调用方注入的回答解析器，未命中回落内置样本 */
+  const resolveAnswer = (question) => {
+    let custom = null
+    try {
+      custom = typeof answers === 'function' ? answers(question) : null
+    } catch {
+      /* 解析器抛错时按未命中处理 */
+    }
+    return custom && custom.payload != null ? custom : pickAnswer(question)
+  }
 
   /** 分享记录：内置一条可直接预览的示例分享（id = demo-share） */
   const shares = new Map([
@@ -273,14 +288,14 @@ export function createMockApi({ endpoints = {}, latency = 60 } = {}) {
         await delay(latency * 2, signal)
       }
 
-      const answer = pickAnswer(question)
+      const answer = resolveAnswer(question)
       onFrame?.({ type: 'status', state: '', message: '正在检索数据…' })
       await delay(latency * 4, signal)
       const t2 = Date.now()
 
       // ② 思考过程步骤流：收口前一次性下发，供 ThinkingStrip 展开查看
       onFrame?.({
-        steps: [
+        steps: answer.steps || [
           { label: '理解你的问题', ms: t1 - t0 },
           { label: '检索相关数据', ms: t2 - t1 },
         ],
@@ -292,7 +307,7 @@ export function createMockApi({ endpoints = {}, latency = 60 } = {}) {
           sessionId: finish.sessionId,
           sessionDetailId: finish.sessionDetailId,
           widget: null,
-          recommend: ['换个图表看看', '导出为 CSV', '展开明细'],
+          recommend: answer.recommend || ['换个图表看看', '导出为 CSV', '展开明细'],
           output: {
             choices: [
               {
@@ -326,7 +341,7 @@ export function createMockApi({ endpoints = {}, latency = 60 } = {}) {
         onFrame?.({
           sessionId: finish.sessionId,
           sessionDetailId: finish.sessionDetailId,
-          recommend: ['展开明细', '画一张趋势图', '导出为 CSV'],
+          recommend: answer.recommend || ['展开明细', '画一张趋势图', '导出为 CSV'],
           output: {
             choices: [{ finish_reason: 'stop', message: { content: text, contentType: null } }],
           },

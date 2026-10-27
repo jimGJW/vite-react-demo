@@ -55,5 +55,6 @@
   "dashboard": "Console",
   "testCenter": "Centre de tests",
   "about": "À propos",
-  "hiddenVideo": "Carrousel vidéo local"
+  "hiddenVideo": "Carrousel vidéo local",
+  "agentLab": "AI Agent Lab"
 }

@@ -93,8 +93,9 @@ export default [
     eq(ROUTE_LATEST['/timeline'], 'r7')
     eq(ROUTE_LATEST['/honghuang'], 'r7')
     eq(ROUTE_LATEST['/stars'], 'r7')
-    /* r8（10/27 合并批）ChatBot 思考态体验 + 全项目性能优化 */
+    /* r8（10/27 合并批）ChatBot 思考态体验 + 全项目性能优化 + AI Agent 实验室 */
     eq(ROUTE_LATEST['/chatbot'], 'r8')
+    eq(ROUTE_LATEST['/agent-lab'], 'r8')
     eq(ROUTE_LATEST['/home-missing'] === undefined, true)
   }],
   ['ROUTE_RELEASES 路由归属全部批次（/utils 在 r1、r3）', () => {
@@ -104,10 +105,10 @@ export default [
     deepEq(ROUTE_RELEASES['/orbit'], ['r4'])
     eq(ROUTE_RELEASES['/home-missing'] === undefined, true)
   }],
-  ['TOTAL_CHANGES 等于各批次之和（6+2+5+8+7+2+6+5=41）', () => {
+  ['TOTAL_CHANGES 等于各批次之和（6+2+5+8+7+2+6+6=42）', () => {
     const sum = RELEASES.reduce((n, r) => n + r.changes.length, 0)
     eq(sum, TOTAL_CHANGES)
-    eq(TOTAL_CHANGES, 41)
+    eq(TOTAL_CHANGES, 42)
   }],
   ['每条改动都有必填字段', () => {
     for (const r of RELEASES) {
