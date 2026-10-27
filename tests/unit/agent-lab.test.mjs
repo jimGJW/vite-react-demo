@@ -5,7 +5,7 @@
  * - answers 解析器命中各知识域且 payload 合法
  */
 import { eq, length, ok } from './harness.mjs'
-import { CATS, KNOWLEDGE, FRAMEWORKS, PROMPTS } from '../../src/pages/AgentLab/agentData.js'
+import { CATS, KNOWLEDGE, FRAMEWORKS, PROMPTS, STREAM_MATRIX, STREAM_CHANNELS, STREAM_TEXT } from '../../src/pages/AgentLab/agentData.js'
 import { agentAnswers } from '../../src/pages/AgentLab/agentAnswers.js'
 
 const HAS_CJK = /[一-鿿]/
@@ -75,5 +75,18 @@ export default [
     /* 未命中关键词也应兜底给出概览 */
     const fallback = agentAnswers('随便聊聊')
     ok(fallback.payload.includes('Agent'), '兜底回答应包含 Agent 概览')
+  }],
+  ['对比实验室矩阵与通道数据齐备（行 × 三通道双语）', () => {
+    ok(STREAM_TEXT['zh-CN'].length > 20 && !HAS_CJK.test(STREAM_TEXT.en), '演示文案双语不齐')
+    eq(STREAM_CHANNELS.length, 3, '流式通道应为 3 条')
+    for (const c of STREAM_CHANNELS) {
+      okBilingual(c.name, `channel ${c.id}.name`)
+      okBilingual(c.sub, `channel ${c.id}.sub`)
+    }
+    ok(STREAM_MATRIX.length >= 4, '特性矩阵应不少于 4 行')
+    for (const row of STREAM_MATRIX) {
+      okBilingual(row.feature, `matrix ${row.feature?.['zh-CN']}.feature`)
+      for (const col of ['sse', 'fetch', 'ws']) okBilingual(row[col], `matrix[${col}] 单元格`)
+    }
   }],
 ]

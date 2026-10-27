@@ -2,7 +2,7 @@
 
 > 本文档是项目**全部功能的权威索引**，覆盖 8 大分组共 51 条路由、可复用模块、四块数据看板、微前端、独立 npm 包、i18n、动效系统与五层验证体系。各模块的深入文档见对应目录下的 `README.md`（本文末尾有清单）。
 >
-> 更新基准：changelog r8（2026-10-27，commit `8696d6b + 663983d`）。单测 501/501。
+> 更新基准：changelog r8（2026-10-27，commit `8696d6b + 663983d`）。单测 502/502。
 >
 > <span style="color:#e64545">**红色 = 最近 7 天内新增/修改的内容**（对应 changelog「新」标红窗口，过窗后应摘除红标）。</span>
 
@@ -96,12 +96,13 @@
 
 ### 3.5 <span style="color:#e64545">AI Agent 实验室（`/agent-lab` → `src/pages/AgentLab/`，r8 · 10/27 新增）</span>
 
-基于 ChatBot 打造的 Agent 知识中心，复用流式对话 / 富卡片 / 思考态条全部能力：
+基于 ChatBot 打造的 Agent 知识中心，复用流式对话 / 富卡片 / 思考态条全部能力；页面拆分为 **KnowledgeTab / FrameworkTab / PromptTab / CompareLab** 四个内聚组件（共享演示引擎 `useSimulatedStream`），index.jsx 只做薄编排：
 
 - **对话注入**：`createMockApi` 新增 `answers` 解析器注入点（`agentAnswers.js`），按问题命中知识域返回框架对比表格卡片 / MCP / RAG / ReAct / 提示词 / 工具调用六类主题回答，带自定义思考步骤流与推荐追问
 - **知识点库**：22 个市场主流知识点（前端 6 / 后端 6 / 协议 3 / 框架 7），分类筛选 + 全文搜索 + 详情弹窗，数据在 `agentData.js`（双语 `{ 'zh-CN', en }`）
 - **框架对比**：LangGraph / OpenAI Agents SDK / AutoGen / CrewAI / Dify / Vercel AI SDK 六框架横向表
 - **提示词模板**：ReAct / 工具调用 / RAG 引用 / 多智能体角色 / 结构化输出 5 套模板一键复制
+- **<span style="color:#e64545">对比实验室（r8 新增）</span>**：多方案并排真机演示——① 流式三通道（SSE / fetch ReadableStream / WebSocket 模拟）同文案并排跑 + 五维特性矩阵；② 回答渲染三形态（整段 / 逐字 / 逐词打字机）+ 速度档位；③ 思考链三形态（ThinkingStrip 步骤条 / 脉冲思考点 / 时间线）。页签销毁式切换（`destroyInactiveTabPane`）停表省资源，演示定时器卸载自动清理
 
 ---
 
@@ -268,7 +269,7 @@ Vue 3 与 Angular 22 为两个独立工程（`micro-apps/`），主应用不再�
 
 | 层 | 命令 | 覆盖（当前） |
 | --- | --- | --- |
-| ① 单元测试 | `npm test` | **501 用例 / 29 个测试文件**，零依赖 node runner（`scripts/run-tests.mjs`）。覆盖：alias 同步、i18n 10 语种治理、chat-stream 协议、changelog 不变量、agent-lab 数据、看板关联/词典、城市词典、latlng、honghuang/jiugong、motion、page-shell、utils、creative-demos（32 demo 真跑 20 帧）等 |
+| ① 单元测试 | `npm test` | **502 用例 / 29 个测试文件**，零依赖 node runner（`scripts/run-tests.mjs`）。覆盖：alias 同步、i18n 10 语种治理、chat-stream 协议、changelog 不变量、agent-lab 数据、看板关联/词典、城市词典、latlng、honghuang/jiugong、motion、page-shell、utils、creative-demos（32 demo 真跑 20 帧）等 |
 | ② SSR 冒烟 | `npm run test:ssr` | Vite SSR 管线真实渲染 + 页面文案断言（抓 Hook 误用/浏览器 API 误用） |
 | ③ 应用内测试中心 | `/test-center` | 浏览器侧断言（导出完整性/计时/路由注册） |
 | ④ 浏览器冒烟 | `npm run test:browser` | CDP 驱动本机 Chrome，从 App.jsx 自动解析路由逐页访问抓 console error（需先起 dev） |

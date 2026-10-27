@@ -1,0 +1,61 @@
+import { Card, Segmented } from 'antd'
+import { memo, useCallback, useMemo, useState } from 'react'
+import { useI18n, pickText } from '@i18n/index.js'
+import { STREAM_TEXT } from '@/pages/AgentLab/agentData.js'
+import { useSimulatedStream } from './useSimulatedStream.js'
+
+/**
+ * 演示二：回答渲染形态对比 —— 整段渲染 / 逐字打字机 / 逐词打字机
+ * 同一份回答、同一速度档位，并排看三种主流渲染策略的观感差异。
+ */
+
+const MODES = ['instant', 'char', 'word']
+const SPEEDS = [30, 55, 90]
+
+function RenderPane({ mode, text, speed }) {
+  const { t } = useI18n()
+  const { out, running, done } = useSimulatedStream({ text, mode, speed })
+
+  return (
+    <Card size="small" className="agent-lab__demo-panel" title={<span className="agent-lab__demo-title">{t(`agent.render-${mode}`)}</span>}>
+      <pre className="agent-lab__demo-out">
+        {mode === 'instant' ? text : out}
+        {running ? <span className="agent-lab__cursor" /> : null}
+      </pre>
+      <div className="agent-lab__demo-bar"><span style={{ width: `${(mode === 'instant' ? (done ? 1 : running ? 1 : 0) : out.length / text.length) * 100}%` }} /></div>
+      <div className="agent-lab__demo-meter agent-lab__demo-meter--center">
+        {done ? <span className="agent-lab__demo-done">{t('agent.labDone')}</span> : <span>{Math.round((mode === 'instant' ? (running || done ? text.length : 0) : out.length) / text.length * 100)}%</span>}
+      </div>
+    </Card>
+  )
+}
+
+const MemoPane = memo(RenderPane)
+
+function RenderModeDemo() {
+  const { lang, t } = useI18n()
+  const text = pickText(STREAM_TEXT, lang)
+  const [speedIdx, setSpeedIdx] = useState(1)
+  const speed = SPEEDS[speedIdx]
+
+  const speedOptions = useMemo(() => [
+    { label: t('agent.labSpeedSlow'), value: 0 },
+    { label: t('agent.labSpeedMid'), value: 1 },
+    { label: t('agent.labSpeedFast'), value: 2 },
+  ], [t])
+  const onSpeed = useCallback((v) => setSpeedIdx(v), [])
+
+  return (
+    <div className="agent-lab__demo">
+      <p className="agent-lab__hint">{t('agent.labHintRender')}</p>
+      <Segmented options={speedOptions} value={speedIdx} onChange={onSpeed} size="small" />
+      <div className="agent-lab__demo-row">
+        {MODES.map((m) => (
+          <MemoPane key={m} mode={m} text={text} speed={speed} />
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export default memo(RenderModeDemo)

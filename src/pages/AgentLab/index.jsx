@@ -1,175 +1,50 @@
-import { useMemo, useState } from 'react'
-import {
-  Button, Card, Col, Empty, Input, Modal, Row, Segmented, Space, Table, Tabs, Tag, Typography, message,
-} from 'antd'
-import { CopyOutlined, FireOutlined, SearchOutlined } from '@ant-design/icons'
+import { Card, Col, Row, Space, Tag, Typography } from 'antd'
+import { Tabs } from 'antd'
+import { useMemo } from 'react'
 import { ChatBot, createMockApi } from '@components/ChatBot/index.js'
 import { NewMark } from '@components/Changelog/NewMark.jsx'
-import { useI18n, pickText } from '@i18n/index.js'
-import { KNOWLEDGE, FRAMEWORKS, PROMPTS } from './agentData.js'
+import { useI18n } from '@i18n/index.js'
+import CompareLab from './components/CompareLab.jsx'
+import FrameworkTab from './components/FrameworkTab.jsx'
+import KnowledgeTab from './components/KnowledgeTab.jsx'
+import PromptTab from './components/PromptTab.jsx'
+import { FRAMEWORKS, KNOWLEDGE, PROMPTS } from './agentData.js'
 import { agentAnswers } from './agentAnswers.js'
 import './index.scss'
 
-const { Title, Paragraph, Text } = Typography
+const { Title, Paragraph } = Typography
 
-const CAT_META = {
-  frontend: { color: 'blue' },
-  backend: { color: 'purple' },
-  protocol: { color: 'cyan' },
-  framework: { color: 'orange' },
-}
-
+/**
+ * AI Agent 实验室（薄编排层）
+ * ===============================================================
+ * - 左侧：ChatBot（注入 Agent 主题 mock 后端，api 引用 useMemo 固定）
+ * - 右上：知识点 / 框架对比 / 提示词模板三页签（组件各自内聚状态）
+ * - 下方：对比实验室（流式通道 × 渲染形态 × 思考链，多方案并排真机演示）
+ * 所有区块解耦：本文件只做组合与 KPI 汇总，不含任何业务状态。
+ */
 export default function AgentLab() {
-  const { lang, t } = useI18n()
+  const { t } = useI18n()
 
-  /* —— ChatBot：注入 Agent 主题 mock 后端（useMemo 固定引用，避免重建会话） —— */
+  /* ChatBot 的 mock api 引用必须稳定，否则每次渲染重建会话 */
   const api = useMemo(() => createMockApi({ answers: agentAnswers }), [])
 
-  /* —— 知识点：分类筛选 + 搜索 + 详情弹窗 —— */
-  const [cat, setCat] = useState('all')
-  const [kw, setKw] = useState('')
-  const [active, setActive] = useState(null)
+  const recommend = useMemo(
+    () => [t('agent.rec1'), t('agent.rec2'), t('agent.rec3'), t('agent.rec4')],
+    [t],
+  )
 
-  const catOptions = [
-    { label: t('agent.filterAll'), value: 'all' },
-    { label: t('agent.filterFrontend'), value: 'frontend' },
-    { label: t('agent.filterBackend'), value: 'backend' },
-    { label: t('agent.filterProtocol'), value: 'protocol' },
-    { label: t('agent.filterFramework'), value: 'framework' },
-  ]
-
-  const filtered = useMemo(() => {
-    const q = kw.trim().toLowerCase()
-    return KNOWLEDGE.filter((k) => {
-      if (cat !== 'all' && k.cat !== cat) return false
-      if (!q) return true
-      const hay = [
-        pickText(k.name, lang),
-        k.alias,
-        pickText(k.desc, lang),
-        ...k.points.map((p) => pickText(p, lang)),
-      ].join(' ').toLowerCase()
-      return hay.includes(q)
-    })
-  }, [cat, kw, lang])
-
-  const copyText = async (text) => {
-    try {
-      await navigator.clipboard.writeText(text)
-      message.success(t('agent.copied'))
-    } catch {
-      message.error(t('agent.copyFail'))
-    }
-  }
-
-  /* —— 框架对比表列（本地化取词） —— */
-  const fwColumns = [
-    { title: t('agent.colName'), dataIndex: 'name', key: 'name', width: 190, render: (v) => <Text strong>{v}</Text> },
-    { title: t('agent.colKind'), dataIndex: 'kind', key: 'kind', width: 150, render: (v) => pickText(v, lang) },
-    { title: t('agent.colLang'), dataIndex: 'lang', key: 'lang', width: 110, render: (v) => <Text code>{v}</Text> },
-    { title: t('agent.colHighlight'), dataIndex: 'highlight', key: 'highlight', render: (v) => pickText(v, lang) },
-    { title: t('agent.colScene'), dataIndex: 'scene', key: 'scene', width: 170, render: (v) => pickText(v, lang) },
-  ]
-
-  const kpis = [
+  const kpis = useMemo(() => [
     { n: KNOWLEDGE.length, label: t('agent.kpiKnowledge') },
     { n: KNOWLEDGE.filter((k) => k.cat === 'protocol').length, label: t('agent.kpiProtocol') },
     { n: FRAMEWORKS.length, label: t('agent.kpiFramework') },
     { n: PROMPTS.length, label: t('agent.kpiPrompt') },
-  ]
+  ], [t])
 
-  const recommend = [t('agent.rec1'), t('agent.rec2'), t('agent.rec3'), t('agent.rec4')]
-
-  /* —— 页签：知识点 / 框架对比 / 提示词模板 —— */
-  const tabItems = [
-    {
-      key: 'knowledge',
-      label: t('agent.tabKnowledge'),
-      children: (
-        <div className="agent-lab__knowledge">
-          <Space direction="vertical" size={12} style={{ width: '100%' }}>
-            <Segmented block options={catOptions} value={cat} onChange={setCat} />
-            <Input
-              allowClear
-              prefix={<SearchOutlined />}
-              placeholder={t('agent.searchPlaceholder')}
-              value={kw}
-              onChange={(e) => setKw(e.target.value)}
-            />
-            {filtered.length === 0 ? (
-              <Empty description={t('agent.empty')} />
-            ) : (
-              <div className="agent-lab__grid">
-                {filtered.map((k) => (
-                  <Card
-                    key={k.id}
-                    size="small"
-                    hoverable
-                    className={`agent-lab__card ${active?.id === k.id ? 'is-active' : ''}`}
-                    onClick={() => setActive(k)}
-                  >
-                    <div className="agent-lab__card-head">
-                      <span className="agent-lab__card-name">{pickText(k.name, lang)}</span>
-                      {k.hot ? <Tag className="agent-lab__hot" color="volcano" icon={<FireOutlined />}>{t('agent.hot')}</Tag> : null}
-                    </div>
-                    <div className="agent-lab__card-alias">
-                      <Tag color={CAT_META[k.cat].color}>{t(`agent.cat-${k.cat}`)}</Tag>
-                      {k.alias ? <Text type="secondary" code style={{ fontSize: 12 }}>{k.alias}</Text> : null}
-                    </div>
-                    <Paragraph type="secondary" className="agent-lab__card-desc" ellipsis={{ rows: 2 }}>
-                      {pickText(k.desc, lang)}
-                    </Paragraph>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </Space>
-        </div>
-      ),
-    },
-    {
-      key: 'frameworks',
-      label: t('agent.tabFrameworks'),
-      children: (
-        <Table
-          size="small"
-          pagination={false}
-          dataSource={FRAMEWORKS}
-          rowKey="id"
-          columns={fwColumns}
-          scroll={{ x: 640 }}
-        />
-      ),
-    },
-    {
-      key: 'prompts',
-      label: t('agent.tabPrompts'),
-      children: (
-        <div className="agent-lab__prompts">
-          {PROMPTS.map((p) => (
-            <Card
-              key={p.id}
-              size="small"
-              title={pickText(p.name, lang)}
-              extra={
-                <Button
-                  size="small"
-                  type="text"
-                  icon={<CopyOutlined />}
-                  onClick={() => copyText(pickText(p.text, lang))}
-                >
-                  {t('agent.copy')}
-                </Button>
-              }
-            >
-              <Paragraph type="secondary" style={{ marginBottom: 8 }}>{pickText(p.scene, lang)}</Paragraph>
-              <pre className="agent-lab__prompt-text">{pickText(p.text, lang)}</pre>
-            </Card>
-          ))}
-        </div>
-      ),
-    },
-  ]
+  const tabItems = useMemo(() => [
+    { key: 'knowledge', label: t('agent.tabKnowledge'), children: <KnowledgeTab /> },
+    { key: 'frameworks', label: t('agent.tabFrameworks'), children: <FrameworkTab /> },
+    { key: 'prompts', label: t('agent.tabPrompts'), children: <PromptTab /> },
+  ], [t])
 
   return (
     <div className="agent-lab">
@@ -197,35 +72,12 @@ export default function AgentLab() {
         </Col>
         <Col xs={24} xl={11}>
           <Card size="small" className="agent-lab__panel">
-            <Tabs items={tabItems} size="small" />
+            <Tabs items={tabItems} size="small" destroyInactiveTabPane />
           </Card>
         </Col>
       </Row>
 
-      <Modal
-        open={!!active}
-        onCancel={() => setActive(null)}
-        footer={<Button type="primary" onClick={() => setActive(null)}>{t('agent.close')}</Button>}
-        title={active ? (
-          <Space wrap>
-            <span>{pickText(active.name, lang)}</span>
-            {active.alias ? <Text code>{active.alias}</Text> : null}
-            <Tag color={CAT_META[active.cat].color}>{t(`agent.cat-${active.cat}`)}</Tag>
-          </Space>
-        ) : null}
-        width={560}
-      >
-        {active ? (
-          <>
-            <Paragraph type="secondary">{pickText(active.desc, lang)}</Paragraph>
-            <ul className="agent-lab__points">
-              {active.points.map((p, i) => (
-                <li key={i}>{pickText(p, lang)}</li>
-              ))}
-            </ul>
-          </>
-        ) : null}
-      </Modal>
+      <CompareLab />
     </div>
   )
 }

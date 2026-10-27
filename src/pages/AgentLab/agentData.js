@@ -385,6 +385,70 @@ export const FRAMEWORKS = [
   },
 ]
 
+/* ================================================================ 对比实验室数据 */
+
+/** 三条流式通道共用的演示文案（节奏对比用） */
+export const STREAM_TEXT = {
+  'zh-CN': 'Agent 收到任务后进入 ReAct 循环：先理解意图，再检索工具与知识库，拿到结果后组织成带引用的回答，最后流式推送给前端渲染。',
+  en: 'On receiving a task the agent enters the ReAct loop: understand intent, query tools and knowledge, assemble a cited answer, then stream it to the frontend.',
+}
+
+/** 三条主流流式通道的横向对比矩阵（demo 下方表格） */
+export const STREAM_MATRIX = [
+  {
+    feature: { 'zh-CN': '方向', en: 'Direction' },
+    sse: { 'zh-CN': '单向（服务器 → 客户端）', en: 'Unidirectional (server → client)' },
+    fetch: { 'zh-CN': '单向（服务器 → 客户端）', en: 'Unidirectional (server → client)' },
+    ws: { 'zh-CN': '双向', en: 'Bidirectional' },
+  },
+  {
+    feature: { 'zh-CN': '断线重连', en: 'Reconnect' },
+    sse: { 'zh-CN': '浏览器内建自动重连', en: 'Built-in auto reconnect' },
+    fetch: { 'zh-CN': '需自行实现', en: 'Hand-rolled' },
+    ws: { 'zh-CN': '需心跳 + 自行实现', en: 'Heartbeat + hand-rolled' },
+  },
+  {
+    feature: { 'zh-CN': '代理 / 网关兼容', en: 'Proxy / gateway' },
+    sse: { 'zh-CN': 'HTTP 直通，最友好', en: 'Plain HTTP, friendliest' },
+    fetch: { 'zh-CN': 'HTTP 直通，最友好', en: 'Plain HTTP, friendliest' },
+    ws: { 'zh-CN': '需 Upgrade 升级配置', en: 'Needs Upgrade config' },
+  },
+  {
+    feature: { 'zh-CN': '断线恢复成本', en: 'Resume cost' },
+    sse: { 'zh-CN': 'Last-Event-ID 续传', en: 'Resume via Last-Event-ID' },
+    fetch: { 'zh-CN': '重新发起整段请求', en: 'Restart the request' },
+    ws: { 'zh-CN': '丢帧需应用层补偿', en: 'Lost frames need app-level replay' },
+  },
+  {
+    feature: { 'zh-CN': '典型场景', en: 'Typical use' },
+    sse: { 'zh-CN': '对话流式输出（当前主流）', en: 'Chat streaming (mainstream)' },
+    fetch: { 'zh-CN': 'LLM SDK 标配（OpenAI 兼容）', en: 'LLM SDK default (OpenAI-style)' },
+    ws: { 'zh-CN': '语音 ASR / 双向工具交互', en: 'Voice ASR / bidirectional tools' },
+  },
+]
+
+/** 通道元信息（demo 面板头） */
+export const STREAM_CHANNELS = [
+  {
+    id: 'sse',
+    name: { 'zh-CN': 'SSE', en: 'SSE' },
+    sub: { 'zh-CN': 'text/event-stream · 内建重连', en: 'text/event-stream · built-in reconnect' },
+    color: '#1677ff',
+  },
+  {
+    id: 'fetch',
+    name: { 'zh-CN': 'fetch 流式读取', en: 'fetch stream' },
+    sub: { 'zh-CN': 'ReadableStream · 自定义帧协议', en: 'ReadableStream · custom frames' },
+    color: '#722ed1',
+  },
+  {
+    id: 'ws',
+    name: { 'zh-CN': 'WebSocket', en: 'WebSocket' },
+    sub: { 'zh-CN': '双向长连接 · 心跳保活', en: 'Duplex socket · heartbeat' },
+    color: '#13c2c2',
+  },
+]
+
 /* ---------------------------------------------------------------- 提示词模板 */
 
 export const PROMPTS = [
