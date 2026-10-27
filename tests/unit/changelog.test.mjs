@@ -105,10 +105,10 @@ export default [
     deepEq(ROUTE_RELEASES['/orbit'], ['r4'])
     eq(ROUTE_RELEASES['/home-missing'] === undefined, true)
   }],
-  ['TOTAL_CHANGES 等于各批次之和（6+2+5+8+7+2+6+7=43）', () => {
+  ['TOTAL_CHANGES 等于各批次之和（6+2+5+8+7+2+6+8=44）', () => {
     const sum = RELEASES.reduce((n, r) => n + r.changes.length, 0)
     eq(sum, TOTAL_CHANGES)
-    eq(TOTAL_CHANGES, 43)
+    eq(TOTAL_CHANGES, 44)
   }],
   ['每条改动都有必填字段', () => {
     for (const r of RELEASES) {

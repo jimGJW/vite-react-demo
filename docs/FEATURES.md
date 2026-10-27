@@ -102,7 +102,7 @@
 - **知识点库**：22 个市场主流知识点（前端 6 / 后端 6 / 协议 3 / 框架 7），分类筛选 + 全文搜索 + 详情弹窗，数据在 `agentData.js`（双语 `{ 'zh-CN', en }`）
 - **框架对比**：LangGraph / OpenAI Agents SDK / AutoGen / CrewAI / Dify / Vercel AI SDK 六框架横向表
 - **提示词模板**：ReAct / 工具调用 / RAG 引用 / 多智能体角色 / 结构化输出 5 套模板一键复制
-- **<span style="color:#e64545">对比实验室（r8 新增）</span>**：多方案并排真机演示——① 流式三通道（SSE / fetch ReadableStream / WebSocket 模拟）同文案并排跑 + 五维特性矩阵；② 回答渲染三形态（整段 / 逐字 / 逐词打字机）+ 速度档位；③ 思考链三形态（ThinkingStrip 步骤条 / 脉冲思考点 / 时间线）。页签销毁式切换（`destroyInactiveTabPane`）停表省资源，演示定时器卸载自动清理
+- **<span style="color:#e64545">对比实验室（r8 新增）</span>**：多方案并排真机演示——① 流式三通道（SSE / fetch ReadableStream / WebSocket 模拟）同文案并排跑 + 五维特性矩阵；② 回答渲染三形态（整段 / 逐字 / 逐词打字机）+ 速度档位；③ 思考链三形态（ThinkingStrip 步骤条 / 脉冲思考点 / 时间线）。**每组顶部有「前端技能」勾选条**（共享 `SkillPicker`，全选/半选）：默认全选，取消勾选即移除对应面板（流式矩阵同步去列），卸载即停内部定时器。页签销毁式切换（`destroyInactiveTabPane`）停表省资源，演示定时器卸载自动清理
 
 ---
 

@@ -134,5 +134,7 @@
   "render-word": "逐词打字机",
   "think-static": "步骤条 · ThinkingStrip",
   "think-pulse": "脉冲思考点",
-  "think-timeline": "时间线"
+  "think-timeline": "时间线",
+  "labPickLabel": "前端技能",
+  "labPickAll": "全选"
 }

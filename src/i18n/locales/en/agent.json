@@ -134,5 +134,7 @@
   "render-word": "Word typewriter",
   "think-static": "Step strip · ThinkingStrip",
   "think-pulse": "Pulse indicator",
-  "think-timeline": "Timeline"
+  "think-timeline": "Timeline",
+  "labPickLabel": "Frontend skills",
+  "labPickAll": "Select all"
 }

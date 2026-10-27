@@ -3,6 +3,7 @@ import { memo, useCallback, useMemo, useState } from 'react'
 import { useI18n, pickText } from '@i18n/index.js'
 import { STREAM_CHANNELS, STREAM_MATRIX, STREAM_TEXT } from '@/pages/AgentLab/agentData.js'
 import { useSimulatedStream } from './useSimulatedStream.js'
+import SkillPicker from './SkillPicker.jsx'
 
 /**
  * 演示一：流式通道对比 —— SSE / fetch ReadableStream / WebSocket（本地模拟）
@@ -61,6 +62,7 @@ function StreamChannelDemo() {
   const { lang, t } = useI18n()
   const text = pickText(STREAM_TEXT, lang)
   const [speedIdx, setSpeedIdx] = useState(1)
+  const [picked, setPicked] = useState(() => STREAM_CHANNELS.map((c) => c.id))
   const speed = SPEEDS[speedIdx]
 
   const speedOptions = useMemo(() => [
@@ -70,22 +72,28 @@ function StreamChannelDemo() {
   ], [t])
   const onSpeed = useCallback((v) => setSpeedIdx(v), [])
 
+  /* 技能勾选：取消勾选的通道连面板带矩阵列一起移除 */
+  const pickOptions = useMemo(() => STREAM_CHANNELS.map((c) => ({ label: pickText(c.name, lang), value: c.id })), [lang])
+  const onPick = useCallback((vals) => setPicked(vals), [])
+  const activeChannels = useMemo(() => STREAM_CHANNELS.filter((c) => picked.includes(c.id)), [picked])
+
   const columns = useMemo(() => [
     { title: t('agent.labMatrixFeature'), dataIndex: 'feature', key: 'f', width: 130, render: (v) => <b>{pickText(v, lang)}</b> },
-    ...STREAM_CHANNELS.map((c) => ({
+    ...activeChannels.map((c) => ({
       title: pickText(c.name, lang),
       dataIndex: c.id,
       key: c.id,
       render: (v) => pickText(v, lang),
     })),
-  ], [t, lang])
+  ], [t, lang, activeChannels])
 
   return (
     <div className="agent-lab__demo">
       <p className="agent-lab__hint">{t('agent.labHintStream')}</p>
+      <SkillPicker options={pickOptions} value={picked} onChange={onPick} />
       <Segmented options={speedOptions} value={speedIdx} onChange={onSpeed} size="small" />
       <div className="agent-lab__demo-row">
-        {STREAM_CHANNELS.map((c) => (
+        {activeChannels.map((c) => (
           <MemoPanel key={c.id} channel={c} text={text} speed={speed} />
         ))}
       </div>

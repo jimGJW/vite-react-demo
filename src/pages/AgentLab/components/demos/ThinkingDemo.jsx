@@ -1,7 +1,8 @@
 import { Card, Timeline } from 'antd'
-import { memo, useEffect, useMemo, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import ThinkingStrip from '@components/ChatBot/ThinkingStrip.jsx'
 import { useI18n } from '@i18n/index.js'
+import SkillPicker from './SkillPicker.jsx'
 
 /**
  * 演示三：思考链展示形态对比
@@ -39,32 +40,52 @@ function PulseThinking() {
   )
 }
 
+const FORMS = ['static', 'pulse', 'timeline']
+
 function ThinkingDemo() {
   const { t } = useI18n()
   const elapsedMs = useMemo(() => STEPS.reduce((n, s) => n + s.ms, 0), [])
+  const [picked, setPicked] = useState(FORMS)
+
+  /* 技能勾选：取消勾选的思考链形态整块移除 */
+  const pickOptions = useMemo(() => FORMS.map((f) => ({ label: t(`agent.think-${f}`), value: f })), [t])
+  const onPick = useCallback((vals) => setPicked(vals), [])
+
+  const show = useMemo(() => ({
+    static: picked.includes('static'),
+    pulse: picked.includes('pulse'),
+    timeline: picked.includes('timeline'),
+  }), [picked])
 
   return (
     <div className="agent-lab__demo">
       <p className="agent-lab__hint">{t('agent.labHintThink')}</p>
+      <SkillPicker options={pickOptions} value={picked} onChange={onPick} />
       <div className="agent-lab__demo-row">
-        <Card size="small" className="agent-lab__demo-panel" title={t('agent.think-static')}>
-          <ThinkingStrip
-            elapsedMs={elapsedMs}
-            steps={STEPS}
-            prefixDone={t('chatbot.thinking.donePrefix')}
-            prefixPlain={t('chatbot.thinking.plainPrefix')}
-            unit={t('chatbot.thinking.unit')}
-          />
-        </Card>
-        <Card size="small" className="agent-lab__demo-panel" title={t('agent.think-pulse')}>
-          <PulseThinking />
-        </Card>
-        <Card size="small" className="agent-lab__demo-panel" title={t('agent.think-timeline')}>
-          <Timeline
-            size="small"
-            items={STEPS.map((s) => ({ color: 'blue', children: <span className="agent-lab__tl">{`${s.label} · ${s.ms}ms`}</span> }))}
-          />
-        </Card>
+        {show['static'] && (
+          <Card size="small" className="agent-lab__demo-panel" title={t('agent.think-static')}>
+            <ThinkingStrip
+              elapsedMs={elapsedMs}
+              steps={STEPS}
+              prefixDone={t('chatbot.thinking.donePrefix')}
+              prefixPlain={t('chatbot.thinking.plainPrefix')}
+              unit={t('chatbot.thinking.unit')}
+            />
+          </Card>
+        )}
+        {show.pulse && (
+          <Card size="small" className="agent-lab__demo-panel" title={t('agent.think-pulse')}>
+            <PulseThinking />
+          </Card>
+        )}
+        {show.timeline && (
+          <Card size="small" className="agent-lab__demo-panel" title={t('agent.think-timeline')}>
+            <Timeline
+              size="small"
+              items={STEPS.map((s) => ({ color: 'blue', children: <span className="agent-lab__tl">{`${s.label} · ${s.ms}ms`}</span> }))}
+            />
+          </Card>
+        )}
       </div>
     </div>
   )
