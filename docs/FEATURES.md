@@ -226,7 +226,8 @@ Vue 3 与 Angular 22 为两个独立工程（`micro-apps/`），主应用不再�
 | 主题系统 | 全站 `--c-*` CSS 变量（`src/index.scss`），亮暗双主题，组件不写死颜色 |
 | 动效中枢 | `src/motion/`：keyframes + `.m-*` 工具类 + `Reveal/Motion/PageTransition/MotionProvider` + `useReveal/useTilt/useCountUp/useReducedMotion`；`animate/` 封装 animate.css 为 `<Animate>` |
 | 页面外壳 | `src/components/PageShell/`：统一页头/栅格/分节/KPI 骨架；`BackButton` 无历史回首页；阅读进度条 + 切页回顶 |
-| 国际化 | **10 语种**（zh-CN/zh-TW/en/de/fr/th/mn/bo/ja/ko），`src/i18n/`，`useI18n()`；语言切换 `LanguageSwitch`。治理守卫：非汉藏语种零汉字、ja/ko 相同率门限、zh-TW 简体特征字扫描（28 个 i18n 相关测试文件） |
+| 国际化 | **10 语种**（zh-CN/zh-TW/en/de/fr/th/mn/bo/ja/ko），`src/i18n/`，`useI18n()`；语言切换 `LanguageSwitch`。**zh-CN（源语言/兜底）同步内置，其余 9 语种切换时按需装载**（未就绪自动回退 zh-CN，无闪烁无报错），首屏 i18n chunk 仅约 190KB。治理守卫：非汉藏语种零汉字、ja/ko 相同率门限、zh-TW 简体特征字扫描 |
+| ECharts 按需注册 | `src/lib/echarts.js` 是全项目唯一注册点（折线/柱状/饼/雷达/散点 + 所需组件 + Canvas 渲染器）；Kit/Studio/ChatBot 图表统一从此引入，vendor chunk 较全量引入瘦身约四成 |
 | 版本时间轴 | `src/components/Changelog/`（`releases.js` 纯数据 + 侧边栏批次着色图标 + `ROUTE_LATEST` 映射） |
 | 时钟隔离 | `src/components/Clock.jsx` 自包含秒级自更新，避免看板顶层每秒重渲染 |
 | 路径别名 | 唯一真源 `scripts/aliases.mjs`（`@`/`@i18n`/`@components`/`@lib`/`@root`），vite 与 tsconfig 由单测守卫同步 |

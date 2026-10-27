@@ -15,7 +15,7 @@
 
 import { memo, useEffect, useMemo, useRef, useState } from 'react'
 import { Button, Space } from 'antd'
-import * as echarts from 'echarts'
+import echarts from '@lib/echarts.js'
 import { FIELD_LABELS } from '../config.js'
 import { useI18n, pickLang } from '@i18n/index.js'
 import { toSeries } from './utils.js'

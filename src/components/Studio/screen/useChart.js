@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import * as echarts from 'echarts'
+import echarts from '@lib/echarts.js'
 
 /**
  * useChart · Studio 内部图表生命周期

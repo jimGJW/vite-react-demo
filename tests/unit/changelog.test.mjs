@@ -12,9 +12,9 @@ const HAS_CJK = /[一-鿿]/
 
 export default [
   ['批次数量与顺序正确', () => {
-    length(RELEASES, 9)
+    length(RELEASES, 10)
     eq(RELEASES[0].id, 'r1')
-    eq(RELEASES[8].id, 'r9')
+    eq(RELEASES[9].id, 'r10')
   }],
   ['getRelease 按 id 查找 / 缺失返回 null', () => {
     eq(pickText(getRelease('r2').title, 'zh-CN'), '核心 API 演示 + 验证体系')
@@ -62,6 +62,7 @@ export default [
     eq(ROUTE_LATEST['/stars'], 'r8')
     /* r9 ChatBot 思考态条 / 输入 / 推荐体验，最新批次升级为 r9 */
     eq(ROUTE_LATEST['/chatbot'], 'r9')
+    /* r10 只有 __infra__ 条目（性能优化），不占用任何真实路由，路由映射保持不变 */
     eq(ROUTE_LATEST['/home-missing'] === undefined, true)
   }],
   ['ROUTE_RELEASES 路由归属全部批次（/utils 在 r1、r3）', () => {
@@ -71,10 +72,10 @@ export default [
     deepEq(ROUTE_RELEASES['/orbit'], ['r4'])
     eq(ROUTE_RELEASES['/home-missing'] === undefined, true)
   }],
-  ['TOTAL_CHANGES 等于各批次之和（6+2+5+8+7+2+1+5+3=39）', () => {
+  ['TOTAL_CHANGES 等于各批次之和（6+2+5+8+7+2+1+5+3+2=41）', () => {
     const sum = RELEASES.reduce((n, r) => n + r.changes.length, 0)
     eq(sum, TOTAL_CHANGES)
-    eq(TOTAL_CHANGES, 39)
+    eq(TOTAL_CHANGES, 41)
   }],
   ['每条改动都有必填字段', () => {
     for (const r of RELEASES) {

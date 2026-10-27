@@ -151,6 +151,16 @@ export const RELEASES = [
       { route: '/chatbot', title: { 'zh-CN': '推荐问题改为裸行列表', en: 'Recommendations as a bare-line list' }, desc: { 'zh-CN': '推荐问题由胶囊标签改为带序号的裸行分隔列表，窄屏不再换行溢出，点击整行即可追问', en: 'Recommendations switched from pills to a numbered bare-line list that never wraps awkwardly on narrow screens; tap a row to ask' }, changedAt: '2026-10-27' },
     ],
   },
+  {
+    id: 'r10',
+    date: '2026-10-27',
+    color: '#722ed1',
+    title: { 'zh-CN': '全项目性能优化：首屏与图表瘦身', en: 'Perf: slimmer first paint and charts' },
+    changes: [
+      { route: '__infra__', title: { 'zh-CN': 'i18n 语言包按需装载', en: 'On-demand i18n language packs' }, desc: { 'zh-CN': '简体中文（源语言）同步内置，其余 9 个语种改为切换时按需动态装载，装载前自动回退简体中文；首屏 i18n chunk 从 2.3MB（10 语种全量）降至约十分之一', en: 'Simplified Chinese (the source language) stays eager while the other 9 packs load on demand when switched, falling back to Chinese until ready; the first-paint i18n chunk drops from 2.3MB (all ten languages) to roughly a tenth' }, changedAt: '2026-10-27' },
+      { route: '__infra__', title: { 'zh-CN': 'ECharts 按需注册', en: 'Modular ECharts registration' }, desc: { 'zh-CN': 'Kit / Studio / ChatBot 三处图表改为共享的 echarts/core 按需注册入口（仅折线/柱状/饼/雷达/散点与所需组件），vendor-echarts 体积下降约四成', en: 'The Kit, Studio and ChatBot charts now share one echarts/core entry registering only line, bar, pie, radar and scatter plus the components they use, cutting the vendor-echarts chunk by roughly 40%' }, changedAt: '2026-10-27' },
+    ],
+  },
 ]
 
 export const getRelease = (id) => RELEASES.find((r) => r.id === id) || null

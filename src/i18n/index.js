@@ -17,10 +17,13 @@
  * 取值规则：当前语言 → 缺失时回退简体中文 → 仍缺失返回兜底值 / 键本身（开发期即可发现漏译）。
  */
 import { createContext, useCallback, useContext } from 'react'
-import { MESSAGES } from './locales/index.js'
+import { MESSAGES, ensureLang, isLangLoaded } from './locales/index.js'
 import { DEFAULT_LANG, translate, pickLang, pickText, localize } from './translate.mjs'
 
 export { DEFAULT_LANG, translate, pickLang, pickText, localize }
+
+/** 语言包按需装载：切换非默认语种前先 ensureLang（I18nProvider 已封装，组件层无需关心） */
+export { ensureLang, isLangLoaded }
 
 /** 语种元数据：code 与 locales/ 下的文件夹一一对应 */
 export const LANGUAGES = [
@@ -36,7 +39,7 @@ export const LANGUAGES = [
   { code: 'bo', label: 'བོད་སྐད།', short: 'ཏིབ', mark: 'TIB', flag: '', color: '#f59e0b' },
 ]
 
-/** 语言包注册表：locales/index.js glob 收集（单页应用切换语种无需异步等待，切换即生效） */
+/** 语言包注册表：zh-CN 同步内置（源语言/兜底），其余语种经 ensureLang 按需装载后写入 */
 export { MESSAGES }
 
 export const LANGUAGE_CODES = LANGUAGES.map((l) => l.code)
