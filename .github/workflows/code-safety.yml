@@ -34,7 +34,17 @@ permissions:
   checks: write
 
 concurrency:
-  group: code-safety-${{ github.workflow }}-${{ github.ref }}
+  # ⚠️ 踩坑记录：这里以前写的是
+  #     group: code-safety-${{ github.workflow }}-${{ github.ref }}
+  #   本工作流 name 也是 "Code Safety Check"，而远端被调用的可复用工作流
+  #   (jimGJW/code-safety-checker/.github/workflows/code-safety-check.yml)
+  #   name 同样是 "Code Safety Check" 且用了同一个 group 公式 ——
+  #   两次运行算出完全相同的 group，GitHub 判定死锁并取消其中一条：
+  #     "Canceling since a deadlock was detected for concurrency group:
+  #      'code-safety-Code Safety Check-refs/heads/main' between a top level
+  #      workflow and 'safety'"
+  # 修法：调用方 group 加仓库前缀做隔离；被调用方不再声明 concurrency。
+  group: vrd-safety-${{ github.event.pull_request.head.ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
